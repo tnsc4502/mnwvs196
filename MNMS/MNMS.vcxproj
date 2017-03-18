@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{85A5DADE-B631-4093-B3CC-736590BC0FAD}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>MNMS</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\..\Common;..\..\Common\AES</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common\%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libmysql.lib;PocoFoundationmd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libmysql.lib;PocoFoundationmd.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\AES\aes.h" />
+    <ClInclude Include="..\Common\AES\aesopt.h" />
+    <ClInclude Include="..\Common\AES\aestab.h" />
+    <ClInclude Include="..\Common\AES\aes_ni.h" />
+    <ClInclude Include="..\Common\AES\brg_endian.h" />
+    <ClInclude Include="..\Common\AES\brg_types.h" />
+    <ClInclude Include="..\Common\AES\WzAES.hpp" />
+    <ClInclude Include="..\Common\Arena.h" />
+    <ClInclude Include="..\Common\ArenaVector.h" />
+    <ClInclude Include="..\Common\BufferPool.h" />
+    <ClInclude Include="..\Common\crypto.hpp" />
+    <ClInclude Include="..\Common\CryptoConstants.hpp" />
+    <ClInclude Include="..\Common\InPacket.h" />
+    <ClInclude Include="..\Common\MemoryBlocks.h" />
+    <ClInclude Include="..\Common\MemoryPoolMan.hpp" />
+    <ClInclude Include="..\Common\MemPool\MemoryPool.h" />
+    <ClInclude Include="..\Common\mem\memtailor.h" />
+    <ClInclude Include="..\Common\OutPacket.h" />
+    <ClInclude Include="..\Common\ServerConstants.hpp" />
+    <ClInclude Include="..\Common\wz.hpp" />
+    <ClInclude Include="..\Common\wzcrypto.hpp" />
+    <ClInclude Include="..\Common\wzimg.hpp" />
+    <ClInclude Include="..\Common\wzmain.hpp" />
+    <ClInclude Include="..\Common\WzResMan.hpp" />
+    <ClInclude Include="LocalServer.h" />
+    <ClInclude Include="LocalSocket.h" />
+    <ClInclude Include="ServerBase.h" />
+    <ClInclude Include="ServerConstants.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\AES\aescrypt.c" />
+    <ClCompile Include="..\Common\AES\aeskey.c" />
+    <ClCompile Include="..\Common\AES\aestab.c" />
+    <ClCompile Include="..\Common\AES\aes_modes.c" />
+    <ClCompile Include="..\Common\AES\aes_ni.c" />
+    <ClCompile Include="..\Common\AES\WzAES.cpp" />
+    <ClCompile Include="..\Common\Arena.cpp" />
+    <ClCompile Include="..\Common\BufferPool.cpp" />
+    <ClCompile Include="..\Common\crypto.cpp" />
+    <ClCompile Include="..\Common\InPacket.cpp" />
+    <ClCompile Include="..\Common\MemoryBlocks.cpp" />
+    <ClCompile Include="..\Common\MemoryPoolMan.cpp" />
+    <ClCompile Include="..\Common\mem\memtailor.cpp" />
+    <ClCompile Include="..\Common\mem\test\ArenaTest.cpp" />
+    <ClCompile Include="..\Common\mem\test\BufferPoolTest.cpp" />
+    <ClCompile Include="..\Common\mem\test\gtestInclude.cpp" />
+    <ClCompile Include="..\Common\mem\test\MemoryBlocksTest.cpp" />
+    <ClCompile Include="..\Common\mem\test\testMain.cpp" />
+    <ClCompile Include="..\Common\OutPacket.cpp" />
+    <ClCompile Include="..\Common\wzcrypto.cpp" />
+    <ClCompile Include="..\Common\wzimg.cpp" />
+    <ClCompile Include="..\Common\wzmain.cpp" />
+    <ClCompile Include="..\Common\wznode.cpp" />
+    <ClCompile Include="..\Common\WzResMan.cpp" />
+    <ClCompile Include="AES\aescrypt.c" />
+    <ClCompile Include="AES\aeskey.c" />
+    <ClCompile Include="AES\aestab.c" />
+    <ClCompile Include="AES\aes_modes.c" />
+    <ClCompile Include="AES\aes_ni.c" />
+    <ClCompile Include="AES\WzAES.cpp" />
+    <ClCompile Include="Arena.cpp" />
+    <ClCompile Include="BufferPool.cpp" />
+    <ClCompile Include="crypto.cpp" />
+    <ClCompile Include="CryptoConstants.hpp" />
+    <ClCompile Include="InPacket.cpp" />
+    <ClCompile Include="OutPacket.cpp" />
+    <ClCompile Include="LocalServer.cpp" />
+    <ClCompile Include="LocalSocket.cpp" />
+    <ClCompile Include="mapfile.cpp" />
+    <ClCompile Include="MemoryBlocks.cpp" />
+    <ClCompile Include="MemoryPoolMan.cpp" />
+    <ClCompile Include="MNMS.cpp" />
+    <ClCompile Include="ServerBase.cpp" />
+    <ClCompile Include="WvsWorld.cpp" />
+    <ClCompile Include="wzcrypto.cpp" />
+    <ClCompile Include="wzimg.cpp" />
+    <ClCompile Include="wzmain.cpp" />
+    <ClCompile Include="wznode.cpp" />
+    <ClCompile Include="WzResMan.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

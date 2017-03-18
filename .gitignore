@@ -1,0 +1,14 @@
+*.sdf
+*.opendb
+*.exe
+*.pdb
+*.wz____
+*.iml
+Release/
+Debug/
+x64/
+.idea/
+*.rtf
+*.txt
+*.VC.db
+*.VC

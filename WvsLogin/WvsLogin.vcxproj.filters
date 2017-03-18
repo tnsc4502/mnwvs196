@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Common\AES\aes_modes.c">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AES\aes_ni.c">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AES\aescrypt.c">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AES\aeskey.c">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AES\aestab.c">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\AES\WzAES.cpp">
+      <Filter>Common\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Memory\BufferPool.cpp">
+      <Filter>Common\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Memory\MemoryBlocks.cpp">
+      <Filter>Common\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Memory\MemoryPoolMan.cpp">
+      <Filter>Common\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Memory\Arena.cpp">
+      <Filter>Common\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\crypto.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\InPacket.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\OutPacket.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\mapfile.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\wzcrypto.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\wzimg.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\wzmain.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\wznode.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Wz\WzResMan.cpp">
+      <Filter>Common\Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Common\Net\SocketBase.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="WvsLogin.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginSocket.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\WvsBase.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Center.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{5ba5e934-241a-46a5-8e87-2dd5dcdf7f41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\AES">
+      <UniqueIdentifier>{8543a6f4-10d8-4048-b9b6-3da778b67c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Constants">
+      <UniqueIdentifier>{5b760197-ed09-4386-b0f5-6eda78b50014}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Memory">
+      <UniqueIdentifier>{9f28dd75-98c7-4d9a-a0c5-057460ba72e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Net">
+      <UniqueIdentifier>{17b2f3ed-9ea4-4ad9-9624-905d7fe86f00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Wz">
+      <UniqueIdentifier>{cbdb7125-00a7-41df-8548-2481f9ea0517}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Login">
+      <UniqueIdentifier>{777aa3c0-ac9a-42d2-bba0-56893a605bce}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\AES\WzAES.hpp">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\aes.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\aes_ni.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\aesopt.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\aestab.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\brg_endian.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\AES\brg_types.h">
+      <Filter>Common\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Constants\ServerConstants.hpp">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\ArenaVector.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\BufferPool.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\MemoryBlocks.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\MemoryPool.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\MemoryPoolMan.hpp">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\Arena.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Memory\stdinc.h">
+      <Filter>Common\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\asio.hpp">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\crypto.hpp">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\InPacket.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\OutPacket.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\mapfile.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\sprite.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\spritedata.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\wz.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\wzcrypto.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\wzimg.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\wzmain.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Wz\WzResMan.hpp">
+      <Filter>Common\Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\SocketBase.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsLogin.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginSocket.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\WvsBase.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsLoginConstants.hpp">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Center.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Common\Memory\MemoryPool.tcc">
+      <Filter>Common\Memory</Filter>
+    </None>
+  </ItemGroup>
+</Project>
