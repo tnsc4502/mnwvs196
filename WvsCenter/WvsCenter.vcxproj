@@ -162,6 +162,7 @@
     <ClCompile Include="..\Common\Net\crypto.cpp" />
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
     <ClCompile Include="..\Common\Wz\mapfile.cpp" />
@@ -195,6 +196,9 @@
     <ClInclude Include="..\Common\Net\crypto.hpp" />
     <ClInclude Include="..\Common\Net\InPacket.h" />
     <ClInclude Include="..\Common\Net\OutPacket.h" />
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\WvsBase.h" />
     <ClInclude Include="..\Common\Wz\mapfile.hpp" />

@@ -2,6 +2,15 @@
 
 namespace ServerConstants
 {
+	enum ServerType
+	{
+		SVR_LOGIN,
+		SVR_CENTER,
+		SVR_GAME,
+		SVR_SHOP,
+		SVR_CLAIM
+	};
+
 	enum class GameLocale { TW = 6 };
 
 	constexpr int kGameVersion = 196;

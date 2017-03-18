@@ -15,6 +15,8 @@ private:
 	unsigned char* aRecvIV, *aSendIV;
 	std::unique_ptr<unsigned char, ArenaUniquePtrDeleter> aRecivedPacket;
 
+	//Note : this flag indicate what this socket is for, when the flag is true, that means the socket is for local server.
+	//You should note that local server won't encrypt and decrypt packets, and won't send game server info.
 	bool bIsLocalServer = false;
 
 	void(*OnNotifySocketDisconnected)(SocketBase *pSocket);

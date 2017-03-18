@@ -193,6 +193,10 @@
     <ClInclude Include="..\Common\Memory\MemoryPoolMan.hpp" />
     <ClInclude Include="..\Common\Memory\stdinc.h" />
     <ClInclude Include="..\Common\Net\asio.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\crypto.hpp" />
     <ClInclude Include="..\Common\Net\InPacket.h" />

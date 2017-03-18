@@ -22,6 +22,9 @@
     <Filter Include="Center">
       <UniqueIdentifier>{ab5572ef-26a9-4566-a74f-099c67a04171}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Net\PacketFlags">
+      <UniqueIdentifier>{c3f7e24d-87a7-492b-a205-2f1268f83453}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -96,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="..\Common\Net\SocketBase.cpp">
       <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +200,15 @@
     </ClInclude>
     <ClInclude Include="..\Common\Net\SocketBase.h">
       <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,7 +14,7 @@ namespace WvsLoginConstants
 	};
 	
 	const CenterServerInfo CenterServerList[] = {
-		{ "127.0.0.1", 8383, 1 },
+		/*{ "127.0.0.1", 8383, 1 },*/
 		{ "127.0.0.1", 8384, 2 },
 	};
 }

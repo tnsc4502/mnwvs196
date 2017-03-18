@@ -1,11 +1,17 @@
 #include "Center.h"
 #include <functional>
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
 #include <thread>
 
+#include "Net\InPacket.h"
+#include "Net\OutPacket.h"
+
+#include "Net\PacketFlags\LoginPacketFlags.hpp"
+#include "Net\PacketFlags\CenterPacketFlags.hpp"
+
+#include "Constants\ServerConstants.hpp"
+
 Center::Center(asio::io_service& serverService)
-	: SocketBase(serverService),
+	: SocketBase(serverService, true),
 	  mResolver(serverService)
 {
 }
@@ -47,10 +53,13 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 		return;
 	}
 	printf("[Center::OnConnect]Connect To Center Server Successed!\n");
+
+	//Encode center handshake packet.
 	OutPacket oPacket;
-	oPacket.Encode2(0xFFFF);
-	oPacket.Encode1(1);
+	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
+	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
 	SendPacket(&oPacket); 
+
 	OnWaitingPacket();
 }
 
@@ -58,6 +67,18 @@ void Center::OnPacket(InPacket *iPacket)
 {
 	printf("[Center::OnPacket]");
 	iPacket->Print();
+	int nType = (unsigned short)iPacket->Decode2();
+	switch (nType)
+	{
+	case CenterPacketFlag::RegisterCenterAck:
+		auto result = iPacket->Decode1();
+		if (!result)
+		{
+			printf("[Warning]The Center Server Didn't Accept This Socket. Program Will Terminated.\n");
+			exit(0);
+		}
+		printf("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
+	}
 }
 
 void Center::OnClosed()

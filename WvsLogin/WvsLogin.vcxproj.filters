@@ -100,6 +100,9 @@
     <Filter Include="Login">
       <UniqueIdentifier>{777aa3c0-ac9a-42d2-bba0-56893a605bce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Net\PacketFlags">
+      <UniqueIdentifier>{1279af95-c8df-434c-94a5-5a0116001b73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\AES\WzAES.hpp">
@@ -203,6 +206,18 @@
     </ClInclude>
     <ClInclude Include="Center.h">
       <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,5 +11,8 @@ public:
 	~LoginSocket();
 
 	void OnPacket(InPacket *iPacket);
+
+	void OnClientRequestStart();
+	void OnLoginBackgroundRequest();
 };
 

@@ -34,7 +34,9 @@ void SocketBase::Init()
 
 	std::unique_ptr<OutPacket> oPacket{ new OutPacket() };
 	EncodeHandShakeInfo(oPacket.get());
-	SendPacket(oPacket.get(), true);
+
+	if(!bIsLocalServer)
+		SendPacket(oPacket.get(), true);
 
 	OnWaitingPacket();
 }
