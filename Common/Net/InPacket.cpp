@@ -85,7 +85,8 @@ void InPacket::DecodeBuffer(unsigned char* dst, int size)
 		std::cout << "InPacket::DecodeBuffer Error : Access violation." << std::endl;
 		return;
 	}
-	memcpy(dst, aBuff + nReadPos, size);
+	if(dst)
+		memcpy(dst, aBuff + nReadPos, size);
 	nReadPos += size;
 }
 

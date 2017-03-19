@@ -162,6 +162,8 @@
     <ClCompile Include="..\Common\Net\crypto.cpp" />
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
@@ -171,9 +173,10 @@
     <ClCompile Include="..\Common\Wz\wzmain.cpp" />
     <ClCompile Include="..\Common\Wz\wznode.cpp" />
     <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
+    <ClCompile Include="ChannelEntry.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="WvsCenter.cpp" />
     <ClCompile Include="LocalServer.cpp" />
-    <ClCompile Include="ServerBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\AES\aes.h" />
@@ -209,8 +212,9 @@
     <ClInclude Include="..\Common\Wz\wzimg.hpp" />
     <ClInclude Include="..\Common\Wz\wzmain.hpp" />
     <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
+    <ClInclude Include="ChannelEntry.h" />
+    <ClInclude Include="WvsCenter.h" />
     <ClInclude Include="LocalServer.h" />
-    <ClInclude Include="ServerBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc" />

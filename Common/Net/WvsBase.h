@@ -15,10 +15,13 @@ private:
 	void OnAccepted(std::shared_ptr<SOCKET_TYPE> acceptedSocket, const std::error_code& ec)
 	{
 		std::cout << "New Server Base Connected!\n";
+		OnSocketConnected((SocketBase*)(acceptedSocket.get()));
 		acceptedSocket->SetDisconnectedNotifyFunc(OnSocketDisconnected);
 		acceptedSocket->Init();
 		BeginAccept<SOCKET_TYPE>();
 	}
+
+	static WvsBase* pInstance;
 
 protected:
 	WvsBase();
@@ -30,12 +33,19 @@ public:
 	static WVS_TYPE *GetInstance()
 	{
 		static WVS_TYPE *sWvsWorld = new WVS_TYPE();
-
+		pInstance = sWvsWorld;
 		return sWvsWorld;
+	}
+
+	static WvsBase* GetRawInstance()
+	{
+		return pInstance;
 	}
 
 	static void OnSocketConnected(SocketBase *pSocket);
 	static void OnSocketDisconnected(SocketBase *pSocket);
+
+	virtual void OnNotifySocketDisconnected(SocketBase *pSocket) = 0;
 
 	void CreateAcceptor(short nPort);
 
@@ -49,5 +59,11 @@ public:
 
 	virtual void Init();
 	asio::io_service& GetIOService();
+
+	std::map<unsigned int, SocketBase*>& GetSocketList()
+	{
+		return aSocketList;
+	}
+
 };
 

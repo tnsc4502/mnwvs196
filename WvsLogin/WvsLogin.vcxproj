@@ -159,6 +159,9 @@
     <ClCompile Include="..\Common\Memory\BufferPool.cpp" />
     <ClCompile Include="..\Common\Memory\MemoryBlocks.cpp" />
     <ClCompile Include="..\Common\Memory\MemoryPoolMan.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\crypto.cpp" />
     <ClCompile Include="..\Common\Net\InPacket.cpp" />

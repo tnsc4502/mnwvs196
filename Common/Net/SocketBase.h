@@ -9,6 +9,7 @@ class SocketBase : public std::enable_shared_from_this<SocketBase>
 {
 private:
 	static unsigned int SocketCount;
+	unsigned char nServerType;
 	unsigned int nSocketID;
 
 	asio::ip::tcp::socket mSocket;
@@ -39,6 +40,16 @@ public:
 	void SetDisconnectedNotifyFunc(void(*FUNC)(SocketBase *))
 	{
 		OnNotifySocketDisconnected = FUNC;
+	}
+
+	void SetServerType(unsigned char type)
+	{
+		nServerType = type;
+	}
+
+	unsigned char GetServerType()
+	{
+		return nServerType;
 	}
 
 	unsigned int GetSocketID() const;

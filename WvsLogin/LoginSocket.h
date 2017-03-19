@@ -14,5 +14,8 @@ public:
 
 	void OnClientRequestStart();
 	void OnLoginBackgroundRequest();
+	void OnCheckPasswordRequst(InPacket *iPacket);
+	void SendChannelBackground();
+	void SendWorldInformation();
 };
 

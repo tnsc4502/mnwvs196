@@ -6,6 +6,7 @@
 MAKE_FLAG_COLLECTION_BODY(ClientPacketFlag)
 //以下開始註冊封包Opcode Flag
 
+MAKE_CLIENT_PACKET_FLAG(CheckPasswordRequest, 0x69);
 MAKE_CLIENT_PACKET_FLAG(LoginBackgroundRequest, 0xA0);
 MAKE_CLIENT_PACKET_FLAG(ClientRequestStart, 0xA5);
 

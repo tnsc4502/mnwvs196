@@ -12,11 +12,12 @@ WvsLogin::~WvsLogin()
 {
 }
 
-void WvsLogin::ConnectToCenter(int nCenterIdx, const WvsLoginConstants::CenterServerInfo& cInfo)
+void WvsLogin::ConnectToCenter(int nCenterIdx, WorldConnectionInfo& cInfo)
 {
 	aCenterServerService[nCenterIdx] = new asio::io_service();		
 	aCenterList[nCenterIdx] = std::make_shared<Center>(*aCenterServerService[nCenterIdx]);
 	aCenterList[nCenterIdx]->SetDisconnectedNotifyFunc(OnSocketDisconnected);
+	aCenterList[nCenterIdx]->SetCenterIndex(nCenterIdx);
 	aCenterList[nCenterIdx]->OnConnectToCenter(cInfo.strServerIP, cInfo.nServerPort); 
 	asio::io_service::work work(*aCenterServerService[nCenterIdx]);
 	std::error_code ec;

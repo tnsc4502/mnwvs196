@@ -1,19 +1,20 @@
 #pragma once
-#include "Net\asio.hpp"
-#include "Net\WvsBase.h"
+#include "Net\SocketBase.h"
 
-class LocalServer : public WvsBase
+//Server ºÝ¤§ Session
+class LocalServer : public SocketBase
 {
 private:
+	void OnClosed();
 
 public:
-	LocalServer();
+	LocalServer(asio::io_service& serverService);
 	~LocalServer();
 
-	/*static LocalServer* GetInstance()
-	{
-		static LocalServer *sWvsLogin = WvsBase::GetInstance<LocalServer>();
-		return sWvsLogin;
-	}*/
+	void OnPacket(InPacket *iPacket);
+
+
+	void OnRegisterCenterRequest(InPacket *iPacket);
+	void NotifyCenterServerChanged();
 };
 

@@ -88,12 +88,6 @@
       <Filter>Common\Wz</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="LocalServer.cpp">
-      <Filter>Center</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerBase.cpp">
-      <Filter>Center</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Net\WvsBase.cpp">
       <Filter>Common\Net</Filter>
     </ClCompile>
@@ -102,6 +96,21 @@
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="WvsCenter.cpp">
+      <Filter>Center</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalServer.cpp">
+      <Filter>Center</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelEntry.cpp">
+      <Filter>Center</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,12 +198,6 @@
     <ClInclude Include="..\Common\Memory\stdinc.h">
       <Filter>Common\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="LocalServer.h">
-      <Filter>Center</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerBase.h">
-      <Filter>Center</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\WvsBase.h">
       <Filter>Common\Net</Filter>
     </ClInclude>
@@ -209,6 +212,15 @@
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsCenter.h">
+      <Filter>Center</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalServer.h">
+      <Filter>Center</Filter>
+    </ClInclude>
+    <ClInclude Include="ChannelEntry.h">
+      <Filter>Center</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

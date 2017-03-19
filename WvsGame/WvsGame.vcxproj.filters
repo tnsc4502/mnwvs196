@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Common">
       <UniqueIdentifier>{f215a647-c07e-469b-9896-103b25901044}</UniqueIdentifier>
     </Filter>
@@ -31,17 +19,17 @@
     <Filter Include="Common\Wz">
       <UniqueIdentifier>{2d386cf0-40aa-488c-a8ce-d25f96a2dce9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{3d9e624d-27aa-4a5d-9ad7-e1acb5119fce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Net\PacketFlags">
+      <UniqueIdentifier>{1f4b136e-e19c-48d4-bbbe-43e7ff829ef1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\AES\WzAES.hpp">
       <Filter>Common\AES</Filter>
     </ClInclude>
@@ -90,18 +78,6 @@
     <ClInclude Include="..\Common\Memory\stdinc.h">
       <Filter>Common\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\asio.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\crypto.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\InPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\OutPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Wz\mapfile.hpp">
       <Filter>Common\Wz</Filter>
     </ClInclude>
@@ -126,20 +102,57 @@
     <ClInclude Include="..\Common\Wz\WzResMan.hpp">
       <Filter>Common\Wz</Filter>
     </ClInclude>
-    <ClInclude Include="WvsWorld.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="WvsGame.h">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="LocalServer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
+      <Filter>Common\Net</Filter>
     </ClInclude>
-    <ClInclude Include="LocalSocket.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Common\Net\asio.hpp">
+      <Filter>Common\Net</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Net\crypto.hpp">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\InPacket.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\OutPacket.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\SocketBase.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\WvsBase.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\WvsContextPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Center.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\WorldInfo.h">
+      <Filter>Common\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsGameConstants.h">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocket.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WvsGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\AES\aes_modes.c">
       <Filter>Common\AES</Filter>
     </ClCompile>
@@ -170,15 +183,6 @@
     <ClCompile Include="..\Common\Memory\Arena.cpp">
       <Filter>Common\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\crypto.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\InPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\OutPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Wz\mapfile.cpp">
       <Filter>Common\Wz</Filter>
     </ClCompile>
@@ -197,15 +201,38 @@
     <ClCompile Include="..\Common\Wz\WzResMan.cpp">
       <Filter>Common\Wz</Filter>
     </ClCompile>
-    <ClCompile Include="WvsWorld.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="WvsGame.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="LocalServer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
+      <Filter>Common\Net</Filter>
     </ClCompile>
-    <ClCompile Include="LocalSocket.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Common\Net\crypto.cpp">
+      <Filter>Common\Net</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Net\InPacket.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\OutPacket.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\SocketBase.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\WvsBase.cpp">
+      <Filter>Common\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Center.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSocket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc">

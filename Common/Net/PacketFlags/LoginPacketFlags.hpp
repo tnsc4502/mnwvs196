@@ -15,6 +15,9 @@ MAKE_LOGIN_PACKET_FLAG(RegisterCenterRequest, 1);
 
 //Flags for Client
 
+MAKE_LOGIN_PACKET_FLAG(CheckPasswordResponse, 0x00);
+MAKE_LOGIN_PACKET_FLAG(WorldInformationResponse, 0x01);
+MAKE_LOGIN_PACKET_FLAG(ChannelBackgroundResponse, 0x23);
 MAKE_LOGIN_PACKET_FLAG(LoginBackgroundResponse, 0x2A);
 MAKE_LOGIN_PACKET_FLAG(ClientStartResponse, 0x2F);
 

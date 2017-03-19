@@ -58,12 +58,16 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 		return;
 	}
 	printf("[Center::OnConnect]Connect To Center Server Successed!\n");
-	bIsConnected = true;
+	mWorldInfo.bIsConnected = true;
 	//Encode center handshake packet.
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
-	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
-	SendPacket(&oPacket); 
+	oPacket.Encode1(ServerConstants::ServerType::SVR_GAME);
+
+	/*	oPacket.Encode2(WvsGameConstants::nGamePort); //Port
+	oPacket.Encode4(1000); // Max Player Count;
+	oPacket.Encode2(0); // Total Player Count; */
+	SendPacket(&oPacket);
 
 	OnWaitingPacket();
 }
@@ -76,7 +80,6 @@ void Center::OnPacket(InPacket *iPacket)
 	switch (nType)
 	{
 	case CenterPacketFlag::RegisterCenterAck:
-	{
 		auto result = iPacket->Decode1();
 		if (!result)
 		{
@@ -84,11 +87,6 @@ void Center::OnPacket(InPacket *iPacket)
 			exit(0);
 		}
 		printf("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
-		break;
-	}
-	case CenterPacketFlag::CenterStatChanged:
-		mWorldInfo.nGameCount = iPacket->Decode2();
-		break;
 	}
 }
 

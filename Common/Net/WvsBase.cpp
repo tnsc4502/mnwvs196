@@ -1,6 +1,7 @@
 #include "WvsBase.h"
 
 std::map<unsigned int, SocketBase*> WvsBase::aSocketList;
+WvsBase* WvsBase::pInstance;
 
 WvsBase::WvsBase()
 {
@@ -36,5 +37,12 @@ void WvsBase::OnSocketConnected(SocketBase *pSocket)
 void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
 {
 	printf("[WvsBase::OnSocketDisconnected]Remove Socket From List, ID = %d\n", pSocket->GetSocketID());
+	pInstance->OnNotifySocketDisconnected(pSocket);
 	aSocketList.erase(pSocket->GetSocketID());
+}
+
+void WvsBase::OnNotifySocketDisconnected(SocketBase *pSocket)
+{
+	//WvsBase is an ADT, so won't become recursive call.
+	this->OnNotifySocketDisconnected(pSocket);
 }

@@ -1,17 +1,22 @@
 #pragma once
 #include "Net\SocketBase.h"
-#include "WvsLoginConstants.hpp"
+#include "WvsGameConstants.h"
 
 class Center :
 	public SocketBase
 {
 private:
+	struct CenterInfo
+	{
+		int nCenterID;
+		bool bIsConnected;
+	};
 
 	int nCenterIndex;
-	bool bIsConnected = false;
+
 	asio::ip::tcp::resolver mResolver;
 
-	WorldInfo mWorldInfo;
+	CenterInfo mWorldInfo;
 
 	void OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
 	void OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
@@ -26,14 +31,9 @@ public:
 	void OnPacket(InPacket *iPacket);
 	void OnClosed();
 
-	const WorldInfo& GetWorldInfo()
+	const CenterInfo& GetWorldInfo()
 	{
 		return mWorldInfo;
-	}
-
-	bool IsConnected() const
-	{
-		return bIsConnected;
 	}
 };
 

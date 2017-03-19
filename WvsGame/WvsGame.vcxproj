@@ -169,6 +169,15 @@
     <ClInclude Include="..\Common\Net\crypto.hpp" />
     <ClInclude Include="..\Common\Net\InPacket.h" />
     <ClInclude Include="..\Common\Net\OutPacket.h" />
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\WvsContextPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\SocketBase.h" />
+    <ClInclude Include="..\Common\Net\WorldInfo.h" />
+    <ClInclude Include="..\Common\Net\WvsBase.h" />
     <ClInclude Include="..\Common\Wz\mapfile.hpp" />
     <ClInclude Include="..\Common\Wz\sprite.hpp" />
     <ClInclude Include="..\Common\Wz\spritedata.hpp" />
@@ -177,11 +186,10 @@
     <ClInclude Include="..\Common\Wz\wzimg.hpp" />
     <ClInclude Include="..\Common\Wz\wzmain.hpp" />
     <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
-    <ClInclude Include="LocalServer.h" />
-    <ClInclude Include="LocalSocket.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="WvsWorld.h" />
+    <ClInclude Include="Center.h" />
+    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="WvsGame.h" />
+    <ClInclude Include="WvsGameConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aescrypt.c" />
@@ -197,16 +205,21 @@
     <ClCompile Include="..\Common\Net\crypto.cpp" />
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\SocketBase.cpp" />
+    <ClCompile Include="..\Common\Net\WvsBase.cpp" />
     <ClCompile Include="..\Common\Wz\mapfile.cpp" />
     <ClCompile Include="..\Common\Wz\wzcrypto.cpp" />
     <ClCompile Include="..\Common\Wz\wzimg.cpp" />
     <ClCompile Include="..\Common\Wz\wzmain.cpp" />
     <ClCompile Include="..\Common\Wz\wznode.cpp" />
     <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
-    <ClCompile Include="LocalServer.cpp" />
-    <ClCompile Include="LocalSocket.cpp" />
+    <ClCompile Include="Center.cpp" />
+    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsGame.cpp" />
-    <ClCompile Include="WvsWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc" />

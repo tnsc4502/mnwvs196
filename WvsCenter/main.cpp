@@ -5,30 +5,29 @@
 #include <iostream>
 #include <thread>
 #include "LocalServer.h"
-#include "ServerBase.h"
+#include "WvsCenter.h"
 
 #include "Wz\WzResMan.hpp"
 #include "Net\InPacket.h"
 
-
-void ConnectionAcceptorThread()
+void ConnectionAcceptorThread(short nPort)
 {
-	LocalServer *localServer = WvsBase::GetInstance<LocalServer>();
-	localServer->CreateAcceptor(8384);
-	localServer->BeginAccept<ServerBase>();
+	WvsCenter *centerServer = WvsBase::GetInstance<WvsCenter>();
+	centerServer->CreateAcceptor(nPort);
+	centerServer->BeginAccept<LocalServer>();
 }
 
-int main()
+int main(int argc, char **argv)
 {
-	WvsBase::GetInstance<LocalServer>()->Init();
+	WvsBase::GetInstance<WvsCenter>()->Init();
 
 	// start the connection acceptor thread
 
-	std::thread thread1(ConnectionAcceptorThread);
+	std::thread thread1(ConnectionAcceptorThread, (argc > 1 ? atoi(argv[1]) : 8383));
 
 	// start the i/o work
 
-	asio::io_service &io = WvsBase::GetInstance<LocalServer>()->GetIOService();
+	asio::io_service &io = WvsBase::GetInstance<WvsCenter>()->GetIOService();
 	asio::io_service::work work(io);
 
 	for (;;)
