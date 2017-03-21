@@ -34,6 +34,9 @@ void LoginSocket::OnPacket(InPacket *iPacket)
 	case ClientPacketFlag::CheckPasswordRequest:
 		OnCheckPasswordRequst(iPacket);
 		break;
+	case ClientPacketFlag::ClientSelectWorld:
+		OnClientSelectWorld(iPacket);
+		break;
 	}
 }
 
@@ -119,19 +122,18 @@ void LoginSocket::SendWorldInformation()
 		auto& pCenter = WvsBase::GetInstance<WvsLogin>()->GetCenter(i);
 		if (pCenter->IsConnected())
 		{
-			printf("World\n");
 			OutPacket oPacket;
 			oPacket.Encode2(LoginPacketFlag::WorldInformationResponse);
 			oPacket.Encode1(pCenter->GetWorldInfo().nWorldID);
-			oPacket.EncodeStr("Test");
-			oPacket.Encode1(1);
-			oPacket.EncodeStr("Test!");
+			oPacket.EncodeStr(pCenter->GetWorldInfo().strWorldDesc);
+			oPacket.Encode1(pCenter->GetWorldInfo().nEventType);
+			oPacket.EncodeStr(pCenter->GetWorldInfo().strEventDesc);
 			oPacket.Encode2(0x64);
 			oPacket.Encode2(0x64);
 			oPacket.Encode1(pCenter->GetWorldInfo().nGameCount);
 			for (int i = 1; i <= pCenter->GetWorldInfo().nGameCount; ++i)
 			{
-				oPacket.EncodeStr("C" + std::to_string(i));
+				oPacket.EncodeStr("Channel " + std::to_string(i));
 				oPacket.Encode4(1);
 				oPacket.Encode1(pCenter->GetWorldInfo().nWorldID);
 				oPacket.Encode2(i - 1);
@@ -146,4 +148,24 @@ void LoginSocket::SendWorldInformation()
 	oPacket.Encode2(LoginPacketFlag::WorldInformationResponse);
 	oPacket.Encode4(0xFF);
 	SendPacket(&oPacket);
+}
+
+void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
+{
+	bool isRelogin = iPacket->Decode1();
+	int worldIndex = iPacket->Decode1();
+	int channelIndex = iPacket->Decode1();
+	if (WvsBase::GetInstance<WvsLogin>()->GetCenter(worldIndex)->IsConnected())
+	{
+		OutPacket oPacket;
+		oPacket.Encode2(LoginPacketFlag::RequestCharacterList);
+		oPacket.Encode4(GetSocketID());
+		oPacket.Encode4(mLoginData.nAccountID);
+		oPacket.Encode1(channelIndex);
+		WvsBase::GetInstance<WvsLogin>()->GetCenter(worldIndex)->SendPacket(&oPacket);
+		nChannelID = channelIndex;
+		nWorldID = worldIndex;
+	}
+	else
+		printf("[LoginSocket::OnClientSelectWorld][Warning]Client is trying to connect to an unknown world server.\n");
 }

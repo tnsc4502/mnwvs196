@@ -4,6 +4,7 @@
 #include "Net\OutPacket.h"
 
 #include "Constants\ServerConstants.hpp"
+#include "Constants\ConfigLoader.hpp"
 
 WvsCenter::WvsCenter()
 {
@@ -18,11 +19,11 @@ void WvsCenter::OnNotifySocketDisconnected(SocketBase *pSocket)
 	printf("On Notify Socket Disconnected\n");
 	if (pSocket->GetServerType() == ServerConstants::SVR_GAME)
 	{
-		for (int i = 0; i < 30; ++i)
+		for (int i = 0; i < nConnectedChannel - 1; ++i)
 		{
-			if (aChannel[i].GetGameServer().get())
+			if (aChannel[i].GetGameServer().get() == pSocket)
 			{
-				for (int j = i + 1; j < 30; ++j)
+				for (int j = i + 1; j < nConnectedChannel; ++j)
 					aChannel[j - 1] = aChannel[j];
 				--i;
 			}
@@ -32,14 +33,22 @@ void WvsCenter::OnNotifySocketDisconnected(SocketBase *pSocket)
 	}
 }
 
+void WvsCenter::Init()
+{
+	mWorldInfo.nEventType = ConfigLoader::GetInstance()->IntValue("EventType");
+	mWorldInfo.nWorldID = ConfigLoader::GetInstance()->IntValue("WorldID");
+	mWorldInfo.strEventDesc = ConfigLoader::GetInstance()->StrValue("EventDesc");
+	mWorldInfo.strWorldDesc = ConfigLoader::GetInstance()->StrValue("WorldDesc");
+}
+
 void WvsCenter::NotifyWorldChanged()
 {
 	auto& socketList = WvsBase::GetInstance<WvsCenter>()->GetSocketList();
 	for (const auto& socket : socketList)
 	{
-		printf("Server Type = %d\n", socket.second->GetServerType());
 		if (socket.second->GetServerType() != ServerConstants::SVR_GAME)
 		{
+			printf("On Notify World Changed\n");
 			OutPacket oPacket;
 			oPacket.Encode2(CenterPacketFlag::CenterStatChanged);
 			oPacket.Encode2(WvsBase::GetInstance<WvsCenter>()->GetChannelCount());

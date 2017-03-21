@@ -11,6 +11,8 @@
 #include "ClientSocket.h"
 #include "WvsGame.h"
 
+#include "Constants\ConfigLoader.hpp"
+
 void ConnectionAcceptorThread(short nPort)
 {
 	WvsGame *gameServer = WvsBase::GetInstance<WvsGame>();
@@ -22,14 +24,22 @@ int main(int argc, char **argv)
 {
 	WvsBase::GetInstance<WvsGame>()->Init();
 
+	if (argc > 1)
+		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
+	else
+	{
+		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
+		return -1;
+	}
+
 	// start the connection acceptor thread
 
-	std::thread thread1(ConnectionAcceptorThread, (argc > 1 ? atoi(argv[1]) : 7575));
+	std::thread thread1(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));
 
-	WvsGameConstants::nGamePort = (argc > 1 ? atoi(argv[1]) : 7575);
-	WvsGameConstants::strGameDesc = "Channel : " + std::to_string((argc > 1 ? atoi(argv[1]) : 7575) - 7575);
+	//WvsGameConstants::nGamePort = (argc > 1 ? atoi(argv[1]) : 7575);
+	//WvsGameConstants::strGameDesc = "Channel : " + std::to_string((argc > 1 ? atoi(argv[1]) : 7575) - 7575);
 
-	WvsGameConstants::CenterServerList[0].nServerPort = (argc > 2 ? atoi(argv[2]) : 8484);
+	WvsGameConstants::CenterServerList[0].nServerPort = ConfigLoader::GetInstance()->IntValue("Center0_Port");
 
 	WvsBase::GetInstance<WvsGame>()->InitializeCenter();
 	// start the i/o work

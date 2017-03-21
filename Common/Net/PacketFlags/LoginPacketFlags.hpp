@@ -11,12 +11,14 @@ MAKE_FLAG_COLLECTION_BODY(LoginPacketFlag)
 
 //Flags for Center
 MAKE_LOGIN_PACKET_FLAG(RegisterCenterRequest, 1);
+MAKE_LOGIN_PACKET_FLAG(RequestCharacterList, 2);
 
 
 //Flags for Client
 
 MAKE_LOGIN_PACKET_FLAG(CheckPasswordResponse, 0x00);
 MAKE_LOGIN_PACKET_FLAG(WorldInformationResponse, 0x01);
+MAKE_LOGIN_PACKET_FLAG(ClientSelectWorldResult, 0x06);
 MAKE_LOGIN_PACKET_FLAG(ChannelBackgroundResponse, 0x23);
 MAKE_LOGIN_PACKET_FLAG(LoginBackgroundResponse, 0x2A);
 MAKE_LOGIN_PACKET_FLAG(ClientStartResponse, 0x2F);

@@ -35,5 +35,6 @@ public:
 	{
 		return mWorldInfo;
 	}
+
 };
 

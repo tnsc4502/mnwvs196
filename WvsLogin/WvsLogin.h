@@ -8,7 +8,7 @@
 class WvsLogin : public WvsBase
 {
 private:
-	void ConnectToCenter(int nCenterIdx, WorldConnectionInfo& cInfo);
+	void ConnectToCenter(int nCenterIdx);
 
 	std::shared_ptr<Center> aCenterList[WvsLoginConstants::kMaxNumberOfCenters];
 	asio::io_service* aCenterServerService[WvsLoginConstants::kMaxNumberOfCenters];
@@ -25,5 +25,7 @@ public:
 	}
 
 	void InitializeCenter();
+
+	void OnNotifySocketDisconnected(SocketBase *pSocket);
 };
 

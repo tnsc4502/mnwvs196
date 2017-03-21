@@ -101,7 +101,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\boost</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,7 +135,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,6 +186,7 @@
     <ClInclude Include="..\Common\AES\brg_endian.h" />
     <ClInclude Include="..\Common\AES\brg_types.h" />
     <ClInclude Include="..\Common\AES\WzAES.hpp" />
+    <ClInclude Include="..\Common\Constants\ConfigLoader.hpp" />
     <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
     <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
     <ClInclude Include="..\Common\Memory\Arena.h" />

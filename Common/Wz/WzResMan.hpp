@@ -74,8 +74,9 @@ public:
 
 	static WzResMan* GetInstance()
 	{
-		//static WzResMan *sWzResMan = new WzResMan();
-		return nullptr;
+		static WzResMan *sWzResMan = new WzResMan();
+		return sWzResMan;
+		//return nullptr;
 	}
 
 	WZ::Node& GetWz(Wz wzTag)

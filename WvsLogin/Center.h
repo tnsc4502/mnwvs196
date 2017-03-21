@@ -35,5 +35,8 @@ public:
 	{
 		return bIsConnected;
 	}
+
+	void OnUpdateWorldInfo(InPacket *iPacket);
+	void OnCharacterListResponse(InPacket *iPacket);
 };
 

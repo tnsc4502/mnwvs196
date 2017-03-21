@@ -33,6 +33,13 @@ public:
 		return nConnectedChannel;
 	}
 
+	const WorldInfo& GetWorldInfo() const
+	{
+		return mWorldInfo;
+	}
+
+	void Init();
+
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 	void NotifyWorldChanged();
 };

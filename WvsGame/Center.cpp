@@ -10,6 +10,8 @@
 
 #include "Constants\ServerConstants.hpp"
 
+#include "WvsGame.h"
+
 Center::Center(asio::io_service& serverService)
 	: SocketBase(serverService, true),
 	  mResolver(serverService)
@@ -63,10 +65,10 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
 	oPacket.Encode1(ServerConstants::ServerType::SVR_GAME);
-
-	/*	oPacket.Encode2(WvsGameConstants::nGamePort); //Port
-	oPacket.Encode4(1000); // Max Player Count;
-	oPacket.Encode2(0); // Total Player Count; */
+	InPacket iPacket(oPacket.GetPacket(), oPacket.GetPacketSize());
+	printf("[WvsGame::Center::]Ready to send handshake info ");
+	iPacket.Print();
+	printf("\n");
 	SendPacket(&oPacket);
 
 	OnWaitingPacket();
@@ -87,6 +89,7 @@ void Center::OnPacket(InPacket *iPacket)
 			exit(0);
 		}
 		printf("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
+		break;
 	}
 }
 

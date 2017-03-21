@@ -10,6 +10,8 @@
 
 #include "Constants\ServerConstants.hpp"
 
+#include "WvsLogin.h"
+
 Center::Center(asio::io_service& serverService)
 	: SocketBase(serverService, true),
 	  mResolver(serverService)
@@ -84,10 +86,14 @@ void Center::OnPacket(InPacket *iPacket)
 			exit(0);
 		}
 		printf("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
+		OnUpdateWorldInfo(iPacket);
 		break;
 	}
 	case CenterPacketFlag::CenterStatChanged:
 		mWorldInfo.nGameCount = iPacket->Decode2();
+		break;
+	case CenterPacketFlag::CharacterListResponse:
+		OnCharacterListResponse(iPacket);
 		break;
 	}
 }
@@ -95,4 +101,49 @@ void Center::OnPacket(InPacket *iPacket)
 void Center::OnClosed()
 {
 
+}
+
+void Center::OnUpdateWorldInfo(InPacket *iPacket)
+{
+	mWorldInfo.nWorldID = iPacket->Decode1();
+	mWorldInfo.nEventType = iPacket->Decode1();
+	mWorldInfo.strWorldDesc = iPacket->DecodeStr();
+	mWorldInfo.strEventDesc = iPacket->DecodeStr();
+	printf("[Center::OnUpdateWorld]Update World Info Successed.\n");
+}
+
+void Center::OnCharacterListResponse(InPacket *iPacket)
+{
+	int nLoginSocketID = iPacket->Decode4();
+	auto pSocket = WvsBase::GetInstance<WvsLogin>()->GetSocketList()[nLoginSocketID];
+	OutPacket oPacket;
+	oPacket.Encode2(LoginPacketFlag::ClientSelectWorldResult);
+	oPacket.Encode1(0);
+	oPacket.EncodeStr("normal");
+	oPacket.Encode4(0);
+	oPacket.Encode1(0);
+	oPacket.Encode4(0);
+	oPacket.Encode8(0);
+	oPacket.Encode1(0);
+
+	oPacket.Encode4(0); //char size
+
+	oPacket.Encode1(0); //char size
+
+	oPacket.Encode1(0x03);
+	oPacket.Encode1(0);
+	oPacket.Encode4(8); //char slots
+
+	oPacket.Encode4(0);
+	oPacket.Encode4(-1);
+	oPacket.Encode1(0);
+	oPacket.Encode8(-1);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode4(0);
+	for (int i = 0; i < 25; ++i)
+		oPacket.Encode2(0);
+	oPacket.Encode4(0);
+	oPacket.Encode8(0);
+	pSocket->SendPacket(&oPacket);
 }

@@ -222,6 +222,9 @@
     <ClInclude Include="ChannelEntry.h">
       <Filter>Center</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Constants\ConfigLoader.hpp">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc">

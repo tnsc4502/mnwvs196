@@ -10,20 +10,31 @@
 #include "LoginSocket.h"
 #include "WvsLoginConstants.hpp"
 
-void ConnectionAcceptorThread()
+#include "Constants\ConfigLoader.hpp"
+
+void ConnectionAcceptorThread(short nPort)
 {
 	WvsLogin *loginServer = WvsBase::GetInstance<WvsLogin>();
-	loginServer->CreateAcceptor(8484);
+	loginServer->CreateAcceptor(nPort);
 	loginServer->BeginAccept<LoginSocket>();
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	WvsLogin *loginServer = WvsBase::GetInstance<WvsLogin>();
 
+	if (argc > 1)
+		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
+	else
+	{
+		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
+		return -1;
+	}
+
 	loginServer->Init();
 	loginServer->InitializeCenter();
-	std::thread initLoginServerThread(ConnectionAcceptorThread);
+
+	std::thread initLoginServerThread(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));
 
 	// start the i/o work
 

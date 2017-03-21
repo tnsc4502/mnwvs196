@@ -7,8 +7,11 @@
 #include "LocalServer.h"
 #include "WvsCenter.h"
 
-#include "Wz\WzResMan.hpp"
 #include "Net\InPacket.h"
+
+#include "Constants\ConfigLoader.hpp"
+
+#include ""
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -19,11 +22,19 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
+	auto pConfigLoader = ConfigLoader::GetInstance();
+	if (argc > 1)
+		pConfigLoader->LoadConfig(argv[1]);
+	else
+	{
+		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
+		return -1;
+	}
 	WvsBase::GetInstance<WvsCenter>()->Init();
 
 	// start the connection acceptor thread
 
-	std::thread thread1(ConnectionAcceptorThread, (argc > 1 ? atoi(argv[1]) : 8383));
+	std::thread thread1(ConnectionAcceptorThread, (pConfigLoader->IntValue("port")));
 
 	// start the i/o work
 

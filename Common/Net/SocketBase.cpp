@@ -111,7 +111,7 @@ void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transfer
 	if (!ec)
 	{
 		unsigned short nPacketLen = crypto::get_packet_length(aRecivedPacket.get());
-
+		printf("[SocketBase::OnReceive] Packet Size = %d\n", nPacketLen);
 		if (nPacketLen < 2)
 		{
 			OnDisconnect();

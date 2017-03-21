@@ -54,6 +54,17 @@ public:
 	void BeginAccept()
 	{
 		std::shared_ptr<SOCKET_TYPE> session(new SOCKET_TYPE(GetIOService()));
+		/*while (1)
+		{
+			std::shared_ptr<SOCKET_TYPE> session(new SOCKET_TYPE(GetIOService()));
+			std::error_code ec;
+			mAcceptor->accept(session->GetSocket(), ec);
+			if (!ec)
+			{
+				session->SetDisconnectedNotifyFunc(OnSocketDisconnected);
+				session->Init();
+			}
+		}*/
 		mAcceptor->async_accept(session->GetSocket(), std::bind(&WvsBase::OnAccepted<SOCKET_TYPE>, this, session, std::placeholders::_1));
 	}
 

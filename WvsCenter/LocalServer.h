@@ -15,6 +15,6 @@ public:
 
 
 	void OnRegisterCenterRequest(InPacket *iPacket);
-	void NotifyCenterServerChanged();
+	void OnRequestCharacterList(InPacket *iPacket);
 };
 

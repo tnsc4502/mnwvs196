@@ -32,6 +32,9 @@ void LocalServer::OnPacket(InPacket *iPacket)
 	case LoginPacketFlag::RegisterCenterRequest:
 		OnRegisterCenterRequest(iPacket);
 		break;
+	case LoginPacketFlag::RequestCharacterList:
+		OnRequestCharacterList(iPacket);
+		break;
 	}
 }
 
@@ -50,5 +53,30 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 	OutPacket oPacket;
 	oPacket.Encode2(CenterPacketFlag::RegisterCenterAck);
 	oPacket.Encode1(1); //Success;
+	if (serverType == ServerConstants::SVR_LOGIN)
+	{
+		auto pWorld = WvsBase::GetInstance<WvsCenter>();
+		oPacket.Encode1(pWorld->GetWorldInfo().nWorldID);
+		oPacket.Encode1(pWorld->GetWorldInfo().nEventType);
+		oPacket.EncodeStr(pWorld->GetWorldInfo().strWorldDesc);
+		oPacket.EncodeStr(pWorld->GetWorldInfo().strEventDesc);
+		printf("[LocalServer::OnRegisterCenterRequest]Encoding World Information.\n");
+	}
+	SendPacket(&oPacket);
+}
+
+void LocalServer::OnRequestCharacterList(InPacket *iPacket)
+{
+	int nLoginSocketID = iPacket->Decode4();
+	int nAccountID = iPacket->Decode4();
+	//CharacterDBAccessor::GetCharacterList(nAccountID, WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID);
+
+	OutPacket oPacket;
+	oPacket.Encode2(CenterPacketFlag::CharacterListResponse);
+	oPacket.Encode4(nLoginSocketID);
+	oPacket.Encode4(0); //size of chars
+
+	oPacket.Encode1(0); //size of chars
+	
 	SendPacket(&oPacket);
 }
