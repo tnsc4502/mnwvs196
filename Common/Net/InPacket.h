@@ -18,5 +18,8 @@ public:
 	std::string DecodeStr();
 	void DecodeBuffer(unsigned char* dst, int size);
 
+	unsigned char* GetBuffer() const;
+	unsigned short GetBufferSize() const;
+
 	void Print();
 };

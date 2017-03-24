@@ -97,3 +97,13 @@ void InPacket::Print()
 		printf("0x%02X ", (int)aBuff[i]);
 	std::cout << std::endl;
 }
+
+unsigned char* InPacket::GetBuffer() const
+{
+	return aBuff;
+}
+
+unsigned short InPacket::GetBufferSize() const
+{
+	return nPacketSize;
+}

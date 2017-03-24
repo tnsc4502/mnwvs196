@@ -9,6 +9,7 @@ MAKE_FLAG_COLLECTION_BODY(CenterPacketFlag)
 MAKE_CENTER_PACKET_FLAG(RegisterCenterAck, 1);
 MAKE_CENTER_PACKET_FLAG(CenterStatChanged, 2);
 MAKE_CENTER_PACKET_FLAG(CharacterListResponse, 3);
+MAKE_CENTER_PACKET_FLAG(GameServerInfoResponse, 4);
 
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END

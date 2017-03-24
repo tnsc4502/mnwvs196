@@ -95,6 +95,10 @@ void Center::OnPacket(InPacket *iPacket)
 	case CenterPacketFlag::CharacterListResponse:
 		OnCharacterListResponse(iPacket);
 		break;
+	case CenterPacketFlag::GameServerInfoResponse:
+		OnGameServerInfoResponse(iPacket);
+
+		break;
 	}
 }
 
@@ -126,9 +130,26 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	oPacket.Encode8(0);
 	oPacket.Encode1(0);
 
-	oPacket.Encode4(0); //char size
+	printf("Receiving Char list packet : ");
+	iPacket->Print();
+	printf("\n");
 
-	oPacket.Encode1(0); //char size
+	oPacket.EncodeBuffer(iPacket->GetBuffer() + 6, iPacket->GetBufferSize() - 6);
+
+	/*int chrSize = iPacket->Decode4();
+	oPacket.Encode4(chrSize); //char size
+	for (int i = 0; i < chrSize; ++i)
+		oPacket.Encode4(iPacket->Decode4());
+
+	chrSize = iPacket->Decode1();
+	oPacket.Encode1(chrSize); //char size
+	for (int i = 0; i < chrSize; ++i)
+	{
+		OnEncodingCharacterStat(&oPacket, iPacket);
+		OnEncodingCharacterAvatar(&oPacket, iPacket);
+		oPacket.Encode1(iPacket->Decode1());
+		OnEncodingRank(&oPacket, iPacket);
+	}*/
 
 	oPacket.Encode1(0x03);
 	oPacket.Encode1(0);
@@ -145,5 +166,15 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 		oPacket.Encode2(0);
 	oPacket.Encode4(0);
 	oPacket.Encode8(0);
+	pSocket->SendPacket(&oPacket);
+}
+
+void Center::OnGameServerInfoResponse(InPacket *iPacket)
+{
+	int nLoginSocketID = iPacket->Decode4();
+	auto pSocket = WvsBase::GetInstance<WvsLogin>()->GetSocketList()[nLoginSocketID]; 
+	OutPacket oPacket;
+	oPacket.Encode2(LoginPacketFlag::ClientSelectCharacterResult);
+	oPacket.EncodeBuffer(iPacket->GetBuffer() + 6, iPacket->GetBufferSize() - 6);
 	pSocket->SendPacket(&oPacket);
 }

@@ -12,6 +12,8 @@ MAKE_FLAG_COLLECTION_BODY(LoginPacketFlag)
 //Flags for Center
 MAKE_LOGIN_PACKET_FLAG(RegisterCenterRequest, 1);
 MAKE_LOGIN_PACKET_FLAG(RequestCharacterList, 2);
+MAKE_LOGIN_PACKET_FLAG(RequestCreateNewCharacter, 3);
+MAKE_LOGIN_PACKET_FLAG(RequestGameServerInfo, 4);
 
 
 //Flags for Client
@@ -19,8 +21,11 @@ MAKE_LOGIN_PACKET_FLAG(RequestCharacterList, 2);
 MAKE_LOGIN_PACKET_FLAG(CheckPasswordResponse, 0x00);
 MAKE_LOGIN_PACKET_FLAG(WorldInformationResponse, 0x01);
 MAKE_LOGIN_PACKET_FLAG(ClientSelectWorldResult, 0x06);
-MAKE_LOGIN_PACKET_FLAG(ChannelBackgroundResponse, 0x23);
-MAKE_LOGIN_PACKET_FLAG(LoginBackgroundResponse, 0x2A);
+MAKE_LOGIN_PACKET_FLAG(ClientSelectCharacterResult, 0x07);
+MAKE_LOGIN_PACKET_FLAG(ClientCheckDuplicatedIDResult, 0x0A);
+MAKE_LOGIN_PACKET_FLAG(ClientSecondPasswordResult, 0x1B);
+MAKE_LOGIN_PACKET_FLAG(ClientChannelBackgroundResponse, 0x23);
+MAKE_LOGIN_PACKET_FLAG(ClientLoginBackgroundResponse, 0x2A);
 MAKE_LOGIN_PACKET_FLAG(ClientStartResponse, 0x2F);
 
 //µ²§ôOpcode Flagµù¥U

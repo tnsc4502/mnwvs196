@@ -1,5 +1,6 @@
 #include "OutPacket.h"
 #include "..\Memory\MemoryPoolMan.hpp"
+#include "InPacket.h"
 
 OutPacket::OutPacket()
 	: aBuff((unsigned char*)stMemoryPoolMan->AllocateArray(DEFAULT_BUFF_SIZE)),
@@ -102,4 +103,13 @@ void OutPacket::EncodeStr(const std::string &str)
 	}
 	memcpy(aBuff + nPacketSize, str.c_str(), str.size());
 	nPacketSize += (unsigned int)str.size();
+}
+
+void OutPacket::Release()
+{
+	stMemoryPoolMan->DestructArray(aBuff);
+}
+
+void OutPacket::CopyFromTransferedPacket(InPacket *oPacket)
+{
 }

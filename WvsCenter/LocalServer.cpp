@@ -8,6 +8,8 @@
 #include "Constants\ServerConstants.hpp"
 #include "WvsCenter.h"
 
+#include "..\Database\CharacterDBAccessor.h"
+
 LocalServer::LocalServer(asio::io_service& serverService)
 	: SocketBase(serverService, true)
 {
@@ -34,6 +36,12 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		break;
 	case LoginPacketFlag::RequestCharacterList:
 		OnRequestCharacterList(iPacket);
+		break;
+	case LoginPacketFlag::RequestCreateNewCharacter:
+		OnRequestCreateNewCharacter(iPacket);
+		break;
+	case LoginPacketFlag::RequestGameServerInfo:
+		OnRequestGameServerInfo(iPacket);
 		break;
 	}
 }
@@ -69,14 +77,81 @@ void LocalServer::OnRequestCharacterList(InPacket *iPacket)
 {
 	int nLoginSocketID = iPacket->Decode4();
 	int nAccountID = iPacket->Decode4();
-	//CharacterDBAccessor::GetCharacterList(nAccountID, WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID);
+	CharacterDBAccessor::GetInstance()->PostLoadCharacterListRequest(this, nLoginSocketID, nAccountID, WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID);
+}
 
-	OutPacket oPacket;
-	oPacket.Encode2(CenterPacketFlag::CharacterListResponse);
-	oPacket.Encode4(nLoginSocketID);
-	oPacket.Encode4(0); //size of chars
+void LocalServer::OnRequestCreateNewCharacter(InPacket *iPacket)
+{
+	int nLoginSocketID = iPacket->Decode4();
+	int nAccountID = iPacket->Decode4();
 
-	oPacket.Encode1(0); //size of chars
+	std::string strName = iPacket->DecodeStr();
+	iPacket->Decode4();
+	iPacket->Decode4();
+
+	int nJobType = iPacket->Decode4();
+	int nSubJob = iPacket->Decode2();
+	unsigned char nGender = iPacket->Decode1();
+	unsigned char nSkin = iPacket->Decode1();
+	iPacket->Decode1();
+	int nFace = iPacket->Decode4();
+	int nHair = iPacket->Decode4();
+
+	int nTopID = iPacket->Decode4();
+	int nShoesID = iPacket->Decode4();
+	int nWeaponID = iPacket->Decode4();
+
+	int aEquips[CharacterDBAccessor::EQP_ID_FLAG_END];
+	int aStats[CharacterDBAccessor::STAT_FLAG_END];
+
+	CharacterDBAccessor::GetDefaultCharacterStat(aStats);
+
+	aEquips[CharacterDBAccessor::EQP_ID_TopEquip] = nTopID;
+	aEquips[CharacterDBAccessor::EQP_ID_ShoesEquip] = nShoesID;
+	aEquips[CharacterDBAccessor::EQP_ID_WeaponEquip] = nWeaponID;
+
+	CharacterDBAccessor::GetInstance()->PostCreateNewCharacterRequest(
+		this, 
+		nLoginSocketID, 
+		nAccountID, 
+		WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID, 
+		strName, 
+		nGender, 
+		nFace, 
+		nHair, 
+		nSkin, 
+		(const int*)aEquips, 
+		(const int*)aStats);
+}
+
+void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
+{
+	int nLoginSocketID = iPacket->Decode4();
+	int nWorldID = iPacket->Decode4();
+	if (nWorldID != WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID)
+	{
+		printf("[LocalServer::OnRequstGameServerInfo]Error! Client trying to connect to an unknown world.\n");
+		return;
+	}
+	int nChannelID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
 	
+	OutPacket oPacket;
+	oPacket.Encode2(CenterPacketFlag::GameServerInfoResponse);
+	oPacket.Encode4(nLoginSocketID);
+	oPacket.Encode2(0);
+	oPacket.Encode1(127);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(1);
+	oPacket.Encode2(7576);
+	oPacket.Encode4(0);
+	oPacket.Encode2(0);
+	oPacket.Encode4(0);
+	oPacket.Encode2(0);
+	oPacket.Encode4(nCharacterID);
+	oPacket.Encode1(0);
+	oPacket.Encode4(0);
+
 	SendPacket(&oPacket);
 }

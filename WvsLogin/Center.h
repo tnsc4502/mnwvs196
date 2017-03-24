@@ -38,5 +38,6 @@ public:
 
 	void OnUpdateWorldInfo(InPacket *iPacket);
 	void OnCharacterListResponse(InPacket *iPacket);
+	void OnGameServerInfoResponse(InPacket *iPacket);
 };
 

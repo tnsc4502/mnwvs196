@@ -10,8 +10,11 @@
 #include "Net\InPacket.h"
 
 #include "Constants\ConfigLoader.hpp"
+#include "..\Database\WvsUnified.h"
 
-#include ""
+#include "..\Database\GA_Character.hpp"
+#include "..\Database\GW_CharacterList.hpp"
+#include "..\Database\GW_ItemSlotEquip.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -22,6 +25,18 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
+	/*WvsUnified unifiedDB;
+	unifiedDB.LoadAvatar(1);
+
+
+	GW_CharacterList list;
+	list.Load(0, 0);
+
+	GA_Character ga;
+	ga.Load(1);*/
+	//std::cout << "Size of EQP = " << ga.aEquipItem.size() << std::endl;
+	//system("pause");
+
 	auto pConfigLoader = ConfigLoader::GetInstance();
 	if (argc > 1)
 		pConfigLoader->LoadConfig(argv[1]);

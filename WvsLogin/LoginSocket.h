@@ -27,5 +27,9 @@ public:
 	void SendChannelBackground();
 	void SendWorldInformation();
 	void OnClientSelectWorld(InPacket *iPacket);
+	void OnClientSecondPasswdCheck();
+	void OnClientCheckDuplicatedID(InPacket *iPacket);
+	void OnClientCreateNewCharacter(InPacket *iPacket);
+	void OnClientSelectCharacter(InPacket *iPacket);
 };
 

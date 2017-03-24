@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+class InPacket;
+
 class OutPacket
 {
 private:
@@ -24,12 +26,14 @@ public:
 		return aBuff + 4;
 	}
 
+	void CopyFromTransferedPacket(InPacket *oPacket);
 	void Encode1(char value);
 	void Encode2(short value);
 	void Encode4(int value);
 	void Encode8(long long int value);
 	void EncodeBuffer(unsigned char *buff, int size);
 	void EncodeStr(const std::string &str);
-
+	//void EncodeT(long long int value);
+	void Release();
 };
 

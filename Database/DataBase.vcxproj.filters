@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WvsUnified.h" />
+    <ClInclude Include="CharacterDBAccessor.h" />
+    <ClInclude Include="DBConstants.h" />
+    <ClInclude Include="GW_CharacterList.hpp" />
+    <ClInclude Include="GW_Avatar.hpp" />
+    <ClInclude Include="GA_Character.hpp" />
+    <ClInclude Include="GW_ItemSlotBase.h" />
+    <ClInclude Include="GW_ItemSlotEquip.h" />
+    <ClInclude Include="GW_ItemSlotBundle.h" />
+    <ClInclude Include="GW_CharacterStat.h" />
+    <ClInclude Include="GW_CharacterLevel.h" />
+    <ClInclude Include="GW_CharacterMoney.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CharacterDBAccessor.cpp" />
+    <ClCompile Include="WvsUnified.cpp" />
+    <ClCompile Include="GA_Character.cpp" />
+    <ClCompile Include="GW_Avatar.cpp" />
+    <ClCompile Include="GW_CharacterList.cpp" />
+    <ClCompile Include="GW_ItemSlotBase.cpp" />
+    <ClCompile Include="GW_ItemSlotEquip.cpp" />
+    <ClCompile Include="GW_ItemSlotBundle.cpp" />
+    <ClCompile Include="GW_CharacterStat.cpp" />
+    <ClCompile Include="GW_CharacterLevel.cpp" />
+    <ClCompile Include="GW_CharacterMoney.cpp" />
+  </ItemGroup>
+</Project>
