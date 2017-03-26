@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Debug;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,6 +165,7 @@
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="..\Common\Net\InPacket.h" />
     <ClInclude Include="..\Common\Net\OutPacket.h" />
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />

@@ -98,12 +98,17 @@ void InPacket::Print()
 	std::cout << std::endl;
 }
 
-unsigned char* InPacket::GetBuffer() const
+unsigned char* InPacket::GetPacket() const
 {
 	return aBuff;
 }
 
-unsigned short InPacket::GetBufferSize() const
+unsigned short InPacket::GetPacketSize() const
 {
 	return nPacketSize;
+}
+
+void InPacket::RestorePacket()
+{
+	nReadPos = 0;
 }

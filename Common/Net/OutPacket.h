@@ -33,7 +33,8 @@ public:
 	void Encode8(long long int value);
 	void EncodeBuffer(unsigned char *buff, int size);
 	void EncodeStr(const std::string &str);
-	//void EncodeT(long long int value);
+	void EncodeHexString(const std::string& str);
+	void EncodeTime(int64_t timeValue);
 	void Release();
 };
 

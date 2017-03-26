@@ -80,9 +80,9 @@ void OutPacket::EncodeBuffer(unsigned char *buff, int size)
 {
 	if (nPacketSize + size >= nBuffSize)
 	{
-		decltype(aBuff) newBuff = (decltype(aBuff))stMemoryPoolMan->AllocateArray(nBuffSize * 2);
+		decltype(aBuff) newBuff = (decltype(aBuff))stMemoryPoolMan->AllocateArray((nPacketSize + size) * 2);
 		memcpy(newBuff, aBuff, nBuffSize);
-		nBuffSize *= 2;
+		nBuffSize = (nPacketSize + size);
 		stMemoryPoolMan->DestructArray(aBuff);
 		aBuff = newBuff;
 	}
@@ -105,6 +105,18 @@ void OutPacket::EncodeStr(const std::string &str)
 	nPacketSize += (unsigned int)str.size();
 }
 
+void OutPacket::EncodeTime(int64_t timeValue)
+{
+	if (timeValue == -1)
+		Encode8(150842304000000000L);
+	else if (timeValue == -2)
+		Encode8(94354848000000000L);
+	else if (timeValue == -3)
+		Encode8(150841440000000000L);
+	else
+		Encode8(timeValue * 10000L + 116444592000000000L);
+}
+
 void OutPacket::Release()
 {
 	stMemoryPoolMan->DestructArray(aBuff);
@@ -112,4 +124,15 @@ void OutPacket::Release()
 
 void OutPacket::CopyFromTransferedPacket(InPacket *oPacket)
 {
+}
+
+void OutPacket::EncodeHexString(const std::string& str)
+{
+	auto cStr = str.c_str();
+	int d, n;
+	while (sscanf(cStr, "%X%n", &d, &n) == 1)
+	{
+		cStr += n;
+		Encode1((char)d);
+	}
 }

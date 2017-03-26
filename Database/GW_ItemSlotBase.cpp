@@ -1,7 +1,6 @@
 #include "GW_ItemSlotBase.h"
 #include "WvsUnified.h"
 
-
 GW_ItemSlotBase::GW_ItemSlotBase()
 {
 }
@@ -11,6 +10,9 @@ GW_ItemSlotBase::~GW_ItemSlotBase()
 {
 }
 
+/*
+Load Item SN Atomic Value
+*/
 GW_ItemSlotBase::ATOMIC_COUNT_TYPE GW_ItemSlotBase::InitItemSN(GW_ItemSlotType type)
 {
 	std::string strTableName = "";
@@ -29,4 +31,81 @@ GW_ItemSlotBase::ATOMIC_COUNT_TYPE GW_ItemSlotBase::InitItemSN(GW_ItemSlotType t
 	if (recordSet.rowCount() == 0 || recordSet["MAX(ItemSN)"].isEmpty())
 		return 0;
 	return (ATOMIC_COUNT_TYPE)recordSet["MAX(ItemSN)"];
+}
+
+/*
+Encode Item Type, Where Equip = 1, Stackable = 2, Pet = 3
+*/
+void GW_ItemSlotBase::Encode(OutPacket *oPacket) const
+{
+	oPacket->Encode1(nType == EQUIP ? 1 : (isPet ? 3 : 2)); //Pet = 3
+}
+
+/*
+Encode Basic Item Information
+*/
+void GW_ItemSlotBase::RawEncode(OutPacket *oPacket) const
+{
+	GW_ItemSlotBase::Encode(oPacket);
+	oPacket->Encode4(nItemID);
+	bool isCashItem = liCashItemSN != -1; //liCashItemSN.QuadPart
+	oPacket->Encode1(isCashItem); //
+	if (isCashItem)
+		oPacket->Encode8(liCashItemSN);	
+	oPacket->EncodeTime(liExpireDate);
+	oPacket->Encode4(-1); //Extended Slot ?
+}
+
+/*
+Encode Inventory Item Position
+*/
+void GW_ItemSlotBase::EncodeInventoryPosition(OutPacket *oPacket) const
+{
+	auto encodePos = nPOS;
+	if (encodePos <= -1)
+	{
+		encodePos *= -1;
+		if (encodePos > 100 && encodePos < 1000)
+			encodePos -= 100;
+	}
+	if (isInBag)
+		oPacket->Encode4(encodePos % 100 - 1);
+	else if (nType == GW_ItemSlotType::EQUIP)
+		oPacket->Encode2(encodePos);
+	else
+	{
+		printf("Encoding Etc Items\n");
+		oPacket->Encode1(encodePos);
+	}
+}
+
+/*
+Trading System Item Position Encoding
+*/
+void GW_ItemSlotBase::EncodeTradingPosition(OutPacket *oPacket) const
+{
+	auto encodePos = nPOS;
+	if (encodePos <= -1)
+	{
+		encodePos *= -1;
+		if (encodePos > 100 && encodePos < 1000)
+			encodePos -= 100;
+	}
+	oPacket->Encode1(encodePos);
+}
+
+void GW_ItemSlotBase::Decode(InPacket *iPacket)
+{
+	isPet = (iPacket->Decode1() == 3);
+}
+
+void GW_ItemSlotBase::RawDecode(InPacket *iPacket)
+{
+	GW_ItemSlotBase::Decode(iPacket);
+	nItemID = iPacket->Decode4();
+	bool isCashItem = iPacket->Decode1() == 1;
+	if (isCashItem)
+		liCashItemSN = iPacket->Decode8();
+	liExpireDate = iPacket->Decode8();
+	iPacket->Decode4(); //Extended Slot?
 }

@@ -19,11 +19,26 @@
     <Filter Include="Common\Wz">
       <UniqueIdentifier>{2d386cf0-40aa-488c-a8ce-d25f96a2dce9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{3d9e624d-27aa-4a5d-9ad7-e1acb5119fce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Net\PacketFlags">
       <UniqueIdentifier>{1f4b136e-e19c-48d4-bbbe-43e7ff829ef1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame">
+      <UniqueIdentifier>{3d9e624d-27aa-4a5d-9ad7-e1acb5119fce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame">
+      <UniqueIdentifier>{b237f97f-29d0-405b-9430-82369d4f9a8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field">
+      <UniqueIdentifier>{7e549daf-4abd-4d41-9525-fdb26d3928bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life">
+      <UniqueIdentifier>{ceea3012-8c1f-4e8e-9849-d56792f4481c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\User">
+      <UniqueIdentifier>{e9b5b415-de34-4b1e-833f-bb2fa11fdf8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Context">
+      <UniqueIdentifier>{0407d1cd-bf3c-4448-bdb6-3098e6ce9d37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +118,7 @@
       <Filter>Common\Wz</Filter>
     </ClInclude>
     <ClInclude Include="WvsGame.h">
-      <Filter>Game</Filter>
+      <Filter>WvsGame</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
       <Filter>Common\Net</Filter>
@@ -142,7 +157,7 @@
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="Center.h">
-      <Filter>Game</Filter>
+      <Filter>WvsGame</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\WorldInfo.h">
       <Filter>Common\Net</Filter>
@@ -150,7 +165,39 @@
     <ClInclude Include="WvsGameConstants.h">
       <Filter>Common\Constants</Filter>
     </ClInclude>
-    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocket.h">
+      <Filter>WvsGame</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="Mob.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="LifePool.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldMan.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldObj.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aes_modes.c">
@@ -203,7 +250,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsGame.cpp">
-      <Filter>Game</Filter>
+      <Filter>WvsGame</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
       <Filter>Common\Net</Filter>
@@ -230,9 +277,41 @@
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
     <ClCompile Include="Center.cpp">
-      <Filter>Game</Filter>
+      <Filter>WvsGame</Filter>
     </ClCompile>
-    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSocket.cpp">
+      <Filter>WvsGame</Filter>
+    </ClCompile>
+    <ClCompile Include="Mob.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="LifePool.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldMan.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldObj.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc">

@@ -37,8 +37,15 @@ public:
 	std::vector<GW_ItemSlotBundle> aCONItem, aETCItem, aINSItem;
 	//Cash Item...
 
-	void Encode(OutPacket *oPacket);
+	void DecodeCharacterData(InPacket *iPacket);
+	void DecodeStat(InPacket *iPacket);
+	void DecodeInventoryData(InPacket *iPacket);
+
+	void EncodeCharacterData(OutPacket *oPacket);
+	void EncodeInventoryData(OutPacket *oPacket);
+
 	void EncodeAvatar(OutPacket *oPacket);
+	void EncodeAvatarLook(OutPacket *oPacket);
 	void EncodeStat(OutPacket *oPacket);
 
 	GA_Character();

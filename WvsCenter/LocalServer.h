@@ -18,5 +18,6 @@ public:
 	void OnRequestCharacterList(InPacket *iPacket);
 	void OnRequestCreateNewCharacter(InPacket *iPacket);
 	void OnRequestGameServerInfo(InPacket *iPacket);
+	void OnRequestMigrateIn(InPacket *iPacket);
 };
 

@@ -142,7 +142,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -172,8 +173,10 @@
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h" />
     <ClInclude Include="..\Common\Net\PacketFlags\WvsContextPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\WorldInfo.h" />
@@ -188,6 +191,14 @@
     <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Field.h" />
+    <ClInclude Include="FieldMan.h" />
+    <ClInclude Include="FieldObj.h" />
+    <ClInclude Include="LifePool.h" />
+    <ClInclude Include="Mob.h" />
+    <ClInclude Include="NPC.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="WvsGame.h" />
     <ClInclude Include="WvsGameConstants.h" />
   </ItemGroup>
@@ -207,7 +218,9 @@
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
     <ClCompile Include="..\Common\Wz\mapfile.cpp" />
@@ -218,7 +231,15 @@
     <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Field.cpp" />
+    <ClCompile Include="FieldMan.cpp" />
+    <ClCompile Include="FieldObj.cpp" />
+    <ClCompile Include="LifePool.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mob.cpp" />
+    <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="WvsGame.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -213,14 +213,14 @@ AES_RETURN aes_ctr_crypt(const unsigned char *ibuf, unsigned char *obuf,
 #endif
 
 #if 0
-#  define ADD_AESNI_MODE_CALLS
+#  define ADD_AESnMODE_CALLS
 #endif
 
-#if 0 && defined( ADD_AESNI_MODE_CALLS )
+#if 0 && defined( ADD_AESnMODE_CALLS )
 #  define USE_AES_CONTEXT
 #endif
 
-#ifdef ADD_AESNI_MODE_CALLS
+#ifdef ADD_AESnMODE_CALLS
 #  ifdef USE_AES_CONTEXT
 
 AES_RETURN aes_CBC_encrypt(const unsigned char *in,

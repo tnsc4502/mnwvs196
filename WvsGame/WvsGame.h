@@ -4,18 +4,28 @@
 
 #include "Center.h"
 #include <thread>
+#include <map>
+#include "User.h"
 
 class WvsGame : public WvsBase
 {
-	std::shared_ptr<Center> aCenterList;
+	std::map<int, std::shared_ptr<User>> mUserMap;
+
+	std::shared_ptr<Center> aCenterPtr;
 	asio::io_service* aCenterServerService;
 	std::thread* aCenterWorkThread;
 public:
 	WvsGame();
 	~WvsGame();
 
+	std::shared_ptr<Center>& GetCenter()
+	{
+		return aCenterPtr;
+	}
+
 	void ConnectToCenter(int nCenterIdx, WorldConnectionInfo& cInfo);
 	void WvsGame::InitializeCenter();
 
-	void OnNotifySocketDisconnected(SocketBase *pSocket){}
+	void OnUserConnected(std::shared_ptr<User> &pUser);
+	void OnNotifySocketDisconnected(SocketBase *pSocket);
 };

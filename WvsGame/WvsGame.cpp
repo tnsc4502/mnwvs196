@@ -1,7 +1,7 @@
 #include "WvsGame.h"
 #include "WvsGameConstants.h"
-
 #include "Constants\ConfigLoader.hpp"
+#include "ClientSocket.h"
 
 WvsGame::WvsGame()
 {
@@ -16,10 +16,10 @@ WvsGame::~WvsGame()
 void WvsGame::ConnectToCenter(int nCenterIdx, WorldConnectionInfo& cInfo)
 {
 	aCenterServerService = new asio::io_service();
-	aCenterList = std::make_shared<Center>(*aCenterServerService);
-	aCenterList->SetDisconnectedNotifyFunc(OnSocketDisconnected);
-	aCenterList->SetCenterIndex(nCenterIdx);
-	aCenterList->OnConnectToCenter(cInfo.strServerIP, cInfo.nServerPort);
+	aCenterPtr = std::make_shared<Center>(*aCenterServerService);
+	aCenterPtr->SetDisconnectedNotifyFunc(OnSocketDisconnected);
+	aCenterPtr->SetCenterIndex(nCenterIdx);
+	aCenterPtr->OnConnectToCenter(cInfo.strServerIP, cInfo.nServerPort);
 	asio::io_service::work work(*aCenterServerService);
 	std::error_code ec;
 	aCenterServerService->run(ec);
@@ -33,4 +33,15 @@ void WvsGame::InitializeCenter()
 	//int centerSize = sizeof(aCenterInfoList) / sizeof(aCenterInfoList[0]);
 	//for (int i = 0; i < centerSize; ++i)
 	aCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0, aCenterInfoList[0]);
+}
+
+void WvsGame::OnUserConnected(std::shared_ptr<User> &pUser)
+{
+	mUserMap[pUser->GetUserID()] = pUser;
+}
+
+void WvsGame::OnNotifySocketDisconnected(SocketBase *pSocket)
+{
+	auto pClient = (ClientSocket*)pSocket;
+	mUserMap.erase(pClient->GetUser()->GetUserID());
 }

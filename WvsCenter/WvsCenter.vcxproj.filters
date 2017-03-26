@@ -112,6 +112,9 @@
     <ClCompile Include="ChannelEntry.cpp">
       <Filter>Center</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\AES\WzAES.hpp">
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="..\Common\Constants\ConfigLoader.hpp">
       <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

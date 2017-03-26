@@ -1,5 +1,7 @@
 #pragma once
 #include <atomic>
+#include "..\Common\Net\InPacket.h"
+#include "..\Common\Net\OutPacket.h"
 
 struct GW_ItemSlotBase
 {
@@ -41,15 +43,33 @@ struct GW_ItemSlotBase
 
 	GW_ItemSlotType nType;
 	GW_ItemSlotStatus nStatus = GW_ItemSlotStatus::INVENTORY;
-	short nPOS = 0;
-	int nItemID = 0,
+	short 
+		nPOS = 0,
 		nAttribute = 0;
 
-	long long int lExpireDate = -1,
-				  lItemSN = -1;
+	int nItemID = 0,
+		nCharacterID = -1;
+
+	long long int liExpireDate = -1,
+				  liItemSN = -1,
+				  liCashItemSN = -1;
+
+	bool isInBag = false, isPet = false;
 
 public:
 	GW_ItemSlotBase();
 	~GW_ItemSlotBase();
+
+	virtual void Encode(OutPacket *oPacket) const = 0;
+	virtual void RawEncode(OutPacket *oPacket) const = 0;
+
+	void DecodeItemSlot(InPacket *iPacket, GW_ItemSlotType type);
+	virtual void Decode(InPacket *iPacket) = 0;
+	virtual void RawDecode(InPacket *iPacket) = 0;
+
+	void EncodeInventoryPosition(OutPacket *oPacket) const;
+	void EncodeTradingPosition(OutPacket *oPacket) const;
+
+	void DecodeInventoryPosition(InPacket *iPacket) const;
 };
 

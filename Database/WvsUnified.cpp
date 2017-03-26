@@ -10,10 +10,10 @@ WvsUnified* stWvsUnifiedDB = new WvsUnified();
 
 WvsUnified::WvsUnified()
 	: mDBSession((Poco::Data::MySQL::Connector::registerConnector(), Poco::Data::MySQL::Connector::KEY),
-	  "host=127.0.0.1;user=" + DBConstants::strDBUser + 
-	  ";password=" + DBConstants::strDBPasswd + 
-	  ";db=" + DBConstants::strDBName + 
-	  ";auto-reconnect=true")
+		"host=127.0.0.1;user=" + DBConstants::strDBUser +
+		";password=" + DBConstants::strDBPasswd +
+		";db=" + DBConstants::strDBName +
+		";character-set=big5;auto-reconnect=true")
 {
 	if (!mDBSession.isConnected())
 	{
@@ -21,7 +21,6 @@ WvsUnified::WvsUnified()
 		throw std::runtime_error("WvsUnified Init Failed.");
 	}
 }
-
 
 WvsUnified::~WvsUnified()
 {

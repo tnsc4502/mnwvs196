@@ -4,6 +4,7 @@
 
 #include "Net\PacketFlags\LoginPacketFlags.hpp"
 #include "Net\PacketFlags\CenterPacketFlags.hpp"
+#include "Net\PacketFlags\GamePacketFlags.hpp"
 
 #include "Constants\ServerConstants.hpp"
 #include "WvsCenter.h"
@@ -42,6 +43,9 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		break;
 	case LoginPacketFlag::RequestGameServerInfo:
 		OnRequestGameServerInfo(iPacket);
+		break;
+	case GamePacketFlag::RequestMigrateIn:
+		OnRequestMigrateIn(iPacket);
 		break;
 	}
 }
@@ -101,8 +105,8 @@ void LocalServer::OnRequestCreateNewCharacter(InPacket *iPacket)
 	int nShoesID = iPacket->Decode4();
 	int nWeaponID = iPacket->Decode4();
 
-	int aEquips[CharacterDBAccessor::EQP_ID_FLAG_END];
-	int aStats[CharacterDBAccessor::STAT_FLAG_END];
+	int aEquips[CharacterDBAccessor::EQP_ID_FLAG_END] = { 0 };
+	int aStats[CharacterDBAccessor::STAT_FLAG_END] = { 0 };
 
 	CharacterDBAccessor::GetDefaultCharacterStat(aStats);
 
@@ -154,4 +158,11 @@ void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
 	oPacket.Encode4(0);
 
 	SendPacket(&oPacket);
+}
+
+void LocalServer::OnRequestMigrateIn(InPacket *iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostCharacterDataRequest(this, nClientSocketID, nCharacterID);
 }

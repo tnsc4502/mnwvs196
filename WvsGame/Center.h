@@ -25,10 +25,6 @@ public:
 	Center(asio::io_service& serverService);
 	~Center();
 
-	void SetCenterIndex(int idx);
-
-	void OnConnectToCenter(const std::string& strAddr, short nPort);
-	void OnPacket(InPacket *iPacket);
 	void OnClosed();
 
 	const CenterInfo& GetWorldInfo()
@@ -36,5 +32,10 @@ public:
 		return mWorldInfo;
 	}
 
+	void SetCenterIndex(int idx);
+
+	void OnConnectToCenter(const std::string& strAddr, short nPort);
+	void OnPacket(InPacket *iPacket);
+	void OnCenterMigrateInResult(InPacket *iPacket);
 };
 

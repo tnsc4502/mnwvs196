@@ -7,6 +7,8 @@ private:
 	unsigned char* aBuff;
 	unsigned short nPacketSize, nReadPos;
 
+	bool bIsProcessed = false;
+
 public:
 	InPacket(unsigned char* buff, unsigned short size);
 	~InPacket();
@@ -18,8 +20,14 @@ public:
 	std::string DecodeStr();
 	void DecodeBuffer(unsigned char* dst, int size);
 
-	unsigned char* GetBuffer() const;
-	unsigned short GetBufferSize() const;
+	unsigned char* GetPacket() const;
+	unsigned short GetPacketSize() const;
+
+	void SetProcessed() { bIsProcessed = true; }
+	bool IsProcessed() const { return bIsProcessed; }
+
+	/*Used for transfer packet to new OnPacket entry.*/
+	void RestorePacket();
 
 	void Print();
 };

@@ -19,7 +19,7 @@ public:
 		EQP_POS_Cape = -9,
 		EQP_POS_Shield = -10,
 
-		EQP_ID_Hat = 0,
+		EQP_ID_HatEquip = 0,
 		EQP_ID_TopEquip = 1,
 		EQP_ID_ButtomEquip = 2,
 		EQP_ID_ShoesEquip = 3,
@@ -57,5 +57,6 @@ public:
 
 	void PostLoadCharacterListRequest(SocketBase *pSrv, int uLocalSocketSN, int nAccountID, int nWorldID);
 	void PostCreateNewCharacterRequest(SocketBase *pSrv, int uLocalSocketSN, int nAccountID, int nWorldID, const std::string& strName, int nGender, int nFace, int nHair, int nSkin, const int* aBody, const int* aStat);
+	void PostCharacterDataRequest(SocketBase *pSrv, int uClientSocketSN, int nCharacterID);
 };
 

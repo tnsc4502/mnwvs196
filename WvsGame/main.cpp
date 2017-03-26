@@ -12,6 +12,7 @@
 #include "WvsGame.h"
 
 #include "Constants\ConfigLoader.hpp"
+#include "FieldMan.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -20,8 +21,13 @@ void ConnectionAcceptorThread(short nPort)
 	gameServer->BeginAccept<ClientSocket>();
 }
 
+#include "LifePool.h"
+
 int main(int argc, char **argv)
 {
+	/*FieldMan::GetInstance()->GetField(100000000);
+	FieldMan::GetInstance()->GetField(100000000).GetLifePool()->PrintNpc();
+	system("pause");*/
 	WvsBase::GetInstance<WvsGame>()->Init();
 
 	if (argc > 1)

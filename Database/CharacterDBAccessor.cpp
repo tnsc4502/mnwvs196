@@ -32,7 +32,7 @@ void CharacterDBAccessor::PostLoadCharacterListRequest(SocketBase *pSrv, int uLo
 	{
 		GA_Character chrEntry;
 		chrEntry.LoadAvatar(chrList.aCharacterList[i]);
-		chrEntry.Encode(&oPacket);
+		chrEntry.EncodeAvatar(&oPacket);
 		oPacket.Encode1(0);
 		oPacket.Encode1(0); // Ranking
 	}
@@ -68,6 +68,10 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.mLevel->nLevel = aStat[STAT_Level];
 	chrEntry.mStat->nAP = aStat[STAT_AP];
 
+	GW_ItemSlotEquip hatEquip;
+	hatEquip.nItemID = aBody[EQP_ID_HatEquip];
+	hatEquip.nPOS = EQP_POS_Hat;
+
 	GW_ItemSlotEquip topEquip;
 	topEquip.nItemID = aBody[EQP_ID_TopEquip];
 	topEquip.nPOS = EQP_POS_Top;
@@ -93,6 +97,7 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	shieldEquip.nPOS = EQP_POS_Shield;
 
 	GW_ItemSlotEquip* equips[EQP_ID_FLAG_END] = {
+		&hatEquip,
 		&topEquip,
 		&bottomEquip,
 		&weaponEquip,
@@ -100,7 +105,7 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 		&capeEquip,
 		&shieldEquip
 	};
-	int nEquipCount = sizeof(equips) / sizeof(GW_ItemSlotBase);
+	int nEquipCount = sizeof(equips) / sizeof(GW_ItemSlotBase*);
 	for (int i = 0; i < nEquipCount; ++i)
 		if (equips[i]->nItemID > 0)
 			chrEntry.aEquipItem.push_back(*(equips[i]));
@@ -121,4 +126,15 @@ void CharacterDBAccessor::GetDefaultCharacterStat(int *aStat)
 	aStat[STAT_SubJob] = 0;
 	aStat[STAT_Level] = 1;
 	aStat[STAT_AP] = 0;
+}
+
+void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClientSocketID, int nCharacterID)
+{
+	GA_Character chrEntry;
+	chrEntry.Load(nCharacterID);
+	OutPacket oPacket;
+	oPacket.Encode2(CenterPacketFlag::CenterMigrateInResult);
+	oPacket.Encode4(nClientSocketID);
+	chrEntry.EncodeCharacterData(&oPacket);
+	pSrv->SendPacket(&oPacket);
 }

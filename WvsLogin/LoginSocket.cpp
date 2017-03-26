@@ -49,6 +49,9 @@ void LoginSocket::OnPacket(InPacket *iPacket)
 	case ClientPacketFlag::ClientSelectCharacter:
 		OnClientSelectCharacter(iPacket);
 		break;
+	case ClientPacketFlag::ClientRequestServerList:
+		SendWorldInformation();
+		break;
 	}
 }
 
@@ -164,7 +167,7 @@ void LoginSocket::SendWorldInformation()
 
 void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
 {
-	bool isRelogin = iPacket->Decode1();
+	bool isRelogin = iPacket->Decode1() == 1;
 	int worldIndex = iPacket->Decode1();
 	int channelIndex = iPacket->Decode1();
 	if (WvsBase::GetInstance<WvsLogin>()->GetCenter(worldIndex)->IsConnected())
