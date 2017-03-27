@@ -16,6 +16,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
 	  pCharacterData(new GA_Character())
 {
+	pCharacterData->DecodeCharacterData(iPacket);
 	_pSocket->SetUser(this);
 	pField = (FieldMan::GetInstance()->GetField(pCharacterData->nFieldID));
 	pField->OnEnter(this);
@@ -71,4 +72,6 @@ void User::OnChat(InPacket *iPacket)
 	oPacket.Encode1(balloon);
 	oPacket.Encode1(0);
 	oPacket.Encode1(-1);
+
+	pField->SplitSendPacket(&oPacket, nullptr);
 }

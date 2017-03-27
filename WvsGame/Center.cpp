@@ -68,8 +68,13 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
 	oPacket.Encode1(ServerConstants::ServerType::SVR_GAME);
+	auto ip = WvsBase::GetInstance<WvsGame>()->GetExternalIP();
+	for (int i = 0; i < 4; ++i)
+		oPacket.Encode1((unsigned char)ip[i]);
+	oPacket.Encode2(WvsBase::GetInstance<WvsGame>()->GetExternalPort());
+
 	InPacket iPacket(oPacket.GetPacket(), oPacket.GetPacketSize());
-	printf("[WvsGame::Center::]Ready to send handshake info ");
+	printf("[WvsGame::Center::]Ready to send handshake info.");
 	iPacket.Print();
 	printf("\n");
 	SendPacket(&oPacket);

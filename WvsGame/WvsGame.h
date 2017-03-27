@@ -9,6 +9,8 @@
 
 class WvsGame : public WvsBase
 {
+	int nExternalPort = 0;
+	int aExternalIP[4];
 	std::map<int, std::shared_ptr<User>> mUserMap;
 
 	std::shared_ptr<Center> aCenterPtr;
@@ -28,4 +30,10 @@ public:
 
 	void OnUserConnected(std::shared_ptr<User> &pUser);
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
+
+	void SetExternalIP(const std::string& ip);
+	void SetExternalPort(short nPort);
+
+	int* GetExternalIP() const;
+	short GetExternalPort() const;
 };

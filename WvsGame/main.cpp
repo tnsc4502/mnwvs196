@@ -29,7 +29,6 @@ int main(int argc, char **argv)
 	FieldMan::GetInstance()->GetField(100000000).GetLifePool()->PrintNpc();
 	system("pause");*/
 	WvsBase::GetInstance<WvsGame>()->Init();
-
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
 	else
@@ -38,6 +37,8 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	WvsBase::GetInstance<WvsGame>()->SetExternalIP(ConfigLoader::GetInstance()->StrValue("externalIP"));
+	WvsBase::GetInstance<WvsGame>()->SetExternalPort(ConfigLoader::GetInstance()->IntValue("port"));
 	// start the connection acceptor thread
 
 	std::thread thread1(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));

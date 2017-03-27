@@ -45,3 +45,35 @@ void WvsGame::OnNotifySocketDisconnected(SocketBase *pSocket)
 	auto pClient = (ClientSocket*)pSocket;
 	mUserMap.erase(pClient->GetUser()->GetUserID());
 }
+
+void WvsGame::SetExternalIP(const std::string& ip)
+{
+	int ipPos = 0, strPos = 0;
+	std::string tmpStr = "";
+	while (strPos <= ip.size() )
+	{
+		if (strPos == ip.size() || ip[strPos] == '.')
+		{
+			aExternalIP[ipPos++] = atoi(tmpStr.c_str());
+			tmpStr = "";
+		}
+		else
+			tmpStr += ip[strPos];
+		++strPos;
+	}
+}
+
+void WvsGame::SetExternalPort(short nPort)
+{
+	nExternalPort = nPort;
+}
+
+int* WvsGame::GetExternalIP() const
+{
+	return (int*)aExternalIP;
+}
+
+short WvsGame::GetExternalPort() const
+{
+	return nExternalPort;
+}

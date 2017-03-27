@@ -2,6 +2,7 @@
 
 #include "Net\PacketFlags\CenterPacketFlags.hpp"
 #include "Net\OutPacket.h"
+#include "Net\InPacket.h"
 
 #include "Constants\ServerConstants.hpp"
 #include "Constants\ConfigLoader.hpp"
@@ -55,4 +56,19 @@ void WvsCenter::NotifyWorldChanged()
 			socket.second->SendPacket(&oPacket);
 		}
 	}
+}
+
+void WvsCenter::RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket)
+{
+	aChannel[nConnectedChannel].SetGameServer(pServer);
+	aChannel[nConnectedChannel].SetExternalIP(iPacket->Decode4());
+	aChannel[nConnectedChannel].SetExternalPort(iPacket->Decode2());
+	printf("NEW CHANNEL IP = ");
+	auto ip = aChannel[nConnectedChannel].GetExternalIP();
+	for (int i = 0; i < 4; ++i)
+	{
+		printf("%d ", (int)((char*)&ip)[i]);
+	}
+	printf("\n Port = %d\n", aChannel[nConnectedChannel].GetExternalPort());
+	++nConnectedChannel;
 }

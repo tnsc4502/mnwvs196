@@ -212,7 +212,7 @@ void LoginSocket::OnClientCreateNewCharacter(InPacket *iPacket)
 	oPacket.Encode2(LoginPacketFlag::RequestCreateNewCharacter);
 	oPacket.Encode4(GetSocketID());
 	oPacket.Encode4(mLoginData.nAccountID);
-	oPacket.EncodeBuffer(iPacket->GetBuffer() + 2, iPacket->GetBufferSize() - 2); //SKIP OPCODE
+	oPacket.EncodeBuffer(iPacket->GetPacket() + 2, iPacket->GetPacketSize() - 2); //SKIP OPCODE
 	WvsBase::GetInstance<WvsLogin>()->GetCenter(nWorldID)->SendPacket(&oPacket);
 }
 
@@ -223,6 +223,6 @@ void LoginSocket::OnClientSelectCharacter(InPacket *iPacket)
 	oPacket.Encode4(GetSocketID());
 	oPacket.Encode4(nWorldID);
 	oPacket.Encode4(nChannelID);
-	oPacket.EncodeBuffer(iPacket->GetBuffer() + 2, iPacket->GetBufferSize() - 2);
+	oPacket.EncodeBuffer(iPacket->GetPacket() + 2, iPacket->GetPacketSize() - 2);
 	WvsBase::GetInstance<WvsLogin>()->GetCenter(nWorldID)->SendPacket(&oPacket);
 }

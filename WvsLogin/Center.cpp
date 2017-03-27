@@ -134,7 +134,7 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	iPacket->Print();
 	printf("\n");
 
-	oPacket.EncodeBuffer(iPacket->GetBuffer() + 6, iPacket->GetBufferSize() - 6);
+	oPacket.EncodeBuffer(iPacket->GetPacket() + 6, iPacket->GetPacketSize() - 6);
 
 	/*int chrSize = iPacket->Decode4();
 	oPacket.Encode4(chrSize); //char size
@@ -175,6 +175,6 @@ void Center::OnGameServerInfoResponse(InPacket *iPacket)
 	auto pSocket = WvsBase::GetInstance<WvsLogin>()->GetSocketList()[nLoginSocketID]; 
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::ClientSelectCharacterResult);
-	oPacket.EncodeBuffer(iPacket->GetBuffer() + 6, iPacket->GetBufferSize() - 6);
+	oPacket.EncodeBuffer(iPacket->GetPacket() + 6, iPacket->GetPacketSize() - 6);
 	pSocket->SendPacket(&oPacket);
 }

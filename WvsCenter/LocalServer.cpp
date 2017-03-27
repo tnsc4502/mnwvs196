@@ -58,7 +58,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 
 	if (serverType == ServerConstants::SVR_GAME)
 	{
-		WvsBase::GetInstance<WvsCenter>()->RegisterChannel(shared_from_this());
+		WvsBase::GetInstance<WvsCenter>()->RegisterChannel(shared_from_this(), iPacket);
 		WvsBase::GetInstance<WvsCenter>()->NotifyWorldChanged();
 	}
 
@@ -144,11 +144,8 @@ void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
 	oPacket.Encode2(CenterPacketFlag::GameServerInfoResponse);
 	oPacket.Encode4(nLoginSocketID);
 	oPacket.Encode2(0);
-	oPacket.Encode1(127);
-	oPacket.Encode1(0);
-	oPacket.Encode1(0);
-	oPacket.Encode1(1);
-	oPacket.Encode2(7576);
+	oPacket.Encode4(WvsBase::GetInstance<WvsCenter>()->GetChannel(nChannelID).GetExternalIP());
+	oPacket.Encode2(WvsBase::GetInstance<WvsCenter>()->GetChannel(nChannelID).GetExternalPort());
 	oPacket.Encode4(0);
 	oPacket.Encode2(0);
 	oPacket.Encode4(0);

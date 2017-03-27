@@ -18,10 +18,7 @@ public:
 	WvsCenter();
 	~WvsCenter();
 
-	void RegisterChannel(std::shared_ptr<SocketBase> &pServer)
-	{
-		aChannel[nConnectedChannel++].SetGameServer(pServer);
-	}
+	void RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket);
 
 	ChannelEntry& GetChannel(int idx)
 	{
