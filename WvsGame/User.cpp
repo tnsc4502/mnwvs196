@@ -10,6 +10,8 @@
 #include "..\Common\Net\PacketFlags\UserPacketFlags.h"
 
 #include "FieldMan.h"
+#include "Portal.h"
+#include "PortalMap.h"
 #include "Field.h"
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
@@ -24,6 +26,8 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 
 User::~User()
 {
+	//pField->OnLeave(this);
+	LeaveField();
 }
 
 int User::GetUserID() const
@@ -49,12 +53,47 @@ void User::OnPacket(InPacket *iPacket)
 	case ClientPacketFlag::OnUserChat:
 		OnChat(iPacket);
 		break;
+	case ClientPacketFlag::OnUserTransferFieldRequest:
+		OnTransferFieldRequest(iPacket);
+		break;
 	default:
 		if (pField)
 		{
 			iPacket->RestorePacket();
-			pField->OnPacket(iPacket);
+			pField->OnPacket(this, iPacket);
 		}
+	}
+}
+
+void User::OnTransferFieldRequest(InPacket * iPacket)
+{
+	if (!pField)
+		pSocket->GetSocket().close();
+	iPacket->Decode1(); //ms_RTTI_CField ?
+	int dwFieldReturn = iPacket->Decode4();
+	std::string sPortalName = iPacket->DecodeStr();
+	if (sPortalName.size() > 0)
+	{
+		iPacket->Decode2(); //not sure
+		iPacket->Decode2(); //not sure
+	}
+	std::lock_guard<std::mutex> user_lock(m_mtxUserlock);
+	/*
+	if(m_character.characterStat.nHP == 0)
+	{
+		m_basicStat->SetFrom(m_character, m_aRealEquip, m_aRealEqup2, 0, 0, 0);
+		m_secondaryStat->Clear();
+		....
+	}
+	*/
+	Portal* pPortal = pField->GetPortalMap()->FindPortal(sPortalName);
+	Field *pTargetField = FieldMan::GetInstance()->GetField(dwFieldReturn == -1 ? pPortal->GetTargetMap() : dwFieldReturn);
+	if (pTargetField != nullptr)
+	{
+		LeaveField();
+		pField = pTargetField;
+		PostTransferField(pField->GetFieldID(), pPortal, false);
+		pField->OnEnter(this);
 	}
 }
 
@@ -74,4 +113,39 @@ void User::OnChat(InPacket *iPacket)
 	oPacket.Encode1(-1);
 
 	pField->SplitSendPacket(&oPacket, nullptr);
+}
+
+void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(0x1BF); //Set Stage
+	oPacket.Encode4(0); //nChannel
+	oPacket.Encode1(0);
+	oPacket.Encode4(0);
+
+	oPacket.Encode1(2); //bCharacterData?
+	oPacket.Encode4(0);
+	oPacket.Encode4(1024);
+	oPacket.Encode4(768);
+
+	oPacket.Encode1(0); // Change Stage(1) or Transfer Field(0)
+	oPacket.Encode2(0);
+
+	oPacket.Encode1(0); //bUsingBuffProtector
+	oPacket.Encode4(dwFieldID);
+	oPacket.Encode1(0);
+	oPacket.Encode4(50); //HP
+
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+
+	oPacket.Encode8(std::time(nullptr));
+	oPacket.EncodeHexString("64 00 00 00 00 00 00 01 A6 00 00 00 03 00 00 00 83 7D 26 5A 02 00 00 24 66 00 00 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 82 16 FB 52 01 00 00 24 0C 00 00 00 00 00 00 00 00 00 00 00 C8 00 00 00 F7 24 11 76 00 00 00 24 0C 00 00 00 01 00 00 24 02 00 00 24 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 96 00 00 00 00");
+	SendPacket(&oPacket);
+}
+
+void User::LeaveField()
+{
+	pField->OnLeave(this);
 }

@@ -23,7 +23,7 @@ void WvsBase::Init()
 
 void WvsBase::CreateAcceptor(short nPort)
 {
-	printf("[WvsBase::CreateAcceptor]Success Create WvsBase Service On Port %d\n", nPort);
+	printf("[WvsBase::CreateAcceptor]成功於Port %d建立Wvs伺服器程序。\n", nPort);
 	asio::ip::tcp::endpoint endpoint(asio::ip::tcp::v4(), nPort);
 	mAcceptor = new asio::ip::tcp::acceptor(mIOService, endpoint);
 }
@@ -37,7 +37,7 @@ void WvsBase::OnSocketConnected(SocketBase *pSocket)
 void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
 {
 	aSocketList.erase(pSocket->GetSocketID());
-	printf("[WvsBase::OnSocketDisconnected]Remove Socket From List, ID = %d\n", pSocket->GetSocketID());
+	printf("[WvsBase::OnSocketDisconnected]移除遠端連線Socket實體，Socket ID = %d\n", pSocket->GetSocketID());
 	pInstance->OnNotifySocketDisconnected(pSocket);
 }
 

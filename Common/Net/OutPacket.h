@@ -36,5 +36,13 @@ public:
 	void EncodeHexString(const std::string& str);
 	void EncodeTime(int64_t timeValue);
 	void Release();
+
+	void Print()
+	{
+		printf("OutPacket«Ê¥]¤º®e¡G");
+		for (int i = 0; i < nPacketSize; ++i)
+			printf("0x%02X ", (int)aBuff[i]);
+		printf("\n");
+	}
 };
 

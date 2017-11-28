@@ -19,7 +19,7 @@ LoginSocket::~LoginSocket()
 
 void LoginSocket::OnPacket(InPacket *iPacket)
 {
-	printf("[LoginSocket::OnPacket]");
+	printf("[WvsLogin][LoginSocket::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 
@@ -182,7 +182,7 @@ void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
 		nWorldID = worldIndex;
 	}
 	else
-		printf("[LoginSocket::OnClientSelectWorld][Warning]Client is trying to connect to an unknown world server.\n");
+		printf("[WvsLogin][LoginSocket::OnClientSelectWorld][錯誤]客戶端嘗試連線至不存在的Center Server。\n");
 }
 
 void LoginSocket::OnClientSecondPasswdCheck()

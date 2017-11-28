@@ -55,24 +55,27 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 {
 	if (err)
 	{
-		printf("[Center::OnConnect]Connect Failed, Center Server No Response.\n");
+		printf("[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
 		OnDisconnect();
 		return;
 	}
-	printf("[Center::OnConnect]Connect To Center Server Successed!\n");
+	printf("[WvsLogin][Center::OnConnect]成功連線到Center Server！\n");
 	bIsConnected = true;
-	//Encode center handshake packet.
+
+	//向Center Server發送Hand Shake封包
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
-	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
-	SendPacket(&oPacket); 
 
+	//WvsLogin的ServerType為SVR_LOGIN
+	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
+
+	SendPacket(&oPacket); 
 	OnWaitingPacket();
 }
 
 void Center::OnPacket(InPacket *iPacket)
 {
-	printf("[Center::OnPacket]");
+	printf("[WvsLogin][Center::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
@@ -82,10 +85,10 @@ void Center::OnPacket(InPacket *iPacket)
 		auto result = iPacket->Decode1();
 		if (!result)
 		{
-			printf("[Warning]The Center Server Didn't Accept This Socket. Program Will Terminated.\n");
+			printf("[WvsLogin][RegisterCenterAck][錯誤]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
 			exit(0);
 		}
-		printf("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
+		printf("[WvsLogin][RegisterCenterAck]Center Server 認證完成，與世界伺服器連線成功建立。\n");
 		OnUpdateWorldInfo(iPacket);
 		break;
 	}
@@ -113,7 +116,7 @@ void Center::OnUpdateWorldInfo(InPacket *iPacket)
 	mWorldInfo.nEventType = iPacket->Decode1();
 	mWorldInfo.strWorldDesc = iPacket->DecodeStr();
 	mWorldInfo.strEventDesc = iPacket->DecodeStr();
-	printf("[Center::OnUpdateWorld]Update World Info Successed.\n");
+	printf("[WvsLogin][Center::OnUpdateWorld]遊戲伺服器世界資訊更新。\n");
 }
 
 void Center::OnCharacterListResponse(InPacket *iPacket)
@@ -130,7 +133,7 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	oPacket.Encode8(0);
 	oPacket.Encode1(0);
 
-	printf("Receiving Char list packet : ");
+	printf("[WvsLogin][Center::OnCharacterListResponse]玩家擁有角色清單封包 : ");
 	iPacket->Print();
 	printf("\n");
 

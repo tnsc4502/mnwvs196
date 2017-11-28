@@ -40,6 +40,21 @@
     <Filter Include="WvsGame\InGame\Context">
       <UniqueIdentifier>{0407d1cd-bf3c-4448-bdb6-3098e6ce9d37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Task">
+      <UniqueIdentifier>{95a4882f-1d59-4b55-816d-316638a81316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life\Controller">
+      <UniqueIdentifier>{e791ff88-024a-43b3-8e4e-850d702fe4e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life\Mob">
+      <UniqueIdentifier>{8d1a7a21-f1f0-4296-89b7-4412d5137f13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life\Npc">
+      <UniqueIdentifier>{b95b1d59-d683-4ab1-9a68-439df32a7f35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Portal">
+      <UniqueIdentifier>{25290f0d-91bb-456a-89d5-068c8d1b1538}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,9 +135,6 @@
     <ClInclude Include="WvsGame.h">
       <Filter>WvsGame</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\asio.hpp">
       <Filter>Common\Net</Filter>
     </ClInclude>
@@ -171,12 +183,6 @@
     <ClInclude Include="ClientSocket.h">
       <Filter>WvsGame</Filter>
     </ClInclude>
-    <ClInclude Include="NPC.h">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClInclude>
-    <ClInclude Include="Mob.h">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClInclude>
     <ClInclude Include="LifePool.h">
       <Filter>WvsGame\InGame\Field\Life</Filter>
     </ClInclude>
@@ -192,11 +198,50 @@
     <ClInclude Include="User.h">
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h">
       <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Task\AsnycScheduler.h">
+      <Filter>Common\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="MobPacketFlags.h">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="MovePath.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>WvsGame\InGame\Field\Life\Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="Mob.h">
+      <Filter>WvsGame\InGame\Field\Life\Mob</Filter>
+    </ClInclude>
+    <ClInclude Include="MobTemplate.h">
+      <Filter>WvsGame\InGame\Field\Life\Mob</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>WvsGame\InGame\Field\Life\Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="NpcTemplate.h">
+      <Filter>WvsGame\InGame\Field\Life\Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="PortalMap.h">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="TownPortal.h">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="TownPortalPool.h">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldPoint.h">
+      <Filter>WvsGame\InGame\Field</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -252,9 +297,6 @@
     <ClCompile Include="WvsGame.cpp">
       <Filter>WvsGame</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Net\crypto.cpp">
       <Filter>Common\Net</Filter>
     </ClCompile>
@@ -285,12 +327,6 @@
     <ClCompile Include="ClientSocket.cpp">
       <Filter>WvsGame</Filter>
     </ClCompile>
-    <ClCompile Include="Mob.cpp">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClCompile>
-    <ClCompile Include="NPC.cpp">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClCompile>
     <ClCompile Include="LifePool.cpp">
       <Filter>WvsGame\InGame\Field\Life</Filter>
     </ClCompile>
@@ -306,11 +342,47 @@
     <ClCompile Include="User.cpp">
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Task\AsnycScheduler.cpp">
+      <Filter>Common\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="MobPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="MovePath.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Controller</Filter>
+    </ClCompile>
+    <ClCompile Include="Mob.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Mob</Filter>
+    </ClCompile>
+    <ClCompile Include="MobTemplate.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Mob</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="NpcTemplate.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="PortalMap.cpp">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="TownPortal.cpp">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="TownPortalPool.cpp">
+      <Filter>WvsGame\InGame\Field\Portal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

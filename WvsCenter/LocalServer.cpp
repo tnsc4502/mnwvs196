@@ -27,7 +27,7 @@ void LocalServer::OnClosed()
 
 void LocalServer::OnPacket(InPacket *iPacket)
 {
-	printf("[ServerBase::OnPacket]");
+	printf("[WvsCenter][LocalServer::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
@@ -54,7 +54,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 {
 	auto serverType = iPacket->Decode1();
 	SetServerType(serverType);
-	printf("Accept New %s\n", (serverType == ServerConstants::SVR_LOGIN ? "WvsLogin" : "WvsGame"));
+	printf("[WvsCenter][LocalServer::OnRegisterCenterRequest]收到新的[%s]連線請求。\n", (serverType == ServerConstants::SVR_LOGIN ? "WvsLogin" : "WvsGame"));
 
 	if (serverType == ServerConstants::SVR_GAME)
 	{
@@ -72,7 +72,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 		oPacket.Encode1(pWorld->GetWorldInfo().nEventType);
 		oPacket.EncodeStr(pWorld->GetWorldInfo().strWorldDesc);
 		oPacket.EncodeStr(pWorld->GetWorldInfo().strEventDesc);
-		printf("[LocalServer::OnRegisterCenterRequest]Encoding World Information.\n");
+		//printf("[LocalServer::OnRegisterCenterRequest]Encoding World Information.\n");
 	}
 	SendPacket(&oPacket);
 }
@@ -134,7 +134,7 @@ void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
 	int nWorldID = iPacket->Decode4();
 	if (nWorldID != WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID)
 	{
-		printf("[LocalServer::OnRequstGameServerInfo]Error! Client trying to connect to an unknown world.\n");
+		printf("[WvsCenter][LocalServer::OnRequstGameServerInfo]異常：客戶端嘗試連線至不存在的頻道伺服器[WvsGame]。\n");
 		return;
 	}
 	int nChannelID = iPacket->Decode4();

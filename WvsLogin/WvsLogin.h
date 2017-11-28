@@ -11,13 +11,17 @@ private:
 	void ConnectToCenter(int nCenterIdx);
 
 	std::shared_ptr<Center> aCenterList[WvsLoginConstants::kMaxNumberOfCenters];
-	asio::io_service* aCenterServerService[WvsLoginConstants::kMaxNumberOfCenters];
-	std::thread* aCenterWorkThread[WvsLoginConstants::kMaxNumberOfCenters];
+	std::shared_ptr<asio::io_service> aCenterServerService[WvsLoginConstants::kMaxNumberOfCenters];
+	std::shared_ptr<std::thread> aCenterWorkThread[WvsLoginConstants::kMaxNumberOfCenters];
+
+	void CenterAliveMonitor();
 
 public:
 
 	WvsLogin();
 	~WvsLogin();
+
+	int GetCenterCount() const { return WvsLoginConstants::kMaxNumberOfCenters; }
 
 	std::shared_ptr<Center>& GetCenter(int idx)
 	{

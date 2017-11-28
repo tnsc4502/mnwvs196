@@ -76,6 +76,7 @@ class MSMemoryPoolMan
 private:
 	struct char_pool {};
 	typedef boost::singleton_pool<char_pool, sizeof(char)> singleton_char_pool;
+	memt::Arena *pArena = new memt::Arena();
 
 public:
 	MSMemoryPoolMan() {};
@@ -88,9 +89,19 @@ public:
 	{
 		return singleton_char_pool::ordered_malloc(len);
 	}
+
+	void* AllocateObject(int size)
+	{
+		return pArena->alloc(size);
+	}
 #pragma warning(default:4302)  
 #pragma warning(disable:4311)  
 #pragma warning(disable:4312)  
+	//將給定的 ptr (一個物件)  銷毀
+	void DestructObject(void* ptr)
+	{
+		pArena->freeTop(ptr);
+	}
 
 	//將給定的 ptr (一個陣列) 銷毀，其中陣列的終端位置記錄在給定指標的前四個byte
 	void DestructArray(void* ptr)

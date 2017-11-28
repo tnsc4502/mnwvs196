@@ -25,9 +25,21 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
-	/*FieldMan::GetInstance()->GetField(100000000);
-	FieldMan::GetInstance()->GetField(100000000).GetLifePool()->PrintNpc();
+	/*auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
+	for (auto& eachMap : mapWz)
+	{
+		for (auto& map : eachMap)
+		{
+			if (map.Name() != "743040300") {
+				//std::cout << map.Name() << std::endl;
+				FieldMan::GetInstance()->GetField(atoi(map.Name().c_str()));
+			}
+		}
+		//std::cout << eachMap << std::endl;
+	}
+	//FieldMan::GetInstance()->GetField(100000000)->GetLifePool()->
 	system("pause");*/
+	FieldMan::GetInstance()->GetField(261010102);
 	WvsBase::GetInstance<WvsGame>()->Init();
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);

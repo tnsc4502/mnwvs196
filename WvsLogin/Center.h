@@ -1,6 +1,7 @@
 #pragma once
 #include "Net\SocketBase.h"
 #include "WvsLoginConstants.hpp"
+#include "Net\WvsBase.h"
 
 class Center :
 	public SocketBase
@@ -39,5 +40,11 @@ public:
 	void OnUpdateWorldInfo(InPacket *iPacket);
 	void OnCharacterListResponse(InPacket *iPacket);
 	void OnGameServerInfoResponse(InPacket *iPacket);
+
+	static void OnNotifyCenterDisconnected(SocketBase *pSocket)
+	{
+		printf("[WvsLogin][Center]與Center Server中斷連線。\n");
+		((Center*)pSocket)->bIsConnected = false;
+	}
 };
 

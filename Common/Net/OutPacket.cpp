@@ -18,6 +18,7 @@ OutPacket::OutPacket(short opcode)
 
 OutPacket::~OutPacket()
 {
+	stMemoryPoolMan->DestructArray(aBuff);
 }
 
 void OutPacket::Encode1(char value)
@@ -86,8 +87,18 @@ void OutPacket::EncodeBuffer(unsigned char *buff, int size)
 		stMemoryPoolMan->DestructArray(aBuff);
 		aBuff = newBuff;
 	}
-	memcpy(aBuff + nPacketSize, buff, size);
-	nPacketSize += size;
+	if (buff == nullptr) {
+		int encode4Count = size / 4;
+		int remain = size % 4;
+		for (int i = 0; i < encode4Count; ++i)
+			Encode4(0);
+		for (int i = 0; i < remain; ++i)
+			Encode1(0);
+	}
+	else {
+		memcpy(aBuff + nPacketSize, buff, size);
+		nPacketSize += size;
+	}
 }
 
 void OutPacket::EncodeStr(const std::string &str)

@@ -4,7 +4,9 @@ class OutPacket;
 
 class FieldObj
 {
-	int nPosX, nPosY, nF, nFh, nCy, nRx0, nRx1, nHide, nFieldObjectID, nTemplateID;
+	int nPosX, nPosY, nF, nFh, nCy, nRx0, nRx1, nHide, nFieldObjectID, nTemplateID, m_nMp, m_nHp;
+
+	char m_bMoveAction;
 public:
 	FieldObj();
 	~FieldObj();
@@ -14,104 +16,55 @@ public:
 	/*
 	Basic Attributes
 	*/
-	void SetFieldObjectID(int objID)
-	{
-		nFieldObjectID = objID;
-	}
+	void SetFieldObjectID(int objID);
 
-	int GetFieldObjectID() const
-	{
-		return nFieldObjectID;
-	}
+	int GetFieldObjectID() const;
 
-	void SetTemplateID(int templateID)
-	{
-		nTemplateID = templateID;
-	}
+	void SetTemplateID(int templateID);
 
-	int GetTemplateID() const
-	{
-		return nTemplateID;
-	}
+	int GetTemplateID() const;
 
-	void SetPosX(int x)
-	{
-		nPosX = x;
-	}
+	void SetPosX(int x);
 
-	int GetPosX() const
-	{
-		return nPosX;
-	}
+	int GetPosX() const;
 
-	void SetPosY(int y)
-	{
-		nPosY = y;
-	}
+	void SetPosY(int y);
 
-	int GetPosY() const
-	{
-		return nPosY;
-	}
+	int GetPosY() const;
 
-	void SetF(int f)
-	{
-		nF = f;
-	}
+	void SetF(int f);
 
-	int GetF() const
-	{
-		return nF;
-	}
+	int GetF() const;
 
-	void SetFh(int fh)
-	{
-		nFh = fh;
-	}
+	void SetFh(int fh);
 
-	int GetFh() const
-	{
-		return nFh;
-	}
+	int GetFh() const;
 
-	void SetCy(int cy)
-	{
-		nCy = cy;
-	}
+	void SetCy(int cy);
 
-	int GetCy() const
-	{
-		return nCy;
-	}
+	int GetCy() const;
 
-	void SetRx0(int rx0)
-	{
-		nRx0 = rx0;
-	}
+	void SetRx0(int rx0);
 
-	int GetRx0() const
-	{
-		return nRx0;
-	}
+	int GetRx0() const;
 
-	void SetRx1(int rx1)
-	{
-		nRx1 = rx1;
-	}
+	void SetRx1(int rx1);
 
-	int GetRx1() const
-	{
-		return nRx1;
-	}
+	int GetRx1() const;
 
-	void SetHide(int hide)
-	{
-		nHide = hide;
-	}
+	void SetHide(int hide);
 
-	bool IsHidden() const
-	{
-		return nHide != 0;
-	}
+	bool IsHidden() const;
+
+	char GetMoveAction() const;
+
+	void SetMoveAction(char moveAction);
+
+	virtual void SetMovePosition(int x, int y, bool bMoveAction, short nSN) {}
+
+	void SetMp(int mp);
+	void SetHp(int hp);
+	int GetMp() const;
+	int GetHp() const;
 };
 

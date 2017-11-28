@@ -86,6 +86,9 @@
     <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Task\AsnycScheduler.cpp">
+      <Filter>Common\Task</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">
@@ -111,6 +114,9 @@
     </Filter>
     <Filter Include="Common\Net\PacketFlags">
       <UniqueIdentifier>{1279af95-c8df-434c-94a5-5a0116001b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Task">
+      <UniqueIdentifier>{192172f6-0f97-4799-8f00-df44d2a607fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Task\AsnycScheduler.h">
+      <Filter>Common\Task</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

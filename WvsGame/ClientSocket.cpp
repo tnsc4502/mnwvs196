@@ -23,9 +23,7 @@ void ClientSocket::OnClosed()
 
 void ClientSocket::OnPacket(InPacket *iPacket)
 {
-	printf("[WvsGame::ClientSocket::OnPacket]");
-	iPacket->Print();
-	printf("\n");
+	//printf("\n");
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
@@ -36,6 +34,10 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 		if (pUser)
 		{
 			iPacket->RestorePacket();
+			if (nType != 0x369) {
+				printf("[WvsGame][ClientSocket::OnPacket]«Ê¥]±µ¦¬¡G");
+				iPacket->Print();
+			}
 			pUser->OnPacket(iPacket);
 		}
 	}
@@ -43,6 +45,7 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 
 void ClientSocket::OnMigrateIn(InPacket *iPacket)
 {
+	printf("OnMigrateIn\n");
 	auto pCenter = WvsBase::GetInstance<WvsGame>()->GetCenter();
 	iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
@@ -51,6 +54,7 @@ void ClientSocket::OnMigrateIn(InPacket *iPacket)
 	oPacket.Encode4(GetSocketID());
 	oPacket.Encode4(nCharacterID);
 	pCenter->SendPacket(&oPacket);
+	printf("OnMigrateOut\n");
 }
 
 void ClientSocket::SetUser(User *_pUser)

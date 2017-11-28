@@ -17,7 +17,7 @@ WvsCenter::~WvsCenter()
 
 void WvsCenter::OnNotifySocketDisconnected(SocketBase *pSocket)
 {
-	printf("On Notify Socket Disconnected\n");
+	printf("[WvsCenter][WvsCenter::OnNotifySocketDisconnected]頻道伺服器[WvsGame]中斷連線，告知WvsLogin變更。\n");
 	if (pSocket->GetServerType() == ServerConstants::SVR_GAME)
 	{
 		for (int i = 0; i < nConnectedChannel - 1; ++i)
@@ -49,7 +49,7 @@ void WvsCenter::NotifyWorldChanged()
 	{
 		if (socket.second->GetServerType() != ServerConstants::SVR_GAME)
 		{
-			printf("On Notify World Changed\n");
+			//printf("On Notify World Changed\n");
 			OutPacket oPacket;
 			oPacket.Encode2(CenterPacketFlag::CenterStatChanged);
 			oPacket.Encode2(WvsBase::GetInstance<WvsCenter>()->GetChannelCount());
@@ -63,12 +63,10 @@ void WvsCenter::RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *
 	aChannel[nConnectedChannel].SetGameServer(pServer);
 	aChannel[nConnectedChannel].SetExternalIP(iPacket->Decode4());
 	aChannel[nConnectedChannel].SetExternalPort(iPacket->Decode2());
-	printf("NEW CHANNEL IP = ");
+	printf("[WvsCenter][WvsCenter::RegisterChannel]新的頻道伺服器[WvsGame]註冊成功，IP : ");
 	auto ip = aChannel[nConnectedChannel].GetExternalIP();
 	for (int i = 0; i < 4; ++i)
-	{
 		printf("%d ", (int)((char*)&ip)[i]);
-	}
 	printf("\n Port = %d\n", aChannel[nConnectedChannel].GetExternalPort());
 	++nConnectedChannel;
 }

@@ -1,0 +1,31 @@
+#pragma once
+#include <vector>
+#include <algorithm>
+
+class User;
+class Mob;
+class Npc;
+
+class Controller
+{
+	std::vector<Mob*> m_lCtrlMob;
+	std::vector<Npc*> m_lCtrlNpc;
+
+	User *pUser;
+public:
+	Controller(User *ptrUser);
+	~Controller();
+
+	User* GetUser();
+
+	int GetMobCtrlCount() const;
+	void AddCtrlMob(Mob* ctrl);
+	void RemoveCtrlMob(Mob* ctrl);
+
+	int GetNpcCtrlCount() const;
+	void AddCtrlNpc(Npc* ctrl);
+	void RemoveCtrlNpc(Npc* ctrl);
+
+	const std::vector<Mob*>& GetCtrlList() const;
+};
+

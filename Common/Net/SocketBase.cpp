@@ -43,7 +43,7 @@ void SocketBase::Init()
 
 void SocketBase::OnDisconnect()
 {
-	printf("[SocketBase::OnDisconnect]\n");
+	//printf("[SocketBase::OnDisconnect]\n");
 	OnNotifySocketDisconnected(this);
 	mSocket.close();
 	OnClosed();
@@ -75,7 +75,7 @@ void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 	auto buffPtr = oPacket->GetPacket();
 	if (!handShakePacket)
 	{
-		crypto::create_packet_header(buffPtr -4, aSendIV, oPacket->GetPacketSize());
+		crypto::create_packet_header(buffPtr - 4, aSendIV, oPacket->GetPacketSize());
 		if(!bIsLocalServer)
 			crypto::encrypt(buffPtr, aSendIV, oPacket->GetPacketSize());
 		asio::async_write(mSocket,
@@ -94,7 +94,7 @@ void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 
 void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer)
 {
-	stMemoryPoolMan->DestructArray(buffer);
+	//stMemoryPoolMan->DestructArray(buffer);
 }
 
 void SocketBase::OnWaitingPacket()
@@ -111,7 +111,7 @@ void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transfer
 	if (!ec)
 	{
 		unsigned short nPacketLen = crypto::get_packet_length(aRecivedPacket.get());
-		printf("[SocketBase::OnReceive] Packet Size = %d\n", nPacketLen);
+		//printf("[SocketBase::OnReceive] Packet Size = %d\n", nPacketLen);
 		if (nPacketLen < 2)
 		{
 			OnDisconnect();
@@ -138,7 +138,14 @@ void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_tran
 		if(!bIsLocalServer)
 			crypto::decrypt(aRecivedPacket.get(), aRecvIV, nBytes);
 		InPacket iPacket(aRecivedPacket.get(), nBytes);
-		this->OnPacket(&iPacket);
+		try {
+			this->OnPacket(&iPacket);
+		}
+		catch (...) {
+			iPacket.RestorePacket();
+			std::cout << "解析封包時發生錯誤，OPCode : " << iPacket.Decode2() << std::endl;
+			iPacket.Print();
+		}
 		OnWaitingPacket();
 	}
 }

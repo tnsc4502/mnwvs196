@@ -181,6 +181,7 @@
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\WorldInfo.h" />
     <ClInclude Include="..\Common\Net\WvsBase.h" />
+    <ClInclude Include="..\Common\Task\AsnycScheduler.h" />
     <ClInclude Include="..\Common\Wz\mapfile.hpp" />
     <ClInclude Include="..\Common\Wz\sprite.hpp" />
     <ClInclude Include="..\Common\Wz\spritedata.hpp" />
@@ -195,9 +196,18 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldMan.h" />
     <ClInclude Include="FieldObj.h" />
+    <ClInclude Include="FieldPoint.h" />
     <ClInclude Include="LifePool.h" />
     <ClInclude Include="Mob.h" />
+    <ClInclude Include="MobPacketFlags.h" />
+    <ClInclude Include="MobTemplate.h" />
+    <ClInclude Include="MovePath.h" />
     <ClInclude Include="NPC.h" />
+    <ClInclude Include="NpcTemplate.h" />
+    <ClInclude Include="Portal.h" />
+    <ClInclude Include="PortalMap.h" />
+    <ClInclude Include="TownPortal.h" />
+    <ClInclude Include="TownPortalPool.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WvsGame.h" />
     <ClInclude Include="WvsGameConstants.h" />
@@ -223,6 +233,7 @@
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
+    <ClCompile Include="..\Common\Task\AsnycScheduler.cpp" />
     <ClCompile Include="..\Common\Wz\mapfile.cpp" />
     <ClCompile Include="..\Common\Wz\wzcrypto.cpp" />
     <ClCompile Include="..\Common\Wz\wzimg.cpp" />
@@ -238,7 +249,15 @@
     <ClCompile Include="LifePool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mob.cpp" />
+    <ClCompile Include="MobPacketFlags.cpp" />
+    <ClCompile Include="MobTemplate.cpp" />
+    <ClCompile Include="MovePath.cpp" />
     <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="NpcTemplate.cpp" />
+    <ClCompile Include="Portal.cpp" />
+    <ClCompile Include="PortalMap.cpp" />
+    <ClCompile Include="TownPortal.cpp" />
+    <ClCompile Include="TownPortalPool.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="WvsGame.cpp" />
   </ItemGroup>

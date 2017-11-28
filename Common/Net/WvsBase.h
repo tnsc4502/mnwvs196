@@ -14,7 +14,7 @@ private:
 	template<typename SOCKET_TYPE>
 	void OnAccepted(std::shared_ptr<SOCKET_TYPE> acceptedSocket, const std::error_code& ec)
 	{
-		std::cout << "New Server Base Connected!\n";
+		std::cout << "[WvsBase]新的連線成功建立。\n";
 		OnSocketConnected((SocketBase*)(acceptedSocket.get()));
 		acceptedSocket->SetDisconnectedNotifyFunc(OnSocketDisconnected);
 		acceptedSocket->Init();
