@@ -254,7 +254,7 @@ void LifePool::RedistributeLife()
 		Controller* minCtrl, *maxCtrl;
 		int nMaxNpcCtrl, nMaxMobCtrl, nMinNpcCtrl, nMinMobCtrl;
 		//重新調配每個人的怪物控制權
-		if (nCtrlCount > 2) //至少一個minCtrl與maxCtrl
+		if (nCtrlCount >= 2) //至少一個minCtrl與maxCtrl
 		{
 			while (1) 
 			{
