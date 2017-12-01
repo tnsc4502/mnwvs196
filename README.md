@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 Dont use anything in MNMS Directory!!!!!!!!!!!!!!!
+=======
+>>>>>>> 3c581d94417ece1c85fa6d822d4a1a3d53a83fcc
 關於此專案
 About this project
 ----
@@ -85,4 +88,8 @@ Wz lib here, the example usage can be found in WvsGame/FieldMan.cpp.
 最後
 The last
 ----
+<<<<<<< HEAD
 As you see, there are lots of warnings (you know, treating char like int ... etc...) when trying to build the project and maybe lots of bugs or memory leaking in the project, ya, I hope we can solve them together. LOL.
+=======
+As you see, there are lots of warnings (you know, treating char like int ... etc...) when trying to build the project and maybe lots of bugs or memory leaking in the project, ya, I hope we can solve them together. LOL.
+>>>>>>> 3c581d94417ece1c85fa6d822d4a1a3d53a83fcc
