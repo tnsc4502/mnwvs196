@@ -22,33 +22,41 @@ void GA_Character::Load(int nCharacterID)
 	queryStatement.execute();
 	Poco::Data::RecordSet recordSet(queryStatement);
 
-	aEquipItem.resize(recordSet.rowCount());
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
-		aEquipItem[i].Load(recordSet["SN"]);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotEquip *eqp = new GW_ItemSlotEquip();
+		eqp->Load(recordSet["SN"]);
+		mItemSlot[1][eqp->nPOS] = eqp;
+	}
 
 	queryStatement.reset(GET_DB_SESSION);
 	queryStatement << "SELECT SN FROM ItemSlot_CON Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	aCONItem.resize(recordSet.rowCount());
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
-		aCONItem[i].Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+		mItemSlot[2][eqp->nPOS] = eqp;
+	}
 
 	queryStatement.reset(GET_DB_SESSION);
 	queryStatement << "SELECT SN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	aETCItem.resize(recordSet.rowCount());
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
-		aETCItem[i].Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
+		mItemSlot[3][eqp->nPOS] = eqp;
+	}
 
 	queryStatement.reset(GET_DB_SESSION);
 	queryStatement << "SELECT SN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	aINSItem.resize(recordSet.rowCount());
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
-		aINSItem[i].Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+		mItemSlot[4][eqp->nPOS] = eqp;
+	}
 }
 
 void GA_Character::LoadAvatar(int nCharacterID)
@@ -242,14 +250,95 @@ void GA_Character::Save(bool isNewCharacter)
 	mLevel->Save(nCharacterID, isNewCharacter);
 	mStat->Save(nCharacterID, isNewCharacter);
 
-	for (auto& eqp : aEquipItem)
-		eqp.Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::EQUIP);
-	for (auto& con : aCONItem)
-		con.Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
-	for (auto& etc : aETCItem)
-		etc.Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::ETC);
-	for (auto& ins : aINSItem)
-		ins.Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+	for (auto& eqp : mItemSlot[1])
+		((GW_ItemSlotEquip*)(eqp.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::EQUIP);
+	for (auto& con : mItemSlot[2])
+		((GW_ItemSlotBundle*)(con.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+	for (auto& etc : mItemSlot[3])
+		((GW_ItemSlotBundle*)(etc.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::ETC);
+	for (auto& ins : mItemSlot[4])
+		((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+}
+
+int GA_Character::FindEmptySlotPosition(int nTI)
+{
+	if (nTI <= 0 || nTI > 5)
+		return 0;
+	int lastIndex = 1;
+	auto itemSlot = mItemSlot[nTI];
+	for (auto& slot : itemSlot)
+	{
+		if (slot.first > lastIndex || (slot.first == lastIndex && slot.second == nullptr))
+			return lastIndex;
+		lastIndex = slot.first + 1;
+	}
+	return lastIndex;
+}
+
+GW_ItemSlotBase* GA_Character::GetItem(int nTI, int nPOS)
+{
+	if (nTI <= 0 || nTI > 5)
+		return nullptr;
+	auto result = mItemSlot[nTI].find(nPOS);
+	if (result == mItemSlot[nTI].end())
+		return nullptr;
+	return result->second;
+}
+
+int GA_Character::FindCashItemSlotPosition(int nTI, long long int liSN)
+{
+	if (nTI <= 0 || nTI > 5)
+		return 0;
+	auto& itemSlot = mItemSlot[nTI];
+	for (auto& slot : itemSlot)
+		if (slot.second->liCashItemSN == liSN)
+			return slot.second->nPOS;
+}
+
+int GA_Character::FindGeneralItemSlotPosition(int nTI, int nItemID, long long int dateExpire, long long int liSN)
+{
+	if (nTI <= 0 || nTI > 5)
+		return 0;
+	auto& itemSlot = mItemSlot[nTI];
+	for (auto& slot : itemSlot)
+		if (slot.second->nItemID == nItemID && !CompareFileTime((FILETIME*)&dateExpire, (FILETIME*)(slot.second->liExpireDate)))
+			return slot.second->nPOS;
+	return 0;
+}
+
+int GA_Character::GetEmptySlotCount(int nTI)
+{
+	int nCount = 0;
+	if (nTI <= 0 || nTI > 5)
+		return 0;
+	auto& itemSlot = mItemSlot[nTI];
+	int nLastIndeex = 0;
+	for (auto& slot : itemSlot)
+	{
+		if (slot.second == nullptr)
+			++nCount;
+		nCount += (slot.first - nLastIndeex - 1);
+		nLastIndeex = slot.first;
+	}
+	return nCount;
+}
+
+int GA_Character::GetItemCount(int nTI, int nItemID)
+{
+	int nCount = 0;
+	if (nTI <= 0 || nTI > 5)
+		return 0;
+	auto& itemSlot = mItemSlot[nTI];
+	for (auto& slot : itemSlot)
+		if (slot.second != nullptr && slot.second->nItemID == nItemID)
+			++nCount;
+	return nCount;
+}
+
+void GA_Character::SetItem(int nTI, int nPOS, GW_ItemSlotBase * pItem)
+{
+	if (nTI >= 1 && nTI <= 5)
+		mItemSlot[nTI][nPOS] = pItem;
 }
 
 void GA_Character::DecodeCharacterData(InPacket *iPacket)
@@ -657,30 +746,30 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket)
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip eqp;
-		eqp.nPOS = wPos;
-		eqp.nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
-		eqp.Decode(iPacket);
-		aEquipItem.push_back(eqp);
+		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		eqp->nPOS = wPos;
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
+		eqp->Decode(iPacket);
+		mItemSlot[1].insert({ eqp->nPOS, eqp });
 	}
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip eqp;
-		eqp.nPOS = wPos;
-		eqp.nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
-		eqp.Decode(iPacket);
-		aEquipItem.push_back(eqp);
+		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		eqp->nPOS = wPos;
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
+		eqp->Decode(iPacket);
+		mItemSlot[1].insert({ eqp->nPOS, eqp });
 	}
 
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip eqp;
-		eqp.nPOS = wPos;
-		eqp.nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
-		eqp.Decode(iPacket);
-		aEquipItem.push_back(eqp);
+		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		eqp->nPOS = wPos;
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
+		eqp->Decode(iPacket);
+		mItemSlot[1].insert({ eqp->nPOS, eqp });
 	}
 	//sub_69B50A
 	iPacket->Decode2(); //sub_69B50A 1
@@ -706,29 +795,29 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket)
 	unsigned char nPos = 0;
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle bundle;
-		bundle.nPOS = nPos;
-		bundle.nType = GW_ItemSlotBase::GW_ItemSlotType::CONSUME;
-		bundle.Decode(iPacket);
-		aCONItem.push_back(bundle);
+		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		bundle->nPOS = nPos;
+		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::CONSUME;
+		bundle->Decode(iPacket);
+		mItemSlot[2].insert({ bundle->nPOS, bundle });
 	}
 
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle bundle;
-		bundle.nPOS = nPos;
-		bundle.nType = GW_ItemSlotBase::GW_ItemSlotType::INSTALL;
-		bundle.Decode(iPacket);
-		aINSItem.push_back(bundle);
+		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		bundle->nPOS = nPos;
+		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::INSTALL;
+		bundle->Decode(iPacket);
+		mItemSlot[3].insert({ bundle->nPOS, bundle });
 	}
 
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle bundle;
-		bundle.nPOS = nPos;
-		bundle.nType = GW_ItemSlotBase::GW_ItemSlotType::ETC;
-		bundle.Decode(iPacket);
-		aETCItem.push_back(bundle);
+		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		bundle->nPOS = nPos;
+		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::ETC;
+		bundle->Decode(iPacket);
+		mItemSlot[4].insert({ bundle->nPOS, bundle });
 	}
 
 	iPacket->Decode1(); //CASH
@@ -1040,19 +1129,19 @@ void GA_Character::EncodeInventoryData(OutPacket *oPacket)
 	oPacket->EncodeTime(-2); // TIME
 	oPacket->Encode1(0);
 
-	for (const auto &eqp : aEquipItem)
-		if (eqp.nPOS < 0 && eqp.nPOS > -100)
-			eqp.Encode(oPacket);
+	for (const auto &eqp : mItemSlot[1])
+		if (eqp.second->nPOS < 0 && eqp.second->nPOS > -100)
+			eqp.second->Encode(oPacket);
 	oPacket->Encode2(0); //EQUIPPED
 
-	for (const auto &eqp : aEquipItem)
-		if (eqp.nPOS <= -100 && eqp.nPOS > -1000)
-			eqp.Encode(oPacket);
+	for (const auto &eqp : mItemSlot[1])
+		if (eqp.second->nPOS <= -100 && eqp.second->nPOS > -1000)
+			eqp.second->Encode(oPacket);
 	oPacket->Encode2(0); //EQUIPPED 2
 
-	for (const auto &eqp : aEquipItem)
-		if (eqp.nPOS >= 0)
-			eqp.Encode(oPacket);
+	for (const auto &eqp : mItemSlot[1])
+		if (eqp.second->nPOS >= 0)
+			eqp.second->Encode(oPacket);
 	oPacket->Encode2(0);
 						 //sub_69B50A
 	oPacket->Encode2(0); //sub_69B50A 1
@@ -1075,16 +1164,16 @@ void GA_Character::EncodeInventoryData(OutPacket *oPacket)
 	oPacket->Encode2(0); //sub_68CF44 1
 	oPacket->Encode2(0); //sub_68CF44 2
 
-	for (auto &item : aCONItem)
-		item.Encode(oPacket);
+	for (auto &item : mItemSlot[2])
+		item.second->Encode(oPacket);
 	oPacket->Encode1(0); //USE
 
-	for (auto &item : aINSItem)
-		item.Encode(oPacket);
+	for (auto &item : mItemSlot[3])
+		item.second->Encode(oPacket);
 	oPacket->Encode1(0); //INS
 
-	for (auto &item : aETCItem)
-		item.Encode(oPacket);
+	for (auto &item : mItemSlot[4])
+		item.second->Encode(oPacket);
 	oPacket->Encode1(0); //ETC
 
 

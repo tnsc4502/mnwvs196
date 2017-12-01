@@ -53,7 +53,7 @@ File::File(Node n) {
 void File::Init(Node n) {
     path filename = Path / path(n.Name() + ".wz");
 
-	std::cout << "[WzFile::Init]File Name : " << filename << std::endl;
+	//std::cout << "[WzFile::Init]File Name : " << filename << std::endl;
 	/*if (!CheckLoadedFile(filename.string()))
 		return;*/
 	if (!exists(filename)) return;/* die();*/

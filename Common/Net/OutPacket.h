@@ -40,7 +40,7 @@ public:
 	void Print()
 	{
 		printf("OutPacket«Ê¥]¤º®e¡G");
-		for (int i = 0; i < nPacketSize; ++i)
+		for (unsigned int i = 0; i < nPacketSize; ++i)
 			printf("0x%02X ", (int)aBuff[i]);
 		printf("\n");
 	}

@@ -71,5 +71,8 @@ public:
 	void EncodeTradingPosition(OutPacket *oPacket) const;
 
 	void DecodeInventoryPosition(InPacket *iPacket) const;
+
+	//檢查整個物品是否視為單一物件
+	bool IsTreatSingly() const;
 };
 

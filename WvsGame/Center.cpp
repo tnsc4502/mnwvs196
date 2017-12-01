@@ -58,7 +58,8 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 {
 	if (err)
 	{
-		printf("[WvsGame][Center::OnConnect]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
+		printf("[WvsGame][Center::OnConnect]Center Server拒絕當前LocalServer連接，程式即將終止。\n"); 
+		mWorldInfo.bConnectionFailed = true;
 		OnDisconnect();
 		return;
 	}

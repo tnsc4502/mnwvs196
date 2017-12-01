@@ -178,7 +178,7 @@ void MovePath::Encode(OutPacket * oPacket)
 	oPacket->Encode2(m_y);
 	oPacket->Encode2(m_vx);
 	oPacket->Encode2(m_vy);
-	oPacket->Encode1(m_lElem.size());
+	oPacket->Encode1((char)m_lElem.size());
 	for (const auto& elem : m_lElem)
 	{
 		oPacket->Encode1(elem.nAttr);

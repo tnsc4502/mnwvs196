@@ -47,7 +47,7 @@ void PortalMap::RestorePortal(Field * pField, WZ::Node & pPropPortal)
 			newPortal->SetY(newPortal->GetY() - 40);
 
 		m_apPortal.push_back(newPortal);
-		int nIdx = m_apPortal.size() - 1;
+		int nIdx = (int)m_apPortal.size() - 1;
 
 		if (!nType)
 			m_aStartPoint.push_back(nIdx);

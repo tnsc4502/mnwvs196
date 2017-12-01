@@ -9,7 +9,7 @@ private:
 	struct CenterInfo
 	{
 		int nCenterID;
-		bool bIsConnected;
+		bool bIsConnected = false, bConnectionFailed = false;
 	};
 
 	int nCenterIndex;
@@ -31,6 +31,9 @@ public:
 	{
 		return mWorldInfo;
 	}
+
+	bool IsConnected() const { return mWorldInfo.bIsConnected; }
+	bool IsConnectionFailed() const { return mWorldInfo.bConnectionFailed; }
 
 	void SetCenterIndex(int idx);
 

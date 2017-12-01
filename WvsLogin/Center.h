@@ -9,7 +9,7 @@ class Center :
 private:
 
 	int nCenterIndex;
-	bool bIsConnected = false;
+	bool bIsConnected = false, bConnectionFailed = false;
 	asio::ip::tcp::resolver mResolver;
 
 	WorldInfo mWorldInfo;
@@ -30,6 +30,11 @@ public:
 	const WorldInfo& GetWorldInfo()
 	{
 		return mWorldInfo;
+	}
+
+	bool IsConnectionFailed() const
+	{
+		return bConnectionFailed;
 	}
 
 	bool IsConnected() const

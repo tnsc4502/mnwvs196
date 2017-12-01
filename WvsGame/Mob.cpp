@@ -29,8 +29,8 @@ void Mob::EncodeInitData(OutPacket *oPacket, bool bIsControl)
 	oPacket->Encode1(m_pMobTemplate->m_bIsChangeableMob);
 	if (m_pMobTemplate->m_bIsChangeableMob)
 	{
-		oPacket->Encode4(m_pMobTemplate->m_lnMaxHP > INT_MAX ? INT_MAX : m_pMobTemplate->m_lnMaxHP);
-		oPacket->Encode4(m_pMobTemplate->m_lnMaxMP > INT_MAX ? INT_MAX : m_pMobTemplate->m_lnMaxMP);
+		oPacket->Encode4(m_pMobTemplate->m_lnMaxHP > INT_MAX ? INT_MAX : (int)m_pMobTemplate->m_lnMaxHP);
+		oPacket->Encode4(m_pMobTemplate->m_lnMaxMP > INT_MAX ? INT_MAX : (int)m_pMobTemplate->m_lnMaxMP);
 		oPacket->Encode4(m_pMobTemplate->m_nEXP);
 		oPacket->Encode4(m_pMobTemplate->m_nPAD); //Physical Attack
 		oPacket->Encode4(m_pMobTemplate->m_nMAD); //Magical  Attack

@@ -13,6 +13,7 @@
 
 #include "Constants\ConfigLoader.hpp"
 #include "FieldMan.h"
+#include "ItemInfo.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -25,8 +26,9 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
-	/*auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
-	for (auto& eachMap : mapWz)
+	ItemInfo::GetInstance()->Initialize(); 
+	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
+	/*for (auto& eachMap : mapWz)
 	{
 		for (auto& map : eachMap)
 		{
@@ -36,9 +38,7 @@ int main(int argc, char **argv)
 			}
 		}
 		//std::cout << eachMap << std::endl;
-	}
-	//FieldMan::GetInstance()->GetField(100000000)->GetLifePool()->
-	system("pause");*/
+	}*/
 	FieldMan::GetInstance()->GetField(261010102);
 	WvsBase::GetInstance<WvsGame>()->Init();
 	if (argc > 1)

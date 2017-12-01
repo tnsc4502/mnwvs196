@@ -232,7 +232,7 @@ bool LifePool::GiveUpMobController(Controller * pController)
 void LifePool::RedistributeLife()
 {
 	Controller* pCtrl = nullptr;
-	int nCtrlCount = m_hCtrl.size();
+	int nCtrlCount = (int)m_hCtrl.size();
 	if (nCtrlCount > 0)
 	{
 		auto& nonControlled = m_pCtrlNull->GetMobCtrlList();

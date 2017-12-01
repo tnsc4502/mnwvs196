@@ -94,6 +94,14 @@ void GW_ItemSlotBase::EncodeTradingPosition(OutPacket *oPacket) const
 	oPacket->Encode1(encodePos);
 }
 
+bool GW_ItemSlotBase::IsTreatSingly() const
+{
+	int nItemHeader = nItemID / 1000000;
+	return (nItemHeader != 2 && nItemHeader != 3 && nItemHeader != 4
+		|| nItemID / 10000 == 207
+		|| liExpireDate != 0);
+}
+
 void GW_ItemSlotBase::Decode(InPacket *iPacket)
 {
 	isPet = (iPacket->Decode1() == 3);

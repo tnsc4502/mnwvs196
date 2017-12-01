@@ -7,6 +7,7 @@
 #include "GW_Avatar.hpp"
 
 #include <atomic>
+#include <map>
 
 class OutPacket;
 
@@ -33,8 +34,8 @@ public:
 	GW_CharacterLevel *mLevel = nullptr;
 	GW_CharacterMoney *mMoney = nullptr;
 
-	std::vector<GW_ItemSlotEquip> aEquipItem;
-	std::vector<GW_ItemSlotBundle> aCONItem, aETCItem, aINSItem;
+	std::map<short, GW_ItemSlotBase*> mItemSlot[6];
+	//std::vector<GW_ItemSlotBundle> aCONItem, aETCItem, aINSItem;
 	//Cash Item...
 
 	void DecodeCharacterData(InPacket *iPacket);
@@ -60,4 +61,12 @@ public:
 	void Load(int nCharacterID);
 	void LoadAvatar(int nCharacterID);
 	void Save(bool isNewCharacter = false);
+
+	int FindEmptySlotPosition(int nTI);
+	GW_ItemSlotBase* GetItem(int nTI, int nPOS);
+	int FindCashItemSlotPosition(int nTI, long long int liSN);
+	int FindGeneralItemSlotPosition(int nTI, int nItemID, long long int dateExpire, long long int liSN);
+	int GetEmptySlotCount(int nTI);
+	int GetItemCount(int nTI, int nItemID);
+	void SetItem(int nTI, int nPOS, GW_ItemSlotBase* pItem);
 };

@@ -27,9 +27,11 @@ void WvsLogin::ConnectToCenter(int nCenterIdx)
 		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
 		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
 	);
-	asio::io_service::work work(*aCenterServerService[nCenterIdx]);
-	std::error_code ec;
-	aCenterServerService[nCenterIdx]->run(ec);
+	//if (aCenterList[nCenterIdx]->IsConnected()) {
+		asio::io_service::work work(*aCenterServerService[nCenterIdx]);
+		std::error_code ec;
+		aCenterServerService[nCenterIdx]->run(ec);
+	//}
 }
 
 void WvsLogin::CenterAliveMonitor()
@@ -37,9 +39,16 @@ void WvsLogin::CenterAliveMonitor()
 	printf("=================定期檢查Center Server連線程序=================\n");
 	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
 	for (int i = 0; i < centerSize; ++i)
-		if (aCenterList[i] && !aCenterList[i]->IsConnected()) {
-			printf("Center Server %d 尚未連線，嘗試重新連線。\n", i);
-			new std::thread(&WvsLogin::ConnectToCenter, this, i);
+		if (aCenterList[i] && aCenterList[i]->IsConnectionFailed()) {
+			aCenterList[i].reset();
+			aCenterServerService[i]->stop();
+			printf("Center Server %d 連線失敗，嘗試重新連線。\n", i);
+			if (aCenterWorkThread[i]) 
+			{
+				aCenterWorkThread[i]->detach();
+				*aCenterWorkThread[i] = std::thread(&WvsLogin::ConnectToCenter, this, i);
+			}
+			//
 		}
 }
 
@@ -51,7 +60,7 @@ void WvsLogin::InitializeCenter()
 
 	//Periodic Task, 檢測是否與Center中斷連線，並嘗試修正
 	auto holderFunc = std::bind(&WvsLogin::CenterAliveMonitor, this);
-	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
+	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 3 * 100, true);
 	aliveHolder->Start();
 }
 

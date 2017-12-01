@@ -55,6 +55,12 @@
     <Filter Include="WvsGame\InGame\Field\Portal">
       <UniqueIdentifier>{25290f0d-91bb-456a-89d5-068c8d1b1538}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\User\Inventory">
+      <UniqueIdentifier>{25a8c183-7b98-4a05-88b7-c374f49eafbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\User\Skill">
+      <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -243,6 +249,15 @@
     <ClInclude Include="FieldPoint.h">
       <Filter>WvsGame\InGame\Field</Filter>
     </ClInclude>
+    <ClInclude Include="InventoryManipulator.h">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemInfo.h">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillInfo.h">
+      <Filter>WvsGame\InGame\User\Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aes_modes.c">
@@ -383,6 +398,15 @@
     </ClCompile>
     <ClCompile Include="TownPortalPool.cpp">
       <Filter>WvsGame\InGame\Field\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryManipulator.cpp">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemInfo.cpp">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillInfo.cpp">
+      <Filter>WvsGame\InGame\User\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

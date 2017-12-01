@@ -56,6 +56,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	if (err)
 	{
 		printf("[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
+		bConnectionFailed = true;
 		OnDisconnect();
 		return;
 	}

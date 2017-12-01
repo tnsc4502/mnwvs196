@@ -278,7 +278,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 
 	char flag = iPacket->Decode1();
 	bool bNextAttackPossible = (flag & 0xFF) > 0;
-	bool pCenterSplit = iPacket->Decode1();
+	bool pCenterSplit = iPacket->Decode1() == 1;
 
 	//ZtlSecureTear_bSN_CS
 	char nSkillCommand = iPacket->Decode1();
@@ -310,7 +310,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	iPacket->Decode8();
 	iPacket->Decode4();
 	if (iPacket->Decode1() == 0 && Mob::IsLucidSpecialMob(pMob->GetTemplateID()))
-		nSLV = iPacket->Decode2();
+		nSLV = (char)iPacket->Decode2();
 	MovePath movePath;
 	movePath.Decode(iPacket);
 
@@ -338,14 +338,14 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	movePacket.Encode1(nSLV);
 	movePacket.Encode2(nSkillEffect);
 
-	movePacket.Encode1(aUnkList1.size());
+	movePacket.Encode1((char)aUnkList1.size());
 	for (const auto& p : aUnkList1)
 	{
 		movePacket.Encode2(p.first);
 		movePacket.Encode2(p.second);
 	}
 
-	movePacket.Encode1(aUnkList2.size());
+	movePacket.Encode1((char)aUnkList2.size());
 	for (short value : aUnkList2)
 		movePacket.Encode2(value);
 	movePath.Encode(&movePacket);

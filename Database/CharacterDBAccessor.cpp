@@ -108,7 +108,7 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	int nEquipCount = sizeof(equips) / sizeof(GW_ItemSlotBase*);
 	for (int i = 0; i < nEquipCount; ++i)
 		if (equips[i]->nItemID > 0)
-			chrEntry.aEquipItem.push_back(*(equips[i]));
+			chrEntry.mItemSlot[1].insert({ equips[i]->nPOS, equips[i] });
 	chrEntry.Save(true);
 }
 

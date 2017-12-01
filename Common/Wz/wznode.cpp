@@ -76,7 +76,7 @@ Node Node::operator[](const char * key) const {
     }
     if (!data->children) return Node();
     for (int i = 0; i < data->num; ++i) {
-        if (strcmp(data->children[i].name, key) == 0) return data->children[i];
+        if (data->children[i].name && strcmp(data->children[i].name, key) == 0) return data->children[i];
     }
     return Node();
 }

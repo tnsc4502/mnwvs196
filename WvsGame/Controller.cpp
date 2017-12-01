@@ -16,7 +16,7 @@ User* Controller::GetUser()
 
 int Controller::GetMobCtrlCount() const
 {
-	return m_lCtrlMob.size();
+	return (int)m_lCtrlMob.size();
 }
 
 int Controller::GetTotalControlledCount() const
@@ -38,7 +38,7 @@ void Controller::RemoveCtrlMob(Mob * ctrl)
 
 int Controller::GetNpcCtrlCount() const
 {
-	return m_lCtrlNpc.size();
+	return (int)m_lCtrlNpc.size();
 }
 
 void Controller::AddCtrlNpc(Npc* ctrl)

@@ -33,10 +33,13 @@ void WvsGame::ConnectToCenter(int nCenterIdx)
 void WvsGame::CenterAliveMonitor()
 {
 	printf("=================定期檢查Center Server連線程序=================\n");
-	//int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
-	//for (int i = 0; i < 1; ++i)
-	if (aCenterPtr && !aCenterPtr->GetWorldInfo().bIsConnected) {
+	if (aCenterPtr && aCenterPtr->GetWorldInfo().bConnectionFailed) 
+	{
 		printf("Center Server %d 尚未連線，嘗試重新連線。\n", 0);
+		aCenterPtr.reset();
+		aCenterServerService->stop();
+		aCenterWorkThread->detach();
+
 		new std::thread(&WvsGame::ConnectToCenter, this, 0);
 	}
 }
