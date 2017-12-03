@@ -1,0 +1,1 @@
+start WvsLogin.exe LoginCfg0.txt
