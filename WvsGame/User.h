@@ -25,6 +25,8 @@ public:
 
 	int GetUserID() const;
 
+	GA_Character* GetCharacterData();
+	Field* GetField();
 	void MakeEnterFieldPacket(OutPacket *oPacket);
 	void SendPacket(OutPacket *oPacket);
 	void OnPacket(InPacket *iPacket);
@@ -33,5 +35,6 @@ public:
 	void OnTransferFieldRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
 	void PostTransferField(int dwFieldID, Portal* pPortal, int bForce);
+	void SetMovePosition(int x, int y, char bMoveAction, short nFSN);
 };
 

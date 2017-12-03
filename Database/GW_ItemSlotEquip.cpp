@@ -1,20 +1,21 @@
 #include "GW_ItemSlotEquip.h"
 #include "WvsUnified.h"
+#include "Poco\Data\MySQL\MySQLException.h"
 
 #define ADD_EQUIP_FLAG(name, container)\
 if(n##name != 0) {\
 	nFlag |= EQP_##name;\
 	VALUE_HOLDER vh;\
 	vh.type = sizeof(n##name);\
-	if(sizeof(vh.type) == 1)vh.cValue = n##name;\
-	if (sizeof(vh.type) == 2)vh.sValue = n##name;\
-	if (sizeof(vh.type) == 4)vh.iValue = n##name;\
-	if (sizeof(vh.type) == 8)vh.liValue = n##name;\
+	if((vh.type) == 1)vh.cValue = n##name;\
+	if ((vh.type) == 2)vh.sValue = n##name;\
+	if ((vh.type) == 4)vh.iValue = n##name;\
+	if ((vh.type) == 8)vh.liValue = n##name;\
 	container.push_back(vh);\
 }
 
 #define DECODE_EQUIP_FLAG(name)\
-if (nFlag & n##name) {\
+if (nFlag & EQP_##name) {\
 	if (sizeof(n##name) == 1) n##name = iPacket->Decode1();\
 	if (sizeof(n##name) == 2) n##name = iPacket->Decode2();\
 	if (sizeof(n##name) == 4) n##name = iPacket->Decode4();\
@@ -43,8 +44,8 @@ void GW_ItemSlotEquip::Load(ATOMIC_COUNT_TYPE SN)
 	liExpireDate = recordSet["ExpireDate"];
 	nAttribute = recordSet["Attribute"];
 	nPOS = recordSet["POS"];
-	nRUC = (unsigned short)recordSet["RUC"];
-	nCUC = (unsigned short)recordSet["CUC"];
+	nRUC = (char)(unsigned short)recordSet["RUC"];
+	nCUC = (char)(unsigned short)recordSet["CUC"];
 	nSTR = recordSet["I_STR"];
 	nDEX = recordSet["I_DEX"];
 	nINT = recordSet["I_INT"];
@@ -68,67 +69,74 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 	if (type != GW_ItemSlotType::EQUIP)
 		throw std::runtime_error("Invalid Equip Type.");
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	if (nStatus == GW_ItemSlotStatus::DROPPED)
+	try 
 	{
-		queryStatement << "DELETE FROM ItemSlot_EQP Where ItemSN = " << liItemSN;
+		if (liItemSN < -1 /*nStatus == GW_ItemSlotStatus::DROPPED*/) //DROPPED or DELETED
+		{
+			liItemSN *= -1;
+			queryStatement << "UPDATE ItemSlot_EQP Set CharacterID = -1 Where CharacterID = " << nCharacterID << " and ItemSN = " << liItemSN;
+			queryStatement.execute();
+			return;
+		}
+		if (liItemSN == -1)
+		{
+			liItemSN = IncItemSN(GW_ItemSlotType::EQUIP);
+			queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
+				<< liItemSN << ", "
+				<< nItemID << ", "
+				<< nCharacterID << ", "
+				<< liExpireDate << ", "
+				<< nAttribute << ", "
+				<< nPOS << ", "
+				<< (unsigned short)nRUC << ", "
+				<< (unsigned short)nCUC << ", "
+				<< nSTR << ", "
+				<< nDEX << ", "
+				<< nINT << ", "
+				<< nLUK << ", "
+				<< nMaxHP << ", "
+				<< nMaxMP << ", "
+				<< nPAD << ", "
+				<< nMAD << ", "
+				<< nPDD << ", "
+				<< nMDD << ", "
+				<< nACC << ", "
+				<< nEVA << ", "
+				<< nSpeed << ", "
+				<< nCraft << ", "
+				<< nJump << ")";
+		}
+		else
+		{
+			queryStatement << "UPDATE ItemSlot_EQP Set "
+				<< "ItemID = '" << nItemID << "', "
+				<< "CharacterID = '" << nCharacterID << "', "
+				<< "ExpireDate = '" << liExpireDate << "', "
+				<< "Attribute = '" << nAttribute << "', "
+				<< "POS ='" << nPOS << "', "
+				<< "RUC ='" << (unsigned short)nRUC << "', "
+				<< "CUC ='" << (unsigned short)nCUC << "', "
+				<< "I_STR = '" << nSTR << "', "
+				<< "I_DEX = '" << nDEX << "', "
+				<< "I_INT = '" << nINT << "', "
+				<< "I_LUK = '" << nLUK << "', "
+				<< "I_MaxHP = '" << nMaxHP << "', "
+				<< "I_MaxMP = '" << nMaxMP << "', "
+				<< "I_PAD = '" << nPAD << "', "
+				<< "I_MAD = '" << nMAD << "', "
+				<< "I_PDD = '" << nPDD << "', "
+				<< "I_MDD = '" << nMDD << "', "
+				<< "I_ACC = '" << nACC << "', "
+				<< "I_EVA = '" << nEVA << "', "
+				<< "I_Speed = '" << nSpeed << "', "
+				<< "I_Craft = '" << nCraft << "', "
+				<< "I_Jump = '" << nJump << "' WHERE ItemSN = " << liItemSN;
+		}
 		queryStatement.execute();
-		return;
 	}
-	if (liItemSN == -1)
-	{
-		liItemSN = IncItemSN(GW_ItemSlotType::EQUIP);
-		queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
-			<< liItemSN << ", "
-			<< nItemID << ", "
-			<< nCharacterID << ", "
-			<< liExpireDate << ", "
-			<< nAttribute << ", "
-			<< nPOS << ", "
-			<< (unsigned short)nRUC << ", "
-			<< (unsigned short)nCUC << ", "
-			<< nSTR << ", "
-			<< nDEX << ", "
-			<< nINT << ", "
-			<< nLUK << ", "
-			<< nMaxHP << ", "
-			<< nMaxMP << ", "
-			<< nPAD << ", "
-			<< nMAD << ", "
-			<< nPDD << ", "
-			<< nMDD << ", "
-			<< nACC << ", "
-			<< nEVA << ", "
-			<< nSpeed << ", "
-			<< nCraft << ", "
-			<< nJump << ")";
+	catch (Poco::Data::MySQL::StatementException & e) {
+		printf("SQL Exception : %s\n", queryStatement.toString().c_str());
 	}
-	else
-	{
-		queryStatement << "UPDATE ItemSlot_EQP Set "
-			<< "ItemID = '" << nItemID << "', "
-			<< "CharacterID = '" << nCharacterID << "', "
-			<< "ExpireDate = '" << liExpireDate << "', "
-			<< "Attribute = '" << nAttribute << "', "
-			<< "POS ='" << nPOS << "', "
-			<< "RUC ='" << (unsigned short)nRUC << "', "
-			<< "CUC ='" << (unsigned short)nCUC << "', "
-			<< "I_STR = '" << nSTR << "', "
-			<< "I_DEX = '" << nDEX << "', "
-			<< "I_INT = '" << nINT << "', "
-			<< "I_LUK = '" << nLUK << "', "
-			<< "I_MaxHP = '" << nMaxHP << "', "
-			<< "I_MaxMP = '" << nMaxMP << "', "
-			<< "I_PAD = '" << nPAD << "', "
-			<< "I_MAX = '" << nMAD << "', "
-			<< "I_PDD = '" << nPDD << "', "
-			<< "I_MDD = '" << nMDD << "', "
-			<< "I_ACC = '" << nACC << "', "
-			<< "I_EVA = '" << nEVA << "', "
-			<< "I_Speed = '" << nSpeed << "', "
-			<< "I_Craft = '" << nCraft << "', "
-			<< "I_Jump = '" << nJump << "' WHERE ItemSN = " << liItemSN;
-	}
-	queryStatement.execute();
 }
 
 /*
@@ -217,8 +225,8 @@ void GW_ItemSlotEquip::EncodeEquipAdvanced(OutPacket *oPacket) const
 	oPacket->EncodeStr("Owner");
 	oPacket->Encode1(0); //Potential State
 	oPacket->Encode1(0); //Enhance
-	
-	//Potential
+
+						 //Potential
 	oPacket->Encode2(0);
 	oPacket->Encode2(0);
 	oPacket->Encode2(0);
@@ -226,7 +234,7 @@ void GW_ItemSlotEquip::EncodeEquipAdvanced(OutPacket *oPacket) const
 	oPacket->Encode2(0);
 	oPacket->Encode2(0);
 	oPacket->Encode2(0);
-	
+
 	//Fusion Anvil
 	oPacket->Encode2(0);
 
@@ -306,7 +314,7 @@ void GW_ItemSlotEquip::DecodeEquipAdvanced(InPacket *iPacket)
 	iPacket->Decode1(); //Potential State
 	iPacket->Decode1(); //Enhance
 
-						 //Potential
+						//Potential
 	iPacket->Decode2();
 	iPacket->Decode2();
 	iPacket->Decode2();
@@ -349,4 +357,16 @@ void GW_ItemSlotEquip::DecodeEquipAdvanced(InPacket *iPacket)
 
 	iPacket->Decode4();
 	iPacket->Decode8();
+}
+
+GW_ItemSlotBase * GW_ItemSlotEquip::MakeClone()
+{
+	GW_ItemSlotEquip* ret = new GW_ItemSlotEquip();
+	*ret = *this;
+	ret->liItemSN = -1;
+	/*OutPacket cloneOut;
+	Encode(&cloneOut);
+	InPacket cloneIn(cloneOut.GetPacket(), cloneOut.GetPacketSize());
+	ret->Decode(&cloneIn);*/
+	return ret;
 }

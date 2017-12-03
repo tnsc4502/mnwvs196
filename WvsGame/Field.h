@@ -9,6 +9,7 @@ class Mob;
 class Portal;
 class PortalMap;
 class TownPortalPool;
+class DropPool;
 
 class Field
 {
@@ -16,6 +17,7 @@ class Field
 	int m_nFieldID = 0;
 	LifePool *m_pLifePool;
 	PortalMap *m_pPortalMap;
+	DropPool *m_pDropPool;
 	TownPortalPool *m_pTownPortalPool;
 
 	std::string m_sStreetName, 
@@ -111,6 +113,7 @@ public:
 	void InitLifePool();
 
 	LifePool *GetLifePool();
+	DropPool *GetDropPool();
 
 	void OnEnter(User *pUser);
 	void OnLeave(User *pUser);
@@ -121,6 +124,7 @@ public:
 	void OnMobMove(User* pCtrl, Mob* pMob, InPacket* iPacket);
 	//不同Field 自行處理
 	virtual void OnPacket(User* pUser, InPacket* iPacket);
+	void OnUserMove(User* pUser, InPacket *iPacket);
 
 	PortalMap* GetPortalMap();
 	TownPortalPool* GetTownPortalPool();

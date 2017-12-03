@@ -120,3 +120,15 @@ void GW_ItemSlotBundle::RawDecode(InPacket *iPacket)
 		liItemSN = iPacket->Decode8();
 	iPacket->DecodeBuffer(nullptr, 17);
 }
+
+GW_ItemSlotBase * GW_ItemSlotBundle::MakeClone()
+{
+	GW_ItemSlotBundle* ret = new GW_ItemSlotBundle();
+	*ret = *this;
+	ret->liItemSN = -1;
+	/*OutPacket cloneOut;
+	Encode(&cloneOut);
+	InPacket cloneIn(cloneOut.GetPacket(), cloneOut.GetPacketSize());
+	ret->Decode(&cloneIn);*/
+	return ret;
+}

@@ -7,6 +7,7 @@
 #include "GW_Avatar.hpp"
 
 #include <atomic>
+#include <mutex>
 #include <map>
 
 class OutPacket;
@@ -23,6 +24,9 @@ private:
 		return ++atomicCharacterID;
 	}
 
+	std::mutex mCharacterLock;
+	ATOMIC_COUNT_TYPE mAtomicRemovedIndexCounter;
+
 public:
 
 	unsigned char nGender;
@@ -34,7 +38,8 @@ public:
 	GW_CharacterLevel *mLevel = nullptr;
 	GW_CharacterMoney *mMoney = nullptr;
 
-	std::map<short, GW_ItemSlotBase*> mItemSlot[6];
+	std::map<int, GW_ItemSlotBase*> mItemSlot[6];
+	std::map<int, int> mItemTrading[6];
 	//std::vector<GW_ItemSlotBundle> aCONItem, aETCItem, aINSItem;
 	//Cash Item...
 
@@ -50,13 +55,7 @@ public:
 	void EncodeStat(OutPacket *oPacket);
 
 	GA_Character();
-	~GA_Character()
-	{
-		delete mAvatarData;
-		delete mStat;
-		delete mLevel;
-		delete mMoney;
-	}
+	~GA_Character();
 
 	void Load(int nCharacterID);
 	void LoadAvatar(int nCharacterID);
@@ -64,6 +63,7 @@ public:
 
 	int FindEmptySlotPosition(int nTI);
 	GW_ItemSlotBase* GetItem(int nTI, int nPOS);
+	void RemoveItem(int nTI, int nPOS);
 	int FindCashItemSlotPosition(int nTI, long long int liSN);
 	int FindGeneralItemSlotPosition(int nTI, int nItemID, long long int dateExpire, long long int liSN);
 	int GetEmptySlotCount(int nTI);

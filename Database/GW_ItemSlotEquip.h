@@ -101,6 +101,7 @@ public:
 	void EncodeEquipAdvanced(OutPacket *oPacket) const;
 
 	void DecodeEquipBase(InPacket *iPacket);
-	void DecodeEquipAdvanced(InPacket *iPacket);
+	void DecodeEquipAdvanced(InPacket *iPacket); 
+	GW_ItemSlotBase* MakeClone();
 };
 

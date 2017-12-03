@@ -7,6 +7,7 @@
 #include "MovePath.h"
 #include "PortalMap.h"
 #include "TownPortalPool.h"
+#include "DropPool.h"
 
 #include <mutex>
 #include <functional>
@@ -20,6 +21,7 @@ Field::Field()
 	  m_pPortalMap(new PortalMap),
 	  m_pTownPortalPool(new TownPortalPool)
 {
+	m_pDropPool = new DropPool(this);
 	m_asyncUpdateTimer = AsnycScheduler::CreateTask(m_updateBinder, 1000, true);
 	//this->m_asyncUpdateTimer = (void*)timer;
 	//InitLifePool();
@@ -210,6 +212,11 @@ LifePool * Field::GetLifePool()
 	return m_pLifePool;
 }
 
+DropPool * Field::GetDropPool()
+{
+	return m_pDropPool;
+}
+
 void Field::OnEnter(User *pUser)
 {
 	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
@@ -252,6 +259,22 @@ void Field::OnPacket(User* pUser, InPacket *iPacket)
 		printf("Mob Packet Received %d.\n", (int)nHeader);
 	}*/
 
+}
+
+void Field::OnUserMove(User * pUser, InPacket * iPacket)
+{
+	iPacket->Decode1(); //CurFieldKey
+	iPacket->Decode8(); //UNK
+	iPacket->Decode1(); //UNK
+	MovePath movePath;
+	movePath.Decode(iPacket);
+	auto& lastElem = movePath.m_lElem.rbegin();
+	pUser->SetMovePosition(lastElem->x, lastElem->y, lastElem->bMoveAction, lastElem->fh);
+	OutPacket oPacket;
+	oPacket.Encode2(0x295);
+	oPacket.Encode4(pUser->GetUserID());
+	movePath.Encode(&oPacket);
+	BroadcastPacket(&oPacket);
 }
 
 PortalMap * Field::GetPortalMap()

@@ -135,7 +135,7 @@ void LoginSocket::SendWorldInformation()
 	for (int i = 0; i < numCenter; ++i)
 	{
 		auto& pCenter = WvsBase::GetInstance<WvsLogin>()->GetCenter(i);
-		if (pCenter->IsConnected())
+		if (pCenter && pCenter->IsConnected())
 		{
 			OutPacket oPacket;
 			oPacket.Encode2(LoginPacketFlag::WorldInformationResponse);

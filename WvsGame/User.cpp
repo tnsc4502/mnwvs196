@@ -13,6 +13,7 @@
 #include "Portal.h"
 #include "PortalMap.h"
 #include "Field.h"
+#include "QWUInventory.h"
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
@@ -40,6 +41,16 @@ void User::SendPacket(OutPacket *oPacket)
 	pSocket->SendPacket(oPacket);
 }
 
+GA_Character * User::GetCharacterData()
+{
+	return pCharacterData;
+}
+
+Field * User::GetField()
+{
+	return pField;
+}
+
 void User::MakeEnterFieldPacket(OutPacket *oPacket)
 {
 
@@ -55,6 +66,12 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case ClientPacketFlag::OnUserTransferFieldRequest:
 		OnTransferFieldRequest(iPacket);
+		break;
+	case ClientPacketFlag::OnUserMoveRequest:
+		pField->OnUserMove(this, iPacket);
+		break;
+	case ClientPacketFlag::OnUserChangeSlotRequest:
+		QWUInventory::OnChangeSlotPositionRequest(this, iPacket);
 		break;
 	default:
 		if (pField)
@@ -143,6 +160,15 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 	oPacket.Encode8(std::time(nullptr));
 	oPacket.EncodeHexString("64 00 00 00 00 00 00 01 A6 00 00 00 03 00 00 00 83 7D 26 5A 02 00 00 24 66 00 00 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 82 16 FB 52 01 00 00 24 0C 00 00 00 00 00 00 00 00 00 00 00 C8 00 00 00 F7 24 11 76 00 00 00 24 0C 00 00 00 01 00 00 24 02 00 00 24 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 96 00 00 00 00");
 	SendPacket(&oPacket);
+}
+
+void User::SetMovePosition(int x, int y, char bMoveAction, short nFSN)
+{
+	printf("Move User Set Move Position X = %d Y = %d\n", x, y);
+	SetPosX(x);
+	SetPosY(y);
+	SetMoveAction(bMoveAction);
+	SetFh(nFSN);
 }
 
 void User::LeaveField()

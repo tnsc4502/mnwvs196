@@ -3,9 +3,8 @@
 class InPacket;
 class OutPacket;
 
-class MovePath
+struct MovePath
 {
-private:
 	struct ELEM
 	{
 		short x, y, vx, vy, offsetX, offsetY, fh, fhFootStart;
@@ -16,7 +15,7 @@ private:
 	int m_fhLast, m_tEncodedGatherDuration;
 
 	std::list<ELEM> m_lElem;
-public:
+
 	MovePath();
 	~MovePath();
 

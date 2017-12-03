@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 
+class GW_ItemSlotBase;
+
 class ItemInfo
 {
 private:
@@ -234,6 +236,30 @@ public:
 	會改變角色狀態的物品，例如藥水
 	*/
 	void RegisterStateChangeItem(int nItemID, void *pProp);
+
+	ItemInfo::EquipItem* GetEquipItem(int nItemID);
+	ItemInfo::BundleItem* GetBundleItem(int nItemID);
+	ItemInfo::UpgradeItem* GetUpgradeItem(int nItemID);
+	ItemInfo::PortalScrollItem* GetPortalScrollItem(int nItemID);
+
+	ItemInfo::MobSummonItem* GetMobSummonItem(int nItemID);
+	ItemInfo::PetFoodItem* GetPetFoodItem(int nItemID);
+	ItemInfo::TamingMobFoodItem* GetTamingMobFoodItem(int nItemID);
+	ItemInfo::BridleItem* GetBridleItem(int nItemID);
+	ItemInfo::SkillLearnItem* GetSkillLearnItem(int nItemID);
+	ItemInfo::PortableChairItem* GetPortableChairItem(int nItemID);
+	ItemInfo::StateChangeItem* GetStateChangeItem(int nItemID);
+
+	bool ConsumeOnPickup(int nItemID);
+	bool ExpireOnLogout(int nItemID);
+	int GetBulletPAD(int nItemID);
+	long GetItemDateExpire(const std::string& sDate);
+	const std::string& GetItemName(int nItemID);
+	bool IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nDEX, int nINT, int nLUK, int nPOP, GW_ItemSlotBase* pPetItem, int nItemID);
+	bool IsNotSaleItem(int nItemID);
+	bool IsOnlyItem(int nItemID);
+	bool IsTradeBlockItem(int nItemID);
+	bool IsQuestItem(int nItemID);
 
 private:
 	std::map<int, ItemInfo::EquipItem*> m_mEquipItem;

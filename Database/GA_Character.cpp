@@ -10,6 +10,21 @@ GA_Character::GA_Character()
 	  mLevel(new GW_CharacterLevel()),
 	  mMoney(new GW_CharacterMoney())
 {
+	mAtomicRemovedIndexCounter = 10000;
+}
+
+GA_Character::~GA_Character()
+
+{
+	delete mAvatarData;
+	delete mStat;
+	delete mLevel;
+	delete mMoney;
+	for (auto& slot : mItemSlot)
+	{
+		for (auto& pItem : slot)
+			delete pItem.second;
+	}
 }
 
 void GA_Character::Load(int nCharacterID)
@@ -97,7 +112,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode1(mAvatarData->nSkin);
 	oPacket->Encode4(mAvatarData->nFace);
 	oPacket->Encode4(mAvatarData->nHair);
-	oPacket->Encode1(0xFF);
+	oPacket->Encode1((char)0xFF);
 	oPacket->Encode1(0);
 	oPacket->Encode1(0);
 	oPacket->Encode1(mLevel->nLevel); //LEVEL
@@ -188,14 +203,14 @@ void GA_Character::EncodeAvatarLook(OutPacket *oPacket)
 		oPacket->Encode1(eqp.nPOS * -1);
 		oPacket->Encode4(eqp.nItemID);
 	}
-	oPacket->Encode1(0xFF);
+	oPacket->Encode1((char)0xFF);
 	for (const auto& eqp : mAvatarData->aUnseenEquip)
 	{
 		oPacket->Encode1((eqp.nPOS * -1) - 100);
 		oPacket->Encode4(eqp.nItemID);
 	}
-	oPacket->Encode1(0xFF);
-	oPacket->Encode1(0xFF); //totem
+	oPacket->Encode1((char)0xFF);
+	oPacket->Encode1((char)0xFF); //totem
 
 	int cWeaponIdx = -1, weaponIdx = -1, nShieldIdx = -1;
 	for (int i = 0; i < mAvatarData->aHairEquip.size(); ++i)
@@ -228,7 +243,7 @@ void GA_Character::Save(bool isNewCharacter)
 {
 	if (isNewCharacter)
 	{
-		nCharacterID = IncCharacterID();
+		nCharacterID = (int)IncCharacterID();
 		Poco::Data::Statement newRecordStatement(GET_DB_SESSION);
 		newRecordStatement << "INSERT INTO Characters(CharacterID, AccountID) VALUES(" << nCharacterID << ", " << nAccountID << ")";
 		newRecordStatement.execute();
@@ -265,9 +280,12 @@ int GA_Character::FindEmptySlotPosition(int nTI)
 	if (nTI <= 0 || nTI > 5)
 		return 0;
 	int lastIndex = 1;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto itemSlot = mItemSlot[nTI];
 	for (auto& slot : itemSlot)
 	{
+		if (slot.first < 0) //skip equipped
+			continue;
 		if (slot.first > lastIndex || (slot.first == lastIndex && slot.second == nullptr))
 			return lastIndex;
 		lastIndex = slot.first + 1;
@@ -285,10 +303,27 @@ GW_ItemSlotBase* GA_Character::GetItem(int nTI, int nPOS)
 	return result->second;
 }
 
+void GA_Character::RemoveItem(int nTI, int nPOS)
+{
+	if (nTI <= 0 || nTI > 5)
+		return;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
+	int nNewPos = mAtomicRemovedIndexCounter++;
+	auto pItem = GetItem(nTI, nPOS);
+	if (pItem != nullptr)
+	{
+		mItemSlot[nTI].erase(pItem->nPOS);
+		pItem->nPOS = nNewPos;
+		pItem->liItemSN *= -1;
+		mItemSlot[nTI][nNewPos] = pItem;
+	}
+}
+
 int GA_Character::FindCashItemSlotPosition(int nTI, long long int liSN)
 {
 	if (nTI <= 0 || nTI > 5)
 		return 0;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto& itemSlot = mItemSlot[nTI];
 	for (auto& slot : itemSlot)
 		if (slot.second->liCashItemSN == liSN)
@@ -299,6 +334,7 @@ int GA_Character::FindGeneralItemSlotPosition(int nTI, int nItemID, long long in
 {
 	if (nTI <= 0 || nTI > 5)
 		return 0;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto& itemSlot = mItemSlot[nTI];
 	for (auto& slot : itemSlot)
 		if (slot.second->nItemID == nItemID && !CompareFileTime((FILETIME*)&dateExpire, (FILETIME*)(slot.second->liExpireDate)))
@@ -311,6 +347,7 @@ int GA_Character::GetEmptySlotCount(int nTI)
 	int nCount = 0;
 	if (nTI <= 0 || nTI > 5)
 		return 0;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto& itemSlot = mItemSlot[nTI];
 	int nLastIndeex = 0;
 	for (auto& slot : itemSlot)
@@ -328,6 +365,7 @@ int GA_Character::GetItemCount(int nTI, int nItemID)
 	int nCount = 0;
 	if (nTI <= 0 || nTI > 5)
 		return 0;
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto& itemSlot = mItemSlot[nTI];
 	for (auto& slot : itemSlot)
 		if (slot.second != nullptr && slot.second->nItemID == nItemID)
@@ -337,6 +375,7 @@ int GA_Character::GetItemCount(int nTI, int nItemID)
 
 void GA_Character::SetItem(int nTI, int nPOS, GW_ItemSlotBase * pItem)
 {
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	if (nTI >= 1 && nTI <= 5)
 		mItemSlot[nTI][nPOS] = pItem;
 }
@@ -747,16 +786,16 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket)
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
 		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
-		eqp->nPOS = wPos;
+		eqp->nPOS = wPos * -1;
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 		eqp->Decode(iPacket);
-		mItemSlot[1].insert({ eqp->nPOS, eqp });
+		mItemSlot[1].insert({ eqp->nPOS , eqp });
 	}
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
 		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
-		eqp->nPOS = wPos;
+		eqp->nPOS = (wPos + 100) * -1;
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 		eqp->Decode(iPacket);
 		mItemSlot[1].insert({ eqp->nPOS, eqp });
@@ -855,9 +894,9 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket)
 		oPacket->EncodeTime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); //TIME CURRENT TIME
 		oPacket->EncodeTime(-2); //TIME -2
 		oPacket->Encode4(0);
-		oPacket->Encode1(0xFF);
+		oPacket->Encode1((char)0xFF);
 		oPacket->Encode4(0);
-		oPacket->Encode1(0xFF);
+		oPacket->Encode1((char)0xFF);
 	}
 
 	if (flag & 2)
@@ -1140,7 +1179,7 @@ void GA_Character::EncodeInventoryData(OutPacket *oPacket)
 	oPacket->Encode2(0); //EQUIPPED 2
 
 	for (const auto &eqp : mItemSlot[1])
-		if (eqp.second->nPOS >= 0)
+		if (eqp.second->nPOS >= 0) // < -10000表示要刪除的物品且只會發生在WvsGame -> WvsCenter
 			eqp.second->Encode(oPacket);
 	oPacket->Encode2(0);
 						 //sub_69B50A

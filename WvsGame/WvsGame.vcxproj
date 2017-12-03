@@ -107,6 +107,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,7 +144,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <ClInclude Include="..\Common\AES\WzAES.hpp" />
     <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
     <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
+    <ClInclude Include="..\Common\DateTime\GameDateTime.h" />
     <ClInclude Include="..\Common\Memory\Arena.h" />
     <ClInclude Include="..\Common\Memory\ArenaVector.h" />
     <ClInclude Include="..\Common\Memory\BufferPool.h" />
@@ -193,6 +195,8 @@
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Drop.h" />
+    <ClInclude Include="DropPool.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldMan.h" />
     <ClInclude Include="FieldObj.h" />
@@ -208,6 +212,8 @@
     <ClInclude Include="NpcTemplate.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PortalMap.h" />
+    <ClInclude Include="QWUInventory.h" />
+    <ClInclude Include="Reward.h" />
     <ClInclude Include="SkillInfo.h" />
     <ClInclude Include="TownPortal.h" />
     <ClInclude Include="TownPortalPool.h" />
@@ -222,6 +228,7 @@
     <ClCompile Include="..\Common\AES\aes_modes.c" />
     <ClCompile Include="..\Common\AES\aes_ni.c" />
     <ClCompile Include="..\Common\AES\WzAES.cpp" />
+    <ClCompile Include="..\Common\DateTime\GameDateTime.cpp" />
     <ClCompile Include="..\Common\Memory\Arena.cpp" />
     <ClCompile Include="..\Common\Memory\BufferPool.cpp" />
     <ClCompile Include="..\Common\Memory\MemoryBlocks.cpp" />
@@ -246,6 +253,8 @@
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Drop.cpp" />
+    <ClCompile Include="DropPool.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldMan.cpp" />
     <ClCompile Include="FieldObj.cpp" />
@@ -261,6 +270,8 @@
     <ClCompile Include="NpcTemplate.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PortalMap.cpp" />
+    <ClCompile Include="QWUInventory.cpp" />
+    <ClCompile Include="Reward.cpp" />
     <ClCompile Include="SkillInfo.cpp" />
     <ClCompile Include="TownPortal.cpp" />
     <ClCompile Include="TownPortalPool.cpp" />

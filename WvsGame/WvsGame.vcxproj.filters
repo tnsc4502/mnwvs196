@@ -37,9 +37,6 @@
     <Filter Include="WvsGame\InGame\User">
       <UniqueIdentifier>{e9b5b415-de34-4b1e-833f-bb2fa11fdf8c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WvsGame\InGame\Context">
-      <UniqueIdentifier>{0407d1cd-bf3c-4448-bdb6-3098e6ce9d37}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Task">
       <UniqueIdentifier>{95a4882f-1d59-4b55-816d-316638a81316}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,12 @@
     </Filter>
     <Filter Include="WvsGame\InGame\User\Skill">
       <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Field\Drop">
+      <UniqueIdentifier>{53eb92a9-0d40-42d0-ab78-f180ae5be65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\DateTime">
+      <UniqueIdentifier>{6aa93c3d-db38-4a1c-a02c-f87b8bcfbdcc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,6 +261,21 @@
     <ClInclude Include="SkillInfo.h">
       <Filter>WvsGame\InGame\User\Skill</Filter>
     </ClInclude>
+    <ClInclude Include="Drop.h">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClInclude>
+    <ClInclude Include="DropPool.h">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClInclude>
+    <ClInclude Include="Reward.h">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClInclude>
+    <ClInclude Include="QWUInventory.h">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DateTime\GameDateTime.h">
+      <Filter>Common\DateTime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aes_modes.c">
@@ -407,6 +425,21 @@
     </ClCompile>
     <ClCompile Include="SkillInfo.cpp">
       <Filter>WvsGame\InGame\User\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="Drop.cpp">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClCompile>
+    <ClCompile Include="DropPool.cpp">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClCompile>
+    <ClCompile Include="Reward.cpp">
+      <Filter>WvsGame\InGame\Field\Drop</Filter>
+    </ClCompile>
+    <ClCompile Include="QWUInventory.cpp">
+      <Filter>WvsGame\InGame\User\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\DateTime\GameDateTime.cpp">
+      <Filter>Common\DateTime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

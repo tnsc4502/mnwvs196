@@ -29,8 +29,9 @@ GW_ItemSlotBase::ATOMIC_COUNT_TYPE GW_ItemSlotBase::InitItemSN(GW_ItemSlotType t
 	queryStatement.execute();
 	Poco::Data::RecordSet recordSet(queryStatement);
 	if (recordSet.rowCount() == 0 || recordSet["MAX(ItemSN)"].isEmpty())
-		return 0;
-	return (ATOMIC_COUNT_TYPE)recordSet["MAX(ItemSN)"];
+		return 2;
+	auto result = (ATOMIC_COUNT_TYPE)recordSet["MAX(ItemSN)"];
+	return result > 1 ? result : 2;
 }
 
 /*
@@ -74,8 +75,7 @@ void GW_ItemSlotBase::EncodeInventoryPosition(OutPacket *oPacket) const
 		oPacket->Encode2(encodePos);
 	else
 	{
-		printf("Encoding Etc Items\n");
-		oPacket->Encode1(encodePos);
+		oPacket->Encode1((char)encodePos);
 	}
 }
 
@@ -91,7 +91,7 @@ void GW_ItemSlotBase::EncodeTradingPosition(OutPacket *oPacket) const
 		if (encodePos > 100 && encodePos < 1000)
 			encodePos -= 100;
 	}
-	oPacket->Encode1(encodePos);
+	oPacket->Encode1((char)encodePos);
 }
 
 bool GW_ItemSlotBase::IsTreatSingly() const
@@ -99,7 +99,7 @@ bool GW_ItemSlotBase::IsTreatSingly() const
 	int nItemHeader = nItemID / 1000000;
 	return (nItemHeader != 2 && nItemHeader != 3 && nItemHeader != 4
 		|| nItemID / 10000 == 207
-		|| liExpireDate != 0);
+		/*|| liExpireDate != 0*/);
 }
 
 void GW_ItemSlotBase::Decode(InPacket *iPacket)

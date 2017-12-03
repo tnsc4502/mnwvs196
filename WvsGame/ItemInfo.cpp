@@ -1,6 +1,6 @@
 #include "ItemInfo.h"
 #include "Wz\WzResMan.hpp"
-
+#include "..\Database\GW_ItemSlotBase.h"
 
 ItemInfo::ItemInfo()
 {
@@ -111,8 +111,45 @@ void ItemInfo::IterateBundleItem()
 				pNewBundle->dSellUnitPrice = (double)infoImg["unitPrice"];
 				pNewBundle->nSellPrice = infoImg["price"];
 				pNewBundle->nRequiredLEV = infoImg["reqLevel"];
-
+				pNewBundle->nPAD = infoImg["incPAD"]; //­¸Ãð
 				m_mBundleItem[nItemID] = pNewBundle;
+				int nItemCategory = nItemID / 10000;
+				void* pProp = (void*)&item;
+				switch (nItemCategory)
+				{
+				case 200:
+				case 201:
+				case 202:
+				case 205:
+				case 221:
+					RegisterStateChangeItem(nItemID, pProp);
+					break;
+				case 204:
+					RegisterUpgradeItem(nItemID, pProp);
+					break;
+				case 203:
+					RegisterPortalScrollItem(nItemID, pProp);
+					break;
+				case 210:
+					RegisterMobSummonItem(nItemID, pProp);
+					break;
+				case 212:
+					RegisterPetFoodItem(nItemID, pProp);
+					break;
+				case 226:
+					RegisterTamingMobFoodItem(nItemID, pProp);
+					break;
+				case 227:
+					RegisterBridleItem(nItemID, pProp);
+					break;
+				case 228:
+				case 229:
+					RegisterSkillLearnItem(nItemID, pProp);
+					break;
+				case 301:
+					RegisterPortableChairItem(nItemID, pProp);
+					break;
+				}
 			}
 		}
 	}
@@ -174,42 +211,6 @@ void ItemInfo::RegisterEquipItemInfo(ItemInfo::EquipItem * pEqpItem, int nItemID
 
 		if ((int)infoImg["consumeMP"] == 1)
 			pEqpItem->dwPetAbilityFlag |= 0x40;
-	}
-	int nItemCategory = nItemID / 10000;
-	switch (nItemCategory)
-	{
-		case 200:
-		case 201:
-		case 202:
-		case 205:
-		case 221:
-			RegisterStateChangeItem(nItemID, pProp);
-			break;
-		case 204:
-			RegisterUpgradeItem(nItemID, pProp);
-			break;
-		case 203:
-			RegisterPortalScrollItem(nItemID, pProp);
-			break;
-		case 210:
-			RegisterMobSummonItem(nItemID, pProp);
-			break;
-		case 212:
-			RegisterPetFoodItem(nItemID, pProp);
-			break;
-		case 226:
-			RegisterTamingMobFoodItem(nItemID, pProp);
-			break;
-		case 227:
-			RegisterBridleItem(nItemID, pProp);
-			break;
-		case 228:
-		case 229:
-			RegisterSkillLearnItem(nItemID, pProp);
-			break;
-		case 301:
-			RegisterPortableChairItem(nItemID, pProp);
-			break;
 	}
 }
 
@@ -317,6 +318,213 @@ void ItemInfo::RegisterStateChangeItem(int nItemID, void * pProp)
 	for(auto& effect : specImg)
 		pNewStateChangeItem->spec.push_back({ effect.Name(), (int)effect });
 	m_mStateChangeItem[nItemID] = pNewStateChangeItem;
+}
+
+ItemInfo::EquipItem * ItemInfo::GetEquipItem(int nItemID)
+{
+	auto findIter = m_mEquipItem.find(nItemID);
+	return (findIter != m_mEquipItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::StateChangeItem * ItemInfo::GetStateChangeItem(int nItemID)
+{
+	auto findIter = m_mStateChangeItem.find(nItemID);
+	return (findIter != m_mStateChangeItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::BundleItem * ItemInfo::GetBundleItem(int nItemID)
+{
+	auto findIter = m_mBundleItem.find(nItemID);
+	return (findIter != m_mBundleItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::UpgradeItem * ItemInfo::GetUpgradeItem(int nItemID)
+{
+	auto findIter = m_mUpgradeItem.find(nItemID);
+	return (findIter != m_mUpgradeItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::PortalScrollItem * ItemInfo::GetPortalScrollItem(int nItemID)
+{
+	auto findIter = m_mPortalScrollItem.find(nItemID);
+	return (findIter != m_mPortalScrollItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::MobSummonItem * ItemInfo::GetMobSummonItem(int nItemID)
+{
+	auto findIter = m_mMobSummonItem.find(nItemID);
+	return (findIter != m_mMobSummonItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::PetFoodItem * ItemInfo::GetPetFoodItem(int nItemID)
+{
+	auto findIter = m_mPetFoodItem.find(nItemID);
+	return (findIter != m_mPetFoodItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::TamingMobFoodItem * ItemInfo::GetTamingMobFoodItem(int nItemID)
+{
+	auto findIter = m_mTamingMobFoodItem.find(nItemID);
+	return (findIter != m_mTamingMobFoodItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::BridleItem * ItemInfo::GetBridleItem(int nItemID)
+{
+	auto findIter = m_mBridleItem.find(nItemID);
+	return (findIter != m_mBridleItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::SkillLearnItem * ItemInfo::GetSkillLearnItem(int nItemID)
+{
+	auto findIter = m_mSkillLearnItem.find(nItemID);
+	return (findIter != m_mSkillLearnItem.end() ? findIter->second : nullptr);
+}
+
+ItemInfo::PortableChairItem * ItemInfo::GetPortableChairItem(int nItemID)
+{
+	auto findIter = m_mPortableChairItem.find(nItemID);
+	return (findIter != m_mPortableChairItem.end() ? findIter->second : nullptr);
+}
+
+bool ItemInfo::ConsumeOnPickup(int nItemID)
+{
+	StateChangeItem* pItem = nullptr;
+	if (nItemID / 1000000 == 2 && (pItem = GetStateChangeItem(nItemID)) != nullptr)
+	{
+		for (auto& p : pItem->spec)
+			if (p.first == "consumeOnPickup" && p.second == 1)
+				return true;
+	}
+	return false;
+}
+
+bool ItemInfo::ExpireOnLogout(int nItemID)
+{
+	if (nItemID / 1000000 != 5)
+		if (nItemID / 1000000 == 1)
+		{
+			auto pItem = GetEquipItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bExpireOnLogout;
+		}
+		else
+		{
+			auto pItem = GetBundleItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bExpireOnLogout;
+		}
+	return false;
+}
+
+int ItemInfo::GetBulletPAD(int nItemID)
+{
+	auto pItem = GetBundleItem(nItemID);
+	if (pItem == nullptr)
+		return 0;
+	return pItem->nPAD;
+}
+
+long ItemInfo::GetItemDateExpire(const std::string & sDate)
+{
+	std::string sYear = sDate.substr(4);
+	std::string sMonth = sDate.substr(4, 2);
+	std::string sDay = sDate.substr(6, 2);
+	std::string sHour = sDate.substr(8, 2);
+	SYSTEMTIME sysTime;
+	sysTime.wYear = atoi(sYear.c_str());
+	sysTime.wMonth = atoi(sMonth.c_str());
+	sysTime.wDay = atoi(sDay.c_str());
+	sysTime.wHour = atoi(sHour.c_str());
+	sysTime.wMilliseconds = 0;
+	sysTime.wSecond = 0;
+	sysTime.wMinute = 0;
+	sysTime.wDayOfWeek = 0;
+	FILETIME ft;
+	SystemTimeToFileTime(&sysTime, &ft);
+	return *((long long int*)&ft);
+}
+
+const std::string & ItemInfo::GetItemName(int nItemID)
+{
+	auto findResult = m_mItemString.find(nItemID);
+	return (findResult == m_mItemString.end() ? "" : findResult->second);
+}
+
+bool ItemInfo::IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nDEX, int nINT, int nLUK, int nPOP, GW_ItemSlotBase * pPetItem, int nItemID)
+{
+	return false;
+}
+
+bool ItemInfo::IsNotSaleItem(int nItemID)
+{
+	if (nItemID / 1000000 != 5)
+		if (nItemID / 1000000 == 1)
+		{
+			auto pItem = GetEquipItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bNotSale;
+		}
+		else
+		{
+			auto pItem = GetBundleItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bNotSale;
+		}
+	return false;
+}
+
+bool ItemInfo::IsOnlyItem(int nItemID)
+{
+	if (nItemID / 1000000 != 5)
+		if (nItemID / 1000000 == 1)
+		{
+			auto pItem = GetEquipItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bOnly;
+		}
+		else
+		{
+			auto pItem = GetBundleItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bOnly;
+		}
+	return false;
+}
+
+bool ItemInfo::IsTradeBlockItem(int nItemID)
+{
+	if (nItemID / 1000000 != 5)
+		if (nItemID / 1000000 == 1)
+		{
+			auto pItem = GetEquipItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bTradeBlock;
+		}
+		else
+		{
+			auto pItem = GetBundleItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bTradeBlock;
+		}
+	return false;
+}
+
+bool ItemInfo::IsQuestItem(int nItemID)
+{
+	if (nItemID / 1000000 != 5)
+		if (nItemID / 1000000 == 1)
+		{
+			auto pItem = GetEquipItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bQuest;
+		}
+		else
+		{
+			auto pItem = GetBundleItem(nItemID);
+			if (pItem != nullptr)
+				return pItem->abilityStat.bQuest;
+		}
+	return false;
 }
 
 void ItemInfo::LoadIncrementStat(ItemInfo::BasicIncrementStat & refStat, void * pProp)

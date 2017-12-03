@@ -17,6 +17,7 @@ public:
 	void RawEncode(OutPacket *oPacket) const;
 
 	void Decode(InPacket *iPacket);
-	void RawDecode(InPacket *iPacket);
+	void RawDecode(InPacket *iPacket); 
+	GW_ItemSlotBase * MakeClone();
 };
 
