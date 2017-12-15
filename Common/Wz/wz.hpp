@@ -5,13 +5,13 @@
 #pragma once
 #include <string>
 #include <cstdint>
+#include <mutex>
 #include "sprite.hpp"
 
 namespace WZ {
 class Node {
 public:
     class Data;
-
     // Public functions
     Node();
     Node(const Node &);

@@ -3,6 +3,7 @@
 #include "Reward.h"
 #include "Field.h"
 #include "DropPool.h"
+#include "SkillInfo.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "InventoryManipulator.h"
@@ -28,9 +29,6 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 		{
 			GW_ItemSlotBase* pItemCopyed = nullptr;
 			InventoryManipulator::RawRemoveItem(pCharacterData, nTI, nPOS1, nCount, aChangeLog, &nMovedCount, &pItemCopyed);
-			OutPacket oPacket;
-			InventoryManipulator::MakeInventoryOperation(&oPacket, bOnExclRequest, aChangeLog);
-			pUser->SendPacket(&oPacket);
 			if (pItemCopyed && pUser->GetField())
 			{
 				Reward reward;
@@ -52,7 +50,42 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 					0);
 			}
 		}
+		else if (nPOS1 > 0 && nPOS2 > 0) //在背包內移動
+		{
+			auto pItemSrc = pCharacterData->GetItem(nTI, nPOS1);
+			auto pItemDst = pCharacterData->GetItem(nTI, nPOS2);
+			//Equip
+			if (nTI == 1)
+				InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
+			else
+			{
+				if (pItemDst != nullptr && pItemSrc->nItemID == pItemDst->nItemID)
+				{
+					int nMaxPerSlot = SkillInfo::GetInstance()->GetBundleItemMaxPerSlot(pItemSrc->nItemID, pCharacterData);
+					int nSlotSrcCount = ((GW_ItemSlotBundle*)pItemSrc)->nNumber;
+					int nSlotDstCount = ((GW_ItemSlotBundle*)pItemDst)->nNumber;
+					if (nSlotSrcCount + nSlotDstCount <= nMaxPerSlot)
+					{
+						InventoryManipulator::RawRemoveItem(pCharacterData, nTI, nPOS1, nSlotSrcCount, aChangeLog, &nMovedCount, nullptr);
+						((GW_ItemSlotBundle*)pItemDst)->nNumber += nSlotSrcCount;
+						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
+					}
+					else
+					{
+						((GW_ItemSlotBundle*)pItemDst)->nNumber = nMaxPerSlot;
+						((GW_ItemSlotBundle*)pItemSrc)->nNumber = nMaxPerSlot = nSlotSrcCount + nSlotDstCount - nMaxPerSlot;
+						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS1, nullptr, 0, ((GW_ItemSlotBundle*)pItemSrc)->nNumber);
+						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
+					}
+				}
+				else
+					InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
+			}
+		}
 	}
+	OutPacket oPacket;
+	InventoryManipulator::MakeInventoryOperation(&oPacket, bOnExclRequest, aChangeLog);
+	pUser->SendPacket(&oPacket);
 	return false;
 }
 

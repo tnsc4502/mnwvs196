@@ -18,6 +18,7 @@ public:
 	InventoryManipulator();
 	~InventoryManipulator();
 
+	static void SwapSlot(GA_Character* pCharacterData, std::vector<ChangeLog>& aChangeLog, int nTI, int nPOS1, int nPOS2);
 	static bool IsItemExist(GA_Character* pCharacterData, int nTI, int nItemID);
 	static bool RawAddItem(GA_Character* pCharacterData, int nTI, GW_ItemSlotBase* pItem, std::vector<ChangeLog>& aChangeLog, int *nIncRet);
 	static void InsertChangeLog(std::vector<ChangeLog>& aChangeLog, int nChange, int nTI, int nPOS, GW_ItemSlotBase* pi, int nPOS2, int nNumber);

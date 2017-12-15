@@ -5,8 +5,10 @@
 
 #include "wzmain.hpp"
 #include "..\Memory\MemoryPoolMan.hpp"
+#include <mutex>
 
 namespace WZ {
+	std::mutex mWzResLock;
 vector<Img *> Img::Imgs;
 void * Img::operator new(size_t size) {
 #pragma warning(disable:4267)
@@ -87,6 +89,7 @@ void Img::SubProperty(Node n) {
     }
 #pragma warning(default:4244)
 };
+
 
 void Img::Parse() {
     file.Seek(offset);

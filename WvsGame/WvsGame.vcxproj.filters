@@ -52,17 +52,17 @@
     <Filter Include="WvsGame\InGame\Field\Portal">
       <UniqueIdentifier>{25290f0d-91bb-456a-89d5-068c8d1b1538}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WvsGame\InGame\User\Inventory">
-      <UniqueIdentifier>{25a8c183-7b98-4a05-88b7-c374f49eafbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="WvsGame\InGame\User\Skill">
-      <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WvsGame\InGame\Field\Drop">
       <UniqueIdentifier>{53eb92a9-0d40-42d0-ab78-f180ae5be65a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common\DateTime">
       <UniqueIdentifier>{6aa93c3d-db38-4a1c-a02c-f87b8bcfbdcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Inventory">
+      <UniqueIdentifier>{25a8c183-7b98-4a05-88b7-c374f49eafbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Skill">
+      <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -253,13 +253,13 @@
       <Filter>WvsGame\InGame\Field</Filter>
     </ClInclude>
     <ClInclude Include="InventoryManipulator.h">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="ItemInfo.h">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="SkillInfo.h">
-      <Filter>WvsGame\InGame\User\Skill</Filter>
+      <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
     <ClInclude Include="Drop.h">
       <Filter>WvsGame\InGame\Field\Drop</Filter>
@@ -271,10 +271,19 @@
       <Filter>WvsGame\InGame\Field\Drop</Filter>
     </ClInclude>
     <ClInclude Include="QWUInventory.h">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\DateTime\GameDateTime.h">
       <Filter>Common\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillEntry.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillLevelData.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="exprtk.hpp">
+      <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -418,13 +427,13 @@
       <Filter>WvsGame\InGame\Field\Portal</Filter>
     </ClCompile>
     <ClCompile Include="InventoryManipulator.cpp">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClCompile>
     <ClCompile Include="ItemInfo.cpp">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClCompile>
     <ClCompile Include="SkillInfo.cpp">
-      <Filter>WvsGame\InGame\User\Skill</Filter>
+      <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
     <ClCompile Include="Drop.cpp">
       <Filter>WvsGame\InGame\Field\Drop</Filter>
@@ -436,10 +445,16 @@
       <Filter>WvsGame\InGame\Field\Drop</Filter>
     </ClCompile>
     <ClCompile Include="QWUInventory.cpp">
-      <Filter>WvsGame\InGame\User\Inventory</Filter>
+      <Filter>WvsGame\InGame\Inventory</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\DateTime\GameDateTime.cpp">
       <Filter>Common\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillEntry.cpp">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillLevelData.cpp">
+      <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

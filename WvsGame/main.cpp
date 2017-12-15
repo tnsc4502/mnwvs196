@@ -14,9 +14,11 @@
 #include "Constants\ConfigLoader.hpp"
 #include "FieldMan.h"
 #include "ItemInfo.h"
+#include "SkillInfo.h"
 
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GW_ItemSlotEquip.h"
+
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -29,8 +31,13 @@ void ConnectionAcceptorThread(short nPort)
 #include "..\Database\GA_Character.hpp"
 #include "InventoryManipulator.h"
 
+
 int main(int argc, char **argv)
 {
+	/*Calculator<int> c;
+	
+	for (int i = 0; i < 1000; ++i)
+		std::cout << c.GetAnswer(c.Replace("x+10", 'x', std::to_string(i))) << std::endl;;*/
 	/*GA_Character* pCharTest;
 	std::vector<InventoryManipulator::ChangeLog> aList;
 	int nDecRemove = 0;
@@ -61,6 +68,7 @@ int main(int argc, char **argv)
 	delete pCharTest;
 	system("Pause"); */
 	ItemInfo::GetInstance()->Initialize();
+	SkillInfo::GetInstance()->IterateSkillInfo();
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
 	/*for (auto& eachMap : mapWz)
 	{

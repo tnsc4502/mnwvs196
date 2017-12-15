@@ -197,6 +197,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Drop.h" />
     <ClInclude Include="DropPool.h" />
+    <ClInclude Include="exprtk.hpp" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldMan.h" />
     <ClInclude Include="FieldObj.h" />
@@ -214,7 +215,9 @@
     <ClInclude Include="PortalMap.h" />
     <ClInclude Include="QWUInventory.h" />
     <ClInclude Include="Reward.h" />
+    <ClInclude Include="SkillEntry.h" />
     <ClInclude Include="SkillInfo.h" />
+    <ClInclude Include="SkillLevelData.h" />
     <ClInclude Include="TownPortal.h" />
     <ClInclude Include="TownPortalPool.h" />
     <ClInclude Include="User.h" />
@@ -272,7 +275,9 @@
     <ClCompile Include="PortalMap.cpp" />
     <ClCompile Include="QWUInventory.cpp" />
     <ClCompile Include="Reward.cpp" />
+    <ClCompile Include="SkillEntry.cpp" />
     <ClCompile Include="SkillInfo.cpp" />
+    <ClCompile Include="SkillLevelData.cpp" />
     <ClCompile Include="TownPortal.cpp" />
     <ClCompile Include="TownPortalPool.cpp" />
     <ClCompile Include="User.cpp" />

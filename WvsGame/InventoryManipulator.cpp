@@ -14,6 +14,22 @@ InventoryManipulator::~InventoryManipulator()
 {
 }
 
+void InventoryManipulator::SwapSlot(GA_Character* pCharacterData, std::vector<ChangeLog>& aChangeLog, int nTI, int nPOS1, int nPOS2)
+{
+	auto pItemSrc = pCharacterData->mItemSlot[nTI][nPOS1];
+	auto pItemDst = pCharacterData->mItemSlot[nTI][nPOS2];
+	pItemSrc->nPOS = nPOS2;
+	if(pItemDst)
+		pItemDst->nPOS = nPOS1;
+
+	if (pItemDst)
+		pCharacterData->mItemSlot[nTI][nPOS1] = pItemDst;
+	else
+		pCharacterData->mItemSlot[nTI].erase(nPOS1);
+	pCharacterData->mItemSlot[nTI][nPOS2] = pItemSrc;
+	InventoryManipulator::InsertChangeLog(aChangeLog, 2, nTI, nPOS1, nullptr, nPOS2, 1);
+}
+
 bool InventoryManipulator::IsItemExist(GA_Character* pCharacterData, int nTI, int nItemID)
 {
 	return pCharacterData->GetItemCount(nTI, nItemID) > 0;
