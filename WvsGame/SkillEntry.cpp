@@ -9,6 +9,8 @@ SkillEntry::SkillEntry()
 
 SkillEntry::~SkillEntry()
 {
+	for (auto& x : m_aLevelData)
+		delete x;
 }
 
 void SkillEntry::AddLevelData(SkillLevelData * pLevelData)
@@ -35,7 +37,7 @@ void SkillEntry::SetMasterLevel(int nLevel)
 
 void SkillEntry::SetMaxLevel(int nLevel)
 {
-	m_aLevelData.resize(nLevel + 1);
+	//m_aLevelData.resize(nLevel + 1);
 	m_nMaxLevel = nLevel;
 }
 

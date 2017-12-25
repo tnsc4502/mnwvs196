@@ -1,29 +1,47 @@
 #pragma once
 #include <string>
+#include <atomic>
 
 class InPacket;
 
 class OutPacket
 {
-private:
-	unsigned char* aBuff = nullptr;
-	unsigned int nBuffSize = 0, nPacketSize = 4;
+public:
+	class SharedPacket {
+	private:
+		friend class OutPacket;
 
-	const static int DEFAULT_BUFF_SIZE = 256;
+		unsigned char* aBuff = nullptr;
+		unsigned int nBuffSize = 0, nPacketSize = 4 + 8;
+		std::atomic<int> nRefCount;
+
+		const static int DEFAULT_BUFF_SIZE = 256;
+
+	public:
+		SharedPacket();
+		~SharedPacket();
+
+		void IncRefCount();
+		void DecRefCount();
+	};
+
+private:
+	SharedPacket* m_pSharedPacket;
 
 public:
+
 	OutPacket();
-	OutPacket(short opcode);
+	//OutPacket(short opcode);
 	~OutPacket();
 
 	int GetPacketSize() const
 	{
-		return nPacketSize - 4;
+		return m_pSharedPacket->nPacketSize - (4 + 8);
 	}
 
 	unsigned char* GetPacket()
 	{
-		return aBuff + 4;
+		return m_pSharedPacket->aBuff + (4 + 8); // +8 for this pointer
 	}
 
 	void CopyFromTransferedPacket(InPacket *oPacket);
@@ -37,12 +55,17 @@ public:
 	void EncodeTime(int64_t timeValue);
 	void Release();
 
+	void IncRefCount();
+	void DecRefCount();
+
 	void Print()
 	{
 		printf("OutPacket«Ê¥]¤º®e¡G");
-		for (unsigned int i = 0; i < nPacketSize; ++i)
-			printf("0x%02X ", (int)aBuff[i]);
+		for (unsigned int i = 0; i < m_pSharedPacket->nPacketSize; ++i)
+			printf("0x%02X ", (int)m_pSharedPacket->aBuff[i]);
 		printf("\n");
 	}
+
+	SharedPacket* GetSharedPacket();
 };
 

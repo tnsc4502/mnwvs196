@@ -2,11 +2,13 @@
 #include <map>
 #include <mutex>
 #include <atomic>
+#include "exprtk.hpp"
 
 struct GA_Character;
 class SkillEntry;
 
-#define PARSE_SKILLDATA(attribute) parser.compile(#attribute, expression), expression.value();
+#define PARSE_SKILLDATA(attribute) (int)parser.compile(((std::string)skillCommonImg[#attribute]), symbol_table).value();
+#define PARSE_SKILLDATA_STRING(attribute) (int)parser.compile(#attribute, symbol_table).value();
 
 class SkillInfo
 {
@@ -20,11 +22,17 @@ public:
 
 	int GetLoadingSkillCount() const;
 
+
+	const std::map<int, std::map<int, SkillEntry*> *>& GetSkills() const;
+	const std::map<int, SkillEntry*> * GetSkillsByRootID(int nRootID) const;
+
 	static SkillInfo* GetInstance();
 	int GetBundleItemMaxPerSlot(int nItemID, GA_Character* pCharacterData);
 	void IterateSkillInfo();
 	void LoadSkillRoot(int nSkillRootID, void* pData);
 	SkillEntry* LoadSkill(int nSkillRootID, int nSkillID, void* pData);
 	void LoadLevelData(int nSkillID, SkillEntry* pEntry, void* pData);
+	void LoadLevelDataByLevelNode(int nSkillID, SkillEntry* pEntry, void* pData);
+	void LoadLevelDataSpecial();
 };
 

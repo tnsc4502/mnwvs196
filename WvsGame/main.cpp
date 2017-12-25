@@ -19,6 +19,13 @@
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GW_ItemSlotEquip.h"
 
+#include "LifePool.h"
+#include <functional>
+#include "..\Database\GA_Character.hpp"
+#include "InventoryManipulator.h"
+#include "Task\AsnycScheduler.h"
+
+
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -27,13 +34,20 @@ void ConnectionAcceptorThread(short nPort)
 	gameServer->BeginAccept<ClientSocket>();
 }
 
-#include "LifePool.h"
-#include "..\Database\GA_Character.hpp"
-#include "InventoryManipulator.h"
-
+void CheckSkillInfoLoading()
+{
+	int count = SkillInfo::GetInstance()->GetLoadingSkillCount();
+	if (count == 0)
+		stWzResMan->ReleaseMemory();
+}
 
 int main(int argc, char **argv)
 {
+	//std::cout << (int)(stWzResMan->GetWz(Wz::Skill)["2711.img"]["skill"]["27111005"]["common"]["maxLevel"] ) << std::endl;
+	/*for (auto& eh : (stWzResMan->GetWz(Wz::Skill)["2711.img"]["skill"]["27111005"]))
+	{
+		printf("Node name %s\n", eh.Name().c_str());
+	}*/
 	/*Calculator<int> c;
 	
 	for (int i = 0; i < 1000; ++i)
@@ -69,6 +83,10 @@ int main(int argc, char **argv)
 	system("Pause"); */
 	ItemInfo::GetInstance()->Initialize();
 	SkillInfo::GetInstance()->IterateSkillInfo();
+	//auto& skillData = SkillInfo::GetInstance()->GetSkills();
+	/*auto bindResult = std::bind(CheckSkillInfoLoading);
+	auto t = AsnycScheduler::CreateTask(bindResult, 5000, false);
+	t->Start();*/
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
 	/*for (auto& eachMap : mapWz)
 	{

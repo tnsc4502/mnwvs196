@@ -92,6 +92,7 @@ void Img::SubProperty(Node n) {
 
 
 void Img::Parse() {
+	//std::lock_guard<std::mutex> lockGuard(mWzResLock);
     file.Seek(offset);
     uint8_t a = file.Read<uint8_t>();
     if (a != 0x73 ) {

@@ -67,6 +67,7 @@ asio::ip::tcp::socket& SocketBase::GetSocket()
 
 void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 {
+	oPacket->IncRefCount();
 	if (!mSocket.is_open())
 	{
 		OnDisconnect();
@@ -81,20 +82,20 @@ void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 		asio::async_write(mSocket,
 			asio::buffer(buffPtr - 4, oPacket->GetPacketSize() + 4),
 			std::bind(&SocketBase::OnSendPacketFinished,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - 4));
+				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - (4 + 8), oPacket->GetSharedPacket()));
 	}
 	else
 	{
 		asio::async_write(mSocket,
 			asio::buffer(buffPtr, oPacket->GetPacketSize()),
 			std::bind(&SocketBase::OnSendPacketFinished,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - 4));
+				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - (4 + 8), oPacket->GetSharedPacket()));
 	}
 }
 
-void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer)
+void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer, void *pPacket)
 {
-	//stMemoryPoolMan->DestructArray(buffer);
+	((OutPacket::SharedPacket*)pPacket)->DecRefCount();
 }
 
 void SocketBase::OnWaitingPacket()

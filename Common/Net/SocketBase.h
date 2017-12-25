@@ -25,7 +25,7 @@ private:
 	void EncodeHandShakeInfo(OutPacket *oPacket);
 
 	//用於釋放封包的Buffer資源 (該資源乃經由Arena配置)
-	void OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer);
+	void OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer, void *pPacket);
 	void OnReceive(const std::error_code &ec, std::size_t bytes_transferred);
 	void ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred);
 

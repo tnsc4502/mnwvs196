@@ -66,7 +66,7 @@ Node::Node(const Node & other) : data(other.data) {}
 
 Node Node::operator=(const Node & other) { return data = other.data; }
 
-std::mutex m_mtxNodeLock;
+//std::mutex m_mtxNodeLock;
 
 Node Node::operator[](const char * key) const {
 	//std::lock_guard<std::mutex> lock(m_mtxNodeLock);
