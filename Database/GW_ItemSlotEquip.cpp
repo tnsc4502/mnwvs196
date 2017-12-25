@@ -134,7 +134,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 		}
 		queryStatement.execute();
 	}
-	catch (Poco::Data::MySQL::StatementException & e) {
+	catch (Poco::Data::MySQL::StatementException &) {
 		printf("SQL Exception : %s\n", queryStatement.toString().c_str());
 	}
 }

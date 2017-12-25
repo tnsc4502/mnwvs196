@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 
-class GW_ItemSlotBase;
+struct GW_ItemSlotBase;
 
 class ItemInfo
 {
@@ -74,6 +74,10 @@ public:
 			nSwim, 
 			nTamingMob, 
 			nKnockBack,
+			nIncRMAF,
+			nIncRMAI,
+			nIncRMAL,
+			nElemDefault,
 			
 			//使用此裝備對寵物的影響
 			dwPetAbilityFlag;

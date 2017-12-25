@@ -4,6 +4,8 @@
 #include "Field.h"
 #include "DropPool.h"
 #include "SkillInfo.h"
+#include "..\Common\Net\InPacket.h"
+#include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "InventoryManipulator.h"
@@ -80,6 +82,17 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 				}
 				else
 					InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
+			}
+		}
+		else if ((nPOS1 < 0 && nPOS2 > 0) || nPOS2 < 0) //²æ¤U¸Ë³Æ
+		{
+			auto pItemSrc = pCharacterData->GetItem(nTI, nPOS1);
+			auto pItemDst = pCharacterData->GetItem(nTI, nPOS2);
+			if (nTI == 1)
+			{
+				auto slotPos = pCharacterData->FindEmptySlotPosition(nTI);
+				InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
+				pUser->OnAvatarModified();
 			}
 		}
 	}

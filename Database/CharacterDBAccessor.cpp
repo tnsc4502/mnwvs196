@@ -1,4 +1,10 @@
 #include "CharacterDBAccessor.h"
+#include "GW_ItemSlotEquip.h"
+#include "GW_ItemSlotBundle.h"
+#include "GW_CharacterStat.h"
+#include "GW_CharacterLevel.h"
+#include "GW_Avatar.hpp"
+
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\SocketBase.h"
 #include "..\Common\Net\PacketFlags\CenterPacketFlags.hpp"

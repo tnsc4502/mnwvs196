@@ -8,7 +8,10 @@ class OutPacket;
 class Field;
 class Portal;
 class InPacket;
-class GA_Character;
+struct GA_Character;
+
+class BasicStat;
+class SecondaryStat;
 
 class User : public FieldObj
 {
@@ -17,6 +20,8 @@ class User : public FieldObj
 	ClientSocket *pSocket;
 	Field *pField;
 	GA_Character *pCharacterData;
+	BasicStat* m_pBasicStat;
+	SecondaryStat* m_pSecondaryStat;
 
 public:
 	User() {}
@@ -36,5 +41,10 @@ public:
 	void OnChat(InPacket *iPacket);
 	void PostTransferField(int dwFieldID, Portal* pPortal, int bForce);
 	void SetMovePosition(int x, int y, char bMoveAction, short nFSN);
+
+	void OnAvatarModified();
+	void EncodeCoupleInfo(OutPacket *oPacket);
+	void EncodeFriendshipInfo(OutPacket *oPacket);
+	void EncodeMarriageInfo(OutPacket *oPacket);
 };
 

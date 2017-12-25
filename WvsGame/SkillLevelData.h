@@ -7,7 +7,7 @@ struct SkillLevelData
 		m_nSpeed = 0,
 		m_nMoneyCon = 0,
 		m_nFixDamage = 0,
-		m_tTime = 0,
+
 		m_nLt = 0,
 		m_nRb = 0,
 		m_nAction = 0,

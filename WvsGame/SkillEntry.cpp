@@ -1,7 +1,5 @@
 #include "SkillEntry.h"
 
-
-
 SkillEntry::SkillEntry()
 {
 }

@@ -29,6 +29,12 @@ void GW_CharacterStat::Load(int nCharacterID)
 	strSP = (std::string)recordSet["SP"].toString();
 	nAP = recordSet["AP"];
 	nExp = recordSet["Exp"];
+	nPOP = recordSet["POP"];
+	nCharismaEXP = recordSet["CharismaEXP"];
+	nInsightEXP = recordSet["InsightEXP"];
+	nWillEXP = recordSet["WillEXP"];
+	nSenseEXP = recordSet["SenseEXP"];
+	nCharmEXP = recordSet["CharmEXP"];
 }
 
 void GW_CharacterStat::Save(int nCharacterID, bool isNewCharacter)
@@ -53,6 +59,12 @@ void GW_CharacterStat::Save(int nCharacterID, bool isNewCharacter)
 		<< "Int_ = '" << nInt << "', "
 		<< "Luk = '" << nLuk << "', "
 		<< "SP = '" << strSP << "', "
+		<< "POP = '" << nPOP << "', "
+		<< "CharismaEXP = '" << nCharismaEXP << "', "
+		<< "InsightEXP = '" << nInsightEXP << "', "
+		<< "WillEXP = '" << nWillEXP << "', "
+		<< "SenseEXP = '" << nSenseEXP << "', "
+		<< "CharmEXP = '" << nCharmEXP << "', "
 		<< "AP = '" << nAP << "' WHERE CharacterID = " << nCharacterID;
 	queryStatement.execute();
 }

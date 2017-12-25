@@ -16,16 +16,13 @@
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 
-#include "..\Database\GW_ItemSlotBundle.h"
-#include "..\Database\GW_ItemSlotEquip.h"
+#include "..\Database\GW_SkillRecord.h"
 
 #include "LifePool.h"
 #include <functional>
 #include "..\Database\GA_Character.hpp"
 #include "InventoryManipulator.h"
 #include "Task\AsnycScheduler.h"
-
-
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -41,17 +38,17 @@ void CheckSkillInfoLoading()
 		stWzResMan->ReleaseMemory();
 }
 
-int main(int argc, char **argv)
+void SaveSkillTest()
 {
-	//std::cout << (int)(stWzResMan->GetWz(Wz::Skill)["2711.img"]["skill"]["27111005"]["common"]["maxLevel"] ) << std::endl;
-	/*for (auto& eh : (stWzResMan->GetWz(Wz::Skill)["2711.img"]["skill"]["27111005"]))
-	{
-		printf("Node name %s\n", eh.Name().c_str());
-	}*/
-	/*Calculator<int> c;
-	
-	for (int i = 0; i < 1000; ++i)
-		std::cout << c.GetAnswer(c.Replace("x+10", 'x', std::to_string(i))) << std::endl;;*/
+	GA_Character pCharTest;
+	pCharTest.Load(11);
+	std::cout << "Skill Count : " << pCharTest.GetCharacterSkillRecord().size() << std::endl;
+	pCharTest.GetSkill(100100)->nSLV = 15;
+	pCharTest.Save();
+}
+
+void SaveItemTest()
+{
 	/*GA_Character* pCharTest;
 	std::vector<InventoryManipulator::ChangeLog> aList;
 	int nDecRemove = 0;
@@ -74,32 +71,27 @@ int main(int argc, char **argv)
 	(pCharTest = new GA_Character());
 	pCharTest->DecodeCharacterData(&iPacket);
 	pItem = ((GW_ItemSlotEquip*)pCharTest->GetItem(1, -11));
-	std::cout << "TEst value = " << pItem ->liCashItemSN << " " << (pCharTest->GetItem(1, 1) == nullptr) << std::endl;
+	std::cout << "TEst value = " << pItem->liCashItemSN << " " << (pCharTest->GetItem(1, 1) == nullptr) << std::endl;
 	pCharTest->Save(false);
-	
+
 	std::cout << "Ready to deallocate the test character data\n";
 	system("Pause");
 	delete pCharTest;
-	system("Pause"); */
+	system("Pause");*/
+}
+
+void AsyncTimerTest()
+{
+	auto bindResult = std::bind(CheckSkillInfoLoading);
+	auto t = AsnycScheduler::CreateTask(bindResult, 5000, false);
+	t->Start();
+}
+
+int main(int argc, char **argv)
+{
 	ItemInfo::GetInstance()->Initialize();
 	SkillInfo::GetInstance()->IterateSkillInfo();
-	//auto& skillData = SkillInfo::GetInstance()->GetSkills();
-	/*auto bindResult = std::bind(CheckSkillInfoLoading);
-	auto t = AsnycScheduler::CreateTask(bindResult, 5000, false);
-	t->Start();*/
-	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"];
-	/*for (auto& eachMap : mapWz)
-	{
-		for (auto& map : eachMap)
-		{
-			if (map.Name() != "743040300") {
-				//std::cout << map.Name() << std::endl;
-				FieldMan::GetInstance()->GetField(atoi(map.Name().c_str()));
-			}
-		}
-		//std::cout << eachMap << std::endl;
-	}*/
-	FieldMan::GetInstance()->GetField(261010102);
+
 	WvsBase::GetInstance<WvsGame>()->Init();
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);

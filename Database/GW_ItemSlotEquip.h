@@ -3,6 +3,11 @@
 struct GW_ItemSlotEquip :
 	public GW_ItemSlotBase
 {
+	struct ItemOption
+	{
+
+	};
+
 	enum EquipFlag
 	{
 		EQP_RUC				 = 0x1,
@@ -84,6 +89,9 @@ struct GW_ItemSlotEquip :
 		nDamR = 0,
 		nStatR = 0,
 		nCuttable = 0;
+
+	ItemOption* m_pItemOption = nullptr;
+
 public:
 	GW_ItemSlotEquip();
 	~GW_ItemSlotEquip();

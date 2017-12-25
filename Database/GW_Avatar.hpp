@@ -3,6 +3,7 @@
 #include "GW_ItemSlotEquip.h"
 
 class OutPacket;
+class InPacket;
 
 struct GW_Avatar
 {
@@ -13,4 +14,5 @@ struct GW_Avatar
 	void Save(int nCharacterID, bool newCharacter = false);
 
 	void Encode(OutPacket *oPacket);
+	void Decode(InPacket* iPacket);
 };

@@ -54,3 +54,60 @@ void GW_Avatar::Save(int nCharacterID, bool newCharacter)
 void GW_Avatar::Encode(OutPacket *oPacket)
 {
 }
+
+void GW_Avatar::Decode(InPacket * iPacket)
+{
+	iPacket->Decode1(); //nGender, Gender shouldn't change
+	nSkin = iPacket->Decode1();
+	nFace = iPacket->Decode4();
+	iPacket->Decode4(); //nJob decoded at DecodeStat
+	iPacket->Decode1(); //unk
+	nHair = iPacket->Decode4();
+
+	char pos = 0;
+	while (1) //aHairEquip
+	{
+		pos = iPacket->Decode1();
+		if (pos == 0xFF)
+			break;
+		iPacket->Decode4(); //ItemID
+	}
+
+	while (1) //aUnseenEquip
+	{
+		pos = iPacket->Decode1();
+		if (pos == 0xFF)
+			break;
+		iPacket->Decode4(); //ItemID
+	}
+
+	while (1) //Unk
+	{
+		pos = iPacket->Decode1();
+		if (pos == 0xFF)
+			break;
+		iPacket->Decode4(); //ItemID
+	}
+
+	while (1) //Totem
+	{
+		pos = iPacket->Decode1();
+		if (pos == 0xFF)
+			break;
+		iPacket->Decode4(); //ItemID
+	}
+
+	iPacket->Decode4(); //cWeaponIdx
+	iPacket->Decode4(); //?
+	iPacket->Decode4(); //nSheldIdx
+
+	iPacket->Decode1();
+	iPacket->Decode4();
+	iPacket->Decode4();
+	iPacket->Decode4();
+
+	iPacket->Decode1();
+	iPacket->Decode1();
+	iPacket->Decode1();
+	iPacket->Decode4();
+}

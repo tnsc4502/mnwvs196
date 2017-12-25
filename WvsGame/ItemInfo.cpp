@@ -193,7 +193,10 @@ void ItemInfo::RegisterEquipItemInfo(ItemInfo::EquipItem * pEqpItem, int nItemID
 	//pEqpItem->nrMobLevel = infoImg["reqMobLevel"];
 	pEqpItem->nSellPrice = infoImg["price"];
 	pEqpItem->nKnockBack = infoImg["knockback"];
-
+	pEqpItem->nIncRMAF = infoImg["incRMAF"];
+	pEqpItem->nIncRMAI = infoImg["incRMAI"];
+	pEqpItem->nIncRMAL = infoImg["incRMAL"];
+	pEqpItem->nElemDefault = infoImg["elemDefault"];
 	pEqpItem->dwPetAbilityFlag = 0;
 	if (nItemID / 10000 == 181)
 	{

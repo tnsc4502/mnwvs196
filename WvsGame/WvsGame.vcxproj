@@ -192,6 +192,7 @@
     <ClInclude Include="..\Common\Wz\wzimg.hpp" />
     <ClInclude Include="..\Common\Wz\wzmain.hpp" />
     <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
+    <ClInclude Include="BasicStat.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="Controller.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="PortalMap.h" />
     <ClInclude Include="QWUInventory.h" />
     <ClInclude Include="Reward.h" />
+    <ClInclude Include="SecondaryStat.h" />
     <ClInclude Include="SkillEntry.h" />
     <ClInclude Include="SkillInfo.h" />
     <ClInclude Include="SkillLevelData.h" />
@@ -222,7 +224,7 @@
     <ClInclude Include="TownPortalPool.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WvsGame.h" />
-    <ClInclude Include="WvsGameConstants.h" />
+    <ClInclude Include="WvsGameConstants.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aescrypt.c" />
@@ -253,6 +255,7 @@
     <ClCompile Include="..\Common\Wz\wzmain.cpp" />
     <ClCompile Include="..\Common\Wz\wznode.cpp" />
     <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
+    <ClCompile Include="BasicStat.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -275,6 +278,7 @@
     <ClCompile Include="PortalMap.cpp" />
     <ClCompile Include="QWUInventory.cpp" />
     <ClCompile Include="Reward.cpp" />
+    <ClCompile Include="SecondaryStat.cpp" />
     <ClCompile Include="SkillEntry.cpp" />
     <ClCompile Include="SkillInfo.cpp" />
     <ClCompile Include="SkillLevelData.cpp" />

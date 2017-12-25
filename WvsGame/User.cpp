@@ -15,9 +15,14 @@
 #include "Field.h"
 #include "QWUInventory.h"
 
+#include "BasicStat.h"
+#include "SecondaryStat.h"
+
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
-	  pCharacterData(new GA_Character())
+	  pCharacterData(new GA_Character()),
+	  m_pBasicStat(new BasicStat),
+	  m_pSecondaryStat(new SecondaryStat)
 {
 	pCharacterData->DecodeCharacterData(iPacket);
 	_pSocket->SetUser(this);
@@ -29,6 +34,10 @@ User::~User()
 {
 	//pField->OnLeave(this);
 	LeaveField();
+	
+	delete pCharacterData;
+	delete m_pBasicStat;
+	delete m_pSecondaryStat;
 }
 
 int User::GetUserID() const
@@ -164,11 +173,70 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 
 void User::SetMovePosition(int x, int y, char bMoveAction, short nFSN)
 {
-	printf("Move User Set Move Position X = %d Y = %d\n", x, y);
 	SetPosX(x);
 	SetPosY(y);
 	SetMoveAction(bMoveAction);
 	SetFh(nFSN);
+}
+
+void User::OnAvatarModified()
+{
+	OutPacket oPacket;
+	oPacket.Encode2(UserPacketFlag::UserRemote_OnAvatarModified);
+	oPacket.Encode4(nCharacterID);
+	int dwAvatarModFlag = 1;
+	oPacket.Encode1(dwAvatarModFlag); //m_dwAvatarModFlag
+	if (dwAvatarModFlag & 1)
+		this->pCharacterData->EncodeAvatarLook(&oPacket);
+	if (dwAvatarModFlag & 2)
+		oPacket.Encode1(0); //secondayStat.nSpeed
+	if (dwAvatarModFlag & 4)
+		oPacket.Encode1(0); //nChoco
+
+	EncodeCoupleInfo(&oPacket);
+	EncodeFriendshipInfo(&oPacket);
+	EncodeMarriageInfo(&oPacket);
+
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+
+	pField->BroadcastPacket(&oPacket);
+}
+
+void User::EncodeCoupleInfo(OutPacket * oPacket)
+{
+	oPacket->Encode1(0);
+	for (int i = 0; i < 0; ++i)
+	{
+		oPacket->Encode4(1);
+		oPacket->Encode8(0); //liSN
+		oPacket->Encode8(0); //liPairSN
+		oPacket->Encode4(0); //nItemID
+	}
+}
+
+void User::EncodeFriendshipInfo(OutPacket * oPacket)
+{
+	oPacket->Encode1(0);
+	for (int i = 0; i < 0; ++i)
+	{
+		oPacket->Encode4(1);
+		oPacket->Encode8(0); //liSN
+		oPacket->Encode8(0); //liPairSN
+		oPacket->Encode4(0); //nItemID
+	}
+}
+
+void User::EncodeMarriageInfo(OutPacket * oPacket)
+{
+	oPacket->Encode1(0);
+	for (int i = 0; i < 0; ++i)
+	{
+		oPacket->Encode4(nCharacterID); //
+		oPacket->Encode4(0); //nPairID
+		oPacket->Encode4(0); //nItemID
+	}
 }
 
 void User::LeaveField()

@@ -1,6 +1,7 @@
 
 #include "SkillInfo.h"
 #include "..\Database\GA_Character.hpp"
+#include "..\Database\GW_SkillRecord.h"
 #include "ItemInfo.h"
 #include "SkillEntry.h"
 #include "Wz\WzResMan.hpp"
@@ -113,7 +114,7 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 					continue;*/
 				//printf("ID: %d Total : %d, ", pp.second->GetSkillID(), pp.second->GetAllLevelData().size());
 				if(!pp.second->GetLevelData(1))
-					printf("ID: %d Total : %d\n", pp.second->GetSkillID(), pp.second->GetAllLevelData().size());
+					printf("ID: %d Total : %d\n", pp.second->GetSkillID(), (int)pp.second->GetAllLevelData().size());
 					//printf("MDD: %d\n", (pp.second->GetLevelData(1)->m_nX));
 				//system("pause");
 			}
@@ -621,6 +622,7 @@ void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void
 
 void SkillInfo::LoadLevelDataSpecial()
 {
+	//what the.... what happened on those skills...
 	int special[] = { 2211010,
 	   20040218,
 	   20040221,
@@ -631,6 +633,8 @@ void SkillInfo::LoadLevelDataSpecial()
 		delete m_mSkillByRootID[i / 10000]->at(i);
 		m_mSkillByRootID[i / 10000]->erase(i);
 	}
+
+	////////////////////////////////2211010//////////////////////////////
 	SkillEntry* pEntry1 = new SkillEntry;
 	pEntry1->SetSkillID(2211010);
 	pEntry1->SetMasterLevel(20);
@@ -660,4 +664,123 @@ void SkillInfo::LoadLevelDataSpecial()
 		pEntry1->AddLevelData(pLevelData);
 	}
 	m_mSkillByRootID[221]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	////////////////////////////////2211010//////////////////////////////
+
+	////////////////////////////////20040218//////////////////////////////
+	pEntry1 = new SkillEntry;
+	pEntry1->SetSkillID(20040218);
+	pEntry1->SetMasterLevel(2);
+	pEntry1->SetMaxLevel(2);
+	pEntry1->AddLevelData(nullptr);
+	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
+	{
+		d = i;
+		exprtk::symbol_table<double> symbol_table;
+		//symbol_table.clear();
+		symbol_table.add_variable("x", d, false);
+		symbol_table.add_function("u", ceil);
+		symbol_table.add_function("d", floor);
+
+		SkillLevelData* pLevelData = new SkillLevelData;
+		pLevelData->m_nIgnoreMobpdpR = /*40+5*ceil(i/4)*/ PARSE_SKILLDATA_STRING(5 + 5 * x);
+
+		pEntry1->AddLevelData(pLevelData);
+	}
+	m_mSkillByRootID[2004]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	////////////////////////////////20040218//////////////////////////////
+
+	////////////////////////////////20040221//////////////////////////////
+	pEntry1 = new SkillEntry;
+	pEntry1->SetSkillID(20040221);
+	pEntry1->SetMasterLevel(1);
+	pEntry1->SetMaxLevel(1);
+	pEntry1->AddLevelData(nullptr);
+	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
+	{
+		d = i;
+		exprtk::symbol_table<double> symbol_table;
+		//symbol_table.clear();
+		symbol_table.add_variable("x", d, false);
+		symbol_table.add_function("u", ceil);
+		symbol_table.add_function("d", floor);
+
+		SkillLevelData* pLevelData = new SkillLevelData;
+		pLevelData->m_nIntX = 20;
+
+		pEntry1->AddLevelData(pLevelData);
+	}
+	m_mSkillByRootID[2004]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	////////////////////////////////20040221//////////////////////////////
+
+	////////////////////////////////27111005//////////////////////////////
+	pEntry1 = new SkillEntry;
+	pEntry1->SetSkillID(27111005);
+	pEntry1->SetMasterLevel(0);
+	pEntry1->SetMaxLevel(10);
+	pEntry1->AddLevelData(nullptr);
+	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
+	{
+		d = i;
+		exprtk::symbol_table<double> symbol_table;
+		//symbol_table.clear();
+		symbol_table.add_variable("x", d, false);
+		symbol_table.add_function("u", ceil);
+		symbol_table.add_function("d", floor);
+
+		SkillLevelData* pLevelData = new SkillLevelData;
+		pLevelData->m_nTime = 60 + 12 * i;
+		pLevelData->m_nMpCon = 56 + 2 * i;
+		pLevelData->m_nIndiePdd = 100 + 20 * i;
+		pLevelData->m_nIndieMdd = 100 + 20 * i;
+		pLevelData->m_nProp = 2 * i;
+
+		pEntry1->AddLevelData(pLevelData);
+	}
+	m_mSkillByRootID[2711]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	////////////////////////////////27111005//////////////////////////////
+
+	////////////////////////////////32120001//////////////////////////////
+	pEntry1 = new SkillEntry;
+	pEntry1->SetSkillID(32120001);
+	pEntry1->SetMasterLevel(0);
+	pEntry1->SetMaxLevel(30);
+	pEntry1->AddLevelData(nullptr);
+	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
+	{
+		d = i;
+		exprtk::symbol_table<double> symbol_table;
+		//symbol_table.clear();
+		symbol_table.add_variable("x", d, false);
+		symbol_table.add_function("u", ceil);
+		symbol_table.add_function("d", floor);
+
+		SkillLevelData* pLevelData = new SkillLevelData;
+		pLevelData->m_nMpCon = 20 + 5 * (int)ceil(d / 5);
+		pLevelData->m_nX = 20 + (int)ceil(d / 5);
+		pLevelData->m_nY = -1;
+		pLevelData->m_nZ = 5 + (int)ceil(d / 5);
+		pLevelData->m_nSpeed = -i;
+		pLevelData->m_nMobCount = 6;
+		pLevelData->m_nEr = 5 + (int)ceil(d / 2);
+		//pLevelData->m_nLt
+
+		pEntry1->AddLevelData(pLevelData);
+	}
+	m_mSkillByRootID[3212]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	////////////////////////////////32120001//////////////////////////////
+}
+
+int SkillInfo::GetSkillLevel(GA_Character * pCharacter, int nSkillID, SkillEntry ** pEntry, int bNoPvPLevelCheck, int bPureStealSLV, int bNotApplySteal, int bCheckSkillRoot)
+{
+	auto pSkillTreeByJob = m_mSkillByRootID.find(nSkillID / 10000);
+	if (pSkillTreeByJob->second == nullptr)
+		return 0;
+	auto findIter = pSkillTreeByJob->second->find(nSkillID);
+	if (findIter->second == nullptr)
+		return 0;
+	*pEntry = findIter->second;
+	auto characterSkillRecord = pCharacter->GetSkill(nSkillID);
+	if (characterSkillRecord == nullptr)
+		return 0;
+	return characterSkillRecord->nSLV;
 }

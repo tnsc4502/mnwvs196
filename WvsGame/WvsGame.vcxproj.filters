@@ -64,6 +64,9 @@
     <Filter Include="WvsGame\InGame\Skill">
       <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Stat">
+      <UniqueIdentifier>{1014ff87-c8e8-4a5b-89a1-d01caa360a8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -183,9 +186,6 @@
     <ClInclude Include="..\Common\Net\WorldInfo.h">
       <Filter>Common\Net</Filter>
     </ClInclude>
-    <ClInclude Include="WvsGameConstants.h">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
@@ -284,6 +284,15 @@
     </ClInclude>
     <ClInclude Include="exprtk.hpp">
       <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsGameConstants.hpp">
+      <Filter>Common\Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicStat.h">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="SecondaryStat.h">
+      <Filter>WvsGame\InGame\Stat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -455,6 +464,12 @@
     </ClCompile>
     <ClCompile Include="SkillLevelData.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicStat.cpp">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="SecondaryStat.cpp">
+      <Filter>WvsGame\InGame\Stat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

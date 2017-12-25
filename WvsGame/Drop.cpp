@@ -91,7 +91,7 @@ void Drop::Init(unsigned int dwDropID, Reward * reward, unsigned int dwOwnerID, 
 	this->m_dwOwnPartyID = dwOwnPartyID;
 	this->m_nOwnType = nOwnType;
 	this->m_dwSourceID = dwSourceID;
-	this->m_bByPet = bByPet;
+	this->m_bByPet = bByPet != 0;
 	this->m_pt1.x = x1;
 	this->m_pt1.y = y1;
 	this->m_pt2.x = x2;

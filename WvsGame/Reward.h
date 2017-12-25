@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-class GW_ItemSlotBase;
+struct GW_ItemSlotBase;
 
 class Reward
 {

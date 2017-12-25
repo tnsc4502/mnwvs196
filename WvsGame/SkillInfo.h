@@ -34,5 +34,6 @@ public:
 	void LoadLevelData(int nSkillID, SkillEntry* pEntry, void* pData);
 	void LoadLevelDataByLevelNode(int nSkillID, SkillEntry* pEntry, void* pData);
 	void LoadLevelDataSpecial();
+	int GetSkillLevel(GA_Character* pCharacter, int nSkillID, SkillEntry** pEntry, int bNoPvPLevelCheck, int bPureStealSLV, int bNotApplySteal, int bCheckSkillRoot);
 };
 

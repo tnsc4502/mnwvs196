@@ -50,6 +50,7 @@ public:
 	{
 		printf("[WvsLogin][Center]與Center Server中斷連線。\n");
 		((Center*)pSocket)->bIsConnected = false;
+		((Center*)pSocket)->bConnectionFailed = true;
 	}
 };
 

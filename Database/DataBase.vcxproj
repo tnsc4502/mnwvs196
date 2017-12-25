@@ -146,6 +146,7 @@
     <ClInclude Include="GW_ItemSlotBase.h" />
     <ClInclude Include="GW_ItemSlotBundle.h" />
     <ClInclude Include="GW_ItemSlotEquip.h" />
+    <ClInclude Include="GW_SkillRecord.h" />
     <ClInclude Include="WvsUnified.h" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
     <ClCompile Include="GW_ItemSlotBase.cpp" />
     <ClCompile Include="GW_ItemSlotBundle.cpp" />
     <ClCompile Include="GW_ItemSlotEquip.cpp" />
+    <ClCompile Include="GW_SkillRecord.cpp" />
     <ClCompile Include="WvsUnified.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

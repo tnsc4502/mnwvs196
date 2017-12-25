@@ -2,9 +2,9 @@
 
 #include <vector>
 
-class GA_Character;
+struct GA_Character;
+struct GW_ItemSlotBase;
 class OutPacket;
-class GW_ItemSlotBase;
 
 class InventoryManipulator
 {

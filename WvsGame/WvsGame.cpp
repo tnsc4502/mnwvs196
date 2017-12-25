@@ -1,5 +1,5 @@
 #include "WvsGame.h"
-#include "WvsGameConstants.h"
+#include "WvsGameConstants.hpp"
 #include "Task\AsnycScheduler.h"
 #include "Constants\ConfigLoader.hpp"
 #include "ClientSocket.h"

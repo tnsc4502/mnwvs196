@@ -13,7 +13,14 @@ struct GW_CharacterStat
 		nDex = 0,
 		nInt = 0,
 		nLuk = 0,
-		nAP = 0;
+		nAP = 0,
+		nPOP = 0,
+		nCharismaEXP = 0,
+		nInsightEXP = 0,
+		nWillEXP = 0,
+		nSenseEXP = 0,
+		nCharmEXP = 0
+		;
 
 	long long int nExp = 0;
 

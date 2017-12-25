@@ -1,6 +1,13 @@
 #include "GA_Character.hpp"
 #include "WvsUnified.h"
 #include "..\Common\Net\OutPacket.h"
+#include "GW_ItemSlotEquip.h"
+#include "GW_ItemSlotBundle.h"
+#include "GW_CharacterStat.h"
+#include "GW_CharacterLevel.h"
+#include "GW_CharacterMoney.h"
+#include "GW_Avatar.hpp"
+#include "GW_SkillRecord.h"
 
 #include <chrono>
 
@@ -25,53 +32,17 @@ GA_Character::~GA_Character()
 		for (auto& pItem : slot)
 			delete pItem.second;
 	}
+
+	for (auto& skill : mSkillRecord)
+		delete skill.second;
 }
 
 void GA_Character::Load(int nCharacterID)
 {
 	LoadAvatar(nCharacterID);
 	mMoney->Load(nCharacterID);
-
-	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_EQP Where CharacterID = " << nCharacterID;
-	queryStatement.execute();
-	Poco::Data::RecordSet recordSet(queryStatement);
-
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotEquip *eqp = new GW_ItemSlotEquip();
-		eqp->Load(recordSet["SN"]);
-		mItemSlot[1][eqp->nPOS] = eqp;
-	}
-
-	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_CON Where CharacterID = " << nCharacterID;
-	queryStatement.execute();
-	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
-		mItemSlot[2][eqp->nPOS] = eqp;
-	}
-
-	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
-	queryStatement.execute();
-	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
-		mItemSlot[3][eqp->nPOS] = eqp;
-	}
-
-	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
-	queryStatement.execute();
-	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
-		mItemSlot[4][eqp->nPOS] = eqp;
-	}
+	LoadItemSlot();
+	LoadSkillRecord();
 }
 
 void GA_Character::LoadAvatar(int nCharacterID)
@@ -189,6 +160,16 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode1(0);
 }
 
+void GA_Character::EncodeSkillRecord(OutPacket * oPacket)
+{
+	oPacket->Encode1(1);
+	oPacket->Encode2((short)mSkillRecord.size());
+	for (auto& skill : mSkillRecord)
+		skill.second->Encode(oPacket);
+	oPacket->Encode2(0);
+	oPacket->Encode4(0);
+}
+
 void GA_Character::EncodeAvatarLook(OutPacket *oPacket)
 {
 	oPacket->Encode1(nGender);
@@ -273,6 +254,9 @@ void GA_Character::Save(bool isNewCharacter)
 		((GW_ItemSlotBundle*)(etc.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::ETC);
 	for (auto& ins : mItemSlot[4])
 		((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+
+	for (auto& skill : mSkillRecord)
+		skill.second->Save();
 }
 
 int GA_Character::FindEmptySlotPosition(int nTI)
@@ -380,6 +364,17 @@ void GA_Character::SetItem(int nTI, int nPOS, GW_ItemSlotBase * pItem)
 		mItemSlot[nTI][nPOS] = pItem;
 }
 
+decltype(GA_Character::mSkillRecord)& GA_Character::GetCharacterSkillRecord()
+{
+	return mSkillRecord;
+}
+
+GW_SkillRecord * GA_Character::GetSkill(int nSkillID)
+{
+	auto findResult = mSkillRecord.find(nSkillID);
+	return findResult == mSkillRecord.end() ? nullptr : findResult->second;
+}
+
 void GA_Character::DecodeCharacterData(InPacket *iPacket)
 {
 	long long int flag = iPacket->Decode8();
@@ -444,14 +439,7 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket)
 
 	if (flag & 0x100)
 	{
-		iPacket->Decode1();
-		int nSkillSize = iPacket->Decode2();
-		for (int i = 0; i < nSkillSize; ++i)
-		{
-
-		}
-		iPacket->Decode2();
-		iPacket->Decode4();
+		DecodeSkillRecord(iPacket);
 	}
 
 	if (flag & 0x8000)
@@ -871,6 +859,28 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket)
 	iPacket->Decode1();
 }
 
+void GA_Character::DecodeAvatarLook(InPacket * iPacket)
+{
+	mAvatarData->Decode(iPacket);
+}
+
+void GA_Character::DecodeSkillRecord(InPacket * iPacket)
+{
+	bool flag = iPacket->Decode1() == 1;
+	if (flag)
+	{
+		short nCount = iPacket->Decode2();
+		for (int i = 0; i < nCount; ++i)
+		{
+			GW_SkillRecord* pSkillRecord = new GW_SkillRecord;
+			pSkillRecord->Decode(iPacket);
+			mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
+		}
+		iPacket->Decode2();
+		iPacket->Decode4();
+	}
+}
+
 void GA_Character::EncodeCharacterData(OutPacket *oPacket)
 {
 	long long int flag = 0xFFFFFFFFFFFFFFFF 	;
@@ -935,10 +945,7 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket)
 
 	if (flag & 0x100)
 	{
-		oPacket->Encode1(1);
-		oPacket->Encode2(0);
-		oPacket->Encode2(0);
-		oPacket->Encode4(0);
+		EncodeSkillRecord(oPacket);
 	}
 
 	if (flag & 0x8000)
@@ -1237,4 +1244,63 @@ GA_Character::ATOMIC_COUNT_TYPE GA_Character::InitCharacterID()
 	if (recordSet.rowCount() == 0)
 		return 0;
 	return (ATOMIC_COUNT_TYPE)recordSet["MAX(CharacterID)"];
+}
+
+void GA_Character::LoadItemSlot()
+{
+
+	Poco::Data::Statement queryStatement(GET_DB_SESSION);
+	queryStatement << "SELECT SN FROM ItemSlot_EQP Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	Poco::Data::RecordSet recordSet(queryStatement);
+
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotEquip *eqp = new GW_ItemSlotEquip();
+		eqp->Load(recordSet["SN"]);
+		mItemSlot[1][eqp->nPOS] = eqp;
+	}
+
+	queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "SELECT SN FROM ItemSlot_CON Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	recordSet.reset(queryStatement);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+		mItemSlot[2][eqp->nPOS] = eqp;
+	}
+
+	queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "SELECT SN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	recordSet.reset(queryStatement);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
+		mItemSlot[3][eqp->nPOS] = eqp;
+	}
+
+	queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "SELECT SN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	recordSet.reset(queryStatement);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+		mItemSlot[4][eqp->nPOS] = eqp;
+	}
+}
+
+void GA_Character::LoadSkillRecord()
+{
+	Poco::Data::Statement queryStatement(GET_DB_SESSION);
+	queryStatement << "SELECT * FROM SkillRecord Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	Poco::Data::RecordSet recordSet(queryStatement);
+
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_SkillRecord* pSkillRecord = new GW_SkillRecord();
+		pSkillRecord->Load((void*)&recordSet);
+		mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
+	}
 }
