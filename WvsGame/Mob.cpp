@@ -57,6 +57,7 @@ void Mob::EncodeInitData(OutPacket *oPacket, bool bIsControl)
 	oPacket->Encode2(GetFh()); // Origin FH m_nHomeFoothold
 	
 	int spawnType = m_pMobTemplate->m_nSummonType <= 1 || m_pMobTemplate->m_nSummonType == 24 ? -2 : m_pMobTemplate->m_nSummonType;
+	printf("Spawn Type = %d\n", spawnType);
 	if (!bIsControl) {
 		oPacket->Encode2(spawnType /*m_pMobTemplate->m_nSummonType*/);
 		if (spawnType == -3 || spawnType >= 0/*m_pMobTemplate->m_nSummonType == -3 || m_pMobTemplate->m_nSummonType >= 0*/)
@@ -74,16 +75,16 @@ void Mob::EncodeInitData(OutPacket *oPacket, bool bIsControl)
 	oPacket->Encode4(0); //nDetectX
 	oPacket->Encode4(0); //nSenseX
 
-	oPacket->Encode4(0); //m_nPhase
-	oPacket->Encode4(0); //m_nCurZoneDataType
-	oPacket->Encode4(0); //m_dwRefImgMobID
+	oPacket->Encode4(-1); //m_nPhase
+	oPacket->Encode4(-1); //m_nCurZoneDataType
+
+	oPacket->Encode1(0); //m_dwRefImgMobID
 
 	//oPacket->Encode1(0);
 	//m_dwLifeReleaseOwnerAID = CInPacket::Decode4
 	//m_sLifeReleaseOwnerName = CInPacket::DecodeStr
 	//m_sLifeReleaseMobName = CInPacket::DecodeStr
 
-	oPacket->Encode4(0); //unk
 	oPacket->Encode4(0); //nAfterAttack
 	oPacket->Encode4(0x64); //nCurrentAction
 	oPacket->Encode1(-1); //bIsLeft

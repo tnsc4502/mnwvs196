@@ -220,9 +220,11 @@
     <ClInclude Include="SkillEntry.h" />
     <ClInclude Include="SkillInfo.h" />
     <ClInclude Include="SkillLevelData.h" />
+    <ClInclude Include="TemporaryStat.h" />
     <ClInclude Include="TownPortal.h" />
     <ClInclude Include="TownPortalPool.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="USkill.h" />
     <ClInclude Include="WvsGame.h" />
     <ClInclude Include="WvsGameConstants.hpp" />
   </ItemGroup>
@@ -282,9 +284,11 @@
     <ClCompile Include="SkillEntry.cpp" />
     <ClCompile Include="SkillInfo.cpp" />
     <ClCompile Include="SkillLevelData.cpp" />
+    <ClCompile Include="TemporaryStat.cpp" />
     <ClCompile Include="TownPortal.cpp" />
     <ClCompile Include="TownPortalPool.cpp" />
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="USkill.cpp" />
     <ClCompile Include="WvsGame.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,10 @@
 #include "ClientSocket.h"
 
 #include "..\Database\GA_Character.hpp"
+#include "..\Database\GW_CharacterStat.h"
+#include "..\Database\GW_CharacterLevel.h"
+#include "..\Database\GW_CharacterMoney.h"
+#include "..\Database\GW_Avatar.hpp"
 
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\InPacket.h"
@@ -14,9 +18,9 @@
 #include "PortalMap.h"
 #include "Field.h"
 #include "QWUInventory.h"
-
 #include "BasicStat.h"
 #include "SecondaryStat.h"
+#include "USkill.h"
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
@@ -81,6 +85,12 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case ClientPacketFlag::OnUserChangeSlotRequest:
 		QWUInventory::OnChangeSlotPositionRequest(this, iPacket);
+		break;
+	case ClientPacketFlag::OnUserSkillUpRequest:
+		USkill::OnSkillUpRequest(this, iPacket);
+		break;
+	case ClientPacketFlag::OnUserSkillUseRequest:
+		USkill::OnSkillUseRequest(this, iPacket);
 		break;
 	default:
 		if (pField)
@@ -160,7 +170,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 	oPacket.Encode1(0); //bUsingBuffProtector
 	oPacket.Encode4(dwFieldID);
 	oPacket.Encode1(0);
-	oPacket.Encode4(50); //HP
+	oPacket.Encode4(pCharacterData->mStat->nHP); //HP
 
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
@@ -237,6 +247,92 @@ void User::EncodeMarriageInfo(OutPacket * oPacket)
 		oPacket->Encode4(0); //nPairID
 		oPacket->Encode4(0); //nItemID
 	}
+}
+
+void User::ValidateStat()
+{
+}
+
+void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(UserPacketFlag::UserLocal_OnStatChanged);
+	oPacket.Encode1((char)bOnExclRequest);
+	oPacket.Encode8(liFlag);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Skin)
+		oPacket.Encode1(pCharacterData->mAvatarData->nSkin);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Face)
+		oPacket.Encode4(pCharacterData->mAvatarData->nFace);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Hair)
+		oPacket.Encode4(pCharacterData->mAvatarData->nHair);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Level)
+		oPacket.Encode1(pCharacterData->mLevel->nLevel);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Job)
+	{
+		oPacket.Encode2(pCharacterData->mStat->nJob);
+		oPacket.Encode2(pCharacterData->mStat->nSubJob);
+	}
+
+	if (liFlag & BasicStat::BasicStatFlag::BS_STR)
+		oPacket.Encode2(pCharacterData->mStat->nStr);
+	if (liFlag & BasicStat::BasicStatFlag::BS_DEX)
+		oPacket.Encode2(pCharacterData->mStat->nDex);
+	if (liFlag & BasicStat::BasicStatFlag::BS_INT)
+		oPacket.Encode2(pCharacterData->mStat->nInt);
+	if (liFlag & BasicStat::BasicStatFlag::BS_LUK)
+		oPacket.Encode2(pCharacterData->mStat->nLuk);
+	if (liFlag & BasicStat::BasicStatFlag::BS_HP)
+		oPacket.Encode4(pCharacterData->mStat->nHP);
+	if (liFlag & BasicStat::BasicStatFlag::BS_MaxHP)
+		oPacket.Encode4(pCharacterData->mStat->nMaxHP);
+	if (liFlag & BasicStat::BasicStatFlag::BS_MP)
+		oPacket.Encode4(pCharacterData->mStat->nMP);
+	if (liFlag & BasicStat::BasicStatFlag::BS_MaxMP)
+		oPacket.Encode4(pCharacterData->mStat->nMaxMP);
+
+	if (liFlag & BasicStat::BasicStatFlag::BS_AP)
+		oPacket.Encode2(pCharacterData->mStat->nAP);
+
+	//not done yet.
+	if (liFlag & BasicStat::BasicStatFlag::BS_SP)
+		oPacket.Encode2(10);
+
+	if (liFlag & BasicStat::BasicStatFlag::BS_EXP)
+		oPacket.Encode8(pCharacterData->mStat->nExp);
+	if (liFlag & BasicStat::BasicStatFlag::BS_POP)
+		oPacket.Encode4(pCharacterData->mStat->nPOP);
+	if (liFlag & BasicStat::BasicStatFlag::BS_Meso)
+		oPacket.Encode8(pCharacterData->mMoney->nMoney);
+
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+
+	SendPacket(&oPacket);
+}
+
+void User::SendTemporaryStatReset(long long int uFlag)
+{
+}
+
+void User::SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(UserPacketFlag::USerLocal_OnTemporaryStatSet);
+	m_pSecondaryStat->EncodeForLocal(&oPacket, flag);
+	SendPacket(&oPacket);
+}
+
+SecondaryStat * User::GetSecondaryStat()
+{
+	return this->m_pSecondaryStat;
+}
+
+BasicStat * User::GetBasicStat()
+{
+	return this->m_pBasicStat;
 }
 
 void User::LeaveField()

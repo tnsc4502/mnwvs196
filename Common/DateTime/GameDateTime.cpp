@@ -24,7 +24,7 @@ long long int GameDateTime::GetDateExpireFromPeriod(int nPeriod)
 	return ret;
 }
 
-int GameDateTime::GetNowTime()
+int GameDateTime::GetTime()
 {
 	return timeGetTime();
 }

@@ -372,6 +372,16 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	for (short value : aUnkList2)
 		movePacket.Encode2(value);
 	movePath.Encode(&movePacket);
+
+	for (const auto& elem : movePath.m_lElem)
+	{
+		pMob->SetPosX(elem.x);
+		pMob->SetPosY(elem.y - 1);
+		pMob->SetMoveAction(elem.bMoveAction);
+		if(elem.fh != 0)
+			pMob->SetFh(elem.fh);
+	}
+
 	SplitSendPacket(&movePacket, nullptr);
 	pCtrl->SendPacket(&ctrlAckPacket);
 }

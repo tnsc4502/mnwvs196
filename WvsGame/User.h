@@ -2,6 +2,7 @@
 #include "FieldObj.h"
 #include <mutex>
 #include <map>
+#include "TemporaryStat.h"
 
 class ClientSocket;
 class OutPacket;
@@ -12,9 +13,13 @@ struct GA_Character;
 
 class BasicStat;
 class SecondaryStat;
+struct TemporaryStat;
 
 class User : public FieldObj
 {
+	friend class USkill;
+
+private:
 	std::mutex m_mtxUserlock;
 	int nCharacterID;
 	ClientSocket *pSocket;
@@ -46,5 +51,13 @@ public:
 	void EncodeCoupleInfo(OutPacket *oPacket);
 	void EncodeFriendshipInfo(OutPacket *oPacket);
 	void EncodeMarriageInfo(OutPacket *oPacket);
+
+	void ValidateStat();
+	void SendCharacterStat(bool bOnExclRequest, long long int liFlag);
+	void SendTemporaryStatReset(long long int uFlag);
+	void SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay);
+
+	SecondaryStat* GetSecondaryStat();
+	BasicStat* GetBasicStat();
 };
 

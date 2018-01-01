@@ -33,6 +33,14 @@ const std::map<int, SkillEntry*>* SkillInfo::GetSkillsByRootID(int nRootID) cons
 	return m_mSkillByRootID.at(nRootID);
 }
 
+const SkillEntry * SkillInfo::GetSkillByID(int nSkillID) const
+{
+	int nJobID = nSkillID / 10000;
+	auto rootData = GetSkillsByRootID(nJobID);
+	auto findResult = rootData->find(nSkillID);
+	return (findResult != rootData->end() ? findResult->second : nullptr);
+}
+
 SkillInfo * SkillInfo::GetInstance()
 {
 	static SkillInfo* pInstance = new SkillInfo;
@@ -119,6 +127,8 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 				//system("pause");
 			}
 		}
+		int nTest = GetSkillByID(2111008)->GetLevelData(10)->m_nTime;
+		printf("Test 2111008 : %d\n", nTest);
 	}
 }
 

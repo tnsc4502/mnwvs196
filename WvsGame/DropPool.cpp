@@ -10,7 +10,7 @@
 DropPool::DropPool(Field *pField)
 	: m_pField(pField)
 {
-	m_tLastExpire = GameDateTime::GetNowTime();
+	m_tLastExpire = GameDateTime::GetTime();
 }
 
 

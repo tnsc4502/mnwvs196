@@ -6,6 +6,6 @@ public:
 	~GameDateTime();
 
 	static long long int GetDateExpireFromPeriod(int nPeriod);
-	static int GetNowTime();
+	static int GetTime();
 };
 
