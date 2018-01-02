@@ -294,7 +294,12 @@
     <ClInclude Include="USkill.h">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
-    <ClInclude Include="TemporaryStat.h" />
+    <ClInclude Include="TemporaryStat.h">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackInfo.h">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\AES\aes_modes.c">
@@ -475,7 +480,12 @@
     <ClCompile Include="USkill.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="TemporaryStat.cpp" />
+    <ClCompile Include="TemporaryStat.cpp">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackInfo.cpp">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Common\Memory\MemoryPool.tcc">

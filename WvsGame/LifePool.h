@@ -6,10 +6,13 @@
 #include <atomic>
 #include <mutex>
 
+struct AttackInfo;
 class User;
 class Field;
 class Controller;
 class InPacket;
+class SkillEntry;
+class Drop;
 
 class LifePool
 {
@@ -90,6 +93,7 @@ public:
 	將指定的Mob召喚出並加入aMobGen
 	*/
 	void CreateMob(const Mob&, int x, int y, int fh, int bNoDropPriority, int nType, unsigned int dwOption, int bLeft, int nMobType, Controller* pOwner);
+	void RemoveMob(Mob* pMob);
 
 	void Init(Field* pField, int nFieldID);
 	void OnEnter(User* pUser);
@@ -123,6 +127,8 @@ public:
 	void Update();
 
 	void OnPacket(User* pUser, int nType, InPacket* iPacket);
+	void OnUserAttack(User *pUser, const SkillEntry *pSkill, AttackInfo *pInfo);
+	void EncodeAttackInfo(User * pUser, AttackInfo *pInfo, OutPacket *oPacket);
 
 };
 

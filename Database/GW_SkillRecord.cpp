@@ -17,7 +17,13 @@ void GW_SkillRecord::Encode(OutPacket * oPacket)
 
 void GW_SkillRecord::Decode(InPacket * iPacket)
 {
-	nSkillID = iPacket->Decode4();
+	nSkillID = iPacket->Decode4();	
+	nSLV = iPacket->Decode4();
+	tExpired = iPacket->Decode8();
+	if (WvsGameConstants::IsSkillNeedMasterLevel(nSkillID))
+		nMasterLevel = iPacket->Decode4();
+	if (nSkillID == 0x262A822 || nSkillID == 80000004)
+		iPacket->Decode4();
 }
 
 void GW_SkillRecord::Load(void * pRecordSet)

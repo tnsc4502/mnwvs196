@@ -18,6 +18,13 @@ void Mob::MakeEnterFieldPacket(OutPacket *oPacket)
 	EncodeInitData(oPacket);
 }
 
+void Mob::MakeLeaveFieldPacket(OutPacket * oPacket)
+{
+	oPacket->Encode2(0x3C2); //MobPool::SpawnMonster
+	oPacket->Encode4(GetFieldObjectID());
+	oPacket->Encode1(1);
+}
+
 void Mob::EncodeInitData(OutPacket *oPacket, bool bIsControl)
 {
 	printf("Encode Init Data oid = %d template ID = %d\n", GetFieldObjectID(), GetTemplateID());
@@ -212,4 +219,18 @@ bool Mob::IsLucidSpecialMob(int dwTemplateID)
 		)
 		return true;
 	return false;
+}
+
+void Mob::OnMobHit(User * pUser, long long int nDamage, int nAttackType)
+{
+	m_mAttackRecord[pUser] += nDamage;
+	this->SetHp(this->GetHp() - nDamage);
+	if (GetHp() > 0)
+	{
+		OutPacket oPacket;
+		oPacket.Encode2(0x3D5);
+		oPacket.Encode4(GetFieldObjectID());
+		oPacket.Encode1((GetHp() / GetMobTemplate()->m_lnMaxHP) * 100);
+		pUser->SendPacket(&oPacket);
+	}
 }

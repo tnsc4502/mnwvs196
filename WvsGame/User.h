@@ -14,6 +14,7 @@ struct GA_Character;
 class BasicStat;
 class SecondaryStat;
 struct TemporaryStat;
+struct AttackInfo;
 
 class User : public FieldObj
 {
@@ -27,6 +28,13 @@ private:
 	GA_Character *pCharacterData;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
+
+	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
+	AttackInfo* TryParsingMeleeAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingMagicAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingShootAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingAreaDot(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingBodyAttack(int nType, InPacket *iPacket);
 
 public:
 	User() {}
@@ -56,8 +64,10 @@ public:
 	void SendCharacterStat(bool bOnExclRequest, long long int liFlag);
 	void SendTemporaryStatReset(long long int uFlag);
 	void SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay);
+	void OnAttack(int nType, InPacket *iPacket);
 
 	SecondaryStat* GetSecondaryStat();
 	BasicStat* GetBasicStat();
+	
 };
 

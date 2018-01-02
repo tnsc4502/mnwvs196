@@ -192,6 +192,7 @@
     <ClInclude Include="..\Common\Wz\wzimg.hpp" />
     <ClInclude Include="..\Common\Wz\wzmain.hpp" />
     <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
+    <ClInclude Include="AttackInfo.h" />
     <ClInclude Include="BasicStat.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="..\Common\Wz\wzmain.cpp" />
     <ClCompile Include="..\Common\Wz\wznode.cpp" />
     <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
+    <ClCompile Include="AttackInfo.cpp" />
     <ClCompile Include="BasicStat.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />

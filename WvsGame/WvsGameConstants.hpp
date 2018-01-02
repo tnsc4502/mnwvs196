@@ -288,4 +288,216 @@ namespace WvsGameConstants
 		}
 		return result > 0;
 	}
+
+	static bool IsKeyDownSkill(int skillid) 
+	{
+		int a1 = skillid;
+		if (a1 == 3101008 || a1 == 1311011 || a1 == 2221011 || a1 == 2221052) 
+			return true;
+		
+		if (a1 == 3111013 || a1 == 3121020 || a1 == 4341002)
+			return true;
+
+		if (a1 == 5221004)
+			return true;
+
+		if (a1 == 80001836 || a1 == 80001880)
+			return true;
+
+		if (a1 == 80001629 || a1 == 60011216 || a1 == 65121003 || a1 == 80001363)
+			return true;
+	
+		if (a1 == 142111010 || a1 == 400041006)
+			return true;
+
+		if (a1 == 131001008 || a1 == 112001008 || a1 == 112110003 || a1 == 112111016)
+			return true;
+
+		/*if (a1 >= 101110101) {
+		return true;
+		}*/
+		if (a1 == 80011366 || a1 == 80011051 || a1 == 80011112 || a1 == 80011116)
+			return true;
+	
+		if (a1 >= 80001389 && a1 <= 80001392)
+			return true;
+
+		switch (skillid) 
+		{
+		case 0x226DB89:
+		case 0x1F962F1:
+		case 0x1F962F1 + 105:
+		case 0x1F962F1 + 205:
+		case 0x282B728:
+		case 0x22729A8:
+		case 0x22729A8 + 1000003:
+		case 0x22729A8 + 1000052:
+		case 0x1EA20AB:
+		case 0x1DA9048:
+		case 0x1DAB75D:
+		case 0x1D909D8:
+		case (0x17F5105 + 1):
+		case 0x19D8812:
+		case 0x19DAEBC:
+		case (0x17F29DC + 1):
+		case (0x1524DC9 + 2):
+		case (0x1524DC9 + 2 + 949917):
+		case (0x1524DC9 + 2 + 1949917):
+		case 0xC835E9:
+		case 0xD7511B + 3:
+		case 131001000:
+		case 131001001:
+		case 131001002:
+		case 131001003:
+		case 131001101:
+		case 131001102:
+		case 131001103:
+		case 131002000:
+		case 131001012:
+		case 131002012:
+		case 0xD7782C:
+		case 0xA9B19C:
+		case 0xA9B19C + 3:
+		case 0x574BE5:
+		case 0x574BE5 + 3:
+		case 5700010:
+		case 5711021:
+		case 41121001:
+		case 35121015:
+		case 27121201:
+		case 1311011: // la mancha spear
+		case 2221011: // freezing breath
+		case 2221052: // lightning orb
+		case 2321001: // big bang
+		case 3101008: // covering fire
+		case 3111013: // arrow blaster
+		case 3121020: // hurricane
+		case 4341002: // final cut
+		case 5221004: // rapid fire
+		case 5221022: // broadside
+		case 5311002: // monkey wave
+		case 60011216: // soul buster
+		case 65121003: // soul resonance
+		case 80001587: // airship lv. 1
+		case 80001389: // ?
+		case 80001390: // ?
+		case 80001391: // ?
+		case 80001392: // ?
+		case 80001629: // ?
+		case 80001836: // vanquisher's charm
+		case 80001880: // liberate the rune of barrage
+		case 80001887: // mille aiguilles
+		case 95001001: // flying battle chair mount
+		case 101110100: // wheel wind
+		case 131001004: // let's roll!
+		case 131001008: // sky jump
+		case 142111010: // kinetic jaunt
+			return true;
+		default:
+			return a1 == 95001001
+				|| a1 == 80011362
+				|| a1 == 131001004
+				|| a1 == 400041009
+				|| (a1 - 0x1F962F1 == 2000006)
+				|| (a1 - 0x22729A8 == 5000001)
+				|| a1 == 80001587
+				|| a1 == 80001887
+				|| a1 == 2321001
+				|| a1 == 0x4D87AA
+				|| a1 == 0x574BA9
+				|| a1 - 0xA9B19C == 1000002
+				|| a1 == 0x131CE0A
+				|| a1 - (0x1524DC9 + 2) == 1949922
+				|| a1 == 0x1CA1676
+				|| a1 == 0x1DC3DF9;
+		}
+	}
+
+	static bool IsSuperNovaSkill(int nSkillID)
+	{
+		switch (nSkillID)
+		{
+		case 4221052: // shadow veil
+		case 65121052: // supreme supernova
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	static bool IsRushBombSkill(int nSkillID)
+	{
+		switch (nSkillID) {
+		case 2221012: // frozen orb
+		case 5101012: // tornado uppercut
+		case 12121001: // blazing extinction
+		case 61111218: // wing beat
+		case 101120200: // wind cutter
+		case 101120203: // storm break
+		case 101120205: // severe storm break
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	static bool IsSpecialMeleeAttack(int nSkillID) 
+	{
+		switch (nSkillID)
+		{
+		case 101120200:
+		case 101120203:
+		case 101120205:
+		case 61111100:
+		case 61111113:
+		case 61111218:
+		case 31201001:
+		case 14111022:
+		case 22140015:
+		case 22140024:
+		case 12121001:
+		case 5301001:
+		case 5101014:
+		case 5101012:
+		case 5300007:
+		case 27120211:
+		case 14111023:
+		case 400031010:
+		case 400031003:
+		case 400031004:
+			return true;
+		}
+		return IsRushBombSkill(nSkillID);
+	}
+
+	static bool IsZeroSkill(int a1) 
+	{
+		int v1; // eax@1
+
+		v1 = GetSkillRootFromSkill(a1);
+		return IsZeroJob(v1);
+	}
+
+	static bool IsEvanForceSkill(int nSkillID)
+	{
+		switch (nSkillID) {
+		case 22110022: // dragon flash
+		case 22110023: // dragon flash
+		case 22141011: // thunder circle
+		case 22171062: // earth circle
+		case 22140022: // dragon dive
+		case 80001894: // dragon flash
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	static bool IsUsingBulletMeleeAttack(int nSkillID) 
+	{
+		return (nSkillID == 14121052 
+			|| (nSkillID >= 14111022 && nSkillID <= 14121003) 
+			|| (nSkillID <= 14001027 && nSkillID >= 14000029));
+	}
+
 }

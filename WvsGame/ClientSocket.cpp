@@ -35,8 +35,8 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 		{
 			iPacket->RestorePacket();
 			if (nType != 0x369) {
-				printf("[WvsGame][ClientSocket::OnPacket]封包接收：");
-				iPacket->Print();
+				//printf("[WvsGame][ClientSocket::OnPacket]封包接收：");
+				//iPacket->Print();
 			}
 			pUser->OnPacket(iPacket);
 		}

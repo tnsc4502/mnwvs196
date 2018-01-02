@@ -128,7 +128,7 @@ void FieldObj::SetMp(int mp)
 	m_nMp = mp;
 }
 
-void FieldObj::SetHp(int hp)
+void FieldObj::SetHp(long long int hp)
 {
 	m_nHp = hp;
 }
@@ -138,7 +138,7 @@ int FieldObj::GetMp() const
 	return m_nMp;
 }
 
-int FieldObj::GetHp() const
+long long int FieldObj::GetHp() const
 {
 	return m_nHp;
 }

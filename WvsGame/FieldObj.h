@@ -4,7 +4,8 @@ class OutPacket;
 
 class FieldObj
 {
-	int nPosX, nPosY, nF, nFh, nCy, nRx0, nRx1, nHide, nFieldObjectID, nTemplateID, m_nMp, m_nHp;
+	int nPosX, nPosY, nF, nFh, nCy, nRx0, nRx1, nHide, nFieldObjectID, nTemplateID;
+	long long int m_nMp, m_nHp;
 
 	char m_bMoveAction;
 public:
@@ -63,8 +64,8 @@ public:
 	virtual void SetMovePosition(int x, int y, bool bMoveAction, short nSN) {}
 
 	void SetMp(int mp);
-	void SetHp(int hp);
+	void SetHp(long long int hp);
 	int GetMp() const;
-	int GetHp() const;
+	long long int GetHp() const;
 };
 

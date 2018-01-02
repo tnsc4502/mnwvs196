@@ -20,6 +20,12 @@ MAKE_CLIENT_PACKET_FLAG(ClientRequestStart, 0xA5);
 
 MAKE_CLIENT_PACKET_FLAG(OnUserTransferFieldRequest, 0xB3);
 MAKE_CLIENT_PACKET_FLAG(OnUserMoveRequest, 0xC4);
+MAKE_CLIENT_PACKET_FLAG(OnUserAttack_MeleeAttack, 0xC9);
+MAKE_CLIENT_PACKET_FLAG(OnUserAttack_ShootAttack, 0xCA);
+MAKE_CLIENT_PACKET_FLAG(OnUserAttack_MagicAttack, 0xCB);
+MAKE_CLIENT_PACKET_FLAG(OnUserAttack_BodyAttack, 0xCC);
+MAKE_CLIENT_PACKET_FLAG(OnUserAttack_AreaDot, 0xCD);
+
 MAKE_CLIENT_PACKET_FLAG(OnUserChat, 0xD1);
 MAKE_CLIENT_PACKET_FLAG(OnUserChangeSlotRequest, 0xF7);
 
