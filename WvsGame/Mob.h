@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include "FieldObj.h"
 
 class MobTemplate;
@@ -10,6 +11,7 @@ class Mob : public FieldObj
 private:
 	const MobTemplate* m_pMobTemplate;
 
+	std::map<User*, long long int> m_mAttackRecord;
 	Controller* m_pController;
 
 public:
@@ -17,6 +19,7 @@ public:
 	~Mob();
 
 	void MakeEnterFieldPacket(OutPacket *oPacket);
+	void MakeLeaveFieldPacket(OutPacket *oPacket);
 	void EncodeInitData(OutPacket *oPacket, bool bIsControl = false);
 	void SendChangeControllerPacket(User* pUser, int nLevel);
 	void SendReleaseControllPacket(User* pUser, int dwMobID);
@@ -30,5 +33,6 @@ public:
 
 	//解析怪物移動時，Lucid有些怪物移動封包多兩個bytes
 	static bool IsLucidSpecialMob(int dwTemplateID);
+	void OnMobHit(User* pUser, long long int nDamage, int nAttackType);
 };
 
