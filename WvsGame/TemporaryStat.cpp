@@ -18,15 +18,15 @@ void TemporaryStat::TS_Flag::Encode(OutPacket * oPacket)
 	}
 }
 
-TemporaryStat::TS_Flag & TemporaryStat::TS_Flag::operator|=(const TS_Flag & lhs)
+TemporaryStat::TS_Flag & TemporaryStat::TS_Flag::operator|=(const TS_Flag & rhs)
 {
-	m_aData[lhs.m_nFlagPos] |= lhs.m_aData[lhs.m_nFlagPos];
+	m_aData[rhs.m_nFlagPos] |= rhs.m_aData[rhs.m_nFlagPos];
 	return *this;
 }
 
-bool TemporaryStat::TS_Flag::operator&(const TS_Flag & lhs)
+bool TemporaryStat::TS_Flag::operator&(const TS_Flag & rhs)
 {
-	return (m_aData[lhs.m_nFlagPos] & lhs.m_aData[lhs.m_nFlagPos]);
+	return (m_aData[rhs.m_nFlagPos] & rhs.m_aData[rhs.m_nFlagPos]);
 }
 
 TemporaryStat::TS_Flag TemporaryStat::TS_Flag::GetDefault()

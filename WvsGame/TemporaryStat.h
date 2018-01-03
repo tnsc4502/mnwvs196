@@ -15,8 +15,8 @@ struct TemporaryStat
 	public:
 		TS_Flag(int dwFlagValue);
 		void Encode(OutPacket *oPacket);
-		TS_Flag& operator |= (const TS_Flag& lhs);
-		bool operator & (const TS_Flag& lhs);
+		TS_Flag& operator |= (const TS_Flag& rhs);
+		bool operator & (const TS_Flag& rhs);
 
 		static TS_Flag GetDefault();
 	};
