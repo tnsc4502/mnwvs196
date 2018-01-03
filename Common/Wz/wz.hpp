@@ -56,6 +56,7 @@ public:
 	void* pFilePtr;
 private:
     Data * data;
+	std::recursive_mutex m_lock;
 };
 //extern Node Base;
 //extern uint16_t Version;

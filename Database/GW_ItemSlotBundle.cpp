@@ -56,6 +56,13 @@ void GW_ItemSlotBundle::Save(int nCharacterID, GW_ItemSlotType type)
 		queryStatement.execute();
 		return;
 	}
+	if (liItemSN < -1 /*nStatus == GW_ItemSlotStatus::DROPPED*/) //DROPPED or DELETED
+	{
+		liItemSN *= -1;
+		queryStatement << "UPDATE " << strTableName << " Set CharacterID = -1 Where CharacterID = " << nCharacterID << " and ItemSN = " << liItemSN;
+		queryStatement.execute();
+		return;
+	}
 	if (liItemSN == -1)
 	{
 		liItemSN = IncItemSN(type);
@@ -100,7 +107,8 @@ void GW_ItemSlotBundle::RawEncode(OutPacket *oPacket) const
 	//          Throwing Start            Bullet
 	if ((nItemID / 10000 == 207) || (nItemID / 10000 == 233) || (nItemID / 10000 == 287))
 		oPacket->Encode8(liItemSN);
-	for (int i = 0; i < 4; ++i)
+	oPacket->Encode8(liItemSN);
+	for (int i = 0; i < 2; ++i)
 		oPacket->Encode4(0);
 	oPacket->Encode1(0);
 }
@@ -118,7 +126,8 @@ void GW_ItemSlotBundle::RawDecode(InPacket *iPacket)
 	nAttribute = iPacket->Decode2();
 	if ((nItemID / 10000 == 207) || (nItemID / 10000 == 233) || (nItemID / 10000 == 287))
 		liItemSN = iPacket->Decode8();
-	iPacket->DecodeBuffer(nullptr, 17);
+	liItemSN = iPacket->Decode8();
+	iPacket->DecodeBuffer(nullptr, 9);
 }
 
 GW_ItemSlotBase * GW_ItemSlotBundle::MakeClone()

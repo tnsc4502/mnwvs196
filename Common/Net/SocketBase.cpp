@@ -142,9 +142,9 @@ void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_tran
 		try {
 			this->OnPacket(&iPacket);
 		}
-		catch (...) {
+		catch (std::exception& ex) {
 			iPacket.RestorePacket();
-			std::cout << "解析封包時發生錯誤，OPCode : " << iPacket.Decode2() << std::endl;
+			std::cout << "解析封包時發生錯誤，OPCode : " << iPacket.Decode2() << " Err : " << ex.what() << std::endl;
 			iPacket.Print();
 		}
 		OnWaitingPacket();

@@ -31,6 +31,7 @@ MAKE_CLIENT_PACKET_FLAG(OnUserChangeSlotRequest, 0xF7);
 
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillUpRequest, 0x13E);
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillUseRequest, 0x13F);
+MAKE_CLIENT_PACKET_FLAG(OnChangeCharacterRequest, 0x204);
 
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END

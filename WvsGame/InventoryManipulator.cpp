@@ -40,13 +40,15 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 	/*
 	此處檢查是不CashItem
 	*/
+	if (nTI < 1 || nTI > 5)
+		return false;
 	auto& itemSlot = pCharacterData->mItemSlot[nTI];
 	if (pItem->IsTreatSingly())
 	{
 		short nPOS = pCharacterData->FindEmptySlotPosition(nTI);
 		if (nPOS > 0) 
 		{
-			pCharacterData->mItemSlot[nTI][nPOS] = pItem;
+			itemSlot[nPOS] = pItem;
 			pItem->nPOS = nPOS;
 			InsertChangeLog(aChangeLog, 0, nTI, nPOS, pItem, 0, 0);
 			*nIncRet = 1;
@@ -58,7 +60,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 	if (ItemInfo::GetInstance()->GetBundleItem(pItem->nItemID) != nullptr)
 	{
 		int nMaxPerSlot = SkillInfo::GetInstance()->GetBundleItemMaxPerSlot(pItem->nItemID, pCharacterData),
-			nLastPos = pCharacterData->mItemSlot[nTI].rbegin()->first,
+			//nLastPos = pCharacterData->mItemSlot[nTI].size() == 0 ? 1 : pCharacterData->mItemSlot[nTI].rbegin()->first,
 			nPOS = 1,
 			nOnTrading = 0,
 			nRemaining = 0,
@@ -66,8 +68,16 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 			nTotalInc = 0,
 			nNumber = ((GW_ItemSlotBundle*)pItem)->nNumber; //要加入欄位的物品數量
 
-		while (nPOS <= nLastPos)
+
+		//while (nPOS <= nLastPos)
+		for(auto& pos : itemSlot)
 		{
+			nPOS = pos.first;
+			if (nPOS <= 0)
+				continue;
+			if (nPOS >= 10000)
+				break;
+
 			auto pItemInSlot = pCharacterData->GetItem(nTI, nPOS);
 			
 			//先從背包找到相同的物品
@@ -80,11 +90,12 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 				if (nRemaining <= 0)
 					continue;
 				nOnTrading = pCharacterData->mItemTrading[nTI][nPOS];
-				nSlotInc = nNumber > nRemaining ? nRemaining : (nNumber - nRemaining); //這次可以增加多少
+				nSlotInc = nNumber > nRemaining ? nRemaining : (nNumber); //這次可以增加多少
+				printf("Add To Bag %d, nNumber = %d, nRemaining = %d, nMaxPerSlot = %d\n", nPOS, nNumber, nRemaining, nMaxPerSlot);
 				if (nSlotInc - nOnTrading > 0)
 				{
 					((GW_ItemSlotBundle*)pItemInSlot)->nNumber += (nSlotInc - nOnTrading);
-					InsertChangeLog(aChangeLog, 1, nTI, nPOS, pItemInSlot, 0, nSlotInc - nOnTrading);
+					InsertChangeLog(aChangeLog, 1, nTI, nPOS, pItemInSlot, 0, ((GW_ItemSlotBundle*)pItemInSlot)->nNumber);
 				}
 				else
 				{
@@ -95,25 +106,37 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 				if (nNumber <= 0)
 					break;
 			}
+
 		}
 
 		//欄位無相同物品，找新的欄位插入
 		while (nNumber > 0)
 		{
 			nPOS = pCharacterData->FindEmptySlotPosition(nTI);
+
+			//告知物品並未完全放入背包中。
 			if (nPOS <= 0)
-				break;
-			auto pClone = pItem->MakeClone();
-			nSlotInc = nNumber > nMaxPerSlot ? nMaxPerSlot : (nNumber - nMaxPerSlot); //這次可以增加多少
+			{
+				*nIncRet = nTotalInc;
+				return false;
+			}
+			/*
+			如果pItem剩餘的數量沒有超過nMaxPerSlot，整個pItem放進slot中。
+			如果超過最大數量，則產生一個pClone，數量為nMaxPerSlot，並且將pItem剩餘數量減去nSlotInc (nMaxPerSlot)。
+			*/
+			auto pClone = nNumber > nMaxPerSlot ? pItem->MakeClone() : pItem;
+			nSlotInc = nNumber > nMaxPerSlot ? nMaxPerSlot : (nNumber); //這次可以增加多少 ?
 			((GW_ItemSlotBundle*)pClone)->nNumber = nSlotInc;
-			pCharacterData->mItemSlot[nTI][nPOS] = pClone;
+			itemSlot[nPOS] = pClone;
 			pClone->nPOS = nPOS;
 
+			InsertChangeLog(aChangeLog, 0, nTI, nPOS, pItem, 0, 0);
 			nNumber -= nSlotInc;
 			nTotalInc += nSlotInc;
 		}
 		*nIncRet = nTotalInc;
 	}
+	return true;
 }
 
 void InventoryManipulator::InsertChangeLog(std::vector<ChangeLog>& aChangeLog, int nChange, int nTI, int nPOS, GW_ItemSlotBase * pi, int nPOS2, int nNumber)
@@ -148,8 +171,11 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 			if (change.nChange == 3 && change.nPOS < 0)
 				oPacket->Encode1(1);
 		}
-		else
-			change.pItem->Encode(oPacket);
+		else 
+		{
+			change.pItem->RawEncode(oPacket);
+			oPacket->Encode4(0); // what's this?
+		}
 	}
 	oPacket->Encode4(0); // what's this?
 }
@@ -161,25 +187,34 @@ bool InventoryManipulator::RawRemoveItem(GA_Character * pCharacterData, int nTI,
 	printf("Raw Remove Item pClone == null ? %d\n", (int)(pClone == nullptr));
 	if (pItem != nullptr)
 	{
+		int nRemaining = 0;
 		//
-		if (pItem->IsTreatSingly() && nCount == 1)
+		if (pItem->IsTreatSingly() && nTI == 1)
 			pCharacterData->RemoveItem(nTI, nPOS);
 		else if (nCount >= 1)
 		{
-			int nInSlotCount = ((GW_ItemSlotBundle*)pItem)->nNumber;
+			GW_ItemSlotBundle* pBundle = (GW_ItemSlotBundle*)pItem;
+			int nInSlotCount = pBundle->nNumber;
 			if (nCount > nInSlotCount)
 				nCount = nInSlotCount;
-			((GW_ItemSlotBundle*)pItem)->nNumber -= nCount;
-			if (((GW_ItemSlotBundle*)pItem)->nNumber <= 0)
+			pBundle->nNumber -= nCount;
+			nRemaining = pBundle->nNumber;
+			if (nRemaining <= 0)
 				pCharacterData->RemoveItem(nTI, nPOS);
 		}
 
-		if (ppItemRemoved)
+		if (ppItemRemoved) 
+		{
 			*ppItemRemoved = pClone;
-		if (ppItemRemoved && nCount > 1)
+		}
+		if (ppItemRemoved && nCount >= 1 && nTI != 1)
 			((GW_ItemSlotBundle*)*ppItemRemoved)->nNumber = nCount;
+
 		*nDecRet = nCount;
-		InsertChangeLog(aChangeLog, 3, nTI, nPOS, pItem, 0, *nDecRet);
+		if(nRemaining > 0)
+			InsertChangeLog(aChangeLog, 1, nTI, nPOS, pItem, 0, nRemaining);
+		else
+			InsertChangeLog(aChangeLog, 3, nTI, nPOS, pItem, 0, *nDecRet);
 	}
 	return true;
 }

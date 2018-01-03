@@ -58,5 +58,6 @@ public:
 	void PostLoadCharacterListRequest(SocketBase *pSrv, int uLocalSocketSN, int nAccountID, int nWorldID);
 	void PostCreateNewCharacterRequest(SocketBase *pSrv, int uLocalSocketSN, int nAccountID, int nWorldID, const std::string& strName, int nGender, int nFace, int nHair, int nSkin, const int* aBody, const int* aStat);
 	void PostCharacterDataRequest(SocketBase *pSrv, int uClientSocketSN, int nCharacterID);
+	void OnCharacterSaveRequest(void *iPacket);
 };
 

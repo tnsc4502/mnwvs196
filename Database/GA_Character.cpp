@@ -21,8 +21,8 @@ GA_Character::GA_Character()
 }
 
 GA_Character::~GA_Character()
-
 {
+	printf("Destruct Data Called\n");
 	delete mAvatarData;
 	delete mStat;
 	delete mLevel;
@@ -270,6 +270,8 @@ int GA_Character::FindEmptySlotPosition(int nTI)
 	{
 		if (slot.first < 0) //skip equipped
 			continue;
+		if (slot.first >= 10000)
+			return 0;
 		if (slot.first > lastIndex || (slot.first == lastIndex && slot.second == nullptr))
 			return lastIndex;
 		lastIndex = slot.first + 1;

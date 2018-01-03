@@ -475,7 +475,7 @@ namespace WvsGameConstants
 		int v1; // eax@1
 
 		v1 = GetSkillRootFromSkill(a1);
-		return IsZeroJob(v1);
+		return IsZeroJob(v1) > 0;
 	}
 
 	static bool IsEvanForceSkill(int nSkillID)

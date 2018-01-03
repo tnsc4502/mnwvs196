@@ -1,6 +1,9 @@
 #include "ItemInfo.h"
 #include "Wz\WzResMan.hpp"
 #include "..\Database\GW_ItemSlotBase.h"
+#include "..\Database\GW_ItemSlotEquip.h"
+#include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Common\Random\Rand32.h"
 
 ItemInfo::ItemInfo()
 {
@@ -560,4 +563,166 @@ void ItemInfo::LoadAbilityStat(ItemInfo::BasicAbilityStat & refStat, void * pPro
 	refStat.bNotSale = ((int)infoImg["notSale"]) == 1;
 	refStat.bTradeBlock = ((int)infoImg["tradeBlock"]) == 1;
 	refStat.bExpireOnLogout = ((int)infoImg["expireOnLogout"]) == 1;
+}
+
+GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOption)
+{
+	int nType = nItemID / 1000000;
+	GW_ItemSlotBase *ret = nullptr;
+	if (nType == 1)
+	{
+		auto pItem = GetEquipItem(nItemID);
+		if (pItem == nullptr)
+			return nullptr;
+		GW_ItemSlotEquip* pEquip = new GW_ItemSlotEquip;
+		int nValue = 0;
+		if ((nValue = pItem->incStat.niSTR))
+			pEquip->nSTR = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niDEX))
+			pEquip->nDEX = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niLUK))
+			pEquip->nLUK = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niINT))
+			pEquip->nINT = GetVariation(nValue, enOption);
+
+		if ((nValue = pItem->incStat.niMaxHP))
+			pEquip->nMaxHP = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niMaxMP))
+			pEquip->nMaxMP = GetVariation(nValue, enOption);
+
+		if ((nValue = pItem->incStat.niPAD))
+			pEquip->nPAD = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niPDD))
+			pEquip->nPDD = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niMAD))
+			pEquip->nMAD = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niMDD))
+			pEquip->nMDD = GetVariation(nValue, enOption);
+
+		if ((nValue = pItem->incStat.niACC))
+			pEquip->nACC = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niEVA))
+			pEquip->nEVA = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niCraft))
+			pEquip->nCraft = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niSpeed))
+			pEquip->nSpeed = GetVariation(nValue, enOption);
+		if ((nValue = pItem->incStat.niJump))
+			pEquip->nJump = GetVariation(nValue, enOption);
+		ret = pEquip;
+	}
+	else if (nType > 1 && nType <= 4)
+	{
+		auto pItem = GetBundleItem(nItemID);
+		if (pItem == nullptr)
+			return nullptr;
+
+		ret = new GW_ItemSlotBundle;
+		((GW_ItemSlotBundle*)ret)->nNumber = 1;
+	}
+	if (ret)
+	{
+		ret->nItemID = nItemID;
+		ret->nType = (GW_ItemSlotBundle::GW_ItemSlotType)(GW_ItemSlotBundle::EQUIP + (nType - 1));
+	}
+	return ret;
+}
+
+int ItemInfo::GetVariation(int v, ItemVariationOption enOption)
+{
+	int result; // eax@1
+	int v3; // eax@3
+	unsigned int v4; // edi@5
+	signed int v5; // eax@6
+	int v6; // ecx@8
+	signed int v7; // edi@8
+	int v8; // edi@11
+	int v9; // eax@16
+	unsigned int v10; // edi@18
+	signed int v11; // eax@19
+	char v12; // cl@21
+	signed int v13; // eax@21
+	int v14; // edi@21
+	bool v15; // zf@24
+	bool v16; // cf@28
+	int enOptiona; // [sp+18h] [bp+Ch]@5
+
+	result = v;
+	if (v)
+	{
+		if (enOption != 4)
+		{
+			v9 = v / 10 + 1;
+			if (v9 >= 5)
+				v9 = 5;
+			v10 = 1 << (v9 + 2);
+			if (v10)
+				v11 = Rand32::GetInstance()->Random() % v10;
+			else
+				v11 = Rand32::GetInstance()->Random();
+			v12 = v11;
+			v13 = v11 >> 1;
+			v14 = ((v13 >> 3) & 1)
+				+ ((v13 >> 2) & 1)
+				+ ((v13 >> 1) & 1)
+				+ (v13 & 1)
+				+ (v12 & 1)
+				- 2
+				+ ((v13 >> 4) & 1)
+				+ ((v13 >> 5) & 1);
+			if (v14 <= 0)
+				v14 = 0;
+			if (enOption == 2)
+			{
+				v15 = (Rand32::GetInstance()->Random() & 1) == 0;
+				result = v;
+				if (v15)
+					return v - v14;
+			}
+			else
+			{
+				if (enOption == 1)
+					v16 = Rand32::GetInstance()->Random() % 0xA < 3;
+				else
+				{
+					if (enOption != 3)
+						return v;
+					v16 = Rand32::GetInstance()->Random() % 0xA < 1;
+				}
+				result = v;
+				if (v16)
+					return result;
+			}
+			result += v14;
+			return result;
+		}
+		v3 = v / 5 + 1;
+		if (v3 >= 7)
+			v3 = 7;
+		v4 = 1 << (v3 + 2);
+		enOptiona = v3 + 2;
+		if (v4)
+			v5 = Rand32::GetInstance()->Random() % v4;
+		else
+			v5 = Rand32::GetInstance()->Random();
+		v6 = enOptiona;
+		v7 = -2;
+		if ((signed int)enOptiona > 0)
+		{
+			do
+			{
+				v7 += v5 & 1;
+				v5 >>= 1;
+				--v6;
+			} while (v6);
+		}
+		if (Rand32::GetInstance()->Random() & 1)
+			v8 = v + v7;
+		else
+			v8 = v - v7;
+		if (v8 <= 0)
+			v8 = 0;
+		result = v8;
+	}
+	return result;
 }

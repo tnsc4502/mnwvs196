@@ -64,6 +64,9 @@
     <Filter Include="WvsGame\InGame\Skill">
       <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Common\Random">
+      <UniqueIdentifier>{e77b7455-4df1-4c99-9152-0505e26b6096}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -169,9 +172,6 @@
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\WvsContextPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
@@ -298,6 +298,12 @@
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
     <ClInclude Include="AttackInfo.h">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Random\Rand32.h">
+      <Filter>Common\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandManager.h">
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
   </ItemGroup>
@@ -484,6 +490,12 @@
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
     <ClCompile Include="AttackInfo.cpp">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Random\Rand32.cpp">
+      <Filter>Common\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandManager.cpp">
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
   </ItemGroup>

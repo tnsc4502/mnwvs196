@@ -34,9 +34,9 @@ void LifePool::Init(Field* pField, int nFieldID)
 {
 	m_pField = pField;
 
-	int sizeX = max(MAX_WINDOW_VIEW_X, m_pField->GetMapSizeX());
-	int sizeY = max(max(m_pField->GetMapSizeY() - 450, MAX_WINDOW_VIEW_Y), m_pField->GetMapSizeY()); //I dont know
-	int genSize = (int)(((double)sizeX * sizeY) * 0.0000078125f);
+	int sizeX = 1920;
+	int sizeY = 1080; //I dont know
+	int genSize = (int)(((double)sizeX * sizeY) * 0.0000048125f);
 	if (genSize < 1)
 		genSize = 1;
 	else if (genSize >= MAX_MOB_GEN)
@@ -46,6 +46,7 @@ void LifePool::Init(Field* pField, int nFieldID)
 
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
 	auto& lifeData = mapWz["life"];
+	printf("m_nMobCapacityMax ============== %d\n", m_nMobCapacityMax);
 	for (auto& node : lifeData)
 	{
 		const auto &typeFlag = (std::string)node["type"];
@@ -108,19 +109,20 @@ void LifePool::CreateNpc(const Npc& npc)
 
 void LifePool::TryCreateMob(bool reset)
 {
+	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
 	/*
 	if reset, kill all monsters and respawns
 	*/
 	if(m_lMob.size() > 0)
-	for (int i = 0; i < m_nMobCapacityMax - (m_aMobGen.size()); ++i) {
-		auto& mob = m_lMob[rand() % m_lMob.size()];
-		CreateMob(mob, mob.GetPosX(), mob.GetPosY(), mob.GetFh(), 0, -2, 0, 0, 0, nullptr);
-	}
+		for (int i = 0; i < m_nMobCapacityMax - (m_aMobGen.size()); ++i) 
+		{
+			auto& mob = m_lMob[rand() % m_lMob.size()];
+			CreateMob(mob, mob.GetPosX(), mob.GetPosY(), mob.GetFh(), 0, -2, 0, 0, 0, nullptr);
+		}
 }
 
 void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriority, int nType, unsigned int dwOption, int bLeft, int nMobType, Controller* pOwner)
 {
-	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
 	Controller* pController = pOwner;
 	if (m_hCtrl.size() > 0)
 		pController = m_hCtrl.begin()->second;
@@ -130,7 +132,7 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 		&& (nType != -3 || nMobType != 2 || !GiveUpMobController(pController)))
 		pController = nullptr;
 
-	if (pController) 
+	if (pController && pController != this->m_pCtrlNull)
 	{
 		Mob* newMob = new Mob;
 		*newMob = mob;
@@ -139,7 +141,7 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 		int moveAbility = newMob->GetMobTemplate()->m_nMoveAbility;
 
 		newMob->SetHp(newMob->GetMobTemplate()->m_lnMaxHP);
-		newMob->SetMp(newMob->GetMobTemplate()->m_lnMaxMP);
+		newMob->SetMp((int)newMob->GetMobTemplate()->m_lnMaxMP);
 		newMob->SetMovePosition(x, y, bLeft & 1 | 2 * (moveAbility == 3 ? 6 : (moveAbility == 0 ? 1 : 0) + 1), fh);
 		newMob->SetMoveAction(5); //怪物 = 5 ?
 
@@ -193,16 +195,18 @@ void LifePool::InsertController(User* pUser)
 {
 	Controller* controller = new Controller(pUser);
 	auto& iter = m_hCtrl.insert({ 0, controller });
-	m_mController.insert({ pUser, iter });
+	m_mController.insert({ pUser->GetUserID(), iter });
 	RedistributeLife();
 }
 
 void LifePool::RemoveController(User* pUser)
 {
 	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
+	if (m_mController.size() == 0)
+		return;
 
 	//找到pUser對應的iterator
-	auto& iter = m_mController.find(pUser);
+	auto& iter = m_mController.find(pUser->GetUserID());
 
 	//根據iterator找到controller指標
 	auto pController = iter->second->second;
@@ -219,7 +223,7 @@ void LifePool::RemoveController(User* pUser)
 		Controller* pCtrlNew = m_pCtrlNull;
 		if (m_hCtrl.size() > 0)
 			pCtrlNew = m_hCtrl.begin()->second;
-		pMob->SendChangeControllerPacket(pUser, 0);
+		pMob->SendChangeControllerPacket(pController->GetUser(), 0);
 		pMob->SetController(pCtrlNew);
 		pCtrlNew->AddCtrlMob(pMob);
 		if (pCtrlNew != m_pCtrlNull)
@@ -239,12 +243,12 @@ void LifePool::UpdateCtrlHeap(Controller * pController)
 	auto pUser = pController->GetUser();
 
 	//找到pUser對應的iterator
-	auto& iter = m_mController.find(pUser);
+	auto& iter = m_mController.find(pUser->GetUserID());
 
 
 	//從hCtrl中移除此controller，並重新插入 [新的數量為key]
 	m_hCtrl.erase(iter->second);
-	m_mController[pUser] = m_hCtrl.insert({ pController->GetTotalControlledCount(), pController });
+	m_mController[pUser->GetUserID()] = m_hCtrl.insert({ pController->GetTotalControlledCount(), pController });
 }
 
 bool LifePool::GiveUpMobController(Controller * pController)
@@ -312,7 +316,7 @@ void LifePool::Update()
 
 void LifePool::OnPacket(User * pUser, int nType, InPacket * iPacket)
 {
-	if (nType >= 0x369 && nType <= 0x38F)
+	if (nType >= 0x369 && nType <= 0x380)
 	{
 		OnMobPacket(pUser, nType, iPacket);
 	}
@@ -335,7 +339,7 @@ void LifePool::OnUserAttack(User * pUser, const SkillEntry * pSkill, AttackInfo 
 		auto& refDmgValues = dmgInfo.second;
 		for (const auto& dmgValue : refDmgValues)
 		{
-			printf("Monster %d Damaged : %d Total : %d\n", dmgInfo.first, dmgValue, pMob->GetMobTemplate()->m_lnMaxHP);
+			//printf("Monster %d Damaged : %d Total : %d\n", dmgInfo.first, dmgValue, pMob->GetMobTemplate()->m_lnMaxHP);
 			pMob->OnMobHit(pUser, dmgValue, pInfo->m_nType);
 			if (pMob->GetHp() <= 0)
 			{
@@ -352,7 +356,7 @@ void LifePool::EncodeAttackInfo(User * pUser, AttackInfo * pInfo, OutPacket * oP
 	oPacket->Encode4(pUser->GetUserID());
 	oPacket->Encode1(0);
 	oPacket->Encode1(pInfo->m_bAttackInfoFlag);
-	oPacket->Encode1(200);
+	oPacket->Encode1((char)200);
 	if (pInfo->m_nSkillID > 0 || pInfo->m_nType == ClientPacketFlag::OnUserAttack_MagicAttack)
 	{
 		oPacket->Encode1(pInfo->m_nSLV);
@@ -386,7 +390,7 @@ void LifePool::EncodeAttackInfo(User * pUser, AttackInfo * pInfo, OutPacket * oP
 	oPacket->Encode4(0);
 
 	oPacket->Encode2(pInfo->m_nDisplay);
-	oPacket->Encode1(0xFF);
+	oPacket->Encode1((char)0xFF);
 	oPacket->Encode2(0);
 	oPacket->Encode2(0);
 	oPacket->Encode1(0);
@@ -432,7 +436,7 @@ void LifePool::EncodeAttackInfo(User * pUser, AttackInfo * pInfo, OutPacket * oP
 		oPacket->Encode2(pUser->GetPosX());
 		oPacket->Encode2(pUser->GetPosY());
 	}
-	else if (pInfo->m_nType == ClientPacketFlag::OnUserAttack_MagicAttack == 3 && pInfo->m_tKeyDown > 0)
+	else if ((pInfo->m_nType == ClientPacketFlag::OnUserAttack_MagicAttack) && pInfo->m_tKeyDown > 0)
 		oPacket->Encode4(pInfo->m_tKeyDown);
 	
 	if (pInfo->m_nSkillID == 5321000 || 

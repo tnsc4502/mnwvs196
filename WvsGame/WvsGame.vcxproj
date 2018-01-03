@@ -179,10 +179,10 @@
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h" />
-    <ClInclude Include="..\Common\Net\PacketFlags\WvsContextPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\WorldInfo.h" />
     <ClInclude Include="..\Common\Net\WvsBase.h" />
+    <ClInclude Include="..\Common\Random\Rand32.h" />
     <ClInclude Include="..\Common\Task\AsnycScheduler.h" />
     <ClInclude Include="..\Common\Wz\mapfile.hpp" />
     <ClInclude Include="..\Common\Wz\sprite.hpp" />
@@ -196,6 +196,7 @@
     <ClInclude Include="BasicStat.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Drop.h" />
     <ClInclude Include="DropPool.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
+    <ClCompile Include="..\Common\Random\Rand32.cpp" />
     <ClCompile Include="..\Common\Task\AsnycScheduler.cpp" />
     <ClCompile Include="..\Common\Wz\mapfile.cpp" />
     <ClCompile Include="..\Common\Wz\wzcrypto.cpp" />
@@ -262,6 +264,7 @@
     <ClCompile Include="BasicStat.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Drop.cpp" />
     <ClCompile Include="DropPool.cpp" />

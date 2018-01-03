@@ -3,6 +3,7 @@
 
 GW_ItemSlotBase::GW_ItemSlotBase()
 {
+	liItemSN = -1;
 }
 
 

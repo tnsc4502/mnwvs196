@@ -46,7 +46,7 @@ class LifePool
 	Controller* m_pCtrlNull;
 
 	//紀錄User對應到的m_hCtrl iterator
-	std::map<User*, decltype(m_hCtrl)::iterator> m_mController;
+	std::map<int, decltype(m_hCtrl)::iterator> m_mController;
 
 	//設定物件在地圖中的基本屬性
 	void SetFieldObjAttribute(FieldObj* pFieldObj, WZ::Node& dataNode);

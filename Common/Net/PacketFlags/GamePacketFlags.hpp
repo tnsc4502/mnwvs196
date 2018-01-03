@@ -11,6 +11,7 @@ MAKE_FLAG_COLLECTION_BODY(GamePacketFlag)
 
 //Flags to Center
 MAKE_GAME_PACKET_FLAG(RequestMigrateIn, 0x6001);
+MAKE_GAME_PACKET_FLAG(RequestMigrateOut, 0x6002);
 
 
 //Flags to Game

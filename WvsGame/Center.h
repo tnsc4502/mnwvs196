@@ -45,6 +45,7 @@ public:
 	{
 		printf("[WvsLogin][Center]與Center Server中斷連線。\n");
 		((Center*)pSocket)->mWorldInfo.bIsConnected = false;
+		((Center*)pSocket)->mWorldInfo.bConnectionFailed = true;
 	}
 };
 

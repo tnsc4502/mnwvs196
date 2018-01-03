@@ -10,11 +10,13 @@
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\InPacket.h"
 #include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
+#include "..\Common\Net\PacketFlags\GamePacketFlags.hpp"
 #include "..\Common\Net\PacketFlags\UserPacketFlags.h"
 
 #include "FieldMan.h"
 #include "Portal.h"
 #include "PortalMap.h"
+#include "WvsGame.h"
 #include "Field.h"
 #include "QWUInventory.h"
 #include "BasicStat.h"
@@ -24,10 +26,7 @@
 #include "AttackInfo.h"
 #include "LifePool.h"
 #include "SkillInfo.h"
-#include "Drop.h"
-#include "DropPool.h"
-#include "Reward.h"
-#include "ItemInfo.h"
+#include "CommandManager.h"
 
 void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 {
@@ -245,6 +244,11 @@ AttackInfo * User::TryParsingBodyAttack(int nType, InPacket * iPacket)
 	return TryParsingMeleeAttack(nType, iPacket);
 }
 
+void User::OnIssueReloginCookie(InPacket * iPacket)
+{
+	MigrateOut();
+}
+
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
 	  pCharacterData(new GA_Character()),
@@ -322,6 +326,9 @@ void User::OnPacket(InPacket *iPacket)
 	case ClientPacketFlag::OnUserAttack_AreaDot:
 		OnAttack(nType, iPacket);
 		break;
+	case ClientPacketFlag::OnChangeCharacterRequest:
+		OnIssueReloginCookie(iPacket);
+		break;
 	default:
 		if (pField)
 		{
@@ -356,10 +363,16 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 	Field *pTargetField = FieldMan::GetInstance()->GetField(dwFieldReturn == -1 ? pPortal->GetTargetMap() : dwFieldReturn);
 	if (pTargetField != nullptr)
 	{
+		if(pPortal)
+		{ 
+			SetPosX(pPortal->GetX());
+			SetPosY(pPortal->GetY());
+		}
 		LeaveField();
 		pField = pTargetField;
 		PostTransferField(pField->GetFieldID(), pPortal, false);
 		pField->OnEnter(this);
+		pCharacterData->nFieldID = pField->GetFieldID();
 	}
 }
 
@@ -367,6 +380,8 @@ void User::OnChat(InPacket *iPacket)
 {
 	iPacket->Decode4(); //TIME TICK
 	std::string strMsg = iPacket->DecodeStr();
+	CommandManager::GetInstance()->Process(this, strMsg);
+
 	unsigned char balloon = iPacket->Decode1();
 
 	OutPacket oPacket;
@@ -399,7 +414,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 
 	oPacket.Encode1(0); //bUsingBuffProtector
 	oPacket.Encode4(dwFieldID);
-	oPacket.Encode1(0);
+	oPacket.Encode1(pPortal == nullptr ? 0x80 : atoi(pPortal->GetPortalName().c_str()));
 	oPacket.Encode4(pCharacterData->mStat->nHP); //HP
 
 	oPacket.Encode1(0);
@@ -594,6 +609,23 @@ SecondaryStat * User::GetSecondaryStat()
 BasicStat * User::GetBasicStat()
 {
 	return this->m_pBasicStat;
+}
+
+std::mutex & User::GetLock()
+{
+	return m_mtxUserlock;
+}
+
+void User::MigrateOut()
+{
+	OutPacket oPacket;
+	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
+	oPacket.Encode4(pSocket->GetSocketID());
+	oPacket.Encode4(GetUserID());
+	pCharacterData->EncodeCharacterData(&oPacket);
+	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
+	LeaveField();
+	pSocket->GetSocket().close();
 }
 
 void User::LeaveField()

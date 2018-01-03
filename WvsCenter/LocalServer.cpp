@@ -1,3 +1,5 @@
+
+#include "..\Database\CharacterDBAccessor.h"
 #include "LocalServer.h"
 #include "Net\InPacket.h"
 #include "Net\OutPacket.h"
@@ -9,7 +11,6 @@
 #include "Constants\ServerConstants.hpp"
 #include "WvsCenter.h"
 
-#include "..\Database\CharacterDBAccessor.h"
 
 LocalServer::LocalServer(asio::io_service& serverService)
 	: SocketBase(serverService, true)
@@ -46,6 +47,9 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		break;
 	case GamePacketFlag::RequestMigrateIn:
 		OnRequestMigrateIn(iPacket);
+		break;
+	case GamePacketFlag::RequestMigrateOut:
+		OnRequestMigrateOut(iPacket);
 		break;
 	}
 }
@@ -162,4 +166,11 @@ void LocalServer::OnRequestMigrateIn(InPacket *iPacket)
 	int nClientSocketID = iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
 	CharacterDBAccessor::GetInstance()->PostCharacterDataRequest(this, nClientSocketID, nCharacterID);
+}
+
+void LocalServer::OnRequestMigrateOut(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->OnCharacterSaveRequest(iPacket);
 }

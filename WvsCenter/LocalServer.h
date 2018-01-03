@@ -19,5 +19,6 @@ public:
 	void OnRequestCreateNewCharacter(InPacket *iPacket);
 	void OnRequestGameServerInfo(InPacket *iPacket);
 	void OnRequestMigrateIn(InPacket *iPacket);
+	void OnRequestMigrateOut(InPacket *iPacket);
 };
 

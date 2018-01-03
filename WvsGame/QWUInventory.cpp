@@ -5,10 +5,13 @@
 #include "DropPool.h"
 #include "SkillInfo.h"
 #include "..\Common\Net\InPacket.h"
+#include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
+#include "..\Database\GW_CharacterMoney.h"
 #include "InventoryManipulator.h"
+#include "BasicStat.h"
 
 QWUInventory::QWUInventory()
 {
@@ -21,6 +24,7 @@ QWUInventory::~QWUInventory()
 
 bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI, int nPOS1, int nPOS2, int nCount, int tRequestTime)
 {
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	auto pCharacterData = pUser->GetCharacterData();
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int nMovedCount = 0;
@@ -98,6 +102,7 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 	}
 	OutPacket oPacket;
 	InventoryManipulator::MakeInventoryOperation(&oPacket, bOnExclRequest, aChangeLog);
+	pUser->SendCharacterStat(true, 0);
 	pUser->SendPacket(&oPacket);
 	return false;
 }
@@ -112,4 +117,39 @@ void QWUInventory::OnChangeSlotPositionRequest(User * pUser, InPacket * iPacket)
 	short nPOS2 = iPacket->Decode2();
 	int nCount = iPacket->Decode2();
 	ChangeSlotPosition(pUser, true, nTI, nPOS1, nPOS2, nCount, tRequestTime);
+}
+
+bool QWUInventory::PickUpMoney(User* pUser, bool byPet, int nAmount)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	auto pChrData = pUser->GetCharacterData();
+
+	if (nAmount > 0 && pChrData->mMoney->nMoney + nAmount <= 0)
+		return false;
+
+	pChrData->mMoney->nMoney += nAmount;
+	auto liFlag = BasicStat::BasicStatFlag::BS_Meso;
+	pUser->SendCharacterStat(true, liFlag);
+	return true;
+}
+
+bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
+	int totalInc = 0;
+	bool result = false;
+	if(pItem != nullptr)
+		result = InventoryManipulator::RawAddItem(
+			pUser->GetCharacterData(),
+			pItem->nType + 1,
+			pItem,
+			aChangeLog,
+			&totalInc
+		);	
+	OutPacket oPacket;
+	InventoryManipulator::MakeInventoryOperation(&oPacket, true, aChangeLog);
+	pUser->SendPacket(&oPacket);
+	pUser->SendCharacterStat(true, 0);
+	return result;
 }

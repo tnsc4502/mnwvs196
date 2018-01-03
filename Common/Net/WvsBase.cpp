@@ -1,4 +1,5 @@
 #include "WvsBase.h"
+#include <mutex>
 
 std::map<unsigned int, SocketBase*> WvsBase::aSocketList;
 WvsBase* WvsBase::pInstance;
@@ -36,6 +37,12 @@ void WvsBase::OnSocketConnected(SocketBase *pSocket)
 
 void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
 {
+	printf("OnSocketDisconnected called!\n ");
+	/*static std::mutex localLock;
+	std::lock_guard<std::mutex> lock(localLock);*/
+	auto findIter = aSocketList.find(pSocket->GetSocketID());
+	if (findIter == aSocketList.end())
+		return;
 	aSocketList.erase(pSocket->GetSocketID());
 	printf("[WvsBase::OnSocketDisconnected]移除遠端連線Socket實體，Socket ID = %d\n", pSocket->GetSocketID());
 	pInstance->OnNotifySocketDisconnected(pSocket);

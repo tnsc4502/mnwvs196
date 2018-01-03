@@ -204,6 +204,7 @@ const std::string & Field::GetUserEnter() const
 
 void Field::InitLifePool()
 {
+	std::lock_guard<std::mutex> lifePoolGuard(fieldUserMutex);
 	m_pLifePool->Init(this, m_nFieldID);
 }
 
@@ -219,6 +220,7 @@ DropPool * Field::GetDropPool()
 
 void Field::OnEnter(User *pUser)
 {
+	printf("Field OnEnter \n");
 	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
 	if (!m_asyncUpdateTimer->IsStarted())
 		m_asyncUpdateTimer->Start();
@@ -249,10 +251,12 @@ void Field::SplitSendPacket(OutPacket *oPacket, User *pExcept)
 void Field::OnPacket(User* pUser, InPacket *iPacket)
 {
 	int nType = iPacket->Decode2();
-	if (nType >= 0x369 && nType <= 0x38F)
+	if (nType >= 0x369 && nType <= 0x380)
 	{
 		m_pLifePool->OnPacket(pUser, nType, iPacket);
 	}
+	if (nType == 0x38B)
+		m_pDropPool->OnPacket(pUser, nType, iPacket);
 	//if(nHeader >= )
 	/*if (nHeader >= MobRecvPacketFlag::MobRecvPacketFlag::minFlag && nHeader <= MobRecvPacketFlag::MobRecvPacketFlag::maxFlag)
 	{

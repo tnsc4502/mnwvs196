@@ -27,7 +27,7 @@ void Mob::MakeLeaveFieldPacket(OutPacket * oPacket)
 
 void Mob::EncodeInitData(OutPacket *oPacket, bool bIsControl)
 {
-	printf("Encode Init Data oid = %d template ID = %d\n", GetFieldObjectID(), GetTemplateID());
+	printf("Encode Init Data oid = %d template ID = %d Is Control?%d\n", GetFieldObjectID(), GetTemplateID(), (int)bIsControl);
 	oPacket->Encode4(GetFieldObjectID());
 	oPacket->Encode1(1); //Control Mode
 	oPacket->Encode4(GetTemplateID());
@@ -175,7 +175,7 @@ void Mob::SendReleaseControllPacket(User* pUser, int dwMobID)
 	oPacket.Encode2(0x3C3);
 	oPacket.Encode1(0);
 	oPacket.Encode4(dwMobID);
-	EncodeInitData(&oPacket);
+	//EncodeInitData(&oPacket);
 	pUser->SendPacket(&oPacket);
 }
 

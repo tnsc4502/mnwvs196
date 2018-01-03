@@ -199,6 +199,7 @@ void Node::Set(Img * img) {
 }
 
 void Node::Resolve() {
+	std::lock_guard<std::recursive_mutex>  lock(this->m_lock);
     if (!data) return;
     if (data->type == Data::Type::uol) {
         char * s = data->value.string;

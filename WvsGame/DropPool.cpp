@@ -4,13 +4,16 @@
 #include "ItemInfo.h"
 #include "Field.h"
 #include "User.h"
+#include "QWUInventory.h"
 #include "..\Database\GW_ItemSlotBase.h"
+#include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Common\DateTime\GameDateTime.h"
 
 DropPool::DropPool(Field *pField)
 	: m_pField(pField)
 {
 	m_tLastExpire = GameDateTime::GetTime();
+	m_nDropIdCounter = 10000;
 }
 
 
@@ -66,5 +69,39 @@ void DropPool::OnEnter(User * pUser)
 		OutPacket oPacket;
 		drop.second->MakeEnterFieldPacket(&oPacket);
 		pUser->SendPacket(&oPacket);
+	}
+}
+
+void DropPool::OnPacket(User * pUser, int nType, InPacket * iPacket)
+{
+	if(nType == 0x38B)
+		OnPickUpRequest(pUser, iPacket);
+}
+
+void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
+{
+	iPacket->Decode4();
+	iPacket->Decode1();
+	int nX = iPacket->Decode2();
+	int nY = iPacket->Decode2();
+	int nObjectID = iPacket->Decode4();
+	bool bDropRemained = false;
+	std::lock_guard<std::mutex> dropPoolock(m_mtxDropPoolLock);
+	auto findIter = m_mDrop.find(nObjectID);
+	if (findIter != m_mDrop.end())
+	{
+		auto pDrop = findIter->second;
+		if (pDrop->m_bIsMoney)
+			bDropRemained = (QWUInventory::PickUpMoney(pUser, false, pDrop->m_nMoney) == false);
+		else
+			bDropRemained = (QWUInventory::PickUpItem(pUser, false, pDrop->m_pItem) == false);
+
+		if (!bDropRemained) 
+		{
+			OutPacket oPacket;
+			pDrop->MakeLeaveFieldPacket(&oPacket, 2, pUser->GetUserID());
+			m_pField->SplitSendPacket(&oPacket, nullptr);
+			m_mDrop.erase(nObjectID);
+		}
 	}
 }

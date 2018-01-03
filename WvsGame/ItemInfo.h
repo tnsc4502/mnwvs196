@@ -12,6 +12,15 @@ private:
 
 public:
 
+	enum ItemVariationOption
+	{
+		ITEMVARIATION_NONE, 
+		ITEMVARIATION_BETTER,
+		ITEMVARIATION_NORMAL,
+		ITEMVARIATION_GREAT,
+		ITEMVARIATION_GACHAPON
+	};
+
 	/*
 	該物品造成的能力提升屬性 -- 正服沒有這個class
 	*/
@@ -264,6 +273,7 @@ public:
 	bool IsOnlyItem(int nItemID);
 	bool IsTradeBlockItem(int nItemID);
 	bool IsQuestItem(int nItemID);
+	GW_ItemSlotBase* GetItemSlot(int nItemID, ItemVariationOption enOption);
 
 private:
 	std::map<int, ItemInfo::EquipItem*> m_mEquipItem;
@@ -282,5 +292,11 @@ private:
 	
 	void LoadIncrementStat(ItemInfo::BasicIncrementStat& refStat, void *pProp);
 	void LoadAbilityStat(ItemInfo::BasicAbilityStat& refStat, void *pProp);
+
+
+	/*
+	用於初始化物品的能力數值，其中v是預設數值，根據enOption來決定數值的偏差結果
+	*/
+	int GetVariation(int v, ItemVariationOption enOption);
 };
 

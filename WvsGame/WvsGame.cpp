@@ -39,7 +39,7 @@ void WvsGame::CenterAliveMonitor()
 		aCenterPtr.reset();
 		aCenterServerService->stop();
 		aCenterWorkThread->detach();
-
+		aCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
 		new std::thread(&WvsGame::ConnectToCenter, this, 0);
 	}
 }
@@ -65,7 +65,13 @@ void WvsGame::OnUserConnected(std::shared_ptr<User> &pUser)
 void WvsGame::OnNotifySocketDisconnected(SocketBase *pSocket)
 {
 	auto pClient = (ClientSocket*)pSocket;
-	mUserMap.erase(pClient->GetUser()->GetUserID());
+	printf("OnNotifySocketDisconnected called\n");
+	if (pClient->GetUser())
+	{
+		mUserMap.erase(pClient->GetUser()->GetUserID());
+		pClient->SetUser(nullptr);
+		//delete pClient->GetUser();
+	}
 }
 
 void WvsGame::SetExternalIP(const std::string& ip)

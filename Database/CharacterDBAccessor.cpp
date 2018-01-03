@@ -5,6 +5,7 @@
 #include "GW_CharacterLevel.h"
 #include "GW_Avatar.hpp"
 
+#include "..\Common\Net\InPacket.h"
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\SocketBase.h"
 #include "..\Common\Net\PacketFlags\CenterPacketFlags.hpp"
@@ -143,4 +144,12 @@ void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClient
 	oPacket.Encode4(nClientSocketID);
 	chrEntry.EncodeCharacterData(&oPacket);
 	pSrv->SendPacket(&oPacket);
+}
+
+void CharacterDBAccessor::OnCharacterSaveRequest(void *iPacket)
+{
+	InPacket *iPacket_ = (InPacket*)iPacket;
+	GA_Character chr;
+	chr.DecodeCharacterData(iPacket_);
+	chr.Save(false);
 }

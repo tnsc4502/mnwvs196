@@ -18,7 +18,6 @@ struct AttackInfo;
 
 class User : public FieldObj
 {
-	friend class USkill;
 
 private:
 	std::mutex m_mtxUserlock;
@@ -35,6 +34,8 @@ private:
 	AttackInfo* TryParsingShootAttack(int nType, InPacket *iPacket);
 	AttackInfo* TryParsingAreaDot(int nType, InPacket *iPacket);
 	AttackInfo* TryParsingBodyAttack(int nType, InPacket *iPacket);
+
+	void OnIssueReloginCookie(InPacket* iPacket);
 
 public:
 	User() {}
@@ -68,6 +69,10 @@ public:
 
 	SecondaryStat* GetSecondaryStat();
 	BasicStat* GetBasicStat();
+
+	std::mutex& GetLock();
+
+	void MigrateOut();
 	
 };
 
