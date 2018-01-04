@@ -2,13 +2,13 @@
 #include <map>
 #include <mutex>
 #include <atomic>
-#include "exprtk.hpp"
 
 struct GA_Character;
+struct GW_SkillRecord;
 class SkillEntry;
 
-#define PARSE_SKILLDATA(attribute) ((std::string)skillCommonImg[#attribute]) == "" ? 0 : (int)parser.compile(((std::string)skillCommonImg[#attribute]), symbol_table).value();
-#define PARSE_SKILLDATA_STRING(attribute) #attribute == "" ? 0 : (int)parser.compile(#attribute, symbol_table).value();
+#define PARSE_SKILLDATA(attribute) ((std::string)skillCommonImg[#attribute]) == "" ? 0 : (int)evaluator.Eval(((std::string)skillCommonImg[#attribute]), "", d);
+#define PARSE_SKILLDATA_STRING(attribute) #attribute == "" ? 0 : (int)evaluator.Eval(#attribute, "", d);
 
 class SkillInfo
 {
@@ -36,5 +36,7 @@ public:
 	void LoadLevelDataByLevelNode(int nSkillID, SkillEntry* pEntry, void* pData);
 	void LoadLevelDataSpecial();
 	int GetSkillLevel(GA_Character* pCharacter, int nSkillID, SkillEntry** pEntry, int bNoPvPLevelCheck, int bPureStealSLV, int bNotApplySteal, int bCheckSkillRoot);
+
+	GW_SkillRecord* GetSkillRecord(int nSkillID, int nSLV, long long int tExpired);
 };
 

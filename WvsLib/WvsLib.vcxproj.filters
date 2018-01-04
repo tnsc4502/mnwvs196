@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Wz">
+      <UniqueIdentifier>{825e9316-72a5-462d-aad6-906fdfc7159f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AES">
+      <UniqueIdentifier>{8ffd96e9-42d1-4901-81ea-2d0bd22cac4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{a5469138-92ca-4b31-8b77-e1b56b87d3b1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mapfile.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="spritedata.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="wz.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="wzcrypto.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="wzimg.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="wzmain.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="WzResMan.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="brg_endian.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="brg_types.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="WzAES.hpp">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="aes.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="aes_ni.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="aesopt.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="aestab.h">
+      <Filter>AES</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\Arena.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\ArenaVector.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\BufferPool.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\MemoryBlocks.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\MemoryPool.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\MemoryPoolMan.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\stdinc.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mapfile.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="wzcrypto.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="wzimg.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="wzmain.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="wznode.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="WzResMan.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="WzAES.cpp">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aes_modes.c">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aes_ni.c">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aescrypt.c">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aeskey.c">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aestab.c">
+      <Filter>AES</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\Arena.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\BufferPool.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryBlocks.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryPoolMan.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Memory\MemoryPool.tcc">
+      <Filter>Memory</Filter>
+    </None>
+  </ItemGroup>
+</Project>

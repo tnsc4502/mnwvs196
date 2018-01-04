@@ -7,7 +7,7 @@
 #include "QWUInventory.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
-#include "..\Common\DateTime\GameDateTime.h"
+#include "Utility\DateTime\GameDateTime.h"
 
 DropPool::DropPool(Field *pField)
 	: m_pField(pField)
@@ -15,7 +15,6 @@ DropPool::DropPool(Field *pField)
 	m_tLastExpire = GameDateTime::GetTime();
 	m_nDropIdCounter = 10000;
 }
-
 
 DropPool::~DropPool()
 {

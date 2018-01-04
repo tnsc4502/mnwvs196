@@ -2,7 +2,7 @@
 #include <map>
 #include "Npc.h"
 #include "Mob.h"
-#include "..\Common\Wz\WzResMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
 #include <atomic>
 #include <mutex>
 

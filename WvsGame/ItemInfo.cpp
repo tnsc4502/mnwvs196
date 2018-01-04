@@ -1,9 +1,9 @@
 #include "ItemInfo.h"
-#include "Wz\WzResMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GW_ItemSlotBundle.h"
-#include "..\Common\Random\Rand32.h"
+#include "..\Common\Utility\Random\Rand32.h"
 
 ItemInfo::ItemInfo()
 {
@@ -430,7 +430,7 @@ int ItemInfo::GetBulletPAD(int nItemID)
 	return pItem->nPAD;
 }
 
-long ItemInfo::GetItemDateExpire(const std::string & sDate)
+long long int ItemInfo::GetItemDateExpire(const std::string & sDate)
 {
 	std::string sYear = sDate.substr(4);
 	std::string sMonth = sDate.substr(4, 2);

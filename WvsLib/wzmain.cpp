@@ -7,7 +7,7 @@
 #include "wzcrypto.hpp"
 #include <iostream>
 
-#include "..\Memory\MemoryPoolMan.hpp"
+#include "Memory\MemoryPoolMan.hpp"
 
 namespace WZ {
 	int Version = 0;

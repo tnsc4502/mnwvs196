@@ -17,6 +17,7 @@
     <ClInclude Include="GW_CharacterLevel.h" />
     <ClInclude Include="GW_CharacterMoney.h" />
     <ClInclude Include="GW_SkillRecord.h" />
+    <ClInclude Include="GW_MobReward.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CharacterDBAccessor.cpp" />
@@ -31,5 +32,6 @@
     <ClCompile Include="GW_CharacterLevel.cpp" />
     <ClCompile Include="GW_CharacterMoney.cpp" />
     <ClCompile Include="GW_SkillRecord.cpp" />
+    <ClCompile Include="GW_MobReward.cpp" />
   </ItemGroup>
 </Project>

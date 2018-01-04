@@ -23,7 +23,6 @@ private:
 	std::mutex m_mtxUserlock;
 	int nCharacterID;
 	ClientSocket *pSocket;
-	Field *pField;
 	GA_Character *pCharacterData;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
@@ -47,6 +46,7 @@ public:
 	GA_Character* GetCharacterData();
 	Field* GetField();
 	void MakeEnterFieldPacket(OutPacket *oPacket);
+	void MakeLeaveFieldPacket(OutPacket *oPacket);
 	void SendPacket(OutPacket *oPacket);
 	void OnPacket(InPacket *iPacket);
 	void LeaveField();

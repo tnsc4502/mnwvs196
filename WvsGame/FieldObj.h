@@ -1,18 +1,24 @@
 #pragma once
 
 class OutPacket;
+class Field;
 
 class FieldObj
 {
+protected:
 	int nPosX, nPosY, nF, nFh, nCy, nRx0, nRx1, nHide, nFieldObjectID, nTemplateID;
 	long long int m_nMp, m_nHp;
 
 	char m_bMoveAction;
+
+	Field* m_pField;
+
 public:
 	FieldObj();
 	~FieldObj();
 
 	virtual void MakeEnterFieldPacket(OutPacket *oPacket) = 0;
+	virtual void MakeLeaveFieldPacket(OutPacket *oPacket) = 0;
 
 	/*
 	Basic Attributes
@@ -63,9 +69,12 @@ public:
 
 	virtual void SetMovePosition(int x, int y, bool bMoveAction, short nSN) {}
 
-	void SetMp(int mp);
+	void SetMp(long long int mp);
 	void SetHp(long long int hp);
-	int GetMp() const;
+	long long int GetMp() const;
 	long long int GetHp() const;
+
+	Field* GetField();
+	void SetField(Field *pField);
 };
 

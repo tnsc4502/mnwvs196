@@ -1,7 +1,14 @@
 #include "Mob.h"
 #include "MobTemplate.h"
+#include "..\Database\GW_MobReward.h"
+#include "..\Database\GW_ItemSlotBundle.h"
+#include "Reward.h"
+#include "DropPool.h"
+#include "Utility\Random\Rand32.h"
 #include "User.h"
 #include "Net\OutPacket.h"
+#include "ItemInfo.h"
+#include "Field.h"
 
 Mob::Mob()
 {
@@ -230,7 +237,50 @@ void Mob::OnMobHit(User * pUser, long long int nDamage, int nAttackType)
 		OutPacket oPacket;
 		oPacket.Encode2(0x3D5);
 		oPacket.Encode4(GetFieldObjectID());
-		oPacket.Encode1((GetHp() / GetMobTemplate()->m_lnMaxHP) * 100);
+		oPacket.Encode1((char)((GetHp() / GetMobTemplate()->m_lnMaxHP) * 100));
 		pUser->SendPacket(&oPacket);
+	}
+}
+
+void Mob::GiveReward(unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwnType, int nX, int nY, int tDelay, int nMesoUp, int nMesoUpByItem)
+{
+	const auto pReward = m_pMobTemplate->GetMobReward();
+	const auto& aReward = m_pMobTemplate->GetMobReward()->GetRewardList();
+	Reward* pDrop = nullptr;
+
+	int nDiff, nRange;
+
+	for (const auto& pInfo : aReward)
+	{
+		long long int liRnd = ((unsigned int)Rand32::GetInstance()->Random()) % pReward->GetTotalWeight();
+		if (liRnd < pInfo->nWeight)
+		{
+			nDiff = pInfo->nCountMax - pInfo->nCountMin;
+			nRange = pInfo->nCountMin + (nDiff == 0 ? 0 : ((unsigned int)Rand32::GetInstance()->Random()) % nDiff);
+			pDrop = new Reward;
+			pDrop->SetMoney(pInfo->nItemID == 0 ? nRange : 0);
+			if (pInfo->nItemID != 0)
+			{
+				auto pItem = ItemInfo::GetInstance()->GetItemSlot(pInfo->nItemID, ItemInfo::ItemVariationOption::ITEMVARIATION_NORMAL);
+				pDrop->SetItem(pItem);
+				if (pInfo->nItemID / 1000000 != 1)
+					((GW_ItemSlotBundle*)pItem)->nNumber = nRange;
+			}
+			pDrop->SetType(1);
+			GetField()->GetDropPool()->Create(
+				pDrop,
+				dwOwnerID,
+				dwOwnPartyID,
+				nOwnType,
+				GetTemplateID(),
+				GetPosX(),
+				GetPosY(),
+				GetPosX(),
+				GetPosY(),
+				0,
+				1,
+				0,
+				0);
+		}
 	}
 }

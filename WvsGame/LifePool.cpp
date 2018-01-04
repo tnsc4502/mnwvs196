@@ -46,7 +46,7 @@ void LifePool::Init(Field* pField, int nFieldID)
 
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
 	auto& lifeData = mapWz["life"];
-	printf("m_nMobCapacityMax ============== %d\n", m_nMobCapacityMax);
+	printf("Map Size =  %d %d\n", m_pField->GetMapSizeX(), m_pField->GetMapSizeY());
 	for (auto& node : lifeData)
 	{
 		const auto &typeFlag = (std::string)node["type"];
@@ -136,6 +136,7 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 	{
 		Mob* newMob = new Mob;
 		*newMob = mob;
+		newMob->SetField(m_pField);
 		newMob->SetFieldObjectID(atomicObjectCounter++);
 
 		int moveAbility = newMob->GetMobTemplate()->m_nMoveAbility;
@@ -343,6 +344,16 @@ void LifePool::OnUserAttack(User * pUser, const SkillEntry * pSkill, AttackInfo 
 			pMob->OnMobHit(pUser, dmgValue, pInfo->m_nType);
 			if (pMob->GetHp() <= 0)
 			{
+				pMob->GiveReward(
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0
+				);
 				RemoveMob(pMob);
 				break;
 			}

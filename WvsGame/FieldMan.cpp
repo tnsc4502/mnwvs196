@@ -1,6 +1,6 @@
 #include "FieldMan.h"
-#include "Wz\WzResMan.hpp"
-#include "Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "PortalMap.h"
 
 #include <mutex>

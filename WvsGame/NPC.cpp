@@ -17,6 +17,10 @@ void Npc::MakeEnterFieldPacket(OutPacket *oPacket)
 	EncodeInitData(oPacket);
 }
 
+void Npc::MakeLeaveFieldPacket(OutPacket * oPacket)
+{
+}
+
 void Npc::EncodeInitData(OutPacket *oPacket)
 {
 	oPacket->Encode2(GetPosX());

@@ -1,5 +1,5 @@
 #include "OutPacket.h"
-#include "..\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "InPacket.h"
 
 OutPacket::OutPacket()

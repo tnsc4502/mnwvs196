@@ -34,5 +34,6 @@ public:
 	//解析怪物移動時，Lucid有些怪物移動封包多兩個bytes
 	static bool IsLucidSpecialMob(int dwTemplateID);
 	void OnMobHit(User* pUser, long long int nDamage, int nAttackType);
+	void GiveReward(unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwnType, int nX, int nY, int tDelay, int nMesoUp, int nMesoUpByItem);
 };
 

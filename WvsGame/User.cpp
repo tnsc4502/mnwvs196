@@ -257,13 +257,13 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 {
 	pCharacterData->DecodeCharacterData(iPacket);
 	_pSocket->SetUser(this);
-	pField = (FieldMan::GetInstance()->GetField(pCharacterData->nFieldID));
-	pField->OnEnter(this);
+	m_pField = (FieldMan::GetInstance()->GetField(pCharacterData->nFieldID));
+	m_pField->OnEnter(this);
 }
 
 User::~User()
 {
-	//pField->OnLeave(this);
+	//m_pField->OnLeave(this);
 	LeaveField();
 	
 	delete pCharacterData;
@@ -288,12 +288,16 @@ GA_Character * User::GetCharacterData()
 
 Field * User::GetField()
 {
-	return pField;
+	return m_pField;
 }
 
 void User::MakeEnterFieldPacket(OutPacket *oPacket)
 {
 
+}
+
+void User::MakeLeaveFieldPacket(OutPacket * oPacket)
+{
 }
 
 void User::OnPacket(InPacket *iPacket)
@@ -308,7 +312,7 @@ void User::OnPacket(InPacket *iPacket)
 		OnTransferFieldRequest(iPacket);
 		break;
 	case ClientPacketFlag::OnUserMoveRequest:
-		pField->OnUserMove(this, iPacket);
+		m_pField->OnUserMove(this, iPacket);
 		break;
 	case ClientPacketFlag::OnUserChangeSlotRequest:
 		QWUInventory::OnChangeSlotPositionRequest(this, iPacket);
@@ -330,17 +334,17 @@ void User::OnPacket(InPacket *iPacket)
 		OnIssueReloginCookie(iPacket);
 		break;
 	default:
-		if (pField)
+		if (m_pField)
 		{
 			iPacket->RestorePacket();
-			pField->OnPacket(this, iPacket);
+			m_pField->OnPacket(this, iPacket);
 		}
 	}
 }
 
 void User::OnTransferFieldRequest(InPacket * iPacket)
 {
-	if (!pField)
+	if (!m_pField)
 		pSocket->GetSocket().close();
 	iPacket->Decode1(); //ms_RTTI_CField ?
 	int dwFieldReturn = iPacket->Decode4();
@@ -359,7 +363,7 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		....
 	}
 	*/
-	Portal* pPortal = pField->GetPortalMap()->FindPortal(sPortalName);
+	Portal* pPortal = m_pField->GetPortalMap()->FindPortal(sPortalName);
 	Field *pTargetField = FieldMan::GetInstance()->GetField(dwFieldReturn == -1 ? pPortal->GetTargetMap() : dwFieldReturn);
 	if (pTargetField != nullptr)
 	{
@@ -369,10 +373,10 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 			SetPosY(pPortal->GetY());
 		}
 		LeaveField();
-		pField = pTargetField;
-		PostTransferField(pField->GetFieldID(), pPortal, false);
-		pField->OnEnter(this);
-		pCharacterData->nFieldID = pField->GetFieldID();
+		m_pField = pTargetField;
+		PostTransferField(m_pField->GetFieldID(), pPortal, false);
+		m_pField->OnEnter(this);
+		pCharacterData->nFieldID = m_pField->GetFieldID();
 	}
 }
 
@@ -393,7 +397,7 @@ void User::OnChat(InPacket *iPacket)
 	oPacket.Encode1(0);
 	oPacket.Encode1(-1);
 
-	pField->SplitSendPacket(&oPacket, nullptr);
+	m_pField->SplitSendPacket(&oPacket, nullptr);
 }
 
 void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
@@ -456,7 +460,7 @@ void User::OnAvatarModified()
 	oPacket.Encode4(0);
 	oPacket.Encode4(0);
 
-	pField->BroadcastPacket(&oPacket);
+	m_pField->BroadcastPacket(&oPacket);
 }
 
 void User::EncodeCoupleInfo(OutPacket * oPacket)
@@ -540,7 +544,7 @@ void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 
 	//not done yet.
 	if (liFlag & BasicStat::BasicStatFlag::BS_SP)
-		oPacket.Encode2(10);
+		pCharacterData->mStat->EncodeExtendSP(&oPacket);
 
 	if (liFlag & BasicStat::BasicStatFlag::BS_EXP)
 		oPacket.Encode8(pCharacterData->mStat->nExp);
@@ -593,7 +597,7 @@ void User::OnAttack(int nType, InPacket * iPacket)
 	}
 	if (pInfo) 
 	{
-		pField->GetLifePool()->OnUserAttack(
+		m_pField->GetLifePool()->OnUserAttack(
 			this,
 			SkillInfo::GetInstance()->GetSkillByID(pInfo->m_nSkillID),
 			pInfo.get()
@@ -630,5 +634,5 @@ void User::MigrateOut()
 
 void User::LeaveField()
 {
-	pField->OnLeave(this);
+	m_pField->OnLeave(this);
 }

@@ -99,7 +99,8 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode4(mStat->nMaxMP);
 
 	oPacket->Encode2(mStat->nAP);
-	oPacket->Encode1(0); //SP
+	mStat->EncodeExtendSP(oPacket);
+	//oPacket->Encode1(0); //SP
 
 	oPacket->Encode8(mStat->nExp); //EXP
 	oPacket->Encode4(nFame);
@@ -375,6 +376,13 @@ GW_SkillRecord * GA_Character::GetSkill(int nSkillID)
 {
 	auto findResult = mSkillRecord.find(nSkillID);
 	return findResult == mSkillRecord.end() ? nullptr : findResult->second;
+}
+
+void GA_Character::GetSkill(GW_SkillRecord * pRecord)
+{
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
+	if (pRecord != nullptr)
+		mSkillRecord.insert({ pRecord->nSkillID / 10000, pRecord });
 }
 
 void GA_Character::DecodeCharacterData(InPacket *iPacket)
@@ -705,7 +713,8 @@ void GA_Character::DecodeStat(InPacket *iPacket)
 	mStat->nMaxMP = iPacket->Decode4();
 
 	mStat->nAP = iPacket->Decode2();
-	iPacket->Decode1(); //SP
+	mStat->DecodeExtendSP(iPacket);
+	//iPacket->Decode1(); //SP
 
 	mStat->nExp = iPacket->Decode8(); //EXP
 	nFame = iPacket->Decode4();
@@ -874,8 +883,10 @@ void GA_Character::DecodeSkillRecord(InPacket * iPacket)
 		short nCount = iPacket->Decode2();
 		for (int i = 0; i < nCount; ++i)
 		{
-			GW_SkillRecord* pSkillRecord = new GW_SkillRecord;
+			GW_SkillRecord* pSkillRecord = new GW_SkillRecord; 
+			pSkillRecord->nMasterLevel = 0;
 			pSkillRecord->Decode(iPacket);
+			pSkillRecord->nCharacterID = nCharacterID;
 			mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
 		}
 		iPacket->Decode2();

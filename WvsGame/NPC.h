@@ -8,6 +8,7 @@ public:
 	~Npc();
 
 	void MakeEnterFieldPacket(OutPacket *oPacket);
+	void MakeLeaveFieldPacket(OutPacket *oPacket);
 	void EncodeInitData(OutPacket *oPacket);
 };
 

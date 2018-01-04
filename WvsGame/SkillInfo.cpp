@@ -1,12 +1,12 @@
-
 #include "SkillInfo.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_SkillRecord.h"
 #include "ItemInfo.h"
 #include "SkillEntry.h"
-#include "Wz\WzResMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
 #include "SkillLevelData.h"
 #include <thread>
+#include "..\EquationEvaluator\Evaluator.h"
 
 SkillInfo::SkillInfo()
 {
@@ -57,7 +57,7 @@ int SkillInfo::GetBundleItemMaxPerSlot(int nItemID, GA_Character * pCharacterDat
 		{
 			//精準暗器
 		}
-		return result;
+		return result == 0 ? 100 : result;
 	}
 	return 0;
 }
@@ -109,24 +109,17 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 		printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
 		LoadLevelDataSpecial();
 		stWzResMan->ReleaseMemory();
-		auto pSkill = m_mSkillByRootID[221]->operator[](2211010)->GetLevelData(5);
-		printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End 2 %d.\n", pSkill->m_nMpCon);
-		for (auto& p : m_mSkillByRootID)
+		//system("pause");
+		auto pSkill = GetSkillByID(2211010)->GetLevelData(5);
+		//printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End 2 %d.\n", pSkill->m_nMpCon);
+		/*for (auto& p : m_mSkillByRootID)
 		{
-			//if (p.first % 100 == 0 )
-			//	continue;
-			//printf("Skill Data : %d\n", p.first);
 			for (auto& pp : *(p.second))
 			{
-				/*if (pp.second->GetSkillID() / 10000 > 5000)
-					continue;*/
-				//printf("ID: %d Total : %d, ", pp.second->GetSkillID(), pp.second->GetAllLevelData().size());
-				if(!pp.second->GetLevelData(1))
+				//if(!pp.second->GetLevelData(1))
 					printf("ID: %d Total : %d\n", pp.second->GetSkillID(), (int)pp.second->GetAllLevelData().size());
-					//printf("MDD: %d\n", (pp.second->GetLevelData(1)->m_nX));
-				//system("pause");
 			}
-		}
+		}*/
 		int nTest = GetSkillByID(2111008)->GetLevelData(10)->m_nTime;
 		printf("Test 2111008 : %d\n", nTest);
 	}
@@ -165,20 +158,12 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 {
 	auto& skillCommonImg = *((WZ::Node*)pData);
 	int nMaxLevel = pEntry->GetMaxLevel();
-
+	Evaluator evaluator;
+	double d;
 	pEntry->AddLevelData(nullptr); //lvl 0
 	for (int i = 1; i <= nMaxLevel; ++i)
 	{
-		exprtk::parser<double> parser;
-		double d = i;
-		exprtk::expression<double> expression;
-		exprtk::symbol_table<double> symbol_table;
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
-		
-		expression.register_symbol_table(symbol_table);
-		//symbol_table.clear();
+		d = i;
 
 		SkillLevelData* pLevelData = new SkillLevelData();
 		pLevelData->m_nIndiePad = PARSE_SKILLDATA(indiePad);
@@ -407,12 +392,11 @@ void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void
 	int nMaxLevel = pEntry->GetMaxLevel();
 	pEntry->AddLevelData(nullptr); //for lvl 0
 
-	exprtk::parser<double> parser;
 	double d = 0;
+	Evaluator evaluator;
 	for (auto& skillCommonImg : skillLevelImg)
 	{
 		d = (int)skillCommonImg;
-		exprtk::symbol_table<double> symbol_table;
 
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nIndiePad = PARSE_SKILLDATA(indiePad);
@@ -638,6 +622,7 @@ void SkillInfo::LoadLevelDataSpecial()
 	   20040221,
 	   27111005,
 	   32120001 };
+
 	for (auto i : special) 
 	{
 		delete m_mSkillByRootID[i / 10000]->at(i);
@@ -650,17 +635,12 @@ void SkillInfo::LoadLevelDataSpecial()
 	pEntry1->SetMasterLevel(20);
 	pEntry1->SetMaxLevel(20);
 	pEntry1->AddLevelData(nullptr);	
-	exprtk::parser<double> parser;
+	//exprtk::parser<double> parser;
 	double d = 0;
+	Evaluator evaluator; 
 	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
 	{
 		d = i;
-		exprtk::symbol_table<double> symbol_table;
-		//symbol_table.clear();
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
-
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nMpCon = /*40+5*ceil(i/4)*/ PARSE_SKILLDATA_STRING(40+5*u(x/4));
 		pLevelData->m_nDamage = 243+7*i;
@@ -685,11 +665,6 @@ void SkillInfo::LoadLevelDataSpecial()
 	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
 	{
 		d = i;
-		exprtk::symbol_table<double> symbol_table;
-		//symbol_table.clear();
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
 
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nIgnoreMobpdpR = /*40+5*ceil(i/4)*/ PARSE_SKILLDATA_STRING(5 + 5 * x);
@@ -708,11 +683,6 @@ void SkillInfo::LoadLevelDataSpecial()
 	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
 	{
 		d = i;
-		exprtk::symbol_table<double> symbol_table;
-		//symbol_table.clear();
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
 
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nIntX = 20;
@@ -731,11 +701,6 @@ void SkillInfo::LoadLevelDataSpecial()
 	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
 	{
 		d = i;
-		exprtk::symbol_table<double> symbol_table;
-		//symbol_table.clear();
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
 
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nTime = 60 + 12 * i;
@@ -758,12 +723,6 @@ void SkillInfo::LoadLevelDataSpecial()
 	for (int i = 1; i <= pEntry1->GetMaxLevel(); ++i)
 	{
 		d = i;
-		exprtk::symbol_table<double> symbol_table;
-		//symbol_table.clear();
-		symbol_table.add_variable("x", d, false);
-		symbol_table.add_function("u", ceil);
-		symbol_table.add_function("d", floor);
-
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nMpCon = 20 + 5 * (int)ceil(d / 5);
 		pLevelData->m_nX = 20 + (int)ceil(d / 5);
@@ -777,6 +736,7 @@ void SkillInfo::LoadLevelDataSpecial()
 		pEntry1->AddLevelData(pLevelData);
 	}
 	m_mSkillByRootID[3212]->insert({ pEntry1->GetSkillID(),  pEntry1 });
+	auto pSkill = m_mSkillByRootID[221]->operator[](2211010)->GetLevelData(5);
 	////////////////////////////////32120001//////////////////////////////
 }
 
@@ -793,4 +753,18 @@ int SkillInfo::GetSkillLevel(GA_Character * pCharacter, int nSkillID, SkillEntry
 	if (characterSkillRecord == nullptr)
 		return 0;
 	return characterSkillRecord->nSLV;
+}
+
+GW_SkillRecord * SkillInfo::GetSkillRecord(int nSkillID, int nSLV, long long int tExpired)
+{
+	auto pSkill = GetSkillByID(nSkillID);
+	if (pSkill == nullptr)
+		return nullptr;
+	GW_SkillRecord* pRecord = new GW_SkillRecord;
+
+	pRecord->nSkillID = nSkillID;
+	pRecord->nSLV = nSLV;
+	pRecord->nMasterLevel = pSkill->GetMasterLevel();
+	pRecord->tExpired = tExpired;
+	return pRecord;
 }

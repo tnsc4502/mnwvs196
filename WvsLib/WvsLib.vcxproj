@@ -19,37 +19,36 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D73CB4FC-6631-4C8A-B6E7-CD125AD309F6}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>DataBase</RootNamespace>
+    <ProjectGuid>{56876BF3-9F97-4676-8205-4FBC078224F2}</ProjectGuid>
+    <RootNamespace>WvsLib</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -72,41 +71,27 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -114,56 +99,61 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>I:\Programming\Utility\boost_1_63_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="aes.h" />
+    <ClInclude Include="aesopt.h" />
+    <ClInclude Include="aestab.h" />
+    <ClInclude Include="aes_ni.h" />
+    <ClInclude Include="brg_endian.h" />
+    <ClInclude Include="brg_types.h" />
+    <ClInclude Include="mapfile.hpp" />
+    <ClInclude Include="Memory\Arena.h" />
+    <ClInclude Include="Memory\ArenaVector.h" />
+    <ClInclude Include="Memory\BufferPool.h" />
+    <ClInclude Include="Memory\MemoryBlocks.h" />
+    <ClInclude Include="Memory\MemoryPool.h" />
+    <ClInclude Include="Memory\MemoryPoolMan.hpp" />
+    <ClInclude Include="Memory\stdinc.h" />
+    <ClInclude Include="sprite.hpp" />
+    <ClInclude Include="spritedata.hpp" />
+    <ClInclude Include="wz.hpp" />
+    <ClInclude Include="WzAES.hpp" />
+    <ClInclude Include="wzcrypto.hpp" />
+    <ClInclude Include="wzimg.hpp" />
+    <ClInclude Include="wzmain.hpp" />
+    <ClInclude Include="WzResMan.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CharacterDBAccessor.h" />
-    <ClInclude Include="DBConstants.h" />
-    <ClInclude Include="GA_Character.hpp" />
-    <ClInclude Include="GW_Avatar.hpp" />
-    <ClInclude Include="GW_CharacterLevel.h" />
-    <ClInclude Include="GW_CharacterList.hpp" />
-    <ClInclude Include="GW_CharacterMoney.h" />
-    <ClInclude Include="GW_CharacterStat.h" />
-    <ClInclude Include="GW_ItemSlotBase.h" />
-    <ClInclude Include="GW_ItemSlotBundle.h" />
-    <ClInclude Include="GW_ItemSlotEquip.h" />
-    <ClInclude Include="GW_MobReward.h" />
-    <ClInclude Include="GW_SkillRecord.h" />
-    <ClInclude Include="WvsUnified.h" />
+    <ClCompile Include="aescrypt.c" />
+    <ClCompile Include="aeskey.c" />
+    <ClCompile Include="aestab.c" />
+    <ClCompile Include="aes_modes.c" />
+    <ClCompile Include="aes_ni.c" />
+    <ClCompile Include="mapfile.cpp" />
+    <ClCompile Include="Memory\Arena.cpp" />
+    <ClCompile Include="Memory\BufferPool.cpp" />
+    <ClCompile Include="Memory\MemoryBlocks.cpp" />
+    <ClCompile Include="Memory\MemoryPoolMan.cpp" />
+    <ClCompile Include="WzAES.cpp" />
+    <ClCompile Include="wzcrypto.cpp" />
+    <ClCompile Include="wzimg.cpp" />
+    <ClCompile Include="wzmain.cpp" />
+    <ClCompile Include="wznode.cpp" />
+    <ClCompile Include="WzResMan.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CharacterDBAccessor.cpp" />
-    <ClCompile Include="GA_Character.cpp" />
-    <ClCompile Include="GW_Avatar.cpp" />
-    <ClCompile Include="GW_CharacterLevel.cpp" />
-    <ClCompile Include="GW_CharacterList.cpp" />
-    <ClCompile Include="GW_CharacterMoney.cpp" />
-    <ClCompile Include="GW_CharacterStat.cpp" />
-    <ClCompile Include="GW_ItemSlotBase.cpp" />
-    <ClCompile Include="GW_ItemSlotBundle.cpp" />
-    <ClCompile Include="GW_ItemSlotEquip.cpp" />
-    <ClCompile Include="GW_MobReward.cpp" />
-    <ClCompile Include="GW_SkillRecord.cpp" />
-    <ClCompile Include="WvsUnified.cpp" />
+    <None Include="Memory\MemoryPool.tcc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

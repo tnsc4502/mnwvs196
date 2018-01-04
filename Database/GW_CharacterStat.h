@@ -1,8 +1,13 @@
 #pragma once
 #include <string>
 
+class OutPacket;
+class InPacket;
+
 struct GW_CharacterStat
 {
+	static const int EXTEND_SP_SIZE = 10;
+
 	int nHP = 0,
 		nMP = 0,
 		nMaxHP = 0,
@@ -19,16 +24,18 @@ struct GW_CharacterStat
 		nInsightEXP = 0,
 		nWillEXP = 0,
 		nSenseEXP = 0,
-		nCharmEXP = 0
-		;
+		nCharmEXP = 0,
+		aSP[EXTEND_SP_SIZE];
 
 	long long int nExp = 0;
-
-	std::string strSP;
 
 public:
 	GW_CharacterStat();
 	~GW_CharacterStat();
+
+
+	void EncodeExtendSP(OutPacket *oPacket);
+	void DecodeExtendSP(InPacket *iPacket);
 
 	void Load(int nCharacterID);
 	void Save(int nCharacterID, bool isNewCharacter);

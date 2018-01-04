@@ -1,13 +1,16 @@
 #pragma once
 
 #include <map>
-#include "Wz\WzResMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
+
+class GW_MobReward;
 
 class MobTemplate
 {
 	static std::map<int, MobTemplate*>* m_MobTemplates;
 	static WZ::Node* m_MobWzProperty;
 
+	GW_MobReward* m_pReward;
 
 public:
 	MobTemplate();
@@ -69,5 +72,7 @@ public:
 
 	const std::string& GetElementAttribute() const;
 	const std::string& GetMobType() const;*/
+
+	const GW_MobReward* GetMobReward() const;
 };
 

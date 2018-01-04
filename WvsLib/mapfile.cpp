@@ -5,7 +5,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS 1
 #include <Windows.h>
-#include "..\Memory\MemoryPoolMan.hpp"
+#include "Memory\MemoryPoolMan.hpp"
 #include "wzmain.hpp"
 #include <iostream>
 

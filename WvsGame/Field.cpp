@@ -197,11 +197,6 @@ int Field::GetMapSizeY()
 	return m_nMapSizeY;
 }
 
-const std::string & Field::GetUserEnter() const
-{
-	return m_strUserEnter;
-}
-
 void Field::InitLifePool()
 {
 	std::lock_guard<std::mutex> lifePoolGuard(fieldUserMutex);
@@ -220,12 +215,12 @@ DropPool * Field::GetDropPool()
 
 void Field::OnEnter(User *pUser)
 {
-	printf("Field OnEnter \n");
 	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
 	if (!m_asyncUpdateTimer->IsStarted())
 		m_asyncUpdateTimer->Start();
 	m_mUser[pUser->GetUserID()] = pUser;
 	m_pLifePool->OnEnter(pUser);
+	m_pDropPool->OnEnter(pUser);
 }
 
 void Field::OnLeave(User * pUser)
@@ -347,7 +342,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	ctrlAckPacket.Encode4(pMob->GetFieldObjectID());
 	ctrlAckPacket.Encode2(nMobCtrlSN);
 	ctrlAckPacket.Encode1(bNextAttackPossible);
-	ctrlAckPacket.Encode4(pMob->GetMp());
+	ctrlAckPacket.Encode4((int)pMob->GetMp());
 	ctrlAckPacket.Encode4(nSkillCommand);
 	ctrlAckPacket.Encode1(nSLV);
 	ctrlAckPacket.Encode4(0); //nForcedAttackIdx

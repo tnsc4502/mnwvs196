@@ -1,6 +1,6 @@
 #pragma once
 #include "Net\asio.hpp"
-#include "Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 class OutPacket;
 class InPacket;

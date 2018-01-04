@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
-#include "Wz\WzResMan.hpp"
+#include "..\WvsLib\WzResMan.hpp"
+
 class NpcTemplate
 {
 	static std::map<int, NpcTemplate*>* m_NpcTemplates;

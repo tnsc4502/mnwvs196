@@ -20,7 +20,7 @@ using namespace std;
 using namespace std::tr1;
 using namespace std::tr2;
 using namespace std::tr2::sys;
-#include "AES\WzAES.hpp"
+#include "WzAES.hpp"
 #include "mapfile.hpp"
 #include "wz.hpp"
 namespace WZ {

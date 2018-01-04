@@ -6,7 +6,7 @@
 
 #include <cstring>
 
-#include "AES\aes.h"
+#include "..\WvsLib\aes.h"
 
 #include "..\Constants\CryptoConstants.hpp"
 #include "..\Constants\ServerConstants.hpp"

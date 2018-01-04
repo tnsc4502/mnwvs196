@@ -266,7 +266,7 @@ public:
 	bool ConsumeOnPickup(int nItemID);
 	bool ExpireOnLogout(int nItemID);
 	int GetBulletPAD(int nItemID);
-	long GetItemDateExpire(const std::string& sDate);
+	long long int GetItemDateExpire(const std::string& sDate);
 	const std::string& GetItemName(int nItemID);
 	bool IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nDEX, int nINT, int nLUK, int nPOP, GW_ItemSlotBase* pPetItem, int nItemID);
 	bool IsNotSaleItem(int nItemID);

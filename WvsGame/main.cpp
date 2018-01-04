@@ -12,17 +12,13 @@
 #include "WvsGame.h"
 
 #include "Constants\ConfigLoader.hpp"
-#include "FieldMan.h"
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 
-#include "..\Database\GW_SkillRecord.h"
-
-#include "LifePool.h"
-#include <functional>
 #include "..\Database\GA_Character.hpp"
-#include "InventoryManipulator.h"
-#include "Task\AsnycScheduler.h"
+#include "..\Database\GW_MobReward.h"
+
+#include <functional>
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -33,18 +29,18 @@ void ConnectionAcceptorThread(short nPort)
 
 void CheckSkillInfoLoading()
 {
-	int count = SkillInfo::GetInstance()->GetLoadingSkillCount();
+	/*int count = SkillInfo::GetInstance()->GetLoadingSkillCount();
 	if (count == 0)
-		stWzResMan->ReleaseMemory();
+		stWzResMan->ReleaseMemory();*/
 }
 
 void SaveSkillTest()
 {
-	GA_Character pCharTest;
+	/*GA_Character pCharTest;
 	pCharTest.Load(11);
 	std::cout << "Skill Count : " << pCharTest.GetCharacterSkillRecord().size() << std::endl;
 	pCharTest.GetSkill(100100)->nSLV = 15;
-	pCharTest.Save();
+	pCharTest.Save();*/
 }
 
 void SaveItemTest()
@@ -82,13 +78,27 @@ void SaveItemTest()
 
 void AsyncTimerTest()
 {
-	auto bindResult = std::bind(CheckSkillInfoLoading);
+	/*auto bindResult = std::bind(CheckSkillInfoLoading);
 	auto t = AsnycScheduler::CreateTask(bindResult, 5000, false);
-	t->Start();
+	t->Start();*/
 }
 
 int main(int argc, char **argv)
 {
+	//printf("Test %d", WvsGameConstants::GetJobLevel(434));
+	GA_Character chr;
+	chr.Load(11);
+	OutPacket oPacket;
+	chr.EncodeCharacterData(&oPacket);
+
+	InPacket iPacket(oPacket.GetPacket(), oPacket.GetPacketSize());
+	chr.DecodeCharacterData(&iPacket);
+	
+	GW_MobReward::GetInstance()->Load();
+	auto pReward = GW_MobReward::GetInstance()->GetMobReward(100100);
+	auto& ref = pReward->GetRewardList();
+	//for (const auto& pInfo : ref)
+	//	printf("R %d\n", pInfo->nItemID);
 	ItemInfo::GetInstance()->Initialize();
 	SkillInfo::GetInstance()->IterateSkillInfo();
 

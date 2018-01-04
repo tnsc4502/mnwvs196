@@ -2,7 +2,7 @@
 
 #include "wzmain.hpp"
 #include "Memory\MemoryPoolMan.hpp"
-#include "..\Constants\ServerConstants.hpp"
+#include "..\Common\Constants\ServerConstants.hpp"
 
 #define MAPPING_WZ_NAME(name) mWzNode[(int)Wz::name] = WZ::Base[#name]
 
@@ -86,7 +86,8 @@ public:
 
 	void ReleaseMemory()
 	{
-		stWzMemoryPoolMan->Release(); 
+		stWzMemoryPoolMan->Release();
+		WZ::AddPath(ServerConstants::kGameFilePath);
 		Init();
 	}
 };

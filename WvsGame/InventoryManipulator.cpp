@@ -91,7 +91,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 					continue;
 				nOnTrading = pCharacterData->mItemTrading[nTI][nPOS];
 				nSlotInc = nNumber > nRemaining ? nRemaining : (nNumber); //這次可以增加多少
-				printf("Add To Bag %d, nNumber = %d, nRemaining = %d, nMaxPerSlot = %d\n", nPOS, nNumber, nRemaining, nMaxPerSlot);
+				//printf("Add To Bag %d, nNumber = %d, nRemaining = %d, nMaxPerSlot = %d\n", nPOS, nNumber, nRemaining, nMaxPerSlot);
 				if (nSlotInc - nOnTrading > 0)
 				{
 					((GW_ItemSlotBundle*)pItemInSlot)->nNumber += (nSlotInc - nOnTrading);
@@ -112,6 +112,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 		//欄位無相同物品，找新的欄位插入
 		while (nNumber > 0)
 		{
+			printf("InventoryManipulator::RawAddItem nItemID = %d nNumber = %d nMaxPerSlot = %d Test = %d\n", pItem->nItemID, nNumber, nMaxPerSlot, (int)(ItemInfo::GetInstance()->GetBundleItem(pItem->nItemID) == nullptr));
 			nPOS = pCharacterData->FindEmptySlotPosition(nTI);
 
 			//告知物品並未完全放入背包中。
@@ -159,6 +160,7 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 	oPacket->Encode1(0);
 	for (auto& change : aChangeLog)
 	{
+		//printf("Encoding Inventory Operation\n");
 		oPacket->Encode1((char)change.nChange);
 		oPacket->Encode1((char)change.nTI);
 		oPacket->Encode2((short)change.nPOS);
@@ -177,6 +179,7 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 			oPacket->Encode4(0); // what's this?
 		}
 	}
+	//printf("Encoding Inventory Operation Done\n");
 	oPacket->Encode4(0); // what's this?
 }
 

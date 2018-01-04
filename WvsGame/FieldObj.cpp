@@ -123,7 +123,7 @@ void FieldObj::SetMoveAction(char moveAction)
 	m_bMoveAction = moveAction;
 }
 
-void FieldObj::SetMp(int mp)
+void FieldObj::SetMp(long long int mp)
 {
 	m_nMp = mp;
 }
@@ -133,7 +133,7 @@ void FieldObj::SetHp(long long int hp)
 	m_nHp = hp;
 }
 
-int FieldObj::GetMp() const
+long long int FieldObj::GetMp() const
 {
 	return m_nMp;
 }
@@ -141,4 +141,14 @@ int FieldObj::GetMp() const
 long long int FieldObj::GetHp() const
 {
 	return m_nHp;
+}
+
+Field * FieldObj::GetField()
+{
+	return m_pField;
+}
+
+void FieldObj::SetField(Field * pField)
+{
+	m_pField = pField;
 }

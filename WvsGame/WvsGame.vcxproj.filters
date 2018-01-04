@@ -4,20 +4,11 @@
     <Filter Include="Common">
       <UniqueIdentifier>{f215a647-c07e-469b-9896-103b25901044}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\AES">
-      <UniqueIdentifier>{db1deecd-7d90-418c-888b-d8cc44d6f8e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Constants">
       <UniqueIdentifier>{7d0f36bb-69c0-4dd1-a017-54d8c3aba861}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Memory">
-      <UniqueIdentifier>{b1b843dd-4560-4f2f-9b4a-820921cd33bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Common\Net">
       <UniqueIdentifier>{0178111d-26fd-44f6-873c-f2f73ccf9518}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Wz">
-      <UniqueIdentifier>{2d386cf0-40aa-488c-a8ce-d25f96a2dce9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Common\Net\PacketFlags">
       <UniqueIdentifier>{1f4b136e-e19c-48d4-bbbe-43e7ff829ef1}</UniqueIdentifier>
@@ -37,9 +28,6 @@
     <Filter Include="WvsGame\InGame\User">
       <UniqueIdentifier>{e9b5b415-de34-4b1e-833f-bb2fa11fdf8c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Task">
-      <UniqueIdentifier>{95a4882f-1d59-4b55-816d-316638a81316}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WvsGame\InGame\Field\Life\Controller">
       <UniqueIdentifier>{e791ff88-024a-43b3-8e4e-850d702fe4e0}</UniqueIdentifier>
     </Filter>
@@ -55,94 +43,40 @@
     <Filter Include="WvsGame\InGame\Field\Drop">
       <UniqueIdentifier>{53eb92a9-0d40-42d0-ab78-f180ae5be65a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\DateTime">
-      <UniqueIdentifier>{6aa93c3d-db38-4a1c-a02c-f87b8bcfbdcc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WvsGame\InGame\Inventory">
       <UniqueIdentifier>{25a8c183-7b98-4a05-88b7-c374f49eafbc}</UniqueIdentifier>
     </Filter>
     <Filter Include="WvsGame\InGame\Skill">
       <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Random">
+    <Filter Include="Common\Utility">
+      <UniqueIdentifier>{77471284-cb39-48f8-88cb-3df4f8b784ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utility\Random">
       <UniqueIdentifier>{e77b7455-4df1-4c99-9152-0505e26b6096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utility\DateTime">
+      <UniqueIdentifier>{6aa93c3d-db38-4a1c-a02c-f87b8bcfbdcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utility\Task">
+      <UniqueIdentifier>{95a4882f-1d59-4b55-816d-316638a81316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Utility\String">
+      <UniqueIdentifier>{e8b75bb5-c64a-4fd9-930f-4124f24da6cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="..\Common\Utility\String\StringUtility.h">
+      <Filter>Common\Utility\String</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\AES\WzAES.hpp">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\aes.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\aes_ni.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\aesopt.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\aestab.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\brg_endian.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\AES\brg_types.h">
-      <Filter>Common\AES</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Constants\CryptoConstants.hpp">
       <Filter>Common\Constants</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Constants\ServerConstants.hpp">
       <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\ArenaVector.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\BufferPool.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\MemoryBlocks.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\MemoryPool.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\MemoryPoolMan.hpp">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\Arena.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Memory\stdinc.h">
-      <Filter>Common\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\mapfile.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\sprite.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\spritedata.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\wz.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\wzcrypto.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\wzimg.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\wzmain.hpp">
-      <Filter>Common\Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Wz\WzResMan.hpp">
-      <Filter>Common\Wz</Filter>
     </ClInclude>
     <ClInclude Include="WvsGame.h">
       <Filter>WvsGame</Filter>
@@ -207,9 +141,6 @@
     <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Task\AsnycScheduler.h">
-      <Filter>Common\Task</Filter>
-    </ClInclude>
     <ClInclude Include="MobPacketFlags.h">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
@@ -270,16 +201,10 @@
     <ClInclude Include="QWUInventory.h">
       <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\DateTime\GameDateTime.h">
-      <Filter>Common\DateTime</Filter>
-    </ClInclude>
     <ClInclude Include="SkillEntry.h">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
     <ClInclude Include="SkillLevelData.h">
-      <Filter>WvsGame\InGame\Skill</Filter>
-    </ClInclude>
-    <ClInclude Include="exprtk.hpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
     <ClInclude Include="WvsGameConstants.hpp">
@@ -300,62 +225,26 @@
     <ClInclude Include="AttackInfo.h">
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Random\Rand32.h">
-      <Filter>Common\Random</Filter>
-    </ClInclude>
     <ClInclude Include="CommandManager.h">
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Utility\Random\Rand32.h">
+      <Filter>Common\Utility\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h">
+      <Filter>Common\Utility\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h">
+      <Filter>Common\Utility\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Utility\String\StringUtility.cpp">
+      <Filter>Common\Utility\String</Filter>
+    </ClInclude>
+    <ClInclude Include="QWUSkillRecord.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\AES\aes_modes.c">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AES\aes_ni.c">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AES\aescrypt.c">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AES\aeskey.c">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AES\aestab.c">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\AES\WzAES.cpp">
-      <Filter>Common\AES</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Memory\BufferPool.cpp">
-      <Filter>Common\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Memory\MemoryBlocks.cpp">
-      <Filter>Common\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Memory\MemoryPoolMan.cpp">
-      <Filter>Common\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Memory\Arena.cpp">
-      <Filter>Common\Memory</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\mapfile.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\wzcrypto.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\wzimg.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\wzmain.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\wznode.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Wz\WzResMan.cpp">
-      <Filter>Common\Wz</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsGame.cpp">
       <Filter>WvsGame</Filter>
@@ -407,9 +296,6 @@
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Task\AsnycScheduler.cpp">
-      <Filter>Common\Task</Filter>
     </ClCompile>
     <ClCompile Include="MobPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
@@ -468,9 +354,6 @@
     <ClCompile Include="QWUInventory.cpp">
       <Filter>WvsGame\InGame\Inventory</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\DateTime\GameDateTime.cpp">
-      <Filter>Common\DateTime</Filter>
-    </ClCompile>
     <ClCompile Include="SkillEntry.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
@@ -492,16 +375,20 @@
     <ClCompile Include="AttackInfo.cpp">
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Random\Rand32.cpp">
-      <Filter>Common\Random</Filter>
-    </ClCompile>
     <ClCompile Include="CommandManager.cpp">
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Common\Memory\MemoryPool.tcc">
-      <Filter>Common\Memory</Filter>
-    </None>
+    <ClCompile Include="..\Common\Utility\Random\Rand32.cpp">
+      <Filter>Common\Utility\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp">
+      <Filter>Common\Utility\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp">
+      <Filter>Common\Utility\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="QWUSkillRecord.cpp">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

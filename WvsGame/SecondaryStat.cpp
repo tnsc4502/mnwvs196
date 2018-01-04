@@ -93,13 +93,21 @@ void SecondaryStat::EncodeForLocal(OutPacket * oPacket, TemporaryStat::TS_Flag &
 	flag.Encode(oPacket);
 	if (flag & GET_TS_FLAG(ElementalReset))
 	{
-		printf("Encode Local [ElementalReset]\n");
 		if (EnDecode4Byte(flag))
 			oPacket->Encode4(nElementalReset);
 		else
 			oPacket->Encode2(nElementalReset);
 		oPacket->Encode4(rElementalReset);
 		oPacket->Encode4(tElementalReset);
+	}
+	if (flag & GET_TS_FLAG(FireAura))
+	{
+		if (EnDecode4Byte(flag))
+			oPacket->Encode4(nFireAura);
+		else
+			oPacket->Encode2(nFireAura);
+		oPacket->Encode4(rFireAura);
+		oPacket->Encode4(tFireAura);
 	}
 	int nCount = 0;
 	oPacket->Encode2(nCount);

@@ -58,14 +58,11 @@ namespace WvsGameConstants
 	static bool IsCommonSkill(int nSkillID)
 	{
 		int v1; // eax@1
-		bool result; // eax@2
 
-		v1 = GetSkillRootFromSkill(nSkillID);
-		if ((v1 - 800000) > 0x63)
-			result = v1 == 8001;
-		else
-			result = 1;
-		return result;
+		v1 = nSkillID / 10000;
+		if (nSkillID / 10000 == 8000)
+			v1 = nSkillID / 100;
+		return v1 >= 800000 && v1 <= 800099;
 	}
 
 	static bool IsNoviceSkill(int nSkillID)
@@ -500,4 +497,167 @@ namespace WvsGameConstants
 			|| (nSkillID <= 14001027 && nSkillID >= 14000029));
 	}
 
+	static bool IsAdventurerWarrior(int nJob)
+	{
+		return nJob == 100
+			|| nJob == 110
+			|| nJob == 111
+			|| nJob == 112
+			|| nJob == 120
+			|| nJob == 121
+			|| nJob == 122
+			|| nJob == 130
+			|| nJob == 131
+			|| nJob == 132;
+	}
+
+	static bool IsAdventurerMage(int nJob)
+	{
+		return nJob == 200
+			|| nJob == 210
+			|| nJob == 211
+			|| nJob == 212
+			|| nJob == 220
+			|| nJob == 221
+			|| nJob == 222
+			|| nJob == 230
+			|| nJob == 231
+			|| nJob == 232;
+	}	
+	
+	static bool IsAdventurerArchor(int nJob)
+	{
+		return nJob == 300 || nJob == 310 || nJob == 311 || nJob == 312 || nJob == 320 || nJob == 321 || nJob == 322;
+	}
+
+	static bool IsAdventurerRogue(int nJob)
+	{
+		return nJob == 400
+			|| nJob == 420
+			|| nJob == 421
+			|| nJob == 422
+			|| nJob == 410
+			|| nJob == 411
+			|| nJob == 412
+			|| nJob / 10 == 43;
+	}
+
+	static bool IsCannonShooterJob(int nJob)
+	{
+		return nJob / 10 == 53 || nJob == 501;
+	}
+
+	static bool IsAdventurerPirate(int nJob)
+	{
+		bool result; // eax@8
+
+		if (nJob == 500
+			|| nJob == 510
+			|| nJob == 511
+			|| nJob == 512
+			|| nJob == 520
+			|| nJob == 521
+			|| nJob == 522
+			|| (result = IsCannonShooterJob(nJob)) != false)
+			result = true;
+		return result;
+	}
+
+	static bool IsCygnusJob(int nJob)
+	{
+		return nJob / 1000 == 1;
+	}
+
+	static bool IsResistanceJob(int nJob)
+	{
+		return nJob / 1000 == 3;
+	}
+
+	static bool IsMercedesJob(int nJob)
+	{
+		return nJob / 100 == 23 || nJob == 2002;
+	}
+
+	static bool IsPhantomJob(int nJob)
+	{
+		return nJob / 100 == 24 || nJob == 2003;
+	}
+
+	static bool IsLeaderJob(int nJob)
+	{
+		return nJob / 1000 == 5;
+	}
+
+	static bool IsLuminousJob(int nJob)
+	{
+		return nJob / 100 == 27 || nJob == 2004;
+	}
+
+	static bool IsDragonBornJob(int nJob)
+	{
+		return nJob / 1000 == 6;
+	}
+
+	static bool IsHiddenJob(int nJob)
+	{
+		return nJob / 100 == 25 || nJob == 2005;
+	}
+
+	static bool IsAranJob(int nJob)
+	{
+		return nJob / 100 == 21 || nJob == 2000;
+	}
+
+	static bool IsKinesisJob(int nJob)
+	{
+		return nJob == 14000 || nJob == 14200 || nJob == 14210 || nJob == 14211 || nJob == 14212;
+	}
+
+	static bool IsJapanessJob(int nJob)
+	{
+		return nJob / 1000 == 4;
+	}
+
+	static bool IsJettJob(int nJob)
+	{
+		return nJob / 10 == 57 || nJob == 508;
+	}
+
+	static bool IsBeastTamerJob(int nJob)
+	{
+		return nJob / 1000 == 11;
+	}
+
+	static bool IsPinkBeanJob(int nJob)
+	{
+		return nJob / 1000 == 13;
+	}
+
+	static bool IsExtendSPJob(int nJob)
+	{
+		bool result = false; // eax@18
+
+		if (!nJob
+			|| IsAdventurerWarrior(nJob)
+			|| IsAdventurerMage(nJob)
+			|| IsAdventurerArchor(nJob)
+			|| IsAdventurerRogue(nJob)
+			|| IsAdventurerPirate(nJob)
+			|| IsCygnusJob(nJob)
+			|| IsResistanceJob(nJob)
+			|| IsEvanJob(nJob)
+			|| IsMercedesJob(nJob)
+			|| IsPhantomJob(nJob)
+			|| IsLeaderJob(nJob)
+			|| IsLuminousJob(nJob)
+			|| IsDragonBornJob(nJob)
+			|| IsZeroJob(nJob)
+			|| IsHiddenJob(nJob)
+			|| IsAranJob(nJob)
+			|| IsJapanessJob(nJob)
+			|| IsJettJob(nJob)
+			|| (result = IsKinesisJob(nJob)) != false)
+			result = true;
+		return result;
+	}
 }

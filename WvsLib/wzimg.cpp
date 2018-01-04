@@ -4,7 +4,7 @@
 ///////////////////////////////////
 
 #include "wzmain.hpp"
-#include "..\Memory\MemoryPoolMan.hpp"
+#include "Memory\MemoryPoolMan.hpp"
 #include <mutex>
 
 namespace WZ {

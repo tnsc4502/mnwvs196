@@ -143,23 +143,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WvsLib.lib;database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\AES\aescrypt.c" />
-    <ClCompile Include="..\Common\AES\aeskey.c" />
-    <ClCompile Include="..\Common\AES\aestab.c" />
-    <ClCompile Include="..\Common\AES\aes_modes.c" />
-    <ClCompile Include="..\Common\AES\aes_ni.c" />
-    <ClCompile Include="..\Common\AES\WzAES.cpp" />
-    <ClCompile Include="..\Common\Memory\Arena.cpp" />
-    <ClCompile Include="..\Common\Memory\BufferPool.cpp" />
-    <ClCompile Include="..\Common\Memory\MemoryBlocks.cpp" />
-    <ClCompile Include="..\Common\Memory\MemoryPoolMan.cpp" />
     <ClCompile Include="..\Common\Net\crypto.cpp" />
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
@@ -169,35 +159,15 @@
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
-    <ClCompile Include="..\Common\Wz\mapfile.cpp" />
-    <ClCompile Include="..\Common\Wz\wzcrypto.cpp" />
-    <ClCompile Include="..\Common\Wz\wzimg.cpp" />
-    <ClCompile Include="..\Common\Wz\wzmain.cpp" />
-    <ClCompile Include="..\Common\Wz\wznode.cpp" />
-    <ClCompile Include="..\Common\Wz\WzResMan.cpp" />
     <ClCompile Include="ChannelEntry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsCenter.cpp" />
     <ClCompile Include="LocalServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\AES\aes.h" />
-    <ClInclude Include="..\Common\AES\aesopt.h" />
-    <ClInclude Include="..\Common\AES\aestab.h" />
-    <ClInclude Include="..\Common\AES\aes_ni.h" />
-    <ClInclude Include="..\Common\AES\brg_endian.h" />
-    <ClInclude Include="..\Common\AES\brg_types.h" />
-    <ClInclude Include="..\Common\AES\WzAES.hpp" />
     <ClInclude Include="..\Common\Constants\ConfigLoader.hpp" />
     <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
     <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
-    <ClInclude Include="..\Common\Memory\Arena.h" />
-    <ClInclude Include="..\Common\Memory\ArenaVector.h" />
-    <ClInclude Include="..\Common\Memory\BufferPool.h" />
-    <ClInclude Include="..\Common\Memory\MemoryBlocks.h" />
-    <ClInclude Include="..\Common\Memory\MemoryPool.h" />
-    <ClInclude Include="..\Common\Memory\MemoryPoolMan.hpp" />
-    <ClInclude Include="..\Common\Memory\stdinc.h" />
     <ClInclude Include="..\Common\Net\asio.hpp" />
     <ClInclude Include="..\Common\Net\crypto.hpp" />
     <ClInclude Include="..\Common\Net\InPacket.h" />
@@ -208,20 +178,9 @@
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
     <ClInclude Include="..\Common\Net\WvsBase.h" />
-    <ClInclude Include="..\Common\Wz\mapfile.hpp" />
-    <ClInclude Include="..\Common\Wz\sprite.hpp" />
-    <ClInclude Include="..\Common\Wz\spritedata.hpp" />
-    <ClInclude Include="..\Common\Wz\wz.hpp" />
-    <ClInclude Include="..\Common\Wz\wzcrypto.hpp" />
-    <ClInclude Include="..\Common\Wz\wzimg.hpp" />
-    <ClInclude Include="..\Common\Wz\wzmain.hpp" />
-    <ClInclude Include="..\Common\Wz\WzResMan.hpp" />
     <ClInclude Include="ChannelEntry.h" />
     <ClInclude Include="WvsCenter.h" />
     <ClInclude Include="LocalServer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Common\Memory\MemoryPool.tcc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -103,7 +103,7 @@ void GW_ItemSlotBundle::RawEncode(OutPacket *oPacket) const
 	oPacket->Encode2(nNumber);
 	oPacket->EncodeStr("");
 	oPacket->Encode2(nAttribute);
-	printf("[GW_ItemSlotBundle::RawEncode] Number = %d Attribute = %d\n", nNumber, nAttribute);
+	//printf("[GW_ItemSlotBundle::RawEncode] Number = %d Attribute = %d\n", nNumber, nAttribute);
 	//          Throwing Start            Bullet
 	if ((nItemID / 10000 == 207) || (nItemID / 10000 == 233) || (nItemID / 10000 == 287))
 		oPacket->Encode8(liItemSN);

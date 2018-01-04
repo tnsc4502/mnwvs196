@@ -1,0 +1,84 @@
+#include "QWUSkillRecord.h"
+#include "..\Common\Net\OutPacket.h"
+#include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
+#include "..\Database\GA_Character.hpp"
+#include "..\Database\GW_CharacterStat.h"
+#include "..\Database\GW_SkillRecord.h"
+#include "User.h"
+#include "SkillInfo.h"
+#include "WvsGameConstants.hpp"
+
+
+QWUSkillRecord::QWUSkillRecord()
+{
+}
+
+
+QWUSkillRecord::~QWUSkillRecord()
+{
+}
+
+bool QWUSkillRecord::SkillUp(User * pUser, int nSkillID, int nAmount, bool bDecSP, std::vector<GW_SkillRecord*>& aChange)
+{
+	int nJob = pUser->GetCharacterData()->mStat->nJob;
+	int nSkillJob = WvsGameConstants::GetSkillRootFromSkill(nSkillID);
+
+	if ((nJob >= nSkillJob) &&
+		((nJob < 10000 && (nJob / 100 == nSkillJob / 100)) ||
+		(nJob / 1000 == nSkillJob / 1000)))
+	{
+		int nSkillRootLevel = WvsGameConstants::GetJobLevel(nSkillJob);
+		if (nSkillRootLevel >= 0 &&
+			nSkillRootLevel < GW_CharacterStat::EXTEND_SP_SIZE &&
+			(!bDecSP || pUser->GetCharacterData()->mStat->aSP[nSkillRootLevel] >= nAmount))
+		{
+			auto pSkillRecord = pUser->GetCharacterData()->GetSkill(nSkillID);
+			if (pSkillRecord == nullptr)
+			{
+				pSkillRecord = SkillInfo::GetInstance()->GetSkillRecord(
+					nSkillID,
+					0,
+					0
+				);
+				pUser->GetCharacterData()->GetSkill(pSkillRecord);
+			}
+			if (pSkillRecord != nullptr 
+				&& (!WvsGameConstants::IsSkillNeedMasterLevel(pSkillRecord->nSkillID) 
+					|| (pSkillRecord->nSLV + nAmount <= pSkillRecord->nMasterLevel)))
+			{
+				pSkillRecord->nSLV += nAmount;
+				if(bDecSP)
+					pUser->GetCharacterData()->mStat->aSP[nSkillRootLevel] -= nAmount;
+				aChange.push_back(pSkillRecord);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void QWUSkillRecord::SendCharacterSkillRecord(User * pUser, std::vector<GW_SkillRecord*>& aChange)
+{
+	printf("SendCharacterSkillRecord Called, size = %d\n", (int)aChange.size());
+	OutPacket oPacket;
+	oPacket.Encode2(ClientPacketFlag::OnUserSkillUp);
+	oPacket.Encode1(1);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode2((short)aChange.size());
+	for (auto pSkillRecord : aChange)
+	{
+		printf("SendCharacterSkillRecord Skill ID = %d SLV = %d\n", pSkillRecord->nSkillID, pSkillRecord->nSLV);
+		oPacket.Encode4(pSkillRecord->nSkillID);
+		oPacket.Encode4(pSkillRecord->nSLV);
+		oPacket.Encode4(pSkillRecord->nMasterLevel);
+		oPacket.Encode8(pSkillRecord->tExpired);
+	}
+	oPacket.Encode1(0);
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+	pUser->SendPacket(&oPacket);
+}
+

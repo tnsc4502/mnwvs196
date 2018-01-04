@@ -1,7 +1,6 @@
 #include "MobTemplate.h"
-
-
-#include "Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\Database\GW_MobReward.h"
 
 std::map<int, MobTemplate*>* MobTemplate::m_MobTemplates = new std::map<int, MobTemplate*>();
 
@@ -37,6 +36,7 @@ MobTemplate* MobTemplate::GetMobTemplate(int dwTemplateID, bool cloneNewOne)
 
 void MobTemplate::RegisterMob(int dwTemplateID)
 {
+	m_MobWzProperty = &(stWzResMan->GetWz(Wz::Mob));
 	auto newTemplate = new MobTemplate();
 	std::string templateID = std::to_string(dwTemplateID);
 	while (templateID.length() < 7)
@@ -76,5 +76,11 @@ void MobTemplate::RegisterMob(int dwTemplateID)
 	else
 		newTemplate->m_nMoveAbility = (bMove != false) ? 1 : 0;
 
+	newTemplate->m_pReward = GW_MobReward::GetInstance()->GetMobReward(dwTemplateID);
 	(*m_MobTemplates)[dwTemplateID] = newTemplate;
+}
+
+const GW_MobReward * MobTemplate::GetMobReward() const
+{
+	return m_pReward;
 }

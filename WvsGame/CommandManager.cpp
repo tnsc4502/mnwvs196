@@ -11,6 +11,7 @@
 #include "Reward.h"
 #include "DropPool.h"
 #include <vector>
+#include "..\Common\Utility\String\StringUtility.h"
 
 CommandManager::CommandManager()
 {
@@ -27,23 +28,10 @@ CommandManager * CommandManager::GetInstance()
 	return pInstance;
 }
 
-void Split(const std::string& str, std::vector<std::string>& result)
-{
-	int prevPos = 0, nextPos = 0, size = (int)str.size();
-	while ((nextPos = str.find(" ", prevPos)) >= 0 && nextPos < size)
-	{
-		result.push_back(std::move(str.substr(prevPos, nextPos - prevPos)));
-		prevPos = nextPos + 1;
-	}
-	result.push_back(std::move(str.substr(prevPos, size - prevPos)));
-}
-
 void CommandManager::Process(User * pUser, const std::string & input)
 {
 	std::vector<std::string> token;
-	Split(input, token);
-	for (const auto& tkn : token)
-		printf("Token Result : %s\n", tkn.c_str());
+	StringUtility::Split(input, token, " ");
 
 	if (token.size() >= 2 && token[0][0] == '#')
 	{
@@ -74,7 +62,7 @@ void CommandManager::Process(User * pUser, const std::string & input)
 						pUser->GetPosX(),
 						pUser->GetPosY(),
 						0,
-						0,
+						1,
 						0,
 						0);
 				}
