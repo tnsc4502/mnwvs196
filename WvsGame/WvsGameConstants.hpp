@@ -7,11 +7,6 @@ namespace WvsGameConstants
 
 	static std::string strGameDesc;
 
-	static WorldConnectionInfo CenterServerList[1] =
-	{
-		WorldConnectionInfo{ "127.0.0.1", 8383 }
-	};
-
 	static bool IsVSkill(int nSkillID)
 	{
 		return nSkillID >= 40000 && nSkillID <= 40005;

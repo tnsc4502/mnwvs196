@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 	//WvsGameConstants::nGamePort = (argc > 1 ? atoi(argv[1]) : 7575);
 	//WvsGameConstants::strGameDesc = "Channel : " + std::to_string((argc > 1 ? atoi(argv[1]) : 7575) - 7575);
 
-	WvsGameConstants::CenterServerList[0].nServerPort = ConfigLoader::GetInstance()->IntValue("Center0_Port");
+	//WvsGameConstants::CenterServerList[0].nServerPort = ConfigLoader::GetInstance()->IntValue("Center0_Port");
 
 	WvsBase::GetInstance<WvsGame>()->InitializeCenter();
 	// start the i/o work

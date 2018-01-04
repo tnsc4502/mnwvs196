@@ -2,6 +2,7 @@
 
 #include "wzmain.hpp"
 #include "Memory\MemoryPoolMan.hpp"
+#include "..\Common\Constants\ConfigLoader.hpp"
 #include "..\Common\Constants\ServerConstants.hpp"
 
 #define MAPPING_WZ_NAME(name) mWzNode[(int)Wz::name] = WZ::Base[#name]
@@ -44,7 +45,8 @@ private:
 
 	WzResMan() 
 	{
-		WZ::AddPath(ServerConstants::kGameFilePath);
+		ConfigLoader::GetInstance()->LoadConfig("GlobalSetting.txt");
+		WZ::AddPath(ConfigLoader::GetInstance()->StrValue("WzDir"));
 		Init();
 	}
 
@@ -87,7 +89,8 @@ public:
 	void ReleaseMemory()
 	{
 		stWzMemoryPoolMan->Release();
-		WZ::AddPath(ServerConstants::kGameFilePath);
+		ConfigLoader::GetInstance()->LoadConfig("GlobalSetting.txt");
+		WZ::AddPath(ConfigLoader::GetInstance()->StrValue("WzDir"));
 		Init();
 	}
 };

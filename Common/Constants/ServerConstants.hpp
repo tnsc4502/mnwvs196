@@ -17,5 +17,4 @@ namespace ServerConstants
 	constexpr int kGameLocale = (int)GameLocale::TW;
 
 	const std::string strGameSubVersion = "3";
-	const std::string kGameFilePath = "D:/Program Files (x86)/Gamania/MapleStory196/";
 }
