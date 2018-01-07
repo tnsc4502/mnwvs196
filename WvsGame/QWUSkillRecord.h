@@ -10,7 +10,7 @@ class QWUSkillRecord
 	~QWUSkillRecord();
 public:
 
-	static bool SkillUp(User *pUser, int nSkillID, int nAmount, bool bDecSP, std::vector<GW_SkillRecord*> &aChange);
+	static bool SkillUp(User *pUser, int nSkillID, int nAmount, bool bDecSP, bool bCheckMasterLevel, std::vector<GW_SkillRecord*> &aChange);
 	static void SendCharacterSkillRecord(User *pUser, std::vector<GW_SkillRecord*> &aChange);
 };
 

@@ -22,9 +22,9 @@ Field::Field()
 	  m_pTownPortalPool(new TownPortalPool)
 {
 	m_pDropPool = new DropPool(this);
-	m_asyncUpdateTimer = AsnycScheduler::CreateTask(m_updateBinder, 1000, true);
+	m_asyncUpdateTimer = AsnycScheduler::CreateTask(m_updateBinder, 5000, true);
 	//this->m_asyncUpdateTimer = (void*)timer;
-	//InitLifePool();
+	InitLifePool();
 }
 
 Field::~Field()
@@ -288,6 +288,7 @@ TownPortalPool * Field::GetTownPortalPool()
 
 void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 {
+	//std::lock_guard<std::mutex> lifeGuard(m_pLifePool->GetLock());
 	bool bIsAzawanMoving = iPacket->Decode1() > 0;
 	/*
 	  v122 = CMobTemplate::_ZtlSecureGet_dwTemplateID(v121) / 0x2710 == 250

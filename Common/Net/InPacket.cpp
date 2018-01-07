@@ -92,10 +92,14 @@ void InPacket::DecodeBuffer(unsigned char* dst, int size)
 
 void InPacket::Print()
 {
-	std::cout << "InPacket封包內容：";
+	setbuf(stdout, NULL);
+	//std::cout << "InPacket封包內容：";
 	for (int i = 0; i < nPacketSize; ++i)
+		//std::cout << std::hex << (int)aBuff[i] << " ";
 		printf("0x%02X ", (int)aBuff[i]);
-	std::cout << std::endl;
+	printf("\n");
+	//std::cout << std::endl;
+	//std::flush(std::cout);
 }
 
 unsigned char* InPacket::GetPacket() const

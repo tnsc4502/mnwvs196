@@ -7,7 +7,7 @@ void GW_Avatar::Load(int nCharacterID)
 {
 	//BASIC AVATAR
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	queryStatement << "Select c.* FROM CharacterAvatar as c Where c.CharacterID = " << nCharacterID;
+	queryStatement << "Select Hair, Face, Skin FROM CharacterStat Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	Poco::Data::RecordSet recordSet(queryStatement);
 
@@ -35,7 +35,7 @@ void GW_Avatar::Load(int nCharacterID)
 
 void GW_Avatar::Save(int nCharacterID, bool newCharacter)
 {
-	Poco::Data::Statement queryStatement(GET_DB_SESSION);
+	/*Poco::Data::Statement queryStatement(GET_DB_SESSION);
 	if (newCharacter)
 		queryStatement << "INSERT INTO CharacterAvatar(CharacterID, Hair, Face, Skin) VALUES("
 		<< nCharacterID << ","
@@ -43,12 +43,13 @@ void GW_Avatar::Save(int nCharacterID, bool newCharacter)
 		<< nFace << ","
 		<< nSkin << ")";
 	else
-		queryStatement << "UPDATE CharacterAvatar SET "
-		<< "Hair = '" << nHair << "',"
-		<< "Face = '" << nFace << "',"
-		<< "Skin = '" << nSkin << "' WHERE CharacterID = " << nCharacterID;
 
-	queryStatement.execute();
+	queryStatement << "UPDATE CharacterStat SET "
+	<< "Hair = '" << nHair << "',"
+	<< "Face = '" << nFace << "',"
+	<< "Skin = '" << nSkin << "' WHERE CharacterID = " << nCharacterID;
+
+	queryStatement.execute();*/
 }
 
 void GW_Avatar::Encode(OutPacket *oPacket)

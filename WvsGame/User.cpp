@@ -27,6 +27,7 @@
 #include "LifePool.h"
 #include "SkillInfo.h"
 #include "CommandManager.h"
+#include "..\Common\Utility\DateTime\GameDateTime.h"
 
 void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 {
@@ -259,10 +260,23 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	_pSocket->SetUser(this);
 	m_pField = (FieldMan::GetInstance()->GetField(pCharacterData->nFieldID));
 	m_pField->OnEnter(this);
+	auto bindT = std::bind(&User::Update, this);
+	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
+	m_pUpdateTimer = pUpdateTimer;
+	pUpdateTimer->Start();
 }
 
 User::~User()
 {
+	OutPacket oPacket;
+	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
+	oPacket.Encode4(pSocket->GetSocketID());
+	oPacket.Encode4(GetUserID());
+	pCharacterData->EncodeCharacterData(&oPacket);
+	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
+
+	auto bindT = std::bind(&User::Update, this);
+	((AsnycScheduler::AsnycScheduler<decltype(bindT)>*)m_pUpdateTimer)->Abort();
 	//m_pField->OnLeave(this);
 	LeaveField();
 	
@@ -305,6 +319,21 @@ void User::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
+	case 0x16B:
+	{
+		std::string strSkill = iPacket->DecodeStr();
+		int nLVL1 = iPacket->Decode4();
+		int nLVL2 = iPacket->Decode4();
+		OutPacket oPacket;
+		oPacket.Encode2(0xC1);
+		oPacket.EncodeStr(strSkill);
+		oPacket.Encode4(nLVL1);
+		oPacket.Encode4(nLVL2);
+		oPacket.Encode1(0);
+		oPacket.Encode4(0);
+		SendPacket(&oPacket);
+		break;
+	}
 	case ClientPacketFlag::OnUserChat:
 		OnChat(iPacket);
 		break;
@@ -323,6 +352,9 @@ void User::OnPacket(InPacket *iPacket)
 	case ClientPacketFlag::OnUserSkillUseRequest:
 		USkill::OnSkillUseRequest(this, iPacket);
 		break;
+	case ClientPacketFlag::OnUserSkillCancelRequest:
+		USkill::OnSkillCancelRequest(this, iPacket);
+		break;
 	case ClientPacketFlag::OnUserAttack_MeleeAttack:
 	case ClientPacketFlag::OnUserAttack_ShootAttack:
 	case ClientPacketFlag::OnUserAttack_MagicAttack:
@@ -340,6 +372,8 @@ void User::OnPacket(InPacket *iPacket)
 			m_pField->OnPacket(this, iPacket);
 		}
 	}
+	ValidateStat();
+	SendCharacterStat(false, 0);
 }
 
 void User::OnTransferFieldRequest(InPacket * iPacket)
@@ -367,14 +401,10 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 	Field *pTargetField = FieldMan::GetInstance()->GetField(dwFieldReturn == -1 ? pPortal->GetTargetMap() : dwFieldReturn);
 	if (pTargetField != nullptr)
 	{
-		if(pPortal)
-		{ 
-			SetPosX(pPortal->GetX());
-			SetPosY(pPortal->GetY());
-		}
+		Portal* pTargetPortal = pPortal == nullptr ? nullptr : pTargetField->GetPortalMap()->FindPortal(pPortal->GetTargetPortalName());
 		LeaveField();
 		m_pField = pTargetField;
-		PostTransferField(m_pField->GetFieldID(), pPortal, false);
+		PostTransferField(m_pField->GetFieldID(), pTargetPortal, false);
 		m_pField->OnEnter(this);
 		pCharacterData->nFieldID = m_pField->GetFieldID();
 	}
@@ -418,7 +448,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 
 	oPacket.Encode1(0); //bUsingBuffProtector
 	oPacket.Encode4(dwFieldID);
-	oPacket.Encode1(pPortal == nullptr ? 0x80 : atoi(pPortal->GetPortalName().c_str()));
+	oPacket.Encode1(pPortal == nullptr ? 0x80 : pPortal->GetID());
 	oPacket.Encode4(pCharacterData->mStat->nHP); //HP
 
 	oPacket.Encode1(0);
@@ -562,8 +592,17 @@ void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 	SendPacket(&oPacket);
 }
 
-void User::SendTemporaryStatReset(long long int uFlag)
+void User::SendTemporaryStatReset(TemporaryStat::TS_Flag& flag)
 {
+	OutPacket oPacket;
+	oPacket.Encode2(UserPacketFlag::USerLocal_OnTemporaryStatReset);
+	flag.Encode(&oPacket);
+	m_pSecondaryStat->EncodeIndieTempStat(&oPacket, flag);
+	oPacket.Encode2(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	oPacket.Encode1(0);
+	SendPacket(&oPacket);
 }
 
 void User::SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay)
@@ -579,21 +618,21 @@ void User::OnAttack(int nType, InPacket * iPacket)
 	std::unique_ptr<AttackInfo> pInfo = nullptr;
 	switch (nType)
 	{
-	case ClientPacketFlag::OnUserAttack_MeleeAttack:
-		pInfo.reset(TryParsingMeleeAttack(nType, iPacket));
-		break;
-	case ClientPacketFlag::OnUserAttack_ShootAttack:
-		pInfo.reset(TryParsingShootAttack(nType, iPacket));
-		break;
-	case ClientPacketFlag::OnUserAttack_MagicAttack:
-		pInfo.reset(TryParsingMagicAttack(nType, iPacket));
-		break;
-	case ClientPacketFlag::OnUserAttack_BodyAttack:
-		pInfo.reset(TryParsingBodyAttack(nType, iPacket));
-		break;
-	case ClientPacketFlag::OnUserAttack_AreaDot:
-		pInfo.reset(TryParsingAreaDot(nType, iPacket));
-		break;
+		case ClientPacketFlag::OnUserAttack_MeleeAttack:
+			pInfo.reset(TryParsingMeleeAttack(nType, iPacket));
+			break;
+		case ClientPacketFlag::OnUserAttack_ShootAttack:
+			pInfo.reset(TryParsingShootAttack(nType, iPacket));
+			break;
+		case ClientPacketFlag::OnUserAttack_MagicAttack:
+			pInfo.reset(TryParsingMagicAttack(nType, iPacket));
+			break;
+		case ClientPacketFlag::OnUserAttack_BodyAttack:
+			pInfo.reset(TryParsingBodyAttack(nType, iPacket));
+			break;
+		case ClientPacketFlag::OnUserAttack_AreaDot:
+			pInfo.reset(TryParsingAreaDot(nType, iPacket));
+			break;
 	}
 	if (pInfo) 
 	{
@@ -603,6 +642,10 @@ void User::OnAttack(int nType, InPacket * iPacket)
 			pInfo.get()
 		);
 	}
+}
+
+void User::OnLevelUp()
+{
 }
 
 SecondaryStat * User::GetSecondaryStat()
@@ -620,16 +663,68 @@ std::mutex & User::GetLock()
 	return m_mtxUserlock;
 }
 
+void User::Update()
+{
+	USkill::ResetTemporaryByTime(this, GameDateTime::GetTime());
+}
+
+void User::ResetTemporaryStat(int tCur, int nReasonID)
+{
+	if (nReasonID == 0)
+	{
+		
+	}
+}
+
 void User::MigrateOut()
 {
-	OutPacket oPacket;
-	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
-	oPacket.Encode4(pSocket->GetSocketID());
-	oPacket.Encode4(GetUserID());
-	pCharacterData->EncodeCharacterData(&oPacket);
-	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 	LeaveField();
 	pSocket->GetSocket().close();
+}
+
+User * User::FindUser(int nUserID)
+{
+	return WvsGame::GetInstance<WvsGame>()->FindUser(nUserID);
+}
+
+void User::SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID, int nCount, bool bOnExcelRequest)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(ClientPacketFlag::OnMessage);
+	oPacket.Encode1((char)Message::eDropPickUpMessage);
+	if (bPickedUp)
+	{
+		oPacket.Encode1(bIsMoney == true ? 1 : 0);
+		if (bIsMoney)
+		{
+			oPacket.Encode1(0);
+			oPacket.Encode8(nCount);
+			oPacket.Encode2(0);
+		}
+		else
+		{
+			oPacket.Encode4(nItemID);
+			oPacket.Encode4(nCount);
+		}
+	}
+	else
+	{
+		oPacket.Encode1((char)0xFF);
+		oPacket.Encode4(0);
+		oPacket.Encode4(0);
+	}
+	SendPacket(&oPacket);
+}
+
+void User::SendDropPickUpFailPacket(bool bOnExcelRequest)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(ClientPacketFlag::OnMessage);
+	oPacket.Encode1((char)Message::eDropPickUpMessage);
+	oPacket.Encode1((char)0xFE);
+	oPacket.Encode4(0);
+	oPacket.Encode4(0);
+	SendPacket(&oPacket);
 }
 
 void User::LeaveField()

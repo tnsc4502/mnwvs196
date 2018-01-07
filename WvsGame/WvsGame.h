@@ -9,6 +9,8 @@
 
 class WvsGame : public WvsBase
 {
+	std::mutex m_mUserLock;
+
 	int nExternalPort = 0;
 	int aExternalIP[4];
 	std::map<int, std::shared_ptr<User>> mUserMap;
@@ -42,4 +44,6 @@ public:
 
 	int* GetExternalIP() const;
 	short GetExternalPort() const;
+
+	User* FindUser(int nUserID);
 };

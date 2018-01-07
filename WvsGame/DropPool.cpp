@@ -26,16 +26,17 @@ void DropPool::Create(Reward * reward, unsigned int dwOwnerID, unsigned int dwOw
 	Drop *pDrop = new Drop();
 	pDrop->Init(++m_nDropIdCounter, reward, dwOwnerID, dwOwnPartyID, nOwnType, dwSourceID, x1, y1, x2, y2, bByPet);
 	auto pItem = pDrop->GetItem();
-	if (reward->GetType() == 1 && reward->GetPeriod() != 0)
+	if (pItem != nullptr && reward->GetType() == 1 && reward->GetPeriod() != 0)
 		pItem->liExpireDate = GameDateTime::GetDateExpireFromPeriod(reward->GetPeriod());
 	bool bEverLasting = m_bDropEverlasting ? dwSourceID == 0 : false;
-	if (bAdmin)
+	/*if (bAdmin)
 		bEverLasting = reward->GetType() == 1
-		&& (ItemInfo::GetInstance()->IsQuestItem(pItem->nItemID) || ItemInfo::GetInstance()->IsTradeBlockItem(pItem->nItemID));
+		&& (ItemInfo::GetInstance()->IsQuestItem(pItem->nItemID) || ItemInfo::GetInstance()->IsTradeBlockItem(pItem->nItemID));*/
 
 	if (reward->GetType() == 1
 		&& !dwSourceID
 		&& !bAdmin
+		&& pItem
 		&& (ItemInfo::GetInstance()->IsQuestItem(pItem->nItemID) || ItemInfo::GetInstance()->IsTradeBlockItem(pItem->nItemID)))
 	{
 		//丟出後立即消失
@@ -90,10 +91,19 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 	if (findIter != m_mDrop.end())
 	{
 		auto pDrop = findIter->second;
+		int nItemID = 0, nCount = 0;
 		if (pDrop->m_bIsMoney)
+		{
+			nCount = pDrop->m_nMoney;
 			bDropRemained = (QWUInventory::PickUpMoney(pUser, false, pDrop->m_nMoney) == false);
-		else
+		}
+		else 
+		{
+			nItemID = pDrop->m_pItem->nItemID;
+			if (!pDrop->m_pItem->IsTreatSingly())
+				nCount = ((GW_ItemSlotBundle*)pDrop->m_pItem)->nNumber;
 			bDropRemained = (QWUInventory::PickUpItem(pUser, false, pDrop->m_pItem) == false);
+		}
 
 		if (!bDropRemained) 
 		{
@@ -102,5 +112,12 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 			m_pField->SplitSendPacket(&oPacket, nullptr);
 			m_mDrop.erase(nObjectID);
 		}
+		pUser->SendDropPickUpResultPacket(
+			!bDropRemained,
+			pDrop->m_bIsMoney,
+			nItemID,
+			nCount,
+			false
+		);
 	}
 }

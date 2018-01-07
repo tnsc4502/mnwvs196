@@ -1,11 +1,12 @@
 #include "Portal.h"
 
 
-Portal::Portal(int nType, int nTargetMap, int nX, int nY, const std::string & sName, const std::string & sTName, const std::string & sScript)
+Portal::Portal(int nID, int nType, int nTargetMap, int nX, int nY, const std::string & sName, const std::string & sTName, const std::string & sScript)
 	: m_nType(nType),
 	  m_nTMap(nTargetMap),
 	  m_nX(nX),
 	  m_nY(nY),
+	  m_nID(nID),
 	  m_sName(sName),
 	  m_sTName(sTName),
 	  m_sScript(sScript),
@@ -37,6 +38,11 @@ int Portal::GetY()
 	return m_nY;
 }
 
+int Portal::GetID()
+{
+	return m_nID;
+}
+
 void Portal::SetX(int x)
 {
 	m_nX = x;
@@ -45,6 +51,11 @@ void Portal::SetX(int x)
 void Portal::SetY(int y)
 {
 	m_nY = y;
+}
+
+void Portal::SetID(int nID)
+{
+	m_nID = nID;
 }
 
 const std::string & Portal::GetPortalName() const

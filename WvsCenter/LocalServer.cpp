@@ -33,24 +33,24 @@ void LocalServer::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
-	case LoginPacketFlag::RegisterCenterRequest:
-		OnRegisterCenterRequest(iPacket);
-		break;
-	case LoginPacketFlag::RequestCharacterList:
-		OnRequestCharacterList(iPacket);
-		break;
-	case LoginPacketFlag::RequestCreateNewCharacter:
-		OnRequestCreateNewCharacter(iPacket);
-		break;
-	case LoginPacketFlag::RequestGameServerInfo:
-		OnRequestGameServerInfo(iPacket);
-		break;
-	case GamePacketFlag::RequestMigrateIn:
-		OnRequestMigrateIn(iPacket);
-		break;
-	case GamePacketFlag::RequestMigrateOut:
-		OnRequestMigrateOut(iPacket);
-		break;
+		case LoginPacketFlag::RegisterCenterRequest:
+			OnRegisterCenterRequest(iPacket);
+			break;
+		case LoginPacketFlag::RequestCharacterList:
+			OnRequestCharacterList(iPacket);
+			break;
+		case LoginPacketFlag::RequestCreateNewCharacter:
+			OnRequestCreateNewCharacter(iPacket);
+			break;
+		case LoginPacketFlag::RequestGameServerInfo:
+			OnRequestGameServerInfo(iPacket);
+			break;
+		case GamePacketFlag::RequestMigrateIn:
+			OnRequestMigrateIn(iPacket);
+			break;
+		case GamePacketFlag::RequestMigrateOut:
+			OnRequestMigrateOut(iPacket);
+			break;
 	}
 }
 

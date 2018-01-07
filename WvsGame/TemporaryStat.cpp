@@ -26,7 +26,7 @@ TemporaryStat::TS_Flag & TemporaryStat::TS_Flag::operator|=(const TS_Flag & rhs)
 
 bool TemporaryStat::TS_Flag::operator&(const TS_Flag & rhs)
 {
-	return (m_aData[rhs.m_nFlagPos] & rhs.m_aData[rhs.m_nFlagPos]);
+	return (m_aData[rhs.m_nFlagPos] & rhs.m_aData[rhs.m_nFlagPos]) != 0;
 }
 
 TemporaryStat::TS_Flag TemporaryStat::TS_Flag::GetDefault()

@@ -11,7 +11,7 @@ class Mob : public FieldObj
 private:
 	const MobTemplate* m_pMobTemplate;
 
-	std::map<User*, long long int> m_mAttackRecord;
+	std::map<int, long long int> m_mAttackRecord;
 	Controller* m_pController;
 
 public:
@@ -34,6 +34,10 @@ public:
 	//解析怪物移動時，Lucid有些怪物移動封包多兩個bytes
 	static bool IsLucidSpecialMob(int dwTemplateID);
 	void OnMobHit(User* pUser, long long int nDamage, int nAttackType);
+	void OnMobDead(int nHitX, int nHitY, int nMesoUp, int nMesoUpByItem);
+	void DistributeExp(int& refOwnType, int& refOwnParyID, int& refLastDamageCharacterID);
 	void GiveReward(unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwnType, int nX, int nY, int tDelay, int nMesoUp, int nMesoUpByItem);
+
+	std::pair<int, int> GetDropPos();
 };
 

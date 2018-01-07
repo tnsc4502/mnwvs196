@@ -1,15 +1,17 @@
 #include "LifePool.h"
+#include "..\Common\Net\InPacket.h"
 #include "..\Common\Net\OutPacket.h"
+#include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
+
 #include "User.h"
 #include "MobTemplate.h"
 #include "Field.h"
-#include "Net\InPacket.h"
 #include "Controller.h"
 #include "SkillEntry.h"
 #include "Drop.h"
 #include "AttackInfo.h"
+#include "SecondaryStat.h"
 #include "WvsGameConstants.hpp"
-#include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
 
 #include <cmath>
 
@@ -170,7 +172,6 @@ void LifePool::RemoveMob(Mob * pMob)
 	pMob->MakeLeaveFieldPacket(&oPacket);
 	m_pField->SplitSendPacket(&oPacket, nullptr);
 	m_aMobGen.erase(pMob->GetFieldObjectID());
-	delete pMob;
 }
 
 void LifePool::OnEnter(User *pUser)
@@ -344,17 +345,13 @@ void LifePool::OnUserAttack(User * pUser, const SkillEntry * pSkill, AttackInfo 
 			pMob->OnMobHit(pUser, dmgValue, pInfo->m_nType);
 			if (pMob->GetHp() <= 0)
 			{
-				pMob->GiveReward(
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0
-				);
 				RemoveMob(pMob);
+				pMob->OnMobDead(
+					pMob->GetPosX(),
+					pMob->GetPosY(),
+					pUser->GetSecondaryStat()->nMesoUp,
+					pUser->GetSecondaryStat()->nMesoUpByItem
+				);
 				break;
 			}
 		}
@@ -471,6 +468,11 @@ void LifePool::EncodeAttackInfo(User * pUser, AttackInfo * pInfo, OutPacket * oP
 	}
 	static int aZeroBuff[20] = { 0 };
 	oPacket->EncodeBuffer((unsigned char*)aZeroBuff, 80);
+}
+
+std::mutex & LifePool::GetLock()
+{
+	return m_lifePoolMutex;
 }
 
 void LifePool::OnMobPacket(User * pUser, int nType, InPacket * iPacket)

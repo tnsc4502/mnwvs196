@@ -130,5 +130,6 @@ public:
 	void OnUserAttack(User *pUser, const SkillEntry *pSkill, AttackInfo *pInfo);
 	void EncodeAttackInfo(User * pUser, AttackInfo *pInfo, OutPacket *oPacket);
 
+	std::mutex& GetLock();
 };
 

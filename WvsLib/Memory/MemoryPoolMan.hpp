@@ -123,7 +123,7 @@ struct ArenaUniquePtrDeleter
 {
 	void operator()(unsigned char* ptr)
 	{
-		stMemoryPoolMan->DestructArray(ptr);
+		//stMemoryPoolMan->DestructArray(ptr);
 		//delete[] ptr;
 	}
 };

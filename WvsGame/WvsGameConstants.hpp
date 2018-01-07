@@ -7,6 +7,47 @@ namespace WvsGameConstants
 
 	static std::string strGameDesc;
 
+	static long m_nEXP[251] = { 0 };
+
+	static void LoadEXP() 
+	{
+		m_nEXP[1] = 15;
+		m_nEXP[2] = 34;
+		m_nEXP[3] = 57;
+		m_nEXP[4] = 92;
+		m_nEXP[5] = 135;
+		m_nEXP[6] = 372;
+		m_nEXP[7] = 560;
+		m_nEXP[8] = 840;
+		m_nEXP[9] = 1242;
+		for (int i = 10; i < 200; i++) 
+		{
+			if (i >= 10 && i < 15
+				|| i >= 30 && i < 35
+				|| i >= 60 && i < 65
+				|| i >= 100 && i < 105) 
+			{
+				m_nEXP[i] = m_nEXP[i - 1];
+				continue;
+			}
+			m_nEXP[i] = (long)((double)m_nEXP[i - 1] * (i < 40 ? 1.2 : i < 75 ? 1.08 : i < 160 ? 1.07 : i < 200 ? 1.06 : 1));
+		}
+
+		for (int i = 200; i < 250; i++) 
+		{
+			if (i % 10 == 0) 
+			{
+				m_nEXP[i] = m_nEXP[i - 1] * 2;
+				if (i != 200) 
+					m_nEXP[i] = (long)((double)m_nEXP[i] * (i == 210 ? 1.06 : i == 220 ? 1.04 : i == 230 ? 1.02 : i == 240 ? 1.01 : 1));
+				continue;
+			}
+			m_nEXP[i] = (long)((double)m_nEXP[i - 1] * (i < 210 ? 1.2 : i < 220 ? 1.06 : i < 230 ? 1.04 : i < 240 ? 1.02 : i < 250 ? 1.01 : 1));
+		}
+		m_nEXP[250] = 0;
+	}
+
+
 	static bool IsVSkill(int nSkillID)
 	{
 		return nSkillID >= 40000 && nSkillID <= 40005;

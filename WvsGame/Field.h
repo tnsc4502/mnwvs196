@@ -13,6 +13,7 @@ class DropPool;
 
 class Field
 {
+	std::mutex fieldUserMutex;
 	std::map<int, User*> m_mUser; //m_lUser in WvsGame.idb
 	int m_nFieldID = 0;
 	LifePool *m_pLifePool;

@@ -23,6 +23,7 @@ void PortalMap::RestorePortal(Field * pField, WZ::Node & pPropPortal)
 	for (auto& portalNode : pPropPortal)
 	{
 		Portal* newPortal = new Portal(
+			atoi(portalNode.Name().c_str()),
 			(int)portalNode["pt"],
 			(int)portalNode["tm"],
 			(int)portalNode["x"],
@@ -31,7 +32,6 @@ void PortalMap::RestorePortal(Field * pField, WZ::Node & pPropPortal)
 			(std::string)portalNode["tn"],
 			""
 		);
-
 		int nType = newPortal->GetPortalType();
 		if (nType >= 7 && nType <= 9)
 			newPortal->SetPortalScriptName(portalNode["portal"]);

@@ -30,7 +30,7 @@ void Drop::MakeEnterFieldPacket(OutPacket * oPacket, int nEnterType, int tDelay)
 	oPacket->Encode4(0); //nDropMotionType
 	oPacket->Encode4(0); //nDropSpeed
 	oPacket->Encode4(0); //bNoMove
-	oPacket->Encode4(m_pItem->nItemID);
+	oPacket->Encode4(m_pItem != nullptr ? m_pItem->nItemID : m_nMoney);
 	oPacket->Encode4(m_dwOwnerID);
 	oPacket->Encode1(m_nOwnType);
 	oPacket->Encode2(m_pt2.x);
@@ -96,7 +96,7 @@ void Drop::Init(unsigned int dwDropID, Reward * reward, unsigned int dwOwnerID, 
 	this->m_pt1.y = y1;
 	this->m_pt2.x = x2;
 	this->m_pt2.y = y2;
-	this->m_bIsMoney = reward->GetType() == 0;
+	this->m_bIsMoney = reward->GetMoney() != 0;
 	this->m_nMoney = reward->GetMoney();
 	this->m_usQRKey = 0;
 	this->m_nShowMax = 0;

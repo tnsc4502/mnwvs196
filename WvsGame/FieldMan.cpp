@@ -46,9 +46,10 @@ void FieldMan::FieldFactory(int nFieldID)
 		fieldStr = "0" + fieldStr;
 	Field* newField = new Field();
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][fieldStr];
+	mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
 	auto& infoData = mapWz["info"];
 
-	if (infoData) {
+	//if (infoData) {
 		newField->SetCould(((int)infoData["cloud"] != 0));
 		newField->SetTown(((int)infoData["town"] != 0));
 		newField->SetSwim(((int)infoData['swim'] != 0));
@@ -60,16 +61,18 @@ void FieldMan::FieldFactory(int nFieldID)
 		newField->SetFieldLimit(infoData["fieldLimit"]);
 		newField->SetCreateMobInterval(infoData["createMobInterval"]);
 		newField->SetFiexdMobCapacity(infoData["fixedMobCapacity"]);
-		newField->SetFirstUserEnter(infoData["onFirstUerEnter"]);
-		newField->SetUserEnter(infoData["onUserEnter"]);
 
 		//¦a¹Ïªø¼e
 		int mapSizeX = abs((int)infoData["VRRight"] - (int)infoData["VRLeft"]);
 		int mapSizeY = abs((int)infoData["VRTop"] - (int)infoData["VRBottom"]);
 
+		newField->SetFirstUserEnter(infoData["onFirstUerEnter"]);
+		newField->SetUserEnter(infoData["onUserEnter"]);
+
 		newField->SetMapSizeX(mapSizeX);
 		newField->SetMapSizeY(mapSizeY);
-	}
+		printf("New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
+	//}
 	newField->GetPortalMap()->RestorePortal(newField, mapWz["portal"]);
 
 	mField[nFieldID] = newField;

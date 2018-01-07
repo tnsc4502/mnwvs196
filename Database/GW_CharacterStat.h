@@ -25,7 +25,10 @@ struct GW_CharacterStat
 		nWillEXP = 0,
 		nSenseEXP = 0,
 		nCharmEXP = 0,
-		aSP[EXTEND_SP_SIZE];
+		aSP[EXTEND_SP_SIZE],
+		nFace = 0,
+		nHair = 0,
+		nSkin = 0;
 
 	long long int nExp = 0;
 

@@ -14,7 +14,7 @@ private:
 
 	asio::ip::tcp::socket mSocket;
 	unsigned char* aRecvIV, *aSendIV;
-	std::unique_ptr<unsigned char, ArenaUniquePtrDeleter> aRecivedPacket;
+	//std::unique_ptr<unsigned char, ArenaUniquePtrDeleter> aRecivedPacket;
 
 	//Note : this flag indicate what this socket is for, when the flag is true, that means the socket is for local server.
 	//You should note that local server won't encrypt and decrypt packets, and won't send game server info.
@@ -26,8 +26,8 @@ private:
 
 	//用於釋放封包的Buffer資源 (該資源乃經由Arena配置)
 	void OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer, void *pPacket);
-	void OnReceive(const std::error_code &ec, std::size_t bytes_transferred);
-	void ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred);
+	void OnReceive(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer);
+	void ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer);
 
 protected:
 	void OnWaitingPacket();
@@ -60,4 +60,3 @@ public:
 
 	asio::ip::tcp::socket& GetSocket();
 };
-

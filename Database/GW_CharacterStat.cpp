@@ -70,6 +70,9 @@ void GW_CharacterStat::Load(int nCharacterID)
 	nDex = recordSet["Dex"];
 	nInt = recordSet["Int_"];
 	nLuk = recordSet["Luk"];
+	nSkin = recordSet["Skin"];
+	nFace = recordSet["Face"];
+	nHair = recordSet["Hair"];
 
 	auto strSP = (std::string)recordSet["SP"].toString();
 	std::vector<std::string> split;
@@ -119,6 +122,9 @@ void GW_CharacterStat::Save(int nCharacterID, bool isNewCharacter)
 		<< "WillEXP = '" << nWillEXP << "', "
 		<< "SenseEXP = '" << nSenseEXP << "', "
 		<< "CharmEXP = '" << nCharmEXP << "', "
+		<< "Hair = '" << nHair << "',"
+		<< "Face = '" << nFace << "',"
+		<< "Skin = '" << nSkin << "',"
 		<< "AP = '" << nAP << "' WHERE CharacterID = " << nCharacterID;
 	queryStatement.execute();
 }

@@ -35,8 +35,8 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 		{
 			iPacket->RestorePacket();
 			if (nType != 0x369) {
-				//printf("[WvsGame][ClientSocket::OnPacket]封包接收：");
-				//iPacket->Print();
+				printf("[WvsGame][ClientSocket::OnPacket]封包接收：");
+				iPacket->Print();
 			}
 			pUser->OnPacket(iPacket);
 		}
@@ -45,7 +45,7 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 
 void ClientSocket::OnMigrateIn(InPacket *iPacket)
 {
-	printf("OnMigrateIn\n");
+	//printf("OnMigrateIn\n");
 	auto pCenter = WvsBase::GetInstance<WvsGame>()->GetCenter();
 	iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
@@ -54,7 +54,7 @@ void ClientSocket::OnMigrateIn(InPacket *iPacket)
 	oPacket.Encode4(GetSocketID());
 	oPacket.Encode4(nCharacterID);
 	pCenter->SendPacket(&oPacket);
-	printf("OnMigrateOut\n");
+	//printf("OnMigrateOut\n");
 }
 
 void ClientSocket::SetUser(User *_pUser)

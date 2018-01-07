@@ -18,7 +18,7 @@ QWUSkillRecord::~QWUSkillRecord()
 {
 }
 
-bool QWUSkillRecord::SkillUp(User * pUser, int nSkillID, int nAmount, bool bDecSP, std::vector<GW_SkillRecord*>& aChange)
+bool QWUSkillRecord::SkillUp(User * pUser, int nSkillID, int nAmount, bool bDecSP, bool bCheckMasterLevel, std::vector<GW_SkillRecord*>& aChange)
 {
 	int nJob = pUser->GetCharacterData()->mStat->nJob;
 	int nSkillJob = WvsGameConstants::GetSkillRootFromSkill(nSkillID);
@@ -40,11 +40,14 @@ bool QWUSkillRecord::SkillUp(User * pUser, int nSkillID, int nAmount, bool bDecS
 					0,
 					0
 				);
-				pUser->GetCharacterData()->GetSkill(pSkillRecord);
+				pUser->GetCharacterData()->ObtainSkillRecord(pSkillRecord);
 			}
 			if (pSkillRecord != nullptr 
-				&& (!WvsGameConstants::IsSkillNeedMasterLevel(pSkillRecord->nSkillID) 
-					|| (pSkillRecord->nSLV + nAmount <= pSkillRecord->nMasterLevel)))
+				&& (!bCheckMasterLevel 
+					|| (!WvsGameConstants::IsSkillNeedMasterLevel(pSkillRecord->nSkillID)
+						|| (pSkillRecord->nSLV + nAmount <= pSkillRecord->nMasterLevel))
+					)
+				)
 			{
 				pSkillRecord->nSLV += nAmount;
 				if(bDecSP)

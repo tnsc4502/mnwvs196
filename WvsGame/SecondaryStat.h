@@ -1,8 +1,11 @@
 #pragma once
+#include <map>
+#include <vector>
+
 #include "BasicStat.h"
 #include "TemporaryStat.h"
 
-#define ADD_TEMPORARY(stat) int n##stat, t##stat, r##stat;
+#define ADD_TEMPORARY(stat) int n##stat, t##stat, r##stat, b##stat, x##stat, c##stat, y##stat;
 
 struct GA_Character;
 class OutPacket;
@@ -10,6 +13,8 @@ class OutPacket;
 class SecondaryStat : public BasicStat
 {
 public:
+	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS;
+
 	ADD_TEMPORARY(IndiePAD);
 	ADD_TEMPORARY(IndieMAD);
 	ADD_TEMPORARY(IndiePDD);
@@ -99,11 +104,14 @@ public:
 	ADD_TEMPORARY(BasicStatUp);
 	ADD_TEMPORARY(Stance);
 	ADD_TEMPORARY(SharpEyes);
+	int mSharpEyes;
+
 	ADD_TEMPORARY(ManaReflection);
 	ADD_TEMPORARY(Attract);
 	ADD_TEMPORARY(NoBulletConsume);
 	ADD_TEMPORARY(Infinity);
 	ADD_TEMPORARY(AdvancedBless);
+
 	ADD_TEMPORARY(IllusionStep);
 	ADD_TEMPORARY(Blind);
 	ADD_TEMPORARY(Concentration);
@@ -177,6 +185,8 @@ public:
 
 	ADD_TEMPORARY(CombatOrders);
 	ADD_TEMPORARY(Beholder);
+	int sBeholder, ssBeholder;
+
 	ADD_TEMPORARY(DispelItemOption);
 	ADD_TEMPORARY(Inflation);
 	ADD_TEMPORARY(OnyxDivineProtection);
@@ -264,7 +274,10 @@ public:
 	ADD_TEMPORARY(BlessingArmorIncPAD);
 	ADD_TEMPORARY(KeyDownAreaMoving);
 	ADD_TEMPORARY(Larkness);
+	int dgLarkness, lgLarkness;
 	ADD_TEMPORARY(StackBuff);
+	int mStackBuff;
+
 	ADD_TEMPORARY(BlessOfDarkness);
 	ADD_TEMPORARY(AntiMagicShell);
 	ADD_TEMPORARY(LifeTidal);
@@ -280,6 +293,7 @@ public:
 	ADD_TEMPORARY(PowerTransferGauge);
 	ADD_TEMPORARY(AffinitySlug);
 	ADD_TEMPORARY(Trinity);
+	int mTrinity;
 	ADD_TEMPORARY(IncMaxDamage);
 	ADD_TEMPORARY(BossShield);
 	ADD_TEMPORARY(MobZoneState);
@@ -311,6 +325,7 @@ public:
 	ADD_TEMPORARY(Stimulate);
 	ADD_TEMPORARY(ReturnTeleport);
 	ADD_TEMPORARY(DropRIncrease);
+
 	ADD_TEMPORARY(IgnoreMobpdpR);
 	ADD_TEMPORARY(BDR);
 	ADD_TEMPORARY(CapDebuff);
@@ -347,6 +362,8 @@ public:
 	ADD_TEMPORARY(FullSoulMP);
 	ADD_TEMPORARY(SoulSkillDamageUp);
 	ADD_TEMPORARY(ElementalCharge);
+	int mElementalCharge, wElementalCharge, uElementalCharge, zElementalCharge;
+
 	ADD_TEMPORARY(Restoration);
 	ADD_TEMPORARY(CrossOverChain);
 	ADD_TEMPORARY(ChargeBuff);
@@ -357,6 +374,7 @@ public:
 	ADD_TEMPORARY(BlessEnsenble);
 	ADD_TEMPORARY(ComboCostInc);
 	ADD_TEMPORARY(ExtremeArchery);
+
 	ADD_TEMPORARY(NaviFlying);
 	ADD_TEMPORARY(QuiverCatridge);
 	ADD_TEMPORARY(AdvancedQuiver);
@@ -397,6 +415,7 @@ public:
 	ADD_TEMPORARY(ShadowServant);
 	ADD_TEMPORARY(ShadowIllusion);
 	ADD_TEMPORARY(KnockBack);
+
 	ADD_TEMPORARY(AddAttackCount);
 	ADD_TEMPORARY(ComplusionSlant);
 	ADD_TEMPORARY(JaguarSummoned);
@@ -404,6 +423,7 @@ public:
 	ADD_TEMPORARY(SSFShootingAttack);
 	ADD_TEMPORARY(DevilCry);
 	ADD_TEMPORARY(ShieldAttack);
+
 	ADD_TEMPORARY(BMageAura);
 	ADD_TEMPORARY(DarkLighting);
 	ADD_TEMPORARY(AttackCountX);
@@ -502,6 +522,8 @@ public:
 	void SetFrom(int nFieldType, GA_Character* pChar, BasicStat* pBS, void *pFs, void* pNonBodyEquip, int nMHPForPvP, void* pPSD);
 	void EncodeForLocal(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	void EncodeForRemote(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
+	void EncodeIndieTempStat(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	bool EnDecode4Byte(TemporaryStat::TS_Flag& flag);
+	void ResetByTime(int tCur);
 };
 

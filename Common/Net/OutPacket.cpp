@@ -1,5 +1,4 @@
 #include "OutPacket.h"
-#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "InPacket.h"
 
 OutPacket::OutPacket()
@@ -17,10 +16,10 @@ void OutPacket::Encode1(char value)
 {
 	if (m_pSharedPacket->nPacketSize + sizeof(value) >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray(m_pSharedPacket->nBuffSize * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[m_pSharedPacket->nBuffSize * 2];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize *= 2;
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	*(decltype(value)*)(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize) = value;
@@ -31,10 +30,10 @@ void OutPacket::Encode2(short value)
 {
 	if (m_pSharedPacket->nPacketSize + sizeof(value) >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray(m_pSharedPacket->nBuffSize * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[m_pSharedPacket->nBuffSize * 2];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize *= 2;
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	*(decltype(value)*)(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize) = value;
@@ -45,10 +44,10 @@ void OutPacket::Encode4(int value)
 {
 	if (m_pSharedPacket->nPacketSize + sizeof(value) >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray(m_pSharedPacket->nBuffSize * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[m_pSharedPacket->nBuffSize * 2];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize *= 2;
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	*(decltype(value)*)(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize) = value;
@@ -59,10 +58,10 @@ void OutPacket::Encode8(long long int value)
 {
 	if (m_pSharedPacket->nPacketSize + sizeof(value) >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray(m_pSharedPacket->nBuffSize * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[m_pSharedPacket->nBuffSize * 2];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize *= 2;
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	*(decltype(value)*)(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize) = value;
@@ -73,10 +72,10 @@ void OutPacket::EncodeBuffer(unsigned char *buff, int size)
 {
 	if (m_pSharedPacket->nPacketSize + size >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray((m_pSharedPacket->nPacketSize + size) * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[((m_pSharedPacket->nPacketSize + size) * 2)];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize = (m_pSharedPacket->nPacketSize + size);
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	if (buff == nullptr) {
@@ -98,10 +97,10 @@ void OutPacket::EncodeStr(const std::string &str)
 	Encode2((short)str.size());
 	if (m_pSharedPacket->nPacketSize + str.size() >= m_pSharedPacket->nBuffSize)
 	{
-		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))stMemoryPoolMan->AllocateArray(m_pSharedPacket->nBuffSize * 2);
+		decltype(m_pSharedPacket->aBuff) newBuff = (decltype(m_pSharedPacket->aBuff))new unsigned char[m_pSharedPacket->nBuffSize * 2];
 		memcpy(newBuff, m_pSharedPacket->aBuff, m_pSharedPacket->nBuffSize);
 		m_pSharedPacket->nBuffSize *= 2;
-		stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+		delete[] m_pSharedPacket->aBuff;
 		m_pSharedPacket->aBuff = newBuff;
 	}
 	memcpy(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize, str.c_str(), str.size());
@@ -122,7 +121,7 @@ void OutPacket::EncodeTime(int64_t timeValue)
 
 void OutPacket::Release()
 {
-	stMemoryPoolMan->DestructArray(m_pSharedPacket->aBuff);
+	delete[] m_pSharedPacket->aBuff;
 }
 
 void OutPacket::IncRefCount()
@@ -156,7 +155,7 @@ void OutPacket::EncodeHexString(const std::string& str)
 }
 
 OutPacket::SharedPacket::SharedPacket()
-	: aBuff((unsigned char*)stMemoryPoolMan->AllocateArray(DEFAULT_BUFF_SIZE)),
+	: aBuff((unsigned char*)new unsigned char[(DEFAULT_BUFF_SIZE)]),
 	nBuffSize(DEFAULT_BUFF_SIZE),
 	nPacketSize(4 + 8),
 	nRefCount(1)
@@ -176,7 +175,8 @@ void OutPacket::SharedPacket::DecRefCount()
 {
 	if (--nRefCount <= 0)
 	{
-		stMemoryPoolMan->DestructArray(aBuff);
+		delete[] aBuff;
+		//stMemoryPoolMan->DestructArray(aBuff);
 		delete this;
 	}
 }

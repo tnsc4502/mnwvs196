@@ -6,7 +6,9 @@
 #include "..\Database\GW_CharacterLevel.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Database\GW_CharacterStat.h"
 #include "User.h"
+#include "USkill.h"
 #include "Field.h"
 #include "Reward.h"
 #include "DropPool.h"
@@ -33,8 +35,11 @@ void CommandManager::Process(User * pUser, const std::string & input)
 	std::vector<std::string> token;
 	StringUtility::Split(input, token, " ");
 
-	if (token.size() >= 2 && token[0][0] == '#')
+	if (token.size() >= 1 && token[0][0] == '#')
 	{
+		for (int i = 0; i < token[0].size(); ++i)
+			token[0][i] = tolower(token[0][i]);
+
 		if (token[0] == "#item")
 		{
 			int nItemID = atoi(token[1].c_str());
@@ -66,6 +71,27 @@ void CommandManager::Process(User * pUser, const std::string & input)
 						0,
 						0);
 				}
+			}
+		}
+		else if (token[0] == "#maxskill")
+		{
+			int nJob = pUser->GetCharacterData()->mStat->nJob;
+			int nLevel = nJob % 10;
+			while (nLevel >= 0) 
+			{
+				auto pSkills = SkillInfo::GetInstance()->GetSkillsByRootID(nJob - (2 - nLevel));
+				for (const auto& pSkill : *pSkills)
+				{
+					auto pEntry = pSkill.second;
+					auto pMaxLevelData = pEntry->GetLevelData(pEntry->GetMaxLevel());
+					USkill::OnSkillUpRequest(
+						pUser,
+						pEntry->GetSkillID(),
+						pEntry->GetMaxLevel(),
+						false,
+						false);
+				}
+				--nLevel;
 			}
 		}
 	}

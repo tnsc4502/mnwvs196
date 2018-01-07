@@ -82,5 +82,5 @@ public:
 	//GW_SkillRecord
 	decltype(mSkillRecord)& GetCharacterSkillRecord();
 	GW_SkillRecord* GetSkill(int nSkillID);
-	void GetSkill(GW_SkillRecord* pRecord);
+	void ObtainSkillRecord(GW_SkillRecord* pRecord);
 };

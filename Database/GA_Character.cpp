@@ -80,9 +80,9 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->EncodeBuffer((unsigned char*)strName.c_str(), 15);
 	oPacket->Encode1(nGender);
 	oPacket->Encode1(0);
-	oPacket->Encode1(mAvatarData->nSkin);
-	oPacket->Encode4(mAvatarData->nFace);
-	oPacket->Encode4(mAvatarData->nHair);
+	oPacket->Encode1(mStat->nSkin);
+	oPacket->Encode4(mStat->nFace);
+	oPacket->Encode4(mStat->nHair);
 	oPacket->Encode1((char)0xFF);
 	oPacket->Encode1(0);
 	oPacket->Encode1(0);
@@ -378,11 +378,11 @@ GW_SkillRecord * GA_Character::GetSkill(int nSkillID)
 	return findResult == mSkillRecord.end() ? nullptr : findResult->second;
 }
 
-void GA_Character::GetSkill(GW_SkillRecord * pRecord)
+void GA_Character::ObtainSkillRecord(GW_SkillRecord * pRecord)
 {
 	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	if (pRecord != nullptr)
-		mSkillRecord.insert({ pRecord->nSkillID / 10000, pRecord });
+		mSkillRecord.insert({ pRecord->nSkillID, pRecord });
 }
 
 void GA_Character::DecodeCharacterData(InPacket *iPacket)
@@ -694,9 +694,9 @@ void GA_Character::DecodeStat(InPacket *iPacket)
 
 	nGender = iPacket->Decode1();
 	iPacket->Decode1();
-	mAvatarData->nSkin = iPacket->Decode1();
-	mAvatarData->nFace = iPacket->Decode4();
-	mAvatarData->nHair = iPacket->Decode4();
+	mStat->nSkin = iPacket->Decode1();
+	mStat->nFace = iPacket->Decode4();
+	mStat->nHair = iPacket->Decode4();
 	iPacket->Decode1();
 	iPacket->Decode1();
 	iPacket->Decode1();

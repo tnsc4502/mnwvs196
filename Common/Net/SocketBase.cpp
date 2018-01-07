@@ -35,7 +35,7 @@ void SocketBase::Init()
 	std::unique_ptr<OutPacket> oPacket{ new OutPacket() };
 	EncodeHandShakeInfo(oPacket.get());
 
-	if(!bIsLocalServer)
+	if (!bIsLocalServer)
 		SendPacket(oPacket.get(), true);
 
 	OnWaitingPacket();
@@ -77,7 +77,7 @@ void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 	if (!handShakePacket)
 	{
 		crypto::create_packet_header(buffPtr - 4, aSendIV, oPacket->GetPacketSize());
-		if(!bIsLocalServer)
+		if (!bIsLocalServer)
 			crypto::encrypt(buffPtr, aSendIV, oPacket->GetPacketSize());
 		asio::async_write(mSocket,
 			asio::buffer(buffPtr - 4, oPacket->GetPacketSize() + 4),
@@ -100,18 +100,19 @@ void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t byt
 
 void SocketBase::OnWaitingPacket()
 {
-	aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(4));
+	auto buffer = new unsigned char[4];
+	//aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(4));
 	asio::async_read(mSocket,
-		asio::buffer(aRecivedPacket.get(), 4),
+		asio::buffer(buffer, 4),
 		std::bind(&SocketBase::OnReceive,
-			shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+			shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffer));
 }
 
-void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transferred)
+void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer)
 {
 	if (!ec)
 	{
-		unsigned short nPacketLen = crypto::get_packet_length(aRecivedPacket.get());
+		unsigned short nPacketLen = crypto::get_packet_length(buffer);
 		//printf("[SocketBase::OnReceive] Packet Size = %d\n", nPacketLen);
 		if (nPacketLen < 2)
 		{
@@ -119,26 +120,28 @@ void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transfer
 			return;
 		}
 
-		aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(nPacketLen));
+		delete[] buffer;
+		buffer = new unsigned char[nPacketLen];
+		//aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(nPacketLen));
 
 		asio::async_read(mSocket,
-			asio::buffer(aRecivedPacket.get(), nPacketLen),
+			asio::buffer(buffer, nPacketLen),
 			std::bind(&SocketBase::ProcessPacket,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2));
+				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffer));
 	}
 	else
 		OnDisconnect();
 }
 
-void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred)
+void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer)
 {
 	if (!ec)
 	{
 		unsigned short nBytes = static_cast<unsigned short>(bytes_transferred);
 
-		if(!bIsLocalServer)
-			crypto::decrypt(aRecivedPacket.get(), aRecvIV, nBytes);
-		InPacket iPacket(aRecivedPacket.get(), nBytes);
+		if (!bIsLocalServer)
+			crypto::decrypt(buffer, aRecvIV, nBytes);
+		InPacket iPacket(buffer, nBytes);
 		try {
 			this->OnPacket(&iPacket);
 		}
@@ -147,6 +150,7 @@ void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_tran
 			std::cout << "解析封包時發生錯誤，OPCode : " << iPacket.Decode2() << " Err : " << ex.what() << std::endl;
 			iPacket.Print();
 		}
+		delete[] buffer;
 		OnWaitingPacket();
 	}
 }

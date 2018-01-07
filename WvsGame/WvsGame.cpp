@@ -46,31 +46,36 @@ void WvsGame::CenterAliveMonitor()
 
 void WvsGame::InitializeCenter()
 {
+	aCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
+	auto holderFunc = std::bind(&WvsGame::CenterAliveMonitor, this);
+	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
+	aliveHolder->Start();
+	//ConnectToCenter(0);
 	//WvsGameConstants::CenterServerList[0].nServerPort = ConfigLoader::GetInstance()->IntValue("Center0_Port");
 	//WvsGameConstants::CenterServerList[0].strServerIP = ConfigLoader::GetInstance()->StrValue("Center0_IP");
 	//auto& aCenterInfoList = WvsGameConstants::CenterServerList;
 	//int centerSize = sizeof(aCenterInfoList) / sizeof(aCenterInfoList[0]);
 	//for (int i = 0; i < centerSize; ++i)
-	aCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
-	auto holderFunc = std::bind(&WvsGame::CenterAliveMonitor, this);
-	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
-	aliveHolder->Start();
+	////aCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
+	//auto holderFunc = std::bind(&WvsGame::CenterAliveMonitor, this);
+	//auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
+	//aliveHolder->Start();
 }
 
 void WvsGame::OnUserConnected(std::shared_ptr<User> &pUser)
 {
+	std::lock_guard<std::mutex> lockGuard(m_mUserLock);
 	mUserMap[pUser->GetUserID()] = pUser;
 }
 
 void WvsGame::OnNotifySocketDisconnected(SocketBase *pSocket)
 {
+	std::lock_guard<std::mutex> lockGuard(m_mUserLock);
 	auto pClient = (ClientSocket*)pSocket;
-	printf("OnNotifySocketDisconnected called\n");
 	if (pClient->GetUser())
 	{
 		mUserMap.erase(pClient->GetUser()->GetUserID());
 		pClient->SetUser(nullptr);
-		//delete pClient->GetUser();
 	}
 }
 
@@ -104,4 +109,13 @@ int* WvsGame::GetExternalIP() const
 short WvsGame::GetExternalPort() const
 {
 	return nExternalPort;
+}
+
+User * WvsGame::FindUser(int nUserID)
+{
+	std::lock_guard<std::mutex> lockGuard(m_mUserLock);
+	auto findIter = mUserMap.find(nUserID);
+	if (findIter == mUserMap.end())
+		return nullptr;
+	return findIter->second.get();
 }

@@ -64,6 +64,9 @@
     <Filter Include="Common\Utility\String">
       <UniqueIdentifier>{e8b75bb5-c64a-4fd9-930f-4124f24da6cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Stat">
+      <UniqueIdentifier>{ac78c2d2-0db9-4c78-98b7-00c2e0c96744}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -210,17 +213,8 @@
     <ClInclude Include="WvsGameConstants.hpp">
       <Filter>Common\Constants</Filter>
     </ClInclude>
-    <ClInclude Include="BasicStat.h">
-      <Filter>WvsGame\InGame\User</Filter>
-    </ClInclude>
-    <ClInclude Include="SecondaryStat.h">
-      <Filter>WvsGame\InGame\User</Filter>
-    </ClInclude>
     <ClInclude Include="USkill.h">
       <Filter>WvsGame\InGame\Skill</Filter>
-    </ClInclude>
-    <ClInclude Include="TemporaryStat.h">
-      <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
     <ClInclude Include="AttackInfo.h">
       <Filter>WvsGame\InGame\User</Filter>
@@ -242,6 +236,18 @@
     </ClInclude>
     <ClInclude Include="QWUSkillRecord.h">
       <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="QWUser.h">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClInclude>
+    <ClInclude Include="TemporaryStat.h">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="SecondaryStat.h">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicStat.h">
+      <Filter>WvsGame\InGame\Stat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,17 +366,8 @@
     <ClCompile Include="SkillLevelData.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
-    <ClCompile Include="BasicStat.cpp">
-      <Filter>WvsGame\InGame\User</Filter>
-    </ClCompile>
-    <ClCompile Include="SecondaryStat.cpp">
-      <Filter>WvsGame\InGame\User</Filter>
-    </ClCompile>
     <ClCompile Include="USkill.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
-    </ClCompile>
-    <ClCompile Include="TemporaryStat.cpp">
-      <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
     <ClCompile Include="AttackInfo.cpp">
       <Filter>WvsGame\InGame\User</Filter>
@@ -389,6 +386,18 @@
     </ClCompile>
     <ClCompile Include="QWUSkillRecord.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="QWUser.cpp">
+      <Filter>WvsGame\InGame\User</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicStat.cpp">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="TemporaryStat.cpp">
+      <Filter>WvsGame\InGame\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="SecondaryStat.cpp">
+      <Filter>WvsGame\InGame\Stat</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

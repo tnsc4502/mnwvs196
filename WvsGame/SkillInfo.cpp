@@ -110,7 +110,7 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 		LoadLevelDataSpecial();
 		stWzResMan->ReleaseMemory();
 		//system("pause");
-		auto pSkill = GetSkillByID(2211010)->GetLevelData(5);
+		//auto pSkill = GetSkillByID(2211010)->GetLevelData(5);
 		//printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End 2 %d.\n", pSkill->m_nMpCon);
 		/*for (auto& p : m_mSkillByRootID)
 		{
@@ -120,8 +120,8 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 					printf("ID: %d Total : %d\n", pp.second->GetSkillID(), (int)pp.second->GetAllLevelData().size());
 			}
 		}*/
-		int nTest = GetSkillByID(2111008)->GetLevelData(10)->m_nTime;
-		printf("Test 2111008 : %d\n", nTest);
+		//int nTest = GetSkillByID(2111008)->GetLevelData(10)->m_nTime;
+		//printf("Test 2111008 : %d\n", nTest);
 	}
 }
 
