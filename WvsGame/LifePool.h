@@ -59,6 +59,7 @@ class LifePool
 	Field* m_pField;
 
 	void OnMobPacket(User* pUser, int nType, InPacket* iPacket);
+	void OnNpcPacket(User* pUser, int nType, InPacket* iPacket);
 public:
 	LifePool();
 	~LifePool();
@@ -131,5 +132,8 @@ public:
 	void EncodeAttackInfo(User * pUser, AttackInfo *pInfo, OutPacket *oPacket);
 
 	std::mutex& GetLock();
+
+	Npc* GetNpc(int nFieldObjID);
+	Mob* GetMob(int nFieldObjID);
 };
 

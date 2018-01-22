@@ -10,6 +10,7 @@ struct GW_CharacterStat;
 struct GW_CharacterLevel;
 struct GW_CharacterMoney;
 struct GW_SkillRecord;
+struct GW_QuestRecord;
 struct GW_Avatar;
 
 class InPacket;
@@ -32,6 +33,7 @@ private:
 
 	void LoadItemSlot();
 	void LoadSkillRecord();
+	void LoadQuestRecord();
 
 public:
 
@@ -45,6 +47,8 @@ public:
 	GW_CharacterMoney *mMoney = nullptr;
 
 	std::map<int, GW_SkillRecord*> mSkillRecord;
+	std::map<int, GW_QuestRecord*> mQuestRecord;
+	std::map<int, GW_QuestRecord*> mQuestComplete;
 	std::map<int, GW_ItemSlotBase*> mItemSlot[6];
 	std::map<int, int> mItemTrading[6];
 
@@ -83,4 +87,9 @@ public:
 	decltype(mSkillRecord)& GetCharacterSkillRecord();
 	GW_SkillRecord* GetSkill(int nSkillID);
 	void ObtainSkillRecord(GW_SkillRecord* pRecord);
+
+	void SetQuest(int nKey, const std::string& sInfo);
+	void RemoveQuest(int nKey);
+
+	std::mutex& GetCharacterDatLock();
 };

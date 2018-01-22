@@ -29,6 +29,9 @@
 #include "CommandManager.h"
 #include "..\Common\Utility\DateTime\GameDateTime.h"
 
+#include "ScriptMan.h"
+#include "Script.h"
+
 void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 {
 	int nDamageMobCount = pInfo->GetDamagedMobCount();
@@ -280,6 +283,12 @@ User::~User()
 	//m_pField->OnLeave(this);
 	LeaveField();
 	
+	try {
+		if (GetScript())
+			GetScript()->Abort();
+	}
+	catch (...) {}
+
 	delete pCharacterData;
 	delete m_pBasicStat;
 	delete m_pSecondaryStat;
@@ -364,6 +373,15 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case ClientPacketFlag::OnChangeCharacterRequest:
 		OnIssueReloginCookie(iPacket);
+		break;
+	case ClientPacketFlag::OnSelectNpc:
+		OnSelectNpc(iPacket);
+		break;
+	case ClientPacketFlag::OnScriptMessageAnswer:
+		OnScriptMessageAnswer(iPacket);
+		break;
+	case ClientPacketFlag::OnQuestRequest:
+		OnQuestRequest(iPacket);
 		break;
 	default:
 		if (m_pField)
@@ -725,6 +743,113 @@ void User::SendDropPickUpFailPacket(bool bOnExcelRequest)
 	oPacket.Encode4(0);
 	oPacket.Encode4(0);
 	SendPacket(&oPacket);
+}
+
+Script * User::GetScript()
+{
+	return m_pScript;
+}
+
+void User::SetScript(Script * pScript)
+{
+	m_pScript = pScript;
+}
+
+void User::OnSelectNpc(InPacket * iPacket)
+{
+	auto pNpc = m_pField->GetLifePool()->GetNpc(iPacket->Decode4());
+	if (pNpc != nullptr && GetScript() == nullptr)
+	{
+		auto pScript = ScriptMan::GetInstance()->GetScript("test.lua", pNpc->GetTemplateID());
+		pScript->SetUser(this);
+		SetScript(pScript);
+		
+		std::thread* t = new std::thread(&Script::Run, pScript);
+		pScript->SetThread(t);
+		t->detach();
+	}
+}
+
+void User::OnScriptMessageAnswer(InPacket * iPacket)
+{
+	if (GetScript() != nullptr)
+		m_pScript->OnPacket(iPacket);
+	if(GetScript() != nullptr)
+		m_pScript->Notify();
+}
+
+void User::OnScriptRun()
+{
+	std::unique_lock<std::mutex> lock(m_scriptLock);
+	m_cndVariable.wait(lock);
+
+	delete m_pScript;
+}
+
+void User::OnScriptDone()
+{
+	m_cndVariable.notify_all();
+}
+
+void User::OnQuestRequest(InPacket * iPacket)
+{
+	char nAction = iPacket->Decode1();
+	int nQuestID = iPacket->Decode4(), tTick, nItemID, nNpcID;
+	switch (nAction)
+	{
+	case 0:
+		tTick = iPacket->Decode4();
+		nItemID = iPacket->Decode4();
+		break;
+	case 1:
+		nNpcID = iPacket->Decode4();
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	}
+}
+
+void User::OnAcceptQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc)
+{
+}
+
+void User::OnCompleteQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc, bool bIsAutoComplete)
+{
+}
+
+void User::OnResignQuest(InPacket * iPacket, int nQuestID)
+{
+}
+
+void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
+{
+}
+
+void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
+{
+	OutPacket oPacket;
+	oPacket.Encode2((short)ClientPacketFlag::OnMessage);
+	oPacket.Encode1((char)Message::eQuestRecordMessage);
+	oPacket.Encode4(nKey);
+	oPacket.Encode1(nState);
+	switch (nState)
+	{
+		case 0:
+			oPacket.Encode1(0);
+			break;
+		case 1:
+			oPacket.EncodeStr(sStringRecord);
+			break;
+		case 2:
+			oPacket.Encode8(GameDateTime::GetTime());
+			break;
+	}
 }
 
 void User::LeaveField()

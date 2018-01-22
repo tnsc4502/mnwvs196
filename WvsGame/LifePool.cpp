@@ -183,6 +183,7 @@ void LifePool::OnEnter(User *pUser)
 	{
 		OutPacket oPacket;
 		npc.second->MakeEnterFieldPacket(&oPacket);
+		npc.second->SendChangeControllerPacket(pUser);
 		pUser->SendPacket(&oPacket);
 	}
 	for (auto& mob : m_aMobGen)
@@ -322,6 +323,8 @@ void LifePool::OnPacket(User * pUser, int nType, InPacket * iPacket)
 	{
 		OnMobPacket(pUser, nType, iPacket);
 	}
+	else if (nType == 0x384)
+		OnNpcPacket(pUser, nType, iPacket);
 }
 
 void LifePool::OnUserAttack(User * pUser, const SkillEntry * pSkill, AttackInfo * pInfo)
@@ -475,6 +478,22 @@ std::mutex & LifePool::GetLock()
 	return m_lifePoolMutex;
 }
 
+Npc * LifePool::GetNpc(int nFieldObjID)
+{
+	auto findIter = m_aNpcGen.find(nFieldObjID);
+	if (findIter != m_aNpcGen.end())
+		return findIter->second;
+	return nullptr;
+}
+
+Mob * LifePool::GetMob(int nFieldObjID)
+{
+	auto findIter = m_aMobGen.find(nFieldObjID);
+	if (findIter != m_aMobGen.end())
+		return findIter->second;
+	return nullptr;
+}
+
 void LifePool::OnMobPacket(User * pUser, int nType, InPacket * iPacket)
 {
 	int dwMobID = iPacket->Decode4();
@@ -491,5 +510,18 @@ void LifePool::OnMobPacket(User * pUser, int nType, InPacket * iPacket)
 	}
 	else {
 		//Release Controller
+	}
+}
+
+void LifePool::OnNpcPacket(User * pUser, int nType, InPacket * iPacket)
+{
+	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
+	if (nType == 0x384)
+	{
+		auto iterNpc = this->m_aNpcGen.find(iPacket->Decode4());
+		if (iterNpc != m_aNpcGen.end())
+		{
+			iterNpc->second->OnUpdateLimitedInfo(pUser, iPacket);
+		}
 	}
 }

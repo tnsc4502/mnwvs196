@@ -8,7 +8,9 @@
 #include "GW_CharacterMoney.h"
 #include "GW_Avatar.hpp"
 #include "GW_SkillRecord.h"
+#include "GW_QuestRecord.h"
 
+#include <algorithm>
 #include <chrono>
 
 GA_Character::GA_Character()
@@ -43,6 +45,7 @@ void GA_Character::Load(int nCharacterID)
 	mMoney->Load(nCharacterID);
 	LoadItemSlot();
 	LoadSkillRecord();
+	LoadQuestRecord();
 }
 
 void GA_Character::LoadAvatar(int nCharacterID)
@@ -295,7 +298,7 @@ void GA_Character::RemoveItem(int nTI, int nPOS)
 	if (nTI <= 0 || nTI > 5)
 		return;
 	std::lock_guard<std::mutex> dataLock(mCharacterLock);
-	int nNewPos = mAtomicRemovedIndexCounter++;
+	int nNewPos = (int)mAtomicRemovedIndexCounter++;
 	auto pItem = GetItem(nTI, nPOS);
 	if (pItem != nullptr)
 	{
@@ -385,6 +388,30 @@ void GA_Character::ObtainSkillRecord(GW_SkillRecord * pRecord)
 		mSkillRecord.insert({ pRecord->nSkillID, pRecord });
 }
 
+void GA_Character::SetQuest(int nKey, const std::string & sInfo)
+{
+	auto findIter = mQuestRecord.find(nKey);
+	if (findIter == mQuestRecord.end())
+	{
+		GW_QuestRecord *pNewRecord = new GW_QuestRecord;
+		pNewRecord->nState = 1;
+		pNewRecord->nQuestID = nKey;
+		pNewRecord->sStringRecord = sInfo;
+	}
+	else
+		findIter->second->sStringRecord = sInfo;
+}
+
+void GA_Character::RemoveQuest(int nKey)
+{
+	mQuestRecord.erase(nKey);
+}
+
+std::mutex & GA_Character::GetCharacterDatLock()
+{
+	return mCharacterLock;
+}
+
 void GA_Character::DecodeCharacterData(InPacket *iPacket)
 {
 	long long int flag = iPacket->Decode8();
@@ -467,7 +494,11 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket)
 		int nStartedQuestSize = iPacket->Decode2();
 		for (int i = 0; i < nStartedQuestSize; ++i)
 		{
-
+			GW_QuestRecord *pRecord = new GW_QuestRecord;
+			pRecord->nCharacterID = nCharacterID;
+			pRecord->nState = 1;
+			pRecord->Decode(iPacket, 1);
+			mQuestRecord.insert({ pRecord->nQuestID, pRecord });
 		}
 		iPacket->Decode2();
 	}
@@ -476,6 +507,14 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket)
 	{
 		iPacket->Decode1();
 		int nCompletedQuestSize = iPacket->Decode2();
+		for (int i = 0; i < nCompletedQuestSize; ++i)
+		{
+			GW_QuestRecord *pRecord = new GW_QuestRecord;
+			pRecord->nCharacterID = nCharacterID;
+			pRecord->nState = 2;
+			pRecord->Decode(iPacket, 2);
+			mQuestComplete.insert({ pRecord->nQuestID, pRecord });
+		}
 	}
 
 	if (flag & 0x400)
@@ -969,14 +1008,18 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket)
 	if (flag & 0x200)
 	{
 		oPacket->Encode1(1);
-		oPacket->Encode2(0);
+		oPacket->Encode2((short)mQuestRecord.size());
+		for (auto& record : mQuestRecord)
+			record.second->Encode(oPacket);
 		oPacket->Encode2(0);
 	}
 
 	if (flag & 0x4000)
 	{
 		oPacket->Encode1(1);
-		oPacket->Encode2(0);
+		oPacket->Encode2((short)mQuestComplete.size());
+		for (auto& record : mQuestComplete)
+			record.second->Encode(oPacket);
 	}
 
 	if (flag & 0x400)
@@ -1315,5 +1358,22 @@ void GA_Character::LoadSkillRecord()
 		GW_SkillRecord* pSkillRecord = new GW_SkillRecord();
 		pSkillRecord->Load((void*)&recordSet);
 		mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
+	}
+}
+
+void GA_Character::LoadQuestRecord()
+{
+	Poco::Data::Statement queryStatement(GET_DB_SESSION);
+	queryStatement << "SELECT * FROM QuestRecord Where CharacterID = " << nCharacterID;
+	queryStatement.execute();
+	Poco::Data::RecordSet recordSet(queryStatement);
+
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_QuestRecord* pQuestRecord = new GW_QuestRecord;
+		pQuestRecord->Load((void*)&recordSet);
+		if(pQuestRecord->nState == 1)
+			mQuestRecord.insert({ pQuestRecord->nQuestID, pQuestRecord });
+		else
+			mQuestComplete.insert({ pQuestRecord->nQuestID, pQuestRecord });
 	}
 }

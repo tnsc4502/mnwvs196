@@ -144,7 +144,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>WvsLib.lib;EquationEvaluator.lib;winmm.lib;Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ScriptLib.lib;WvsLib.lib;EquationEvaluator.lib;winmm.lib;Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -172,6 +172,9 @@
     <ClInclude Include="..\Common\Utility\Random\Rand32.h" />
     <ClInclude Include="..\Common\Utility\String\StringUtility.cpp" />
     <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h" />
+    <ClInclude Include="ActItem.h" />
+    <ClInclude Include="ActQuest.h" />
+    <ClInclude Include="ActSkill.h" />
     <ClInclude Include="AttackInfo.h" />
     <ClInclude Include="BasicStat.h" />
     <ClInclude Include="Center.h" />
@@ -184,6 +187,7 @@
     <ClInclude Include="FieldMan.h" />
     <ClInclude Include="FieldObj.h" />
     <ClInclude Include="FieldPoint.h" />
+    <ClInclude Include="ActSP.h" />
     <ClInclude Include="InventoryManipulator.h" />
     <ClInclude Include="ItemInfo.h" />
     <ClInclude Include="LifePool.h" />
@@ -195,10 +199,16 @@
     <ClInclude Include="NpcTemplate.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="PortalMap.h" />
+    <ClInclude Include="QuestAct.h" />
+    <ClInclude Include="QuestDemand.h" />
+    <ClInclude Include="QuestMan.h" />
     <ClInclude Include="QWUInventory.h" />
+    <ClInclude Include="QWUQuestRecord.h" />
     <ClInclude Include="QWUser.h" />
     <ClInclude Include="QWUSkillRecord.h" />
     <ClInclude Include="Reward.h" />
+    <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptMan.h" />
     <ClInclude Include="SecondaryStat.h" />
     <ClInclude Include="SkillEntry.h" />
     <ClInclude Include="SkillInfo.h" />
@@ -248,10 +258,14 @@
     <ClCompile Include="NpcTemplate.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="PortalMap.cpp" />
+    <ClCompile Include="QuestMan.cpp" />
     <ClCompile Include="QWUInventory.cpp" />
+    <ClCompile Include="QWUQuestRecord.cpp" />
     <ClCompile Include="QWUser.cpp" />
     <ClCompile Include="QWUSkillRecord.cpp" />
     <ClCompile Include="Reward.cpp" />
+    <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptMan.cpp" />
     <ClCompile Include="SecondaryStat.cpp" />
     <ClCompile Include="SkillEntry.cpp" />
     <ClCompile Include="SkillInfo.cpp" />

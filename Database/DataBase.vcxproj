@@ -147,6 +147,7 @@
     <ClInclude Include="GW_ItemSlotBundle.h" />
     <ClInclude Include="GW_ItemSlotEquip.h" />
     <ClInclude Include="GW_MobReward.h" />
+    <ClInclude Include="GW_QuestRecord.h" />
     <ClInclude Include="GW_SkillRecord.h" />
     <ClInclude Include="WvsUnified.h" />
   </ItemGroup>
@@ -162,6 +163,7 @@
     <ClCompile Include="GW_ItemSlotBundle.cpp" />
     <ClCompile Include="GW_ItemSlotEquip.cpp" />
     <ClCompile Include="GW_MobReward.cpp" />
+    <ClCompile Include="GW_QuestRecord.cpp" />
     <ClCompile Include="GW_SkillRecord.cpp" />
     <ClCompile Include="WvsUnified.cpp" />
   </ItemGroup>

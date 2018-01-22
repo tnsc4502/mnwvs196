@@ -19,6 +19,8 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_MobReward.h"
 
+#include "QuestMan.h"
+
 #include <functional>
 
 void ConnectionAcceptorThread(short nPort)
@@ -102,8 +104,13 @@ int main(int argc, char **argv)
 	auto& ref = pReward->GetRewardList();
 	//for (const auto& pInfo : ref)
 	//	printf("R %d\n", pInfo->nItemID);
+	QuestMan::GetInstance()->LoadAct();
+	QuestMan::GetInstance()->LoadDemand();
 	ItemInfo::GetInstance()->Initialize();
-	SkillInfo::GetInstance()->IterateSkillInfo();
+	try {
+		//SkillInfo::GetInstance()->IterateSkillInfo();
+	}
+	catch (...) {}
 
 	WvsBase::GetInstance<WvsGame>()->Init();
 	if (argc > 1)

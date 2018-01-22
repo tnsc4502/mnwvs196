@@ -22,6 +22,7 @@ public:
 
 	unsigned char* GetPacket() const;
 	unsigned short GetPacketSize() const;
+	unsigned short RemainedCount() const;
 
 	void SetProcessed() { bIsProcessed = true; }
 	bool IsProcessed() const { return bIsProcessed; }

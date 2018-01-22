@@ -29,12 +29,17 @@ MAKE_CLIENT_PACKET_FLAG(OnUserAttack_MagicAttack, 0xCB);
 MAKE_CLIENT_PACKET_FLAG(OnUserAttack_BodyAttack, 0xCC);
 MAKE_CLIENT_PACKET_FLAG(OnUserAttack_AreaDot, 0xCD);
 
+
+MAKE_CLIENT_PACKET_FLAG(OnSelectNpc, 0xE3);
+MAKE_CLIENT_PACKET_FLAG(OnScriptMessageAnswer, 0xE5);
+
 MAKE_CLIENT_PACKET_FLAG(OnUserChat, 0xD1);
 MAKE_CLIENT_PACKET_FLAG(OnUserChangeSlotRequest, 0xF7);
 
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillUpRequest, 0x13E);
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillUseRequest, 0x13F);
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillCancelRequest, 0x140);
+MAKE_CLIENT_PACKET_FLAG(OnQuestRequest, 0x154);
 MAKE_CLIENT_PACKET_FLAG(OnChangeCharacterRequest, 0x204);
 
 //µ²§ôOpcode Flagµù¥U

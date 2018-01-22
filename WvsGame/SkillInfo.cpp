@@ -130,7 +130,6 @@ SkillEntry * SkillInfo::LoadSkill(int nSkillRootID, int nSkillID, void * pData)
 	bool bLevelStructure = false;
 	auto& skillDataImg = *((WZ::Node*)pData);
 	auto& skillCommonImg = skillDataImg["common"];
-
 	if (((nSkillRootID >= 800000 || nSkillRootID % 1000 < 10 || (nSkillRootID >= 9000 && nSkillRootID <= 9500))
 		&& (((int)skillCommonImg["maxLevel"] == 0)))) //部分初心者技能
 	{
@@ -748,7 +747,9 @@ int SkillInfo::GetSkillLevel(GA_Character * pCharacter, int nSkillID, SkillEntry
 	auto findIter = pSkillTreeByJob->second->find(nSkillID);
 	if (findIter->second == nullptr)
 		return 0;
-	*pEntry = findIter->second;
+
+	if(pEntry)
+		*pEntry = findIter->second;
 	auto characterSkillRecord = pCharacter->GetSkill(nSkillID);
 	if (characterSkillRecord == nullptr)
 		return 0;

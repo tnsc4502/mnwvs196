@@ -1,4 +1,6 @@
 #include "Npc.h"
+#include "User.h"
+#include "..\Common\Net\InPacket.h"
 #include "..\Common\Net\OutPacket.h"
 
 Npc::Npc()
@@ -7,6 +9,34 @@ Npc::Npc()
 
 Npc::~Npc()
 {
+}
+
+void Npc::OnUpdateLimitedInfo(User * pUser, InPacket * iPacket)
+{
+	int nRemained = iPacket->RemainedCount();
+	OutPacket oPacket;
+	oPacket.Encode2(0x417);
+	printf("[LifePool::OnNpcPacket][OnUpdateLimitedInfo]Remained = %d\n", nRemained);
+	if (nRemained == 6)
+	{
+		oPacket.Encode4(GetFieldObjectID());
+		oPacket.Encode2(iPacket->Decode2());
+		oPacket.Encode4(iPacket->Decode4());
+	}
+	else
+		return;
+	pUser->SendPacket(&oPacket);
+}
+
+void Npc::SendChangeControllerPacket(User * pUser)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(0x415);
+	oPacket.Encode1(1);
+	oPacket.Encode4(GetFieldObjectID());
+	oPacket.Encode4(GetTemplateID());
+	EncodeInitData(&oPacket);
+	pUser->SendPacket(&oPacket);
 }
 
 void Npc::MakeEnterFieldPacket(OutPacket *oPacket)

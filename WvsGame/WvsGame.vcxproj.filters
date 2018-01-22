@@ -67,6 +67,12 @@
     <Filter Include="WvsGame\InGame\Stat">
       <UniqueIdentifier>{ac78c2d2-0db9-4c78-98b7-00c2e0c96744}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Quest">
+      <UniqueIdentifier>{31c79999-2f5d-4bbf-a981-93e04921e1d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WvsGame\InGame\Script">
+      <UniqueIdentifier>{f1354e9d-9bbb-4208-ac5e-75e8952995d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -249,6 +255,36 @@
     <ClInclude Include="BasicStat.h">
       <Filter>WvsGame\InGame\Stat</Filter>
     </ClInclude>
+    <ClInclude Include="QuestMan.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestAct.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestDemand.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="ActItem.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="ActSkill.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="ActQuest.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="ActSP.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Script.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptMan.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="QWUQuestRecord.h">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -398,6 +434,18 @@
     </ClCompile>
     <ClCompile Include="SecondaryStat.cpp">
       <Filter>WvsGame\InGame\Stat</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestMan.cpp">
+      <Filter>WvsGame\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="Script.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptMan.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="QWUQuestRecord.cpp">
+      <Filter>WvsGame\InGame\Quest</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

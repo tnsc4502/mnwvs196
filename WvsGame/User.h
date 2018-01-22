@@ -1,6 +1,7 @@
 #pragma once
 #include "FieldObj.h"
 #include <mutex>
+#include <condition_variable>
 #include <map>
 #include "TemporaryStat.h"
 
@@ -9,6 +10,7 @@ class OutPacket;
 class Field;
 class Portal;
 class InPacket;
+class Npc;
 struct GA_Character;
 
 class BasicStat;
@@ -16,17 +18,21 @@ class SecondaryStat;
 struct TemporaryStat;
 struct AttackInfo;
 
+class Script;
+
 class User : public FieldObj
 {
 
 private:
-	std::mutex m_mtxUserlock;
+	std::mutex m_mtxUserlock, m_scriptLock;
 	int nCharacterID;
 	ClientSocket *pSocket;
 	GA_Character *pCharacterData;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
 	void *m_pUpdateTimer;
+	Script* m_pScript = nullptr;
+	std::condition_variable m_cndVariable;
 
 	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
 	AttackInfo* TryParsingMeleeAttack(int nType, InPacket *iPacket);
@@ -92,11 +98,16 @@ public:
 
 	};
 
+	static User* FindUser(int nUserID);
+
 	User() {}
 	User(ClientSocket *pSocket, InPacket *iPacket);
 	~User();
 
+	//Basic Routine
 	int GetUserID() const;
+	std::mutex& GetLock();
+	void Update();
 
 	GA_Character* GetCharacterData();
 	Field* GetField();
@@ -105,36 +116,48 @@ public:
 	void SendPacket(OutPacket *oPacket);
 	void OnPacket(InPacket *iPacket);
 	void LeaveField();
+	void MigrateOut();
 
 	void OnTransferFieldRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
+	void OnAttack(int nType, InPacket *iPacket);
+	void OnLevelUp();
 	void PostTransferField(int dwFieldID, Portal* pPortal, int bForce);
 	void SetMovePosition(int x, int y, char bMoveAction, short nFSN);
 
+	//Avatar
 	void OnAvatarModified();
 	void EncodeCoupleInfo(OutPacket *oPacket);
 	void EncodeFriendshipInfo(OutPacket *oPacket);
 	void EncodeMarriageInfo(OutPacket *oPacket);
 
+	//Stat
+	SecondaryStat* GetSecondaryStat();
+	BasicStat* GetBasicStat();
 	void ValidateStat();
 	void SendCharacterStat(bool bOnExclRequest, long long int liFlag);
 	void SendTemporaryStatReset(TemporaryStat::TS_Flag& flag);
 	void SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay);
-	void OnAttack(int nType, InPacket *iPacket);
-	void OnLevelUp();
-
-	SecondaryStat* GetSecondaryStat();
-	BasicStat* GetBasicStat();
-
-	std::mutex& GetLock();
-	void Update();
 	void ResetTemporaryStat(int tCur, int nReasonID);
 
-	void MigrateOut();
-	
-	static User* FindUser(int nUserID);
-
+	//Message
 	void SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID, int nCount, bool bOnExcelRequest);
 	void SendDropPickUpFailPacket(bool bOnExcelRequest);
+	void SendQuestRecordMessage(int nKey, int nState, const std::string& sStringRecord);
+
+	//Script
+	Script* GetScript();
+	void SetScript(Script* pScript);
+	void OnSelectNpc(InPacket *iPacket);
+	void OnScriptMessageAnswer(InPacket *iPacket);
+	void OnScriptRun();
+	void OnScriptDone();
+
+	//Quest
+	void OnQuestRequest(InPacket *iPacket);
+	void OnAcceptQuest(InPacket *iPacket, int nQuestID, int dwTemplateID, Npc *pNpc);
+	void OnCompleteQuest(InPacket *iPacket, int nQuestID, int dwTemplateID, Npc *pNpc, bool bIsAutoComplete);
+	void OnResignQuest(InPacket *iPacket, int nQuestID);
+	void OnLostQuestItem(InPacket *iPacket, int nQuestID);
 };
 

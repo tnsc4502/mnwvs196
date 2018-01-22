@@ -112,6 +112,13 @@ unsigned short InPacket::GetPacketSize() const
 	return nPacketSize;
 }
 
+unsigned short InPacket::RemainedCount() const
+{
+	if (nPacketSize <= nReadPos)
+		return 0;
+	return nPacketSize - nReadPos;
+}
+
 void InPacket::RestorePacket()
 {
 	nReadPos = 0;
