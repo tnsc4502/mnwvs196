@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50051
 File Encoding         : 65001
 
-Date: 2018-01-04 22:14:25
+Date: 2018-01-22 20:57:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -54,15 +54,16 @@ CREATE TABLE `characterlevel` (
 -- ----------------------------
 -- Records of characterlevel
 -- ----------------------------
-INSERT INTO `characterlevel` VALUES ('4', '1');
-INSERT INTO `characterlevel` VALUES ('5', '1');
-INSERT INTO `characterlevel` VALUES ('6', '1');
-INSERT INTO `characterlevel` VALUES ('7', '1');
-INSERT INTO `characterlevel` VALUES ('8', '1');
-INSERT INTO `characterlevel` VALUES ('9', '1');
-INSERT INTO `characterlevel` VALUES ('10', '1');
+INSERT INTO `characterlevel` VALUES ('4', '180');
+INSERT INTO `characterlevel` VALUES ('5', '180');
+INSERT INTO `characterlevel` VALUES ('6', '180');
+INSERT INTO `characterlevel` VALUES ('7', '180');
+INSERT INTO `characterlevel` VALUES ('8', '180');
+INSERT INTO `characterlevel` VALUES ('9', '180');
+INSERT INTO `characterlevel` VALUES ('10', '180');
 INSERT INTO `characterlevel` VALUES ('11', '180');
-INSERT INTO `characterlevel` VALUES ('12', '1');
+INSERT INTO `characterlevel` VALUES ('12', '180');
+INSERT INTO `characterlevel` VALUES ('13', '37');
 
 -- ----------------------------
 -- Table structure for charactermoney
@@ -84,8 +85,9 @@ INSERT INTO `charactermoney` VALUES ('7', '0');
 INSERT INTO `charactermoney` VALUES ('8', '0');
 INSERT INTO `charactermoney` VALUES ('9', '0');
 INSERT INTO `charactermoney` VALUES ('10', '0');
-INSERT INTO `charactermoney` VALUES ('11', '0');
-INSERT INTO `charactermoney` VALUES ('12', '0');
+INSERT INTO `charactermoney` VALUES ('11', '18');
+INSERT INTO `charactermoney` VALUES ('12', '13196');
+INSERT INTO `charactermoney` VALUES ('13', '0');
 
 -- ----------------------------
 -- Table structure for characters
@@ -114,8 +116,9 @@ INSERT INTO `characters` VALUES ('9', '1', '0', '0', 'ewfwrwer', '0', '0', '0', 
 INSERT INTO `characters` VALUES ('7', '1', '0', '0', '55555', '0', '0', '0', '100000000');
 INSERT INTO `characters` VALUES ('8', '1', '0', '0', 'erwwegwe', '0', '0', '0', '100000000');
 INSERT INTO `characters` VALUES ('10', '1', '0', '0', '測試', '0', '0', '0', '100000000');
-INSERT INTO `characters` VALUES ('11', '0', '0', '0', 'ewrewrewr', '0', '-291812949', '2046', '100010000');
-INSERT INTO `characters` VALUES ('12', '0', '0', '0', 'dsafsdar', '0', '0', '0', '100000000');
+INSERT INTO `characters` VALUES ('11', '0', '0', '0', 'ewrewrewr', '0', '0', '0', '100000000');
+INSERT INTO `characters` VALUES ('12', '0', '0', '0', 'dsafsdar', '0', '0', '0', '100010000');
+INSERT INTO `characters` VALUES ('13', '0', '0', '0', 'ADSFSD', '0', '-291812949', '2046', '100010000');
 
 -- ----------------------------
 -- Table structure for characterstat
@@ -123,7 +126,7 @@ INSERT INTO `characters` VALUES ('12', '0', '0', '0', 'dsafsdar', '0', '0', '0',
 DROP TABLE IF EXISTS `characterstat`;
 CREATE TABLE `characterstat` (
   `SN` int(11) NOT NULL auto_increment,
-  `CharacterID` int(11) default NULL,
+  `CharacterID` int(11) NOT NULL,
   `Exp` bigint(20) default '0',
   `HP` int(11) default NULL,
   `MP` int(11) default NULL,
@@ -143,21 +146,25 @@ CREATE TABLE `characterstat` (
   `WillEXP` int(11) default '0',
   `SenseEXP` int(11) default '0',
   `CharmEXP` int(11) default '0',
-  PRIMARY KEY  (`SN`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+  `Hair` int(11) default '0',
+  `Skin` int(11) default '0',
+  `Face` int(11) default '0',
+  PRIMARY KEY  (`SN`,`CharacterID`)
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of characterstat
 -- ----------------------------
-INSERT INTO `characterstat` VALUES ('9', '4', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('10', '5', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('11', '6', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('12', '7', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('13', '8', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('14', '9', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('15', '10', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('16', '11', '0', '50000', '50000', '50000', '50000', '212', '0', '999', '999', '999', '999', '5,40,40,0,40,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `characterstat` VALUES ('17', '12', '0', '50', '50', '50', '50', '132', '0', '10', '10', '10', '10', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `characterstat` VALUES ('9', '4', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('10', '5', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('11', '6', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('12', '7', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('13', '8', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('14', '9', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('15', '10', '0', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('16', '11', '1576269', '50000', '50000', '50000', '50000', '212', '0', '999', '999', '999', '999', '5,30,20,0,40,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30480', '0', '20100');
+INSERT INTO `characterstat` VALUES ('17', '12', '2202716', '50000', '50000', '50000', '50000', '132', '0', '999', '999', '999', '999', '0,0,0,0,0,0,0,0,0,0', '0', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
+INSERT INTO `characterstat` VALUES ('18', '13', '838', '50000', '50000', '60000', '60000', '2512', '0', '999', '999', '999', '999', '0,0,0,0,78,0,0,0,0,0', '130', '0', '0', '0', '0', '0', '0', '30000', '0', '20100');
 
 -- ----------------------------
 -- Table structure for itemslot_con
@@ -165,22 +172,26 @@ INSERT INTO `characterstat` VALUES ('17', '12', '0', '50', '50', '50', '50', '13
 DROP TABLE IF EXISTS `itemslot_con`;
 CREATE TABLE `itemslot_con` (
   `SN` int(11) NOT NULL auto_increment,
-  `ItemSN` int(11) default NULL,
+  `ItemSN` int(11) NOT NULL,
   `ItemID` int(11) default '0',
-  `CharacterID` int(11) default NULL,
+  `CharacterID` int(11) NOT NULL,
   `Number` int(11) default '1',
   `ExpireDate` bigint(20) default '-1',
   `Title` int(255) default NULL,
   `Attribute` int(255) default '0',
   `POS` int(11) default '0',
-  PRIMARY KEY  (`SN`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  PRIMARY KEY  (`SN`,`ItemSN`,`CharacterID`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of itemslot_con
 -- ----------------------------
 INSERT INTO `itemslot_con` VALUES ('1', '1215454555', '2000000', '-1', '100', '-4093529452183232512', null, '0', '1');
-INSERT INTO `itemslot_con` VALUES ('2', '1215454556', '2000000', '11', '8', '-8584140075963850752', null, '0', '5');
+INSERT INTO `itemslot_con` VALUES ('2', '1215454556', '2000000', '11', '9', '-8584140075963850752', null, '0', '5');
+INSERT INTO `itemslot_con` VALUES ('3', '1215454557', '2000000', '12', '5', '-8584140075963850752', null, '0', '1');
+INSERT INTO `itemslot_con` VALUES ('4', '1215454558', '2061000', '13', '1', '115820869195587584', null, '0', '1');
+INSERT INTO `itemslot_con` VALUES ('5', '1215454559', '2060000', '13', '1', '115820869195587584', null, '0', '2');
+INSERT INTO `itemslot_con` VALUES ('6', '1215454560', '2061000', '12', '1', '-5800915506248884224', null, '0', '2');
 
 -- ----------------------------
 -- Table structure for itemslot_eqp
@@ -188,9 +199,9 @@ INSERT INTO `itemslot_con` VALUES ('2', '1215454556', '2000000', '11', '8', '-85
 DROP TABLE IF EXISTS `itemslot_eqp`;
 CREATE TABLE `itemslot_eqp` (
   `SN` int(11) NOT NULL auto_increment,
-  `ItemSN` int(11) default NULL,
+  `ItemSN` int(11) NOT NULL,
   `ItemID` varchar(255) default NULL,
-  `CharacterID` int(11) default NULL,
+  `CharacterID` int(11) NOT NULL,
   `Number` int(11) default NULL,
   `ExpireDate` bigint(20) default '-1',
   `Title` int(255) default NULL,
@@ -213,21 +224,30 @@ CREATE TABLE `itemslot_eqp` (
   `I_Speed` int(11) default '0',
   `I_Craft` int(11) default '0',
   `I_Jump` int(11) default '0',
-  PRIMARY KEY  (`SN`)
-) ENGINE=MyISAM AUTO_INCREMENT=2046 DEFAULT CHARSET=utf8;
+  PRIMARY KEY  (`SN`,`ItemSN`,`CharacterID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2055 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of itemslot_eqp
 -- ----------------------------
 INSERT INTO `itemslot_eqp` VALUES ('7', '7', '1050287', '4', null, '-1', null, '0', '-5', '0', '0', '0', '4', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2054', '24', '1353101', '13', null, '-1852977678830084096', null, '0', '5', '0', '0', '4', '4', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('24', '8', '1050287', '11', null, '-8584140075963850752', null, '0', '-5', '0', '0', '0', '4', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('25', '9', '1372005', '11', null, '-8584140075963850752', null, '0', '-11', '8', '5', '0', '4', '0', '0', '0', '0', '100', '100', '100', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('26', '10', '1072834', '11', null, '-8584140075963850752', null, '0', '-7', '0', '0', '0', '5', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('2040', '11', '1302000', '11', null, '-8584140075963850752', null, '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `itemslot_eqp` VALUES ('2041', '12', '1072834', '12', null, '-1', null, '0', '-7', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `itemslot_eqp` VALUES ('2042', '13', '1051353', '12', null, '-1', null, '0', '-5', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2041', '12', '1072834', '12', null, '-8584140075963850752', null, '0', '-7', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2042', '13', '1051353', '12', null, '-8584140075963850752', null, '0', '-5', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('2043', '14', '1432120', '11', null, '-8584140075963850752', null, '0', '2', '0', '0', '0', '0', '0', '0', '0', '0', '100', '100', '0', '0', '0', '0', '0', '0', '0');
 INSERT INTO `itemslot_eqp` VALUES ('2045', '15', '1382037', '11', null, '-8584140075963850752', null, '0', '3', '0', '0', '0', '0', '0', '0', '82', '0', '73', '119', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2046', '16', '1432038', '12', null, '-8584140075963850752', null, '0', '-11', '0', '0', '0', '0', '0', '0', '0', '0', '107', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2047', '17', '1072700', '13', null, '-7748922456202878976', null, '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2048', '18', '1102442', '13', null, '-7748922456202878976', null, '0', '-7', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2049', '19', '1052495', '13', null, '-7748922456202878976', null, '0', '-5', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2050', '20', '1302000', '13', null, '115820869195587584', null, '0', '3', '0', '0', '0', '0', '0', '0', '0', '0', '16', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2051', '21', '1482110', '13', null, '-1852977678830084096', null, '0', '-11', '0', '0', '0', '0', '0', '0', '0', '0', '16', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2052', '22', '1482161', '13', null, '-1852977678830084096', null, '0', '2', '0', '0', '0', '0', '0', '0', '0', '0', '79', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `itemslot_eqp` VALUES ('2053', '23', '1353100', '13', null, '-1852977678830084096', null, '0', '-10', '0', '0', '3', '3', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for itemslot_etc
@@ -235,15 +255,15 @@ INSERT INTO `itemslot_eqp` VALUES ('2045', '15', '1382037', '11', null, '-858414
 DROP TABLE IF EXISTS `itemslot_etc`;
 CREATE TABLE `itemslot_etc` (
   `SN` int(11) NOT NULL auto_increment,
-  `ItemSN` int(11) default NULL,
-  `CharacterID` int(11) default NULL,
+  `ItemSN` int(11) NOT NULL,
+  `CharacterID` int(11) NOT NULL,
   `ItemID` int(11) default NULL,
   `Number` int(11) default '1',
   `ExpireDate` bigint(20) default '-1',
   `Title` int(255) default NULL,
   `Attribute` int(255) default '0',
   `POS` int(11) default '0',
-  PRIMARY KEY  (`SN`)
+  PRIMARY KEY  (`SN`,`ItemSN`,`CharacterID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -257,26 +277,40 @@ INSERT INTO `itemslot_etc` VALUES ('1', '1', '11', '2070000', '39', '-8584140075
 DROP TABLE IF EXISTS `itemslot_ins`;
 CREATE TABLE `itemslot_ins` (
   `SN` int(11) NOT NULL auto_increment,
-  `ItemSN` int(11) default NULL,
-  `CharacterID` int(11) default NULL,
+  `ItemSN` int(11) NOT NULL,
+  `CharacterID` int(11) NOT NULL,
   `ItemID` int(11) default '0',
   `Number` int(11) default '1',
   `ExpireDate` bigint(20) default '-1',
   `Title` int(255) default NULL,
   `Attribute` int(255) default '0',
   `POS` int(11) default '0',
-  PRIMARY KEY  (`SN`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  PRIMARY KEY  (`SN`,`ItemSN`,`CharacterID`)
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of itemslot_ins
 -- ----------------------------
-INSERT INTO `itemslot_ins` VALUES ('1', '3', '11', '4000001', '7', '-8584140075963850752', null, '0', '1');
-INSERT INTO `itemslot_ins` VALUES ('2', '4', '11', '4001354', '1', '-8584140075963850752', null, '0', '2');
-INSERT INTO `itemslot_ins` VALUES ('3', '5', '11', '4001345', '5', '-8584140075963850752', null, '0', '3');
-INSERT INTO `itemslot_ins` VALUES ('4', '6', '11', '4001365', '6', '-8584140075963850752', null, '0', '4');
-INSERT INTO `itemslot_ins` VALUES ('5', '7', '11', '4032478', '3', '-8584140075963850752', null, '0', '5');
-INSERT INTO `itemslot_ins` VALUES ('6', '8', '11', '4032314', '1', '-1852977678830084096', null, '0', '6');
+INSERT INTO `itemslot_ins` VALUES ('1', '3', '11', '4000001', '11', '-8584140075963850752', null, '0', '1');
+INSERT INTO `itemslot_ins` VALUES ('2', '4', '11', '4001354', '12', '-8584140075963850752', null, '0', '2');
+INSERT INTO `itemslot_ins` VALUES ('3', '5', '11', '4001345', '13', '-8584140075963850752', null, '0', '3');
+INSERT INTO `itemslot_ins` VALUES ('4', '6', '11', '4001365', '15', '-8584140075963850752', null, '0', '4');
+INSERT INTO `itemslot_ins` VALUES ('5', '7', '11', '4032478', '9', '-8584140075963850752', null, '0', '5');
+INSERT INTO `itemslot_ins` VALUES ('6', '8', '11', '4032314', '4', '-8584140075963850752', null, '0', '6');
+INSERT INTO `itemslot_ins` VALUES ('7', '9', '12', '4032478', '33', '-8584140075963850752', null, '0', '1');
+INSERT INTO `itemslot_ins` VALUES ('8', '10', '12', '4001365', '41', '-8584140075963850752', null, '0', '2');
+INSERT INTO `itemslot_ins` VALUES ('9', '11', '12', '4000001', '21', '-8584140075963850752', null, '0', '3');
+INSERT INTO `itemslot_ins` VALUES ('10', '12', '12', '4001345', '34', '-8584140075963850752', null, '0', '4');
+INSERT INTO `itemslot_ins` VALUES ('11', '13', '12', '4001354', '35', '-8584140075963850752', null, '0', '5');
+INSERT INTO `itemslot_ins` VALUES ('12', '14', '12', '4032314', '7', '-8584140075963850752', null, '0', '6');
+INSERT INTO `itemslot_ins` VALUES ('13', '15', '12', '4031146', '1', '-8584140075963850752', null, '0', '7');
+INSERT INTO `itemslot_ins` VALUES ('14', '16', '12', '4032620', '1', '-8584140075963850752', null, '0', '8');
+INSERT INTO `itemslot_ins` VALUES ('15', '17', '13', '4001354', '9', '115820869195587584', null, '0', '1');
+INSERT INTO `itemslot_ins` VALUES ('16', '18', '13', '4032478', '7', '115820869195587584', null, '0', '2');
+INSERT INTO `itemslot_ins` VALUES ('17', '19', '13', '4001365', '5', '115820869195587584', null, '0', '3');
+INSERT INTO `itemslot_ins` VALUES ('18', '20', '13', '4001345', '7', '115820869195587584', null, '0', '4');
+INSERT INTO `itemslot_ins` VALUES ('19', '21', '13', '4032314', '1', '115820869195587584', null, '0', '5');
+INSERT INTO `itemslot_ins` VALUES ('20', '22', '13', '4000001', '4', '115820869195587584', null, '0', '6');
 
 -- ----------------------------
 -- Table structure for mobrewards
@@ -20261,6 +20295,26 @@ INSERT INTO `mobrewards` VALUES ('45193', '9300175', '4001169', '1', '1', '0', '
 INSERT INTO `mobrewards` VALUES ('45195', '9300018', '4033920', '1', '1', '32205', '100');
 
 -- ----------------------------
+-- Table structure for questrecord
+-- ----------------------------
+DROP TABLE IF EXISTS `questrecord`;
+CREATE TABLE `questrecord` (
+  `ID` int(11) NOT NULL auto_increment,
+  `CharacterID` int(11) NOT NULL default '0',
+  `QuestID` int(11) default '0',
+  `State` int(11) default '0',
+  `Time` bigint(21) default '0',
+  `StrRecord` varchar(128) default '',
+  `MobRecord` varchar(255) default '',
+  PRIMARY KEY  (`ID`,`CharacterID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of questrecord
+-- ----------------------------
+INSERT INTO `questrecord` VALUES ('1', '11', '2390', '2', '0', '', '');
+
+-- ----------------------------
 -- Table structure for skillrecord
 -- ----------------------------
 DROP TABLE IF EXISTS `skillrecord`;
@@ -20272,39 +20326,160 @@ CREATE TABLE `skillrecord` (
   `MasterLevel` int(11) default NULL,
   `Expired` bigint(20) default NULL,
   PRIMARY KEY  (`SkillSN`,`CharacterID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1654 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4047 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of skillrecord
 -- ----------------------------
-INSERT INTO `skillrecord` VALUES ('1649', '11', '2111010', '10', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1626', '11', '2001004', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1627', '11', '2001005', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1624', '11', '2001002', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1636', '11', '2101004', '6', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1630', '11', '2100000', '6', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1633', '11', '2101001', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1634', '11', '2101002', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1637', '11', '2101005', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1635', '11', '2101003', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1642', '11', '2111002', '20', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1639', '11', '2110001', '10', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1645', '11', '2111005', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1643', '11', '2111003', '8', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1644', '11', '2111004', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1623', '11', '2000006', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1625', '11', '2001003', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1631', '11', '2100006', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1632', '11', '2100007', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1647', '11', '2111007', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1646', '11', '2111006', '5', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1640', '11', '2110009', '10', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1638', '11', '2110000', '7', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1648', '11', '2111008', '10', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1628', '11', '2001008', '0', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1629', '11', '2001009', '1', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1641', '11', '2110012', '10', '0', '0');
-INSERT INTO `skillrecord` VALUES ('1650', '11', '2121006', '30', '30', '0');
-INSERT INTO `skillrecord` VALUES ('1652', '11', '2121052', '30', '30', '0');
-INSERT INTO `skillrecord` VALUES ('1651', '11', '2121011', '30', '30', '0');
-INSERT INTO `skillrecord` VALUES ('1653', '11', '2121054', '30', '30', '0');
+INSERT INTO `skillrecord` VALUES ('3980', '11', '2111010', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3953', '11', '2001004', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3954', '11', '2001005', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3951', '11', '2001002', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3965', '11', '2101004', '26', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3957', '11', '2100000', '16', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3962', '11', '2101001', '25', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3963', '11', '2101002', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3966', '11', '2101005', '15', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3964', '11', '2101003', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3973', '11', '2111002', '40', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3970', '11', '2110001', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3976', '11', '2111005', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3974', '11', '2111003', '28', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3975', '11', '2111004', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3949', '11', '2000006', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3952', '11', '2001003', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3958', '11', '2100006', '15', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3959', '11', '2100007', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3978', '11', '2111007', '15', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3977', '11', '2111006', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3971', '11', '2110009', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3969', '11', '2110000', '17', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3979', '11', '2111008', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3955', '11', '2001008', '0', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3956', '11', '2001009', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4038', '12', '1321000', '60', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4039', '12', '1321010', '10', '5', '0');
+INSERT INTO `skillrecord` VALUES ('3972', '11', '2110012', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3999', '11', '2121006', '60', '30', '0');
+INSERT INTO `skillrecord` VALUES ('4003', '11', '2121052', '31', '30', '0');
+INSERT INTO `skillrecord` VALUES ('4002', '11', '2121011', '60', '30', '0');
+INSERT INTO `skillrecord` VALUES ('4005', '11', '2121054', '31', '30', '0');
+INSERT INTO `skillrecord` VALUES ('3950', '11', '2000010', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3967', '11', '2101008', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4024', '12', '1320011', '120', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4025', '12', '1320016', '120', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4026', '12', '1320017', '60', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4027', '12', '1320018', '60', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4028', '12', '1320019', '60', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4029', '12', '1320043', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4030', '12', '1320044', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4031', '12', '1320045', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4032', '12', '1320046', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4033', '12', '1320047', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4034', '12', '1320048', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4035', '12', '1320049', '2', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4041', '12', '1321013', '60', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4036', '12', '1320050', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4040', '12', '1321012', '60', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4037', '12', '1320051', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4042', '12', '1321014', '20', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4043', '12', '1321015', '60', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4044', '12', '1321052', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4045', '12', '1321053', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4046', '12', '1321054', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4007', '12', '1300000', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4008', '12', '1300002', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4009', '12', '1300009', '5', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4010', '12', '1301004', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4011', '12', '1301006', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4012', '12', '1301007', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4013', '12', '1301011', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4014', '12', '1301012', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4015', '12', '1301013', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4016', '12', '1310009', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4017', '12', '1310010', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4018', '12', '1310016', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4019', '12', '1311011', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4020', '12', '1311012', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4021', '12', '1311013', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4022', '12', '1311014', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4023', '12', '1311015', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3960', '11', '2100009', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3961', '11', '2100010', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3968', '11', '2101010', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3981', '11', '2111011', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3982', '11', '2120010', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('3983', '11', '2120012', '10', '10', '0');
+INSERT INTO `skillrecord` VALUES ('3984', '11', '2120013', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3985', '11', '2120014', '1', '1', '0');
+INSERT INTO `skillrecord` VALUES ('3986', '11', '2120043', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3987', '11', '2120044', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3988', '11', '2120045', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3989', '11', '2120046', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3990', '11', '2120047', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3991', '11', '2120048', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3992', '11', '2120049', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3993', '11', '2120050', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3994', '11', '2120051', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3995', '11', '2121000', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('3996', '11', '2121003', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('3997', '11', '2121004', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('3998', '11', '2121005', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4000', '11', '2121007', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('4001', '11', '2121008', '5', '5', '0');
+INSERT INTO `skillrecord` VALUES ('4004', '11', '2121053', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('4006', '11', '2121055', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2709', '13', '25100001', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2710', '13', '25100002', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2711', '13', '25100009', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2712', '13', '25100010', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2713', '13', '25100106', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2714', '13', '25100107', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2715', '13', '25100108', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2716', '13', '25101000', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2717', '13', '25101003', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2718', '13', '25101004', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2719', '13', '25101009', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2720', '13', '25101205', '15', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2721', '13', '25110001', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2722', '13', '25110002', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2723', '13', '25110003', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2724', '13', '25110107', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2725', '13', '25110108', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2726', '13', '25110210', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2727', '13', '25111000', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2728', '13', '25111004', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2729', '13', '25111005', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2730', '13', '25111012', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2731', '13', '25111206', '15', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2732', '13', '25111209', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2733', '13', '25111211', '10', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2734', '13', '25120001', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2735', '13', '25120002', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2736', '13', '25120003', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2737', '13', '25120110', '20', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2738', '13', '25120112', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2739', '13', '25120113', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2740', '13', '25120115', '20', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2741', '13', '25120146', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2742', '13', '25120147', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2743', '13', '25120148', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2744', '13', '25120149', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2745', '13', '25120150', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2746', '13', '25120151', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2747', '13', '25120152', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2748', '13', '25120153', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2749', '13', '25120154', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2750', '13', '25120214', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2751', '13', '25121000', '30', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2752', '13', '25121005', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2753', '13', '25121006', '20', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2754', '13', '25121007', '20', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2755', '13', '25121030', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2756', '13', '25121055', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2757', '13', '25121108', '30', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2758', '13', '25121131', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2759', '13', '25121132', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2760', '13', '25121133', '1', '0', '0');
+INSERT INTO `skillrecord` VALUES ('2761', '13', '25121209', '10', '10', '0');
+INSERT INTO `skillrecord` VALUES ('2762', '13', '25121211', '5', '5', '0');
