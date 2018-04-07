@@ -15,7 +15,7 @@
 #include "WvsGameConstants.hpp"
 #include "Utility\DateTime\GameDateTime.h"
 
-
+#include "..\WvsLib\Logger\WvsLogger.h"
 /*
 此MACRO作為註冊TemporaryStat(TS)用。
 每個TS一定都要先呼叫此MACRO後，再補上自己需要的屬性。
@@ -130,7 +130,7 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 	auto pSS = pUser->GetSecondaryStat();
 	if (!pSkillLVLData) 
 	{
-		printf("[USkill::DoActiveSkill_SelfStatChange]異常的技能資訊，技能ID = %d，技能等級 = %d\n", pSkill->GetSkillID(), nSLV);
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "[USkill::DoActiveSkill_SelfStatChange]異常的技能資訊，技能ID = %d，技能等級 = %d\n", pSkill->GetSkillID(), nSLV);
 		return;
 	}
 	auto tsFlag = TemporaryStat::TS_Flag::GetDefault();

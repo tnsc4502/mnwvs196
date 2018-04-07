@@ -1,6 +1,8 @@
 #include "FieldMan.h"
 #include "..\WvsLib\WzResMan.hpp"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 #include "PortalMap.h"
 
 #include <mutex>
@@ -71,7 +73,7 @@ void FieldMan::FieldFactory(int nFieldID)
 
 		newField->SetMapSizeX(mapSizeX);
 		newField->SetMapSizeY(mapSizeY);
-		printf("New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
+		WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
 	//}
 	newField->GetPortalMap()->RestorePortal(newField, mapWz["portal"]);
 

@@ -135,7 +135,7 @@ bool QWUInventory::PickUpMoney(User* pUser, bool byPet, int nAmount)
 
 bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 {
-	printf("Pick Up Item Requert\n");
+	//printf("Pick Up Item Requert\n");
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int totalInc = 0;

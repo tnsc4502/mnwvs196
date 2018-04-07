@@ -1,5 +1,6 @@
 #include "OutPacket.h"
 #include "InPacket.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 OutPacket::OutPacket()
 {
@@ -134,6 +135,14 @@ void OutPacket::DecRefCount()
 	m_pSharedPacket->DecRefCount();
 }
 
+void OutPacket::Print()
+{
+	WvsLogger::LogRaw("OutPacket«Ê¥]¤º®e¡G");
+	for (unsigned int i = 0; i < m_pSharedPacket->nPacketSize; ++i)
+		WvsLogger::LogFormat("0x%02X ", (int)m_pSharedPacket->aBuff[i]);
+	WvsLogger::LogRaw("\n");
+}
+
 OutPacket::SharedPacket * OutPacket::GetSharedPacket()
 {
 	return m_pSharedPacket;
@@ -147,7 +156,7 @@ void OutPacket::EncodeHexString(const std::string& str)
 {
 	auto cStr = str.c_str();
 	int d, n;
-	while (sscanf(cStr, "%X%n", &d, &n) == 1)
+	while (sscanf_s(cStr, "%X%n", &d, &n) == 1)
 	{
 		cStr += n;
 		Encode1((char)d);

@@ -5,6 +5,8 @@
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Common\Utility\Random\Rand32.h"
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 ItemInfo::ItemInfo()
 {
 }
@@ -23,24 +25,24 @@ ItemInfo * ItemInfo::GetInstance()
 void ItemInfo::Initialize()
 {
 	IterateMapString();
-	printf("[ItemInfo::Initialize]開始載入所有物品名稱[IterateItemString Start]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]開始載入所有物品名稱[IterateItemString Start]....\n");
 	IterateItemString(nullptr);
-	printf("[ItemInfo::Initialize]物品名稱載入完成[IterateItemString Done]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]物品名稱載入完成[IterateItemString Done]....\n");
 
 	static auto& eqpWz = stWzResMan->GetWz(Wz::Character);
-	printf("[ItemInfo::Initialize]開始載入所有裝備[IterateEquipItem Start]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]開始載入所有裝備[IterateEquipItem Start]....\n");
 	IterateEquipItem(&eqpWz);
-	printf("[ItemInfo::Initialize]裝備載入完成[IterateEquipItem Done]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]裝備載入完成[IterateEquipItem Done]....\n");
 
-	printf("[ItemInfo::Initialize]開始載入所有物品[IterateBundleItem Start]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]開始載入所有物品[IterateBundleItem Start]....\n");
 	IterateBundleItem();
-	printf("[ItemInfo::Initialize]物品載入完成[IterateBundleItem Done]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]物品載入完成[IterateBundleItem Done]....\n");
 	IterateCashItem();
 	RegisterSpecificItems();
 	RegisterNoRollbackItem();
 	RegisterSetHalloweenItem();
 	stWzResMan->ReleaseMemory();
-	printf("[ItemInfo::Initialize]釋放ItemInfo所有Wz記憶體[ReleaseMemory Done]....\n");
+	WvsLogger::LogRaw("[ItemInfo::Initialize]釋放ItemInfo所有Wz記憶體[ReleaseMemory Done]....\n");
 }
 
 void ItemInfo::IterateMapString()

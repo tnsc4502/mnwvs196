@@ -5,6 +5,8 @@
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 InventoryManipulator::InventoryManipulator()
 {
 }
@@ -112,7 +114,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 		//欄位無相同物品，找新的欄位插入
 		while (nNumber > 0)
 		{
-			printf("InventoryManipulator::RawAddItem nItemID = %d nNumber = %d nMaxPerSlot = %d Test = %d\n", pItem->nItemID, nNumber, nMaxPerSlot, (int)(ItemInfo::GetInstance()->GetBundleItem(pItem->nItemID) == nullptr));
+			WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "InventoryManipulator::RawAddItem nItemID = %d nNumber = %d nMaxPerSlot = %d Test = %d\n", pItem->nItemID, nNumber, nMaxPerSlot, (int)(ItemInfo::GetInstance()->GetBundleItem(pItem->nItemID) == nullptr));
 			nPOS = pCharacterData->FindEmptySlotPosition(nTI);
 
 			//告知物品並未完全放入背包中。
@@ -187,7 +189,7 @@ bool InventoryManipulator::RawRemoveItem(GA_Character * pCharacterData, int nTI,
 {
 	auto pItem = pCharacterData->GetItem(nTI, nPOS);
 	GW_ItemSlotBase* pClone = ppItemRemoved ? pItem->MakeClone() : nullptr;
-	printf("Raw Remove Item pClone == null ? %d\n", (int)(pClone == nullptr));
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "Raw Remove Item pClone == null ? %d\n", (int)(pClone == nullptr));
 	if (pItem != nullptr)
 	{
 		int nRemaining = 0;

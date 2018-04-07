@@ -269,7 +269,7 @@ void Mob::DistributeExp(int & refOwnType, int & refOwnParyID, int & refLastDamag
 		auto pUser = User::FindUser(dmg.first);
 		if (pUser != nullptr)
 		{
-			int nDamaged = dmg.second;
+			auto nDamaged = dmg.second;
 			if (nDamaged >= nTotalHP)
 				nDamaged = nTotalHP;
 			int nIncEXP = (int)floor((double)GetMobTemplate()->m_nEXP * ((double)dmg.second / (double)nTotalHP));

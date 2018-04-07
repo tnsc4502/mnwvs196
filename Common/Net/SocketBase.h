@@ -1,6 +1,7 @@
 #pragma once
 #include "Net\asio.hpp"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 class OutPacket;
 class InPacket;

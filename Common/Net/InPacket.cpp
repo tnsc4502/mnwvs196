@@ -1,6 +1,6 @@
 #include "InPacket.h"
 #include <iostream>
-
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 InPacket::InPacket(unsigned char* buff, unsigned short size)
 	: aBuff(buff),
@@ -96,8 +96,8 @@ void InPacket::Print()
 	//std::cout << "InPacket«Ê¥]¤º®e¡G";
 	for (int i = 0; i < nPacketSize; ++i)
 		//std::cout << std::hex << (int)aBuff[i] << " ";
-		printf("0x%02X ", (int)aBuff[i]);
-	printf("\n");
+		WvsLogger::LogFormat("0x%02X ", (int)aBuff[i]);
+	WvsLogger::LogRaw("\n");
 	//std::cout << std::endl;
 	//std::flush(std::cout);
 }

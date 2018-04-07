@@ -6,6 +6,8 @@
 #include <functional>
 #include <iostream>
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 //0~99保留
 unsigned int SocketBase::SocketCount = 100;
 
@@ -147,7 +149,7 @@ void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_tran
 		}
 		catch (std::exception& ex) {
 			iPacket.RestorePacket();
-			std::cout << "解析封包時發生錯誤，OPCode : " << iPacket.Decode2() << " Err : " << ex.what() << std::endl;
+			WvsLogger::LogFormat("解析封包時發生錯誤，OPCode : %d, 異常訊息 : %s\n", (int)iPacket.Decode2(), ex.what());
 			iPacket.Print();
 		}
 		delete[] buffer;

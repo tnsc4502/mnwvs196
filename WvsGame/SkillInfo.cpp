@@ -8,6 +8,8 @@
 #include <thread>
 #include "..\EquationEvaluator\Evaluator.h"
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 SkillInfo::SkillInfo()
 {
 	m_nOnLoadingSkills = 0;
@@ -64,7 +66,7 @@ int SkillInfo::GetBundleItemMaxPerSlot(int nItemID, GA_Character * pCharacterDat
 
 void SkillInfo::IterateSkillInfo()
 {
-	printf("[SkillInfo::IterateSkillInfo]開始載入所有技能資訊 IterateSkillInfo Start.\n");
+	WvsLogger::LogRaw("[SkillInfo::IterateSkillInfo]開始載入所有技能資訊 IterateSkillInfo Start.\n");
 	static auto& skillWz = stWzResMan->GetWz(Wz::Skill);
 	bool continued = false;
 	int nRootID;
@@ -106,7 +108,7 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 	}
 	if (m_nOnLoadingSkills == 0 && m_mSkillByRootID.size() >= 221)
 	{
-		printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
+		WvsLogger::LogRaw("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
 		LoadLevelDataSpecial();
 		stWzResMan->ReleaseMemory();
 		//system("pause");

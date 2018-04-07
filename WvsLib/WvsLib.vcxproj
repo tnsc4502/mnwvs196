@@ -81,6 +81,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -104,6 +105,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>I:\Programming\Utility\boost_1_63_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -117,6 +119,7 @@
     <ClInclude Include="aes_ni.h" />
     <ClInclude Include="brg_endian.h" />
     <ClInclude Include="brg_types.h" />
+    <ClInclude Include="Logger\WvsLogger.h" />
     <ClInclude Include="mapfile.hpp" />
     <ClInclude Include="Memory\Arena.h" />
     <ClInclude Include="Memory\ArenaVector.h" />
@@ -140,6 +143,7 @@
     <ClCompile Include="aestab.c" />
     <ClCompile Include="aes_modes.c" />
     <ClCompile Include="aes_ni.c" />
+    <ClCompile Include="Logger\WvsLogger.cpp" />
     <ClCompile Include="mapfile.cpp" />
     <ClCompile Include="Memory\Arena.cpp" />
     <ClCompile Include="Memory\BufferPool.cpp" />

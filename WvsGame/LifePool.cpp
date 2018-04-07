@@ -2,6 +2,7 @@
 #include "..\Common\Net\InPacket.h"
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 #include "User.h"
 #include "MobTemplate.h"
@@ -14,6 +15,7 @@
 #include "WvsGameConstants.hpp"
 
 #include <cmath>
+
 
 LifePool::LifePool()
 	: m_pCtrlNull(new Controller(nullptr))
@@ -48,7 +50,7 @@ void LifePool::Init(Field* pField, int nFieldID)
 
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
 	auto& lifeData = mapWz["life"];
-	printf("Map Size =  %d %d\n", m_pField->GetMapSizeX(), m_pField->GetMapSizeY());
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "Map Size =  %d %d\n", m_pField->GetMapSizeX(), m_pField->GetMapSizeY());
 	for (auto& node : lifeData)
 	{
 		const auto &typeFlag = (std::string)node["type"];
@@ -80,7 +82,7 @@ void LifePool::SetFieldObjAttribute(FieldObj* pFieldObj, WZ::Node& dataNode)
 		pFieldObj->SetTemplateID(atoi(((std::string)dataNode["id"]).c_str()));
 	}
 	catch (std::exception& e) {
-		printf("讀取地圖物件發生錯誤，訊息:%s\n", e.what());
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "讀取地圖物件發生錯誤，訊息:%s\n", e.what());
 	}
 }
 
@@ -497,7 +499,7 @@ Mob * LifePool::GetMob(int nFieldObjID)
 void LifePool::OnMobPacket(User * pUser, int nType, InPacket * iPacket)
 {
 	int dwMobID = iPacket->Decode4();
-	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
+	//std::lock_guard<std::mutex> lock(m_lifePoolMutex);
 
 	auto mobIter = m_aMobGen.find(dwMobID);
 	if (mobIter != m_aMobGen.end()) {

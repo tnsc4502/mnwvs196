@@ -7,6 +7,8 @@
 #include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Common\Net\OutPacket.h"
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 #define CHECK_TS_NORMAL(name) \
 if (flag & GET_TS_FLAG(name)) \
 { if (EnDecode4Byte(flag))oPacket->Encode4(n##name); else oPacket->Encode2(n##name);\
@@ -730,7 +732,7 @@ void SecondaryStat::EncodeForLocal(OutPacket * oPacket, TemporaryStat::TS_Flag &
 	oPacket->Encode4(0);
 	oPacket->Encode4(0);
 
-	printf("Encode Local TS : \n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "Encode Local TS : \n");
 	oPacket->Print();
 }
 
@@ -778,7 +780,7 @@ bool SecondaryStat::EnDecode4Byte(TemporaryStat::TS_Flag & flag)
 		|| (flag & GET_TS_FLAG(MagnetArea))
 		|| (flag & GET_TS_FLAG(RideVehicle)))
 		return true;
-	printf("EnDecode4Byte [False]\n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "EnDecode4Byte [False]\n");
 	return false;
 }
 

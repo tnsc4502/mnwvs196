@@ -66,7 +66,7 @@ void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 		for (int j = 0; j < nDamagedCountPerMob; ++j) 
 		{
 			long long int nDmg = iPacket->Decode8();
-			printf("Monster %d Damage : %d\n", nObjectID, (int)nDmg);
+			//printf("Monster %d Damage : %d\n", nObjectID, (int)nDmg);
 			ref.push_back(nDmg);
 		}
 		iPacket->Decode4();
@@ -267,6 +267,16 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
 	m_pUpdateTimer = pUpdateTimer;
 	pUpdateTimer->Start();
+
+	OutPacket oPacket;
+	oPacket.Encode2(0x11A);
+	for (int i = 0; i < 5; ++i) 
+	{
+		oPacket.EncodeStr("");
+		oPacket.Encode1(-1);
+	}
+	SendPacket(&oPacket);
+	SendCharacterStat(true, 0);
 }
 
 User::~User()
@@ -473,7 +483,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
 
-	oPacket.Encode8(std::time(nullptr));
+	oPacket.EncodeTime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
 	oPacket.EncodeHexString("64 00 00 00 00 00 00 01 A6 00 00 00 03 00 00 00 83 7D 26 5A 02 00 00 24 66 00 00 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 82 16 FB 52 01 00 00 24 0C 00 00 00 00 00 00 00 00 00 00 00 C8 00 00 00 F7 24 11 76 00 00 00 24 0C 00 00 00 01 00 00 24 02 00 00 24 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 96 00 00 00 00");
 	SendPacket(&oPacket);
 }

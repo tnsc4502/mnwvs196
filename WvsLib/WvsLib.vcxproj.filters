@@ -10,6 +10,9 @@
     <Filter Include="Memory">
       <UniqueIdentifier>{a5469138-92ca-4b31-8b77-e1b56b87d3b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{978749dc-1468-4283-a46a-4dd1c751fe8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mapfile.hpp">
@@ -78,6 +81,9 @@
     <ClInclude Include="Memory\stdinc.h">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="Logger\WvsLogger.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mapfile.cpp">
@@ -127,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="Memory\MemoryPoolMan.cpp">
       <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger\WvsLogger.cpp">
+      <Filter>Logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

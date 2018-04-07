@@ -5,6 +5,8 @@
 #include "Net\PacketFlags\LoginPacketFlags.hpp"
 #include "Net\PacketFlags\ClientPacketFlags.hpp"
 
+#include "..\WvsLib\Logger\WvsLogger.h"
+
 #include "WvsLoginConstants.hpp"
 #include "WvsLogin.h"
 
@@ -19,7 +21,7 @@ LoginSocket::~LoginSocket()
 
 void LoginSocket::OnPacket(InPacket *iPacket)
 {
-	printf("[WvsLogin][LoginSocket::OnPacket]封包接收：");
+	WvsLogger::LogRaw("[WvsLogin][LoginSocket::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 
@@ -125,11 +127,12 @@ void LoginSocket::SendChannelBackground()
 	OutPacket oPacket;
 	oPacket.Encode2(LoginPacketFlag::ClientChannelBackgroundResponse);
 	oPacket.Encode1(0);
+	SendPacket(&oPacket);
 }
 
 void LoginSocket::SendWorldInformation()
 {
-	//SendChannelBackground();
+	SendChannelBackground();
 
 	int numCenter = sizeof(WvsLoginConstants::CenterServerList) / sizeof(WvsLoginConstants::CenterServerList[0]);
 	for (int i = 0; i < numCenter; ++i)
@@ -163,6 +166,13 @@ void LoginSocket::SendWorldInformation()
 	oPacket.Encode2(LoginPacketFlag::WorldInformationResponse);
 	oPacket.Encode4(0xFF);
 	SendPacket(&oPacket);
+
+	OutPacket oPacket2;
+	oPacket2.Encode2(0x03);
+	oPacket2.Encode1(1);
+	oPacket2.Encode4(0);
+	oPacket2.EncodeStr("Hello~");
+	SendPacket(&oPacket2);
 }
 
 void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
@@ -182,7 +192,7 @@ void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
 		nWorldID = worldIndex;
 	}
 	else
-		printf("[WvsLogin][LoginSocket::OnClientSelectWorld][錯誤]客戶端嘗試連線至不存在的Center Server。\n");
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][LoginSocket::OnClientSelectWorld][錯誤]客戶端嘗試連線至不存在的Center Server。\n");
 }
 
 void LoginSocket::OnClientSecondPasswdCheck()

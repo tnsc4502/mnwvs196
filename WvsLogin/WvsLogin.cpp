@@ -4,6 +4,7 @@
 #include <functional>
 #include "Net\OutPacket.h"
 #include "Utility\Task\AsnycScheduler.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 #include "Constants\ConfigLoader.hpp"
 #include "Constants\ServerConstants.hpp"
@@ -36,20 +37,23 @@ void WvsLogin::ConnectToCenter(int nCenterIdx)
 
 void WvsLogin::CenterAliveMonitor()
 {
-	printf("=================定期檢查Center Server連線程序=================\n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
 	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
 	for (int i = 0; i < centerSize; ++i)
-		if (aCenterList[i] && aCenterList[i]->IsConnectionFailed()) {
+		if (aCenterList[i] && aCenterList[i]->IsConnectionFailed())
+		{
 			aCenterList[i].reset();
 			aCenterServerService[i]->stop();
-			printf("Center Server %d 連線失敗，嘗試重新連線。\n", i);
-			if (aCenterWorkThread[i]) 
+			WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", i);
+			if (aCenterWorkThread[i])
 			{
 				aCenterWorkThread[i]->detach();
 				*aCenterWorkThread[i] = std::thread(&WvsLogin::ConnectToCenter, this, i);
 			}
 			//
 		}
+		else if (aCenterList[i] == nullptr)
+			ConnectToCenter(i);
 }
 
 void WvsLogin::InitializeCenter()

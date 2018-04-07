@@ -3,7 +3,7 @@
 #include "Utility\Task\AsnycScheduler.h"
 #include "Constants\ConfigLoader.hpp"
 #include "ClientSocket.h"
-
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 WvsGame::WvsGame()
 {
@@ -32,10 +32,10 @@ void WvsGame::ConnectToCenter(int nCenterIdx)
 
 void WvsGame::CenterAliveMonitor()
 {
-	printf("=================定期檢查Center Server連線程序=================\n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
 	if (aCenterPtr && aCenterPtr->GetWorldInfo().bConnectionFailed) 
 	{
-		printf("Center Server %d 尚未連線，嘗試重新連線。\n", 0);
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Center Server %d 尚未連線，嘗試重新連線。\n", 0);
 		aCenterPtr.reset();
 		aCenterServerService->stop();
 		aCenterWorkThread->detach();

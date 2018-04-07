@@ -22,11 +22,11 @@ void Drop::MakeEnterFieldPacket(OutPacket * oPacket, int nEnterType, int tDelay)
 	oPacket->Encode2(0x430); //Drop Pool :: Enter Field
 	oPacket->Encode1(0); //eDropType
 	oPacket->Encode1(nEnterType);
-	printf("MakeEnterFieldPacket Enter Type ? %d\n", (int)nEnterType);
+	//printf("MakeEnterFieldPacket Enter Type ? %d\n", (int)nEnterType);
 	oPacket->Encode4(m_dwDropID);
-	printf("MakeEnterFieldPacket Drop ObjectID ? %d\n", (int)m_dwDropID);
+	//printf("MakeEnterFieldPacket Drop ObjectID ? %d\n", (int)m_dwDropID);
 	oPacket->Encode1(m_bIsMoney);
-	printf("MakeEnterFieldPacket Is Money ? %d\n", (int)m_bIsMoney);
+	//printf("MakeEnterFieldPacket Is Money ? %d\n", (int)m_bIsMoney);
 	oPacket->Encode4(0); //nDropMotionType
 	oPacket->Encode4(0); //nDropSpeed
 	oPacket->Encode4(0); //bNoMove
@@ -46,7 +46,7 @@ void Drop::MakeEnterFieldPacket(OutPacket * oPacket, int nEnterType, int tDelay)
 		oPacket->Encode4(tDelay);
 	}
 	oPacket->Encode1(0); //bExplosiveDrop
-	printf("MakeEnterFieldPacket Money ? %d\n", (int)m_nMoney);
+	//printf("MakeEnterFieldPacket Money ? %d\n", (int)m_nMoney);
 	if (m_nMoney == 0)
 		oPacket->Encode8(m_pItem->liExpireDate);
 	oPacket->Encode1(m_bByPet);

@@ -13,7 +13,7 @@ TemporaryStat::TS_Flag::TS_Flag(int dwFlagValue)
 void TemporaryStat::TS_Flag::Encode(OutPacket * oPacket)
 {
 	for (int i = 0; i < FLAG_COUNT; ++i) {
-		printf("Encode TS Flag : [%d] = %d\n", i, m_aData[i]);
+		//printf("Encode TS Flag : [%d] = %d\n", i, m_aData[i]);
 		oPacket->Encode4(m_aData[i]);
 	}
 }

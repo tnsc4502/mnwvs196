@@ -68,6 +68,7 @@ class Script
 	std::mutex m_mtxWaitLock;
 	std::condition_variable m_cndVariable, m_doneVariable;
 
+	static int SelfSayNextGroup(lua_State* L);
 	static int SelfSay(lua_State* L);
 	static int SelfAskAvatar(lua_State* L);
 	static int SelfSayNext(lua_State* L);

@@ -5,8 +5,9 @@
 #include "Net\PacketFlags\GamePacketFlags.hpp"
 #include "Net\PacketFlags\ClientPacketFlags.hpp"
 #include "WvsGame.h"
-
 #include "User.h"
+
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 ClientSocket::ClientSocket(asio::io_service& serverService)
 	: SocketBase(serverService)
@@ -35,7 +36,7 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 		{
 			iPacket->RestorePacket();
 			if (nType != 0x369) {
-				printf("[WvsGame][ClientSocket::OnPacket]封包接收：");
+				WvsLogger::LogRaw("[WvsGame][ClientSocket::OnPacket]封包接收：");
 				iPacket->Print();
 			}
 			pUser->OnPacket(iPacket);

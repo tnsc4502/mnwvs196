@@ -11,6 +11,7 @@
 #include "Constants\ServerConstants.hpp"
 
 #include "WvsLogin.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 Center::Center(asio::io_service& serverService)
 	: SocketBase(serverService, true),
@@ -55,12 +56,12 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 {
 	if (err)
 	{
-		printf("[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
 		bConnectionFailed = true;
 		OnDisconnect();
 		return;
 	}
-	printf("[WvsLogin][Center::OnConnect]成功連線到Center Server！\n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][Center::OnConnect]成功連線到Center Server！\n");
 	bIsConnected = true;
 
 	//向Center Server發送Hand Shake封包
@@ -76,7 +77,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 
 void Center::OnPacket(InPacket *iPacket)
 {
-	printf("[WvsLogin][Center::OnPacket]封包接收：");
+	WvsLogger::LogRaw("[WvsLogin][Center::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
@@ -86,10 +87,10 @@ void Center::OnPacket(InPacket *iPacket)
 		auto result = iPacket->Decode1();
 		if (!result)
 		{
-			printf("[WvsLogin][RegisterCenterAck][錯誤]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
+			WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][RegisterCenterAck][錯誤]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
 			exit(0);
 		}
-		printf("[WvsLogin][RegisterCenterAck]Center Server 認證完成，與世界伺服器連線成功建立。\n");
+		WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][RegisterCenterAck]Center Server 認證完成，與世界伺服器連線成功建立。\n");
 		OnUpdateWorldInfo(iPacket);
 		break;
 	}
@@ -117,7 +118,7 @@ void Center::OnUpdateWorldInfo(InPacket *iPacket)
 	mWorldInfo.nEventType = iPacket->Decode1();
 	mWorldInfo.strWorldDesc = iPacket->DecodeStr();
 	mWorldInfo.strEventDesc = iPacket->DecodeStr();
-	printf("[WvsLogin][Center::OnUpdateWorld]遊戲伺服器世界資訊更新。\n");
+	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][Center::OnUpdateWorld]遊戲伺服器世界資訊更新。\n");
 }
 
 void Center::OnCharacterListResponse(InPacket *iPacket)
@@ -134,9 +135,9 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	oPacket.Encode8(0);
 	oPacket.Encode1(0);
 
-	printf("[WvsLogin][Center::OnCharacterListResponse]玩家擁有角色清單封包 : ");
+	WvsLogger::LogRaw("[WvsLogin][Center::OnCharacterListResponse]玩家擁有角色清單封包 : ");
 	iPacket->Print();
-	printf("\n");
+	WvsLogger::LogRaw("\n");
 
 	oPacket.EncodeBuffer(iPacket->GetPacket() + 6, iPacket->GetPacketSize() - 6);
 
@@ -162,7 +163,7 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	oPacket.Encode4(0);
 	oPacket.Encode4(-1);
 	oPacket.Encode1(0);
-	oPacket.Encode8(-1);
+	oPacket.EncodeTime(-1);
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
 	oPacket.Encode4(0);

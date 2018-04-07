@@ -16,7 +16,7 @@ void Npc::OnUpdateLimitedInfo(User * pUser, InPacket * iPacket)
 	int nRemained = iPacket->RemainedCount();
 	OutPacket oPacket;
 	oPacket.Encode2(0x417);
-	printf("[LifePool::OnNpcPacket][OnUpdateLimitedInfo]Remained = %d\n", nRemained);
+	//printf("[LifePool::OnNpcPacket][OnUpdateLimitedInfo]Remained = %d\n", nRemained);
 	if (nRemained == 6)
 	{
 		oPacket.Encode4(GetFieldObjectID());

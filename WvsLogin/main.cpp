@@ -10,7 +10,9 @@
 #include "LoginSocket.h"
 #include "WvsLoginConstants.hpp"
 
+#include "..\Common\Utility\Task\AsnycScheduler.h"
 #include "Constants\ConfigLoader.hpp"
+//#include "..\WvsLib\Logger\WvsLogger.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -19,15 +21,26 @@ void ConnectionAcceptorThread(short nPort)
 	loginServer->BeginAccept<LoginSocket>();
 }
 
+void Count()
+{
+	for (int i = 0; i < 100000; ++i)
+		WvsLogger::LogFormat("%d\n", i);
+}
+
 int main(int argc, char** argv)
 {
+	/*auto func = std::bind(Count);
+	auto pTest = AsnycScheduler::CreateTask(func, 100, false);
+	pTest->Start();*/
 	WvsLogin *loginServer = WvsBase::GetInstance<WvsLogin>();
 
+	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "Please run this program with command line, and given the config file path.\n");
+	WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Error Code : %d\n", 10000);
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
 	else
 	{
-		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
+		WvsLogger::LogRaw("Please run this program with command line, and given the config file path.\n");
 		return -1;
 	}
 

@@ -41,11 +41,6 @@ public:
 	void OnPacket(InPacket *iPacket);
 	void OnCenterMigrateInResult(InPacket *iPacket);
 
-	static void OnNotifyCenterDisconnected(SocketBase *pSocket)
-	{
-		printf("[WvsLogin][Center]與Center Server中斷連線。\n");
-		((Center*)pSocket)->mWorldInfo.bIsConnected = false;
-		((Center*)pSocket)->mWorldInfo.bConnectionFailed = true;
-	}
+	static void OnNotifyCenterDisconnected(SocketBase *pSocket);
 };
 

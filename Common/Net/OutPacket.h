@@ -58,13 +58,7 @@ public:
 	void IncRefCount();
 	void DecRefCount();
 
-	void Print()
-	{
-		printf("OutPacket«Ê¥]¤º®e¡G");
-		for (unsigned int i = 0; i < m_pSharedPacket->nPacketSize; ++i)
-			printf("0x%02X ", (int)m_pSharedPacket->aBuff[i]);
-		printf("\n");
-	}
+	void Print();
 
 	SharedPacket* GetSharedPacket();
 };

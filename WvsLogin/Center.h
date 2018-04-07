@@ -2,6 +2,7 @@
 #include "Net\SocketBase.h"
 #include "WvsLoginConstants.hpp"
 #include "Net\WvsBase.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 class Center :
 	public SocketBase
@@ -48,7 +49,7 @@ public:
 
 	static void OnNotifyCenterDisconnected(SocketBase *pSocket)
 	{
-		printf("[WvsLogin][Center]與Center Server中斷連線。\n");
+		WvsLogger::LogRaw("[WvsLogin][Center]與Center Server中斷連線。\n");
 		((Center*)pSocket)->bIsConnected = false;
 		((Center*)pSocket)->bConnectionFailed = true;
 	}

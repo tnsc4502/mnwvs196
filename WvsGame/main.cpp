@@ -20,6 +20,7 @@
 #include "..\Database\GW_MobReward.h"
 
 #include "QuestMan.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 #include <functional>
 
@@ -32,7 +33,7 @@ void ConnectionAcceptorThread(short nPort)
 
 void CheckSkillInfoLoading(int i)
 {
-	printf("%d:%d\n", i, rand());
+	//printf("%d:%d\n", i, rand());
 	/*int count = SkillInfo::GetInstance()->GetLoadingSkillCount();
 	if (count == 0)
 		stWzResMan->ReleaseMemory();*/
@@ -108,7 +109,7 @@ int main(int argc, char **argv)
 	QuestMan::GetInstance()->LoadDemand();
 	ItemInfo::GetInstance()->Initialize();
 	try {
-		//SkillInfo::GetInstance()->IterateSkillInfo();
+		SkillInfo::GetInstance()->IterateSkillInfo();
 	}
 	catch (...) {}
 
@@ -117,7 +118,7 @@ int main(int argc, char **argv)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
 	else
 	{
-		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
+		WvsLogger::LogRaw("Please run this program with command line, and given the config file path.\n");
 		return -1;
 	}
 
