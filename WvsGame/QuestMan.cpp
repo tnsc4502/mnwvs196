@@ -40,6 +40,8 @@ void QuestMan::LoadDemand()
 	auto &questInfoImg = stWzResMan->GetWz(Wz::Quest)["QuestInfo"];
 	for (auto& questImg : questInfoImg)
 		if ((int)questImg["autoStart"] == 1)
+			m_mAutoStartQuest.insert(atoi(questImg.Name().c_str()));
+		else if ((int)questImg["autoComplete"] == 1)
 			m_mAutoCompleteQuest.insert(atoi(questImg.Name().c_str()));
 }
 
@@ -180,6 +182,12 @@ QuestMan * QuestMan::GetInstance()
 	return pInstance;
 }
 
+bool QuestMan::IsAutoStartQuest(int nQuestID)
+{
+	auto findIter = m_mAutoStartQuest.find(nQuestID);
+	return findIter != m_mAutoStartQuest.end();
+}
+
 bool QuestMan::IsAutoCompleteQuest(int nQuestID)
 {
 	auto findIter = m_mAutoCompleteQuest.find(nQuestID);
@@ -246,4 +254,16 @@ bool QuestMan::CheckStartDemand(int nQuestID, User * pUser)
 			return false;
 	}
 	return true;
+}
+
+QuestAct * QuestMan::GetStartAct(int nQuestID)
+{
+	auto findIter = m_mStartAct.find(nQuestID);
+	return findIter != m_mStartAct.end() ? findIter->second : nullptr;
+}
+
+QuestAct * QuestMan::GetCompleteAct(int nQuestID)
+{
+	auto findIter = m_mCompleteAct.find(nQuestID);
+	return findIter != m_mCompleteAct.end() ? findIter->second : nullptr;
 }

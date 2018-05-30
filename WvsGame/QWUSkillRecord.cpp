@@ -64,7 +64,7 @@ void QWUSkillRecord::SendCharacterSkillRecord(User * pUser, std::vector<GW_Skill
 {
 	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "SendCharacterSkillRecord Called, size = %d\n", (int)aChange.size());
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::OnUserSkillUp);
+	oPacket.Encode2(ClientPacketFlag::Out_OnUserSkillUp);
 	oPacket.Encode1(1);
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);

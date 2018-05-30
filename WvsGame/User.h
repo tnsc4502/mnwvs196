@@ -27,7 +27,7 @@ private:
 	std::mutex m_mtxUserlock, m_scriptLock;
 	int nCharacterID;
 	ClientSocket *pSocket;
-	GA_Character *pCharacterData;
+	GA_Character *m_pCharacterData;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
 	void *m_pUpdateTimer;
@@ -159,5 +159,8 @@ public:
 	void OnCompleteQuest(InPacket *iPacket, int nQuestID, int dwTemplateID, Npc *pNpc, bool bIsAutoComplete);
 	void OnResignQuest(InPacket *iPacket, int nQuestID);
 	void OnLostQuestItem(InPacket *iPacket, int nQuestID);
+	void TryQuestStartAct(int nQuestID, Npc *pNpc);
+
+	void SendQuestResult(int nResult, int nQuestID, int dwTemplateID);
 };
 

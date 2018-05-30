@@ -6,8 +6,14 @@
 MAKE_FLAG_COLLECTION_BODY(ClientPacketFlag)
 //以下開始註冊封包Opcode Flag
 
-MAKE_CLIENT_PACKET_FLAG(OnUserSkillUp, 0x4C);
-MAKE_CLIENT_PACKET_FLAG(OnMessage, 0x57);
+//=======================Send==========================
+
+MAKE_CLIENT_PACKET_FLAG(Out_OnUserSkillUp, 0x4C);
+MAKE_CLIENT_PACKET_FLAG(Out_OnMessage, 0x57);
+
+MAKE_CLIENT_PACKET_FLAG(Out_OnQuestResult, 0x2D4);
+
+//========================Recv=========================
 
 MAKE_CLIENT_PACKET_FLAG(ClientCheckPasswordRequest, 0x69);
 MAKE_CLIENT_PACKET_FLAG(ClientSelectWorld, 0x6A);
@@ -41,6 +47,7 @@ MAKE_CLIENT_PACKET_FLAG(OnUserSkillUseRequest, 0x13F);
 MAKE_CLIENT_PACKET_FLAG(OnUserSkillCancelRequest, 0x140);
 MAKE_CLIENT_PACKET_FLAG(OnQuestRequest, 0x154);
 MAKE_CLIENT_PACKET_FLAG(OnChangeCharacterRequest, 0x204);
+
 
 //結束Opcode Flag註冊
 FLAG_COLLECTION_BODY_END

@@ -24,9 +24,13 @@
 #include "USkill.h"
 #include "WvsGameConstants.hpp"
 #include "AttackInfo.h"
+#include "NpcTemplate.h"
 #include "LifePool.h"
 #include "SkillInfo.h"
 #include "CommandManager.h"
+#include "QuestMan.h"
+#include "QuestAct.h"
+#include "ActItem.h"
 #include "..\Common\Utility\DateTime\GameDateTime.h"
 
 #include "ScriptMan.h"
@@ -255,13 +259,13 @@ void User::OnIssueReloginCookie(InPacket * iPacket)
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: pSocket(_pSocket),
-	  pCharacterData(new GA_Character()),
+	m_pCharacterData(new GA_Character()),
 	  m_pBasicStat(new BasicStat),
 	  m_pSecondaryStat(new SecondaryStat)
 {
-	pCharacterData->DecodeCharacterData(iPacket);
+	m_pCharacterData->DecodeCharacterData(iPacket);
 	_pSocket->SetUser(this);
-	m_pField = (FieldMan::GetInstance()->GetField(pCharacterData->nFieldID));
+	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
 	m_pField->OnEnter(this);
 	auto bindT = std::bind(&User::Update, this);
 	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
@@ -285,7 +289,7 @@ User::~User()
 	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
 	oPacket.Encode4(pSocket->GetSocketID());
 	oPacket.Encode4(GetUserID());
-	pCharacterData->EncodeCharacterData(&oPacket);
+	m_pCharacterData->EncodeCharacterData(&oPacket);
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
@@ -299,14 +303,14 @@ User::~User()
 	}
 	catch (...) {}
 
-	delete pCharacterData;
+	delete m_pCharacterData;
 	delete m_pBasicStat;
 	delete m_pSecondaryStat;
 }
 
 int User::GetUserID() const
 {
-	return pCharacterData->nCharacterID;
+	return m_pCharacterData->nCharacterID;
 }
 
 void User::SendPacket(OutPacket *oPacket)
@@ -316,7 +320,7 @@ void User::SendPacket(OutPacket *oPacket)
 
 GA_Character * User::GetCharacterData()
 {
-	return pCharacterData;
+	return m_pCharacterData;
 }
 
 Field * User::GetField()
@@ -434,7 +438,7 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		m_pField = pTargetField;
 		PostTransferField(m_pField->GetFieldID(), pTargetPortal, false);
 		m_pField->OnEnter(this);
-		pCharacterData->nFieldID = m_pField->GetFieldID();
+		m_pCharacterData->nFieldID = m_pField->GetFieldID();
 	}
 }
 
@@ -477,7 +481,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 	oPacket.Encode1(0); //bUsingBuffProtector
 	oPacket.Encode4(dwFieldID);
 	oPacket.Encode1(pPortal == nullptr ? 0x80 : pPortal->GetID());
-	oPacket.Encode4(pCharacterData->mStat->nHP); //HP
+	oPacket.Encode4(m_pCharacterData->mStat->nHP); //HP
 
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
@@ -504,7 +508,7 @@ void User::OnAvatarModified()
 	int dwAvatarModFlag = 1;
 	oPacket.Encode1(dwAvatarModFlag); //m_dwAvatarModFlag
 	if (dwAvatarModFlag & 1)
-		this->pCharacterData->EncodeAvatarLook(&oPacket);
+		this->m_pCharacterData->EncodeAvatarLook(&oPacket);
 	if (dwAvatarModFlag & 2)
 		oPacket.Encode1(0); //secondayStat.nSpeed
 	if (dwAvatarModFlag & 4)
@@ -567,49 +571,49 @@ void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 	oPacket.Encode1((char)bOnExclRequest);
 	oPacket.Encode8(liFlag);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Skin)
-		oPacket.Encode1(pCharacterData->mAvatarData->nSkin);
+		oPacket.Encode1(m_pCharacterData->mAvatarData->nSkin);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Face)
-		oPacket.Encode4(pCharacterData->mAvatarData->nFace);
+		oPacket.Encode4(m_pCharacterData->mAvatarData->nFace);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Hair)
-		oPacket.Encode4(pCharacterData->mAvatarData->nHair);
+		oPacket.Encode4(m_pCharacterData->mAvatarData->nHair);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Level)
-		oPacket.Encode1(pCharacterData->mLevel->nLevel);
+		oPacket.Encode1(m_pCharacterData->mLevel->nLevel);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Job)
 	{
-		oPacket.Encode2(pCharacterData->mStat->nJob);
-		oPacket.Encode2(pCharacterData->mStat->nSubJob);
+		oPacket.Encode2(m_pCharacterData->mStat->nJob);
+		oPacket.Encode2(m_pCharacterData->mStat->nSubJob);
 	}
 
 	if (liFlag & BasicStat::BasicStatFlag::BS_STR)
-		oPacket.Encode2(pCharacterData->mStat->nStr);
+		oPacket.Encode2(m_pCharacterData->mStat->nStr);
 	if (liFlag & BasicStat::BasicStatFlag::BS_DEX)
-		oPacket.Encode2(pCharacterData->mStat->nDex);
+		oPacket.Encode2(m_pCharacterData->mStat->nDex);
 	if (liFlag & BasicStat::BasicStatFlag::BS_INT)
-		oPacket.Encode2(pCharacterData->mStat->nInt);
+		oPacket.Encode2(m_pCharacterData->mStat->nInt);
 	if (liFlag & BasicStat::BasicStatFlag::BS_LUK)
-		oPacket.Encode2(pCharacterData->mStat->nLuk);
+		oPacket.Encode2(m_pCharacterData->mStat->nLuk);
 	if (liFlag & BasicStat::BasicStatFlag::BS_HP)
-		oPacket.Encode4(pCharacterData->mStat->nHP);
+		oPacket.Encode4(m_pCharacterData->mStat->nHP);
 	if (liFlag & BasicStat::BasicStatFlag::BS_MaxHP)
-		oPacket.Encode4(pCharacterData->mStat->nMaxHP);
+		oPacket.Encode4(m_pCharacterData->mStat->nMaxHP);
 	if (liFlag & BasicStat::BasicStatFlag::BS_MP)
-		oPacket.Encode4(pCharacterData->mStat->nMP);
+		oPacket.Encode4(m_pCharacterData->mStat->nMP);
 	if (liFlag & BasicStat::BasicStatFlag::BS_MaxMP)
-		oPacket.Encode4(pCharacterData->mStat->nMaxMP);
+		oPacket.Encode4(m_pCharacterData->mStat->nMaxMP);
 
 	if (liFlag & BasicStat::BasicStatFlag::BS_AP)
-		oPacket.Encode2(pCharacterData->mStat->nAP);
+		oPacket.Encode2(m_pCharacterData->mStat->nAP);
 
 	//not done yet.
 	if (liFlag & BasicStat::BasicStatFlag::BS_SP)
-		pCharacterData->mStat->EncodeExtendSP(&oPacket);
+		m_pCharacterData->mStat->EncodeExtendSP(&oPacket);
 
 	if (liFlag & BasicStat::BasicStatFlag::BS_EXP)
-		oPacket.Encode8(pCharacterData->mStat->nExp);
+		oPacket.Encode8(m_pCharacterData->mStat->nExp);
 	if (liFlag & BasicStat::BasicStatFlag::BS_POP)
-		oPacket.Encode4(pCharacterData->mStat->nPOP);
+		oPacket.Encode4(m_pCharacterData->mStat->nPOP);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Meso)
-		oPacket.Encode8(pCharacterData->mMoney->nMoney);
+		oPacket.Encode8(m_pCharacterData->mMoney->nMoney);
 
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
@@ -718,7 +722,7 @@ User * User::FindUser(int nUserID)
 void User::SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID, int nCount, bool bOnExcelRequest)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::OnMessage);
+	oPacket.Encode2(ClientPacketFlag::Out_OnMessage);
 	oPacket.Encode1((char)Message::eDropPickUpMessage);
 	if (bPickedUp)
 	{
@@ -747,7 +751,7 @@ void User::SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID
 void User::SendDropPickUpFailPacket(bool bOnExcelRequest)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::OnMessage);
+	oPacket.Encode2(ClientPacketFlag::Out_OnMessage);
 	oPacket.Encode1((char)Message::eDropPickUpMessage);
 	oPacket.Encode1((char)0xFE);
 	oPacket.Encode4(0);
@@ -805,6 +809,32 @@ void User::OnQuestRequest(InPacket * iPacket)
 {
 	char nAction = iPacket->Decode1();
 	int nQuestID = iPacket->Decode4(), tTick, nItemID, nNpcID;
+	if (nAction != 0 && nAction != 3)
+	{
+		nNpcID = iPacket->Decode4();
+		auto pNpcTemplate = NpcTemplate::GetNpcTemplate(nNpcID);
+
+		if (pNpcTemplate == nullptr) // Invalid NPC Template
+			return;
+
+		if (!QuestMan::GetInstance()->IsAutoStartQuest(nQuestID))
+		{
+			auto pNpc = m_pField->GetLifePool()->GetNpc(nNpcID);
+			if (!pNpc) // the npc not existed in this field
+				return;
+			auto rangeX = pNpc->GetPosX() - this->GetPosX();
+			auto rangeY = pNpc->GetPosY() - this->GetPosY();
+
+			if (abs(rangeX) > 1920 || abs(rangeY) > 1080)
+			{
+				WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "玩家%s疑似使用不當方式進行任務。任務 ID = %d, Npc ID = %d\n",
+					this->m_pCharacterData->strName.c_str(),
+					nQuestID,
+					nNpcID);
+				return;
+			}
+		}
+	}
 	switch (nAction)
 	{
 	case 0:
@@ -812,7 +842,6 @@ void User::OnQuestRequest(InPacket * iPacket)
 		nItemID = iPacket->Decode4();
 		break;
 	case 1:
-		nNpcID = iPacket->Decode4();
 		break;
 	case 2:
 		break;
@@ -827,6 +856,14 @@ void User::OnQuestRequest(InPacket * iPacket)
 
 void User::OnAcceptQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc)
 {
+	if (!QuestMan::GetInstance()->CheckStartDemand(nQuestID, this))
+	{
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "無法通過任務需求檢測，玩家名稱: %s, 任務ID: %d\n",
+			m_pCharacterData->strName.c_str(),
+			nQuestID);
+		SendQuestResult(7, 0, 0);
+		return;
+	}
 }
 
 void User::OnCompleteQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc, bool bIsAutoComplete)
@@ -841,10 +878,33 @@ void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
 {
 }
 
+void User::TryQuestStartAct(int nQuestID, Npc * pNpc)
+{
+	auto pStartAct = QuestMan::GetInstance()->GetStartAct(nQuestID);
+	if (!pStartAct)
+		return;
+	auto pActItem = pStartAct->aActItem;
+	for (auto& pItem : pActItem)
+	{
+	}
+}
+
+void User::SendQuestResult(int nResult, int nQuestID, int dwTemplateID)
+{
+	OutPacket oPacket;
+	oPacket.Encode2(ClientPacketFlag::Out_OnQuestResult);
+	oPacket.Encode1(nResult);
+	oPacket.Encode4(nQuestID);
+	oPacket.Encode4(dwTemplateID);
+	oPacket.Encode4(0);
+	oPacket.Encode1(0);
+	SendPacket(&oPacket);
+}
+
 void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
 {
 	OutPacket oPacket;
-	oPacket.Encode2((short)ClientPacketFlag::OnMessage);
+	oPacket.Encode2((short)ClientPacketFlag::Out_OnMessage);
 	oPacket.Encode1((char)Message::eQuestRecordMessage);
 	oPacket.Encode4(nKey);
 	oPacket.Encode1(nState);
@@ -860,6 +920,7 @@ void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStr
 			oPacket.Encode8(GameDateTime::GetTime());
 			break;
 	}
+	SendPacket(&oPacket);
 }
 
 void User::LeaveField()
