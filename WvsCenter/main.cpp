@@ -25,16 +25,16 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
-	/*WvsUnified unifiedDB;
-	unifiedDB.LoadAvatar(1);
+	//WvsUnified unifiedDB;
+	//unifiedDB.(1);
 
 
-	GW_CharacterList list;
+	/*GW_CharacterList list;
 	list.Load(0, 0);
 
 	GA_Character ga;
-	ga.Load(1);*/
-	//std::cout << "Size of EQP = " << ga.aEquipItem.size() << std::endl;
+	ga.Load(4);*/
+	//std::cout << "Size of EQP = " << ga.mItemSlot[1].size() << std::endl;
 	//system("pause");
 
 	auto pConfigLoader = ConfigLoader::GetInstance();

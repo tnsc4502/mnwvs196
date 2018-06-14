@@ -243,7 +243,7 @@ bool QuestMan::CheckStartDemand(int nQuestID, User * pUser)
 			false,
 			false,
 			false,
-			false) < skill.second);
+			false) < skill.second)
 			return false;
 
 	//Check item req.
