@@ -162,6 +162,7 @@ public:
 	void OnResignQuest(InPacket *iPacket, int nQuestID);
 	void OnLostQuestItem(InPacket *iPacket, int nQuestID);
 	void TryQuestStartAct(int nQuestID, Npc *pNpc);
+	void TryQuestCompleteAct(int nQuestID, Npc *pNpc);
 	void TryExchange(const std::vector<ActItem*>& aActItem);
 	bool AllowToGetQuestItem(const ActItem* pActionItem);
 
