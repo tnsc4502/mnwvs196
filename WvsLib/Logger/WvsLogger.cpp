@@ -6,6 +6,9 @@
 //Win Only
 #include <Windows.h>
 
+std::mutex WvsLogger::m_mtxConsoleGuard;
+std::condition_variable WvsLogger::m_cv;
+
 boost::lockfree::queue<WvsLogger::WvsLogData*> g_qMsgQueue(WvsLogger::MAX_MSG_QUEUE_CAPACITY);
 WvsLogger* WvsLogger::pInstnace = new WvsLogger;
 
@@ -15,7 +18,10 @@ void WvsLogger::StartMonitoring()
 	WvsLogData *pData;
 	while (1)
 	{
-		while (g_qMsgQueue.pop(pData))
+		std::unique_lock<std::mutex> lk(m_mtxConsoleGuard);
+		if (g_qMsgQueue.empty())
+			m_cv.wait(lk);
+		if (g_qMsgQueue.pop(pData))
 		{
 			SetConsoleTextAttribute(hConsole, pData->m_nConsoleColor);
 			printf("%s", pData->m_strData.c_str());
@@ -44,6 +50,7 @@ void WvsLogger::PushLogImpl(int nConsoleColor, const std::string & strLog)
 	WvsLogData* pLogData = new WvsLogData;
 	pLogData->m_nConsoleColor = nConsoleColor;
 	pLogData->m_strData.assign(strLog);
+	m_cv.notify_all();
 	g_qMsgQueue.push(pLogData);
 }
 
@@ -78,6 +85,7 @@ void WvsLogger::LogFormat(const std::string format, ...)
 	WvsLogData* pLogData = new WvsLogData;
 	pLogData->m_nConsoleColor = LEVEL_NORMAL;
 	pLogData->m_strData = std::move(formatted.get());
+	m_cv.notify_all();
 	g_qMsgQueue.push(pLogData);
 }
 
@@ -103,6 +111,7 @@ void WvsLogger::LogFormat(int nConsoleColor, const std::string format, ...)
 	WvsLogData* pLogData = new WvsLogData;
 	pLogData->m_nConsoleColor = nConsoleColor;
 	pLogData->m_strData = std::move(formatted.get());
+	m_cv.notify_all();
 	g_qMsgQueue.push(pLogData);
 }
 

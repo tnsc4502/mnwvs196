@@ -8,6 +8,7 @@ struct ActItem
 		nPeriod,
 		nJob,
 		nJobEx,
+		nGender,
 		nProp;
 
 	std::string strPotentialGrade;

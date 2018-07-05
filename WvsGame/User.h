@@ -3,6 +3,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <map>
+#include <vector>
 #include "TemporaryStat.h"
 
 class ClientSocket;
@@ -17,6 +18,7 @@ class BasicStat;
 class SecondaryStat;
 struct TemporaryStat;
 struct AttackInfo;
+struct ActItem;
 
 class Script;
 
@@ -160,6 +162,8 @@ public:
 	void OnResignQuest(InPacket *iPacket, int nQuestID);
 	void OnLostQuestItem(InPacket *iPacket, int nQuestID);
 	void TryQuestStartAct(int nQuestID, Npc *pNpc);
+	void TryExchange(const std::vector<ActItem*>& aActItem);
+	bool AllowToGetQuestItem(const ActItem* pActionItem);
 
 	void SendQuestResult(int nResult, int nQuestID, int dwTemplateID);
 };

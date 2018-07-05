@@ -138,7 +138,7 @@ void File::Directory(Node n) {
     vector<Node> dirs;
     n.Reserve(count);
     for (int i = 0; i < count; ++i) {
-        char * name;
+        char * name = nullptr;
         uint8_t type = file.Read<uint8_t>();
         if (type == 1) {
             file.Skip(10);

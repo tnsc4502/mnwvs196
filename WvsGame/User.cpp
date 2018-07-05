@@ -32,7 +32,10 @@
 #include "QuestAct.h"
 #include "ActItem.h"
 #include "..\Common\Utility\DateTime\GameDateTime.h"
+#include "..\Common\Utility\Random\Rand32.h"
 
+#include "QWUQuestRecord.h"
+#include "InventoryManipulator.h"
 #include "ScriptMan.h"
 #include "Script.h"
 
@@ -809,17 +812,19 @@ void User::OnQuestRequest(InPacket * iPacket)
 {
 	char nAction = iPacket->Decode1();
 	int nQuestID = iPacket->Decode4(), tTick, nItemID, nNpcID;
+	NpcTemplate* pNpcTemplate = nullptr;
+	Npc* pNpc = nullptr;
 	if (nAction != 0 && nAction != 3)
 	{
 		nNpcID = iPacket->Decode4();
-		auto pNpcTemplate = NpcTemplate::GetNpcTemplate(nNpcID);
+		pNpcTemplate = NpcTemplate::GetNpcTemplate(nNpcID);
+		
+		//if (pNpcTemplate == nullptr) // Invalid NPC Template
+		//	return;
 
-		if (pNpcTemplate == nullptr) // Invalid NPC Template
-			return;
-
-		if (!QuestMan::GetInstance()->IsAutoStartQuest(nQuestID))
+		/*if (!QuestMan::GetInstance()->IsAutoStartQuest(nQuestID))
 		{
-			auto pNpc = m_pField->GetLifePool()->GetNpc(nNpcID);
+			pNpc = m_pField->GetLifePool()->GetNpc(nNpcID);
 			if (!pNpc) // the npc not existed in this field
 				return;
 			auto rangeX = pNpc->GetPosX() - this->GetPosX();
@@ -833,8 +838,9 @@ void User::OnQuestRequest(InPacket * iPacket)
 					nNpcID);
 				return;
 			}
-		}
+		}*/
 	}
+	WvsLogger::LogFormat("OnQuestRequest npc id = %d, quest action = %d\n", nNpcID, (int)nAction);
 	switch (nAction)
 	{
 	case 0:
@@ -842,6 +848,7 @@ void User::OnQuestRequest(InPacket * iPacket)
 		nItemID = iPacket->Decode4();
 		break;
 	case 1:
+		OnAcceptQuest(iPacket, nQuestID, nNpcID, pNpc);
 		break;
 	case 2:
 		break;
@@ -864,6 +871,8 @@ void User::OnAcceptQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc
 		SendQuestResult(7, 0, 0);
 		return;
 	}
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "任務檢測成功。\n");
+	TryQuestStartAct(nQuestID, pNpc);
 }
 
 void User::OnCompleteQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc, bool bIsAutoComplete)
@@ -880,13 +889,189 @@ void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
 
 void User::TryQuestStartAct(int nQuestID, Npc * pNpc)
 {
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "TryQuestStartAct。\n");
 	auto pStartAct = QuestMan::GetInstance()->GetStartAct(nQuestID);
 	if (!pStartAct)
 		return;
-	auto pActItem = pStartAct->aActItem;
-	for (auto& pItem : pActItem)
+	TryExchange(pStartAct->aActItem);
+	QWUQuestRecord::Set(this, nQuestID, pStartAct->sInfo);
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "After Set Quest Record。\n");
+}
+
+void User::TryExchange(const std::vector<ActItem*>& aActItem)
+{
+	std::vector<std::pair<int, int>> randItem;
+	int nRandWeight = 0, nSelectedItemID = 0;
+	for (auto& pItem : aActItem)
 	{
+		if (pItem->nProp > 0 && AllowToGetQuestItem(pItem)) 
+		{
+			randItem.push_back({ pItem->nProp, pItem->nItemID });
+			nRandWeight += pItem->nProp;
+		}
 	}
+	if (randItem.size() > 0) 
+	{
+		int randPos = Rand32::GetInstance()->Random() % nRandWeight;
+		for(auto& rndItem : randItem)
+			if ((randPos -= rndItem.first) <= 0)
+			{
+				nSelectedItemID = rndItem.second;
+				break;
+			}
+	}
+	for (auto& pItem : aActItem)
+	{
+		if (!AllowToGetQuestItem(pItem))
+			continue;
+		int nItemID = pItem->nItemID;
+		if (pItem->nProp != 0 && nItemID != nSelectedItemID)
+			continue;
+		int nCount = pItem->nCount;
+		if (nCount < 0)
+			QWUInventory::RawRemoveItemByID(this, nItemID, nCount);
+		else
+			QWUInventory::RawAddItemByID(this, nItemID, nCount);
+	}
+}
+
+bool User::AllowToGetQuestItem(const ActItem * pActionItem)
+{
+	if (pActionItem->nGender != 2 && pActionItem->nGender >= 0 && pActionItem->nGender != this->m_pBasicStat->nGender)
+		return false;
+	auto lmdCheckJob = [&](int encoded, int job) 
+	{
+		if ((encoded & 0x1) != 0) 
+		{
+			if ((0) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x2) != 0) 
+		{
+			if ((100) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x4) != 0) 
+		{
+			if ((200) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x8) != 0) 
+		{
+			if ((300) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x10) != 0) 
+		{
+			if ((400) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x20) != 0) 
+		{
+			if ((500) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x400) != 0) 
+		{
+			if ((1000) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x800) != 0) 
+		{
+			if ((1100) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x1000) != 0)
+		{
+			if ((1200) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x2000) != 0) 
+		{
+			if ((1300) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x4000) != 0) 
+		{
+			if ((1400) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x8000) != 0)
+		{
+			if ((1500) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x20000) != 0) 
+		{
+			if ((2001) / 100 == job / 100)
+				return true;
+			if ((2200) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x100000) != 0) 
+		{
+			if ((2000) / 100 == job / 100)
+				return true;
+			if ((2001) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x200000) != 0) 
+		{
+			if ((2100) / 100 == job / 100)
+				return true;
+		}
+		if ((encoded & 0x400000) != 0) 
+		{
+			if ((2001) / 100 == job / 100)
+				return true;
+			if ((2200) / 100 == job / 100)
+				return true;
+		}
+
+		if ((encoded & 0x40000000) != 0)
+		{
+			if ((3000) / 100 == job / 100)
+				return true;
+			if ((3200) / 100 == job / 100)
+				return true;
+			if ((3300) / 100 == job / 100)
+				return true;
+			if ((3500) / 100 == job / 100)
+				return true;
+		}
+		return false;
+	};
+	auto lmdCheckJobEx = [&](int encoded, int job) 
+	{
+		if ((encoded & 0x1) != 0) 
+		{
+			if (((200) / 100) % 10 == (job / 100) % 10)
+				return true;
+		}
+		if ((encoded & 0x2) != 0) 
+		{
+			if (((300) / 100) % 10 == (job / 100) % 10)
+				return true;
+		}
+		if ((encoded & 0x4) != 0) 
+		{
+			if (((400) / 100) % 10 == (job / 100) % 10)
+				return true;
+		}
+		if ((encoded & 0x8) != 0) 
+		{
+			if (((500) / 100) % 10 == (job / 100) % 10)
+				return true;
+		}
+		return false;
+	};
+	if (pActionItem->nJob > 0) 
+	{
+		if (!lmdCheckJob(pActionItem->nJob, m_pBasicStat->nJob)
+			&& !lmdCheckJobEx(pActionItem->nJobEx, m_pBasicStat->nJob))
+			return false;
+	}
+	return true;
 }
 
 void User::SendQuestResult(int nResult, int nQuestID, int dwTemplateID)

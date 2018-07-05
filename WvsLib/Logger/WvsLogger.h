@@ -1,12 +1,14 @@
 #pragma once
 #include <mutex>
+#include <condition_variable>
 
 class WvsLogger
 {
 	WvsLogger();
 	~WvsLogger();
 
-	std::mutex m_mtxConsoleGuard;
+	static std::mutex m_mtxConsoleGuard; 
+	static std::condition_variable m_cv;
 	void StartMonitoring();
 
 	static WvsLogger* pInstnace;

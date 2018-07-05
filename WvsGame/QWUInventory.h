@@ -13,6 +13,8 @@ public:
 	static void OnChangeSlotPositionRequest(User* pUser, InPacket* iPacket);
 	static bool PickUpMoney(User* pUser, bool byPet, int nAmount);
 	static bool PickUpItem(User* pUser, bool byPet, GW_ItemSlotBase* pItem);
+	static bool RawRemoveItemByID(User* pUser, int nItemID, int nCount);
+	static bool RawAddItemByID(User* pUser, int nItemID, int nCount);
 	//static void RestoreMoneyFromTemp(User* pUser, bool bByPet, int nAmount);
 };
 

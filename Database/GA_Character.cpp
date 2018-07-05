@@ -261,6 +261,8 @@ void GA_Character::Save(bool isNewCharacter)
 
 	for (auto& skill : mSkillRecord)
 		skill.second->Save();
+	for (auto& questRecord : mQuestRecord)
+		questRecord.second->Save();
 }
 
 int GA_Character::FindEmptySlotPosition(int nTI)
@@ -291,6 +293,24 @@ GW_ItemSlotBase* GA_Character::GetItem(int nTI, int nPOS)
 	if (result == mItemSlot[nTI].end())
 		return nullptr;
 	return result->second;
+}
+
+GW_ItemSlotBase * GA_Character::GetItemByID(int nItemID)
+{
+	int nTI = nItemID / 10000000;
+	if (nTI <= 0 || nTI > 5)
+		return nullptr;
+	auto itemSlot = mItemSlot[nTI];
+	for (auto& slot : itemSlot)
+	{
+		if (slot.first < 0) //skip equipped
+			continue;
+		if (slot.first >= 10000)
+			return nullptr;
+		if (slot.second->nItemID == nItemID)
+			return slot.second;
+	}
+	return nullptr;
 }
 
 void GA_Character::RemoveItem(int nTI, int nPOS)

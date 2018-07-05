@@ -64,6 +64,7 @@ void QuestMan::RegisterAct(void * pProp)
 		pAct->nBuffItemID = actNode["buffItemID"];
 		pAct->nTransferField = actNode["transferField"];
 		pAct->nNextQuest = actNode["nextQuest"];
+		pAct->sInfo = actNode["info"];
 
 		auto& itemNode = actNode["item"];
 		for (auto& itemAct : itemNode)
@@ -75,6 +76,9 @@ void QuestMan::RegisterAct(void * pProp)
 			pActItem->nJobEx = itemAct["jobEx"];
 			pActItem->nPeriod = itemAct["period"];
 			pActItem->nProp = itemAct["prop"];
+			pActItem->nGender = 2;
+			if (itemAct["gender"])
+				pActItem->nGender = itemAct["gender"];
 			//pActItem->strPotentialGrade = (std::string)itemAct["potentialGrade"];
 			pAct->aActItem.push_back(pActItem);
 		}

@@ -27,6 +27,6 @@ struct QuestAct
 	std::vector<ActQuest*> aActQuest;
 	std::vector<ActSP*> aActSP;
 
-	std::string strPortalName;
+	std::string strPortalName, sInfo;
 };
 

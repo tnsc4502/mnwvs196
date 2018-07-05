@@ -88,7 +88,7 @@ namespace WvsGameConstants
 
 	static bool IsDualJob(int nJob)
 	{
-		return nJob / 100 == 22 || nJob == 2001;
+		return nJob % 10 == 43;
 	}
 
 	static bool IsCommonSkill(int nSkillID)
@@ -179,9 +179,35 @@ namespace WvsGameConstants
 		return a1 == 10000 || a1 == 10100 || a1 == 10110 || a1 == 10111 || a1 == 10112;
 	}
 
-	static int GetEvenJobLevel(int nJob)
+	static int GetEvenJobLevel(int a1)
 	{
-		return nJob / 10 == 43;
+		signed int result; // eax@2
+
+		switch (a1)
+		{
+		case 2200:
+		case 2210:
+			result = 1;
+			break;
+		case 2211:
+		case 2212:
+		case 2213:
+			result = 2;
+			break;
+		case 2214:
+		case 2215:
+		case 2216:
+			result = 3;
+			break;
+		case 2217:
+		case 2218:
+			result = 4;
+			break;
+		default:
+			result = 0;
+			break;
+		}
+		return result;
 	}
 
 	static int GetJobLevel(int nJob)
