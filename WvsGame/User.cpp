@@ -9,7 +9,6 @@
 
 #include "..\Common\Net\OutPacket.h"
 #include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
 #include "..\Common\Net\PacketFlags\GamePacketFlags.hpp"
 #include "..\Common\Net\PacketFlags\UserPacketFlags.h"
 
@@ -59,7 +58,7 @@ void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 		iPacket->Decode2();
 		iPacket->Decode2();
 
-		if (pInfo->m_nType == ClientPacketFlag::OnUserAttack_MagicAttack) 
+		if (pInfo->m_nType == UserRecvPacketFlag::User_OnUserAttack_MagicAttack) 
 		{
 			iPacket->Decode1();
 			if (pInfo->m_nSkillID == 80001835)
@@ -94,7 +93,7 @@ AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
 	int nSkillID = ret->m_nSkillID = iPacket->Decode4();
 	ret->m_nSLV = iPacket->Decode1();
 
-	if (nType != ClientPacketFlag::OnUserAttack_AreaDot)
+	if (nType != UserRecvPacketFlag::User_OnUserAttack_AreaDot)
 		iPacket->Decode1();
 
 	ret->m_dwCRC = iPacket->Decode4();
@@ -112,7 +111,7 @@ AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
 	if (WvsGameConstants::IsZeroSkill(nSkillID))
 		iPacket->Decode1();
 
-	if (nType != ClientPacketFlag::OnUserAttack_BodyAttack)
+	if (nType != UserRecvPacketFlag::User_OnUserAttack_BodyAttack)
 		iPacket->Decode1();
 
 	iPacket->Decode1();
@@ -122,7 +121,7 @@ AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
 	ret->m_nAttackActionType = iPacket->Decode1();
 	ret->m_nAttackSpeed = iPacket->Decode1();
 
-	if (nType != ClientPacketFlag::OnUserAttack_BodyAttack)
+	if (nType != UserRecvPacketFlag::User_OnUserAttack_BodyAttack)
 		ret->m_tLastAttackTime = iPacket->Decode4();
 
 	iPacket->Decode4();
@@ -266,7 +265,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	  m_pBasicStat(new BasicStat),
 	  m_pSecondaryStat(new SecondaryStat)
 {
-	m_pCharacterData->DecodeCharacterData(iPacket);
+	m_pCharacterData->DecodeCharacterData(iPacket, false);
 	_pSocket->SetUser(this);
 	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
 	m_pField->OnEnter(this);
@@ -292,7 +291,7 @@ User::~User()
 	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
 	oPacket.Encode4(pSocket->GetSocketID());
 	oPacket.Encode4(GetUserID());
-	m_pCharacterData->EncodeCharacterData(&oPacket);
+	m_pCharacterData->EncodeCharacterData(&oPacket, true);
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
@@ -360,44 +359,44 @@ void User::OnPacket(InPacket *iPacket)
 		SendPacket(&oPacket);
 		break;
 	}
-	case ClientPacketFlag::OnUserChat:
+	case UserRecvPacketFlag::User_OnUserChat:
 		OnChat(iPacket);
 		break;
-	case ClientPacketFlag::OnUserTransferFieldRequest:
+	case UserRecvPacketFlag::User_OnUserTransferFieldRequest:
 		OnTransferFieldRequest(iPacket);
 		break;
-	case ClientPacketFlag::OnUserMoveRequest:
+	case UserRecvPacketFlag::User_OnUserMoveRequest:
 		m_pField->OnUserMove(this, iPacket);
 		break;
-	case ClientPacketFlag::OnUserChangeSlotRequest:
+	case UserRecvPacketFlag::User_OnUserChangeSlotRequest:
 		QWUInventory::OnChangeSlotPositionRequest(this, iPacket);
 		break;
-	case ClientPacketFlag::OnUserSkillUpRequest:
+	case UserRecvPacketFlag::User_OnUserSkillUpRequest:
 		USkill::OnSkillUpRequest(this, iPacket);
 		break;
-	case ClientPacketFlag::OnUserSkillUseRequest:
+	case UserRecvPacketFlag::User_OnUserSkillUseRequest:
 		USkill::OnSkillUseRequest(this, iPacket);
 		break;
-	case ClientPacketFlag::OnUserSkillCancelRequest:
+	case UserRecvPacketFlag::User_OnUserSkillCancelRequest:
 		USkill::OnSkillCancelRequest(this, iPacket);
 		break;
-	case ClientPacketFlag::OnUserAttack_MeleeAttack:
-	case ClientPacketFlag::OnUserAttack_ShootAttack:
-	case ClientPacketFlag::OnUserAttack_MagicAttack:
-	case ClientPacketFlag::OnUserAttack_BodyAttack:
-	case ClientPacketFlag::OnUserAttack_AreaDot:
+	case UserRecvPacketFlag::User_OnUserAttack_MeleeAttack:
+	case UserRecvPacketFlag::User_OnUserAttack_ShootAttack:
+	case UserRecvPacketFlag::User_OnUserAttack_MagicAttack:
+	case UserRecvPacketFlag::User_OnUserAttack_BodyAttack:
+	case UserRecvPacketFlag::User_OnUserAttack_AreaDot:
 		OnAttack(nType, iPacket);
 		break;
-	case ClientPacketFlag::OnChangeCharacterRequest:
+	case UserRecvPacketFlag::User_OnChangeCharacterRequest:
 		OnIssueReloginCookie(iPacket);
 		break;
-	case ClientPacketFlag::OnSelectNpc:
+	case UserRecvPacketFlag::User_OnSelectNpc:
 		OnSelectNpc(iPacket);
 		break;
-	case ClientPacketFlag::OnScriptMessageAnswer:
+	case UserRecvPacketFlag::User_OnScriptMessageAnswer:
 		OnScriptMessageAnswer(iPacket);
 		break;
-	case ClientPacketFlag::OnQuestRequest:
+	case UserRecvPacketFlag::User_OnQuestRequest:
 		OnQuestRequest(iPacket);
 		break;
 	default:
@@ -454,7 +453,7 @@ void User::OnChat(InPacket *iPacket)
 	unsigned char balloon = iPacket->Decode1();
 
 	OutPacket oPacket;
-	oPacket.Encode2(UserPacketFlag::UserCommon_OnChat);
+	oPacket.Encode2(UserSendPacketFlag::UserCommon_OnChat);
 	oPacket.Encode4(GetUserID());
 	oPacket.Encode1(0);
 	oPacket.EncodeStr(strMsg);
@@ -506,7 +505,7 @@ void User::SetMovePosition(int x, int y, char bMoveAction, short nFSN)
 void User::OnAvatarModified()
 {
 	OutPacket oPacket;
-	oPacket.Encode2(UserPacketFlag::UserRemote_OnAvatarModified);
+	oPacket.Encode2(UserSendPacketFlag::UserRemote_OnAvatarModified);
 	oPacket.Encode4(nCharacterID);
 	int dwAvatarModFlag = 1;
 	oPacket.Encode1(dwAvatarModFlag); //m_dwAvatarModFlag
@@ -570,7 +569,7 @@ void User::ValidateStat()
 void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(UserPacketFlag::UserLocal_OnStatChanged);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnStatChanged);
 	oPacket.Encode1((char)bOnExclRequest);
 	oPacket.Encode8(liFlag);
 	if (liFlag & BasicStat::BasicStatFlag::BS_Skin)
@@ -630,7 +629,7 @@ void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 void User::SendTemporaryStatReset(TemporaryStat::TS_Flag& flag)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(UserPacketFlag::USerLocal_OnTemporaryStatReset);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnTemporaryStatReset);
 	flag.Encode(&oPacket);
 	m_pSecondaryStat->EncodeIndieTempStat(&oPacket, flag);
 	oPacket.Encode2(0);
@@ -643,7 +642,7 @@ void User::SendTemporaryStatReset(TemporaryStat::TS_Flag& flag)
 void User::SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(UserPacketFlag::USerLocal_OnTemporaryStatSet);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnTemporaryStatSet);
 	m_pSecondaryStat->EncodeForLocal(&oPacket, flag);
 	SendPacket(&oPacket);
 }
@@ -653,19 +652,19 @@ void User::OnAttack(int nType, InPacket * iPacket)
 	std::unique_ptr<AttackInfo> pInfo = nullptr;
 	switch (nType)
 	{
-		case ClientPacketFlag::OnUserAttack_MeleeAttack:
+		case UserRecvPacketFlag::User_OnUserAttack_MeleeAttack:
 			pInfo.reset(TryParsingMeleeAttack(nType, iPacket));
 			break;
-		case ClientPacketFlag::OnUserAttack_ShootAttack:
+		case UserRecvPacketFlag::User_OnUserAttack_ShootAttack:
 			pInfo.reset(TryParsingShootAttack(nType, iPacket));
 			break;
-		case ClientPacketFlag::OnUserAttack_MagicAttack:
+		case UserRecvPacketFlag::User_OnUserAttack_MagicAttack:
 			pInfo.reset(TryParsingMagicAttack(nType, iPacket));
 			break;
-		case ClientPacketFlag::OnUserAttack_BodyAttack:
+		case UserRecvPacketFlag::User_OnUserAttack_BodyAttack:
 			pInfo.reset(TryParsingBodyAttack(nType, iPacket));
 			break;
-		case ClientPacketFlag::OnUserAttack_AreaDot:
+		case UserRecvPacketFlag::User_OnUserAttack_AreaDot:
 			pInfo.reset(TryParsingAreaDot(nType, iPacket));
 			break;
 	}
@@ -725,7 +724,7 @@ User * User::FindUser(int nUserID)
 void User::SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID, int nCount, bool bOnExcelRequest)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::Out_OnMessage);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnMessage);
 	oPacket.Encode1((char)Message::eDropPickUpMessage);
 	if (bPickedUp)
 	{
@@ -754,7 +753,7 @@ void User::SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID
 void User::SendDropPickUpFailPacket(bool bOnExcelRequest)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::Out_OnMessage);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnMessage);
 	oPacket.Encode1((char)Message::eDropPickUpMessage);
 	oPacket.Encode1((char)0xFE);
 	oPacket.Encode4(0);
@@ -840,19 +839,23 @@ void User::OnQuestRequest(InPacket * iPacket)
 			}
 		}*/
 	}
+
 	WvsLogger::LogFormat("OnQuestRequest npc id = %d, quest action = %d\n", nNpcID, (int)nAction);
 	switch (nAction)
 	{
 	case 0:
 		tTick = iPacket->Decode4();
 		nItemID = iPacket->Decode4();
+		OnLostQuestItem(iPacket, nQuestID);
 		break;
 	case 1:
 		OnAcceptQuest(iPacket, nQuestID, nNpcID, pNpc);
 		break;
 	case 2:
+		OnCompleteQuest(iPacket, nQuestID, nNpcID, pNpc, QuestMan::GetInstance()->IsAutoCompleteQuest(nQuestID));
 		break;
 	case 3:
+		OnResignQuest(iPacket, nQuestID);
 		break;
 	case 4:
 		break;
@@ -865,7 +868,7 @@ void User::OnAcceptQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc
 {
 	if (!QuestMan::GetInstance()->CheckStartDemand(nQuestID, this))
 	{
-		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "無法通過任務需求檢測，玩家名稱: %s, 任務ID: %d\n",
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "[OnAcceptQuest]無法通過任務需求檢測，玩家名稱: %s, 任務ID: %d\n",
 			m_pCharacterData->strName.c_str(),
 			nQuestID);
 		SendQuestResult(7, 0, 0);
@@ -877,10 +880,21 @@ void User::OnAcceptQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc
 
 void User::OnCompleteQuest(InPacket * iPacket, int nQuestID, int dwTemplateID, Npc * pNpc, bool bIsAutoComplete)
 {
+	if (!QuestMan::GetInstance()->CheckCompleteDemand(nQuestID, this))
+	{
+		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "[OnCompleteQuest]無法通過任務需求檢測，玩家名稱: %s, 任務ID: %d\n",
+			m_pCharacterData->strName.c_str(),
+			nQuestID);
+		SendQuestResult(7, 0, 0);
+		return;
+	}
+	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "任務檢測成功。\n");
+	TryQuestCompleteAct(nQuestID, pNpc);
 }
 
 void User::OnResignQuest(InPacket * iPacket, int nQuestID)
 {
+	QWUQuestRecord::Remove(this, nQuestID, QWUQuestRecord::GetState(this, nQuestID) == 2);
 }
 
 void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
@@ -889,13 +903,20 @@ void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
 
 void User::TryQuestStartAct(int nQuestID, Npc * pNpc)
 {
-	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "TryQuestStartAct。\n");
 	auto pStartAct = QuestMan::GetInstance()->GetStartAct(nQuestID);
 	if (!pStartAct)
 		return;
 	TryExchange(pStartAct->aActItem);
 	QWUQuestRecord::Set(this, nQuestID, pStartAct->sInfo);
-	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "After Set Quest Record。\n");
+}
+
+void User::TryQuestCompleteAct(int nQuestID, Npc * pNpc)
+{
+	auto pCompleteAct = QuestMan::GetInstance()->GetCompleteAct(nQuestID);
+	if (!pCompleteAct)
+		return;
+	TryExchange(pCompleteAct->aActItem);
+	QWUQuestRecord::SetComplete(this, nQuestID);
 }
 
 void User::TryExchange(const std::vector<ActItem*>& aActItem)
@@ -1077,7 +1098,7 @@ bool User::AllowToGetQuestItem(const ActItem * pActionItem)
 void User::SendQuestResult(int nResult, int nQuestID, int dwTemplateID)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::Out_OnQuestResult);
+	oPacket.Encode2((short)UserSendPacketFlag::UserLocal_OnMessage);
 	oPacket.Encode1(nResult);
 	oPacket.Encode4(nQuestID);
 	oPacket.Encode4(dwTemplateID);
@@ -1089,7 +1110,7 @@ void User::SendQuestResult(int nResult, int nQuestID, int dwTemplateID)
 void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
 {
 	OutPacket oPacket;
-	oPacket.Encode2((short)ClientPacketFlag::Out_OnMessage);
+	oPacket.Encode2((short)UserSendPacketFlag::UserLocal_OnMessage);
 	oPacket.Encode1((char)Message::eQuestRecordMessage);
 	oPacket.Encode4(nKey);
 	oPacket.Encode1(nState);

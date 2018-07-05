@@ -1,6 +1,6 @@
 #include "QWUSkillRecord.h"
 #include "..\Common\Net\OutPacket.h"
-#include "..\Common\Net\PacketFlags\ClientPacketFlags.hpp"
+#include "..\Common\Net\PacketFlags\UserPacketFlags.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_SkillRecord.h"
@@ -64,7 +64,7 @@ void QWUSkillRecord::SendCharacterSkillRecord(User * pUser, std::vector<GW_Skill
 {
 	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "SendCharacterSkillRecord Called, size = %d\n", (int)aChange.size());
 	OutPacket oPacket;
-	oPacket.Encode2(ClientPacketFlag::Out_OnUserSkillUp);
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnChangeSkillRecordResult);
 	oPacket.Encode1(1);
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);

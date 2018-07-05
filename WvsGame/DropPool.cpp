@@ -104,14 +104,6 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 				nCount = ((GW_ItemSlotBundle*)pDrop->m_pItem)->nNumber;
 			bDropRemained = (QWUInventory::PickUpItem(pUser, false, pDrop->m_pItem) == false);
 		}
-
-		if (!bDropRemained) 
-		{
-			OutPacket oPacket;
-			pDrop->MakeLeaveFieldPacket(&oPacket, 2, pUser->GetUserID());
-			m_pField->SplitSendPacket(&oPacket, nullptr);
-			m_mDrop.erase(nObjectID);
-		}
 		pUser->SendDropPickUpResultPacket(
 			!bDropRemained,
 			pDrop->m_bIsMoney,
@@ -119,5 +111,15 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 			nCount,
 			false
 		);
+
+		if (!bDropRemained)
+		{
+			OutPacket oPacket;
+			pDrop->MakeLeaveFieldPacket(&oPacket, 2, pUser->GetUserID());
+			m_pField->SplitSendPacket(&oPacket, nullptr);
+			delete pDrop->m_pItem;
+			delete pDrop;
+			m_mDrop.erase(nObjectID);
+		}
 	}
 }

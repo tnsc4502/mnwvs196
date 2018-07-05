@@ -32,12 +32,6 @@
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp">
       <Filter>Common\Utility\Task</Filter>
     </ClCompile>
@@ -46,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp">
       <Filter>Common\Utility\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -114,16 +111,10 @@
     <ClInclude Include="Center.h">
       <Filter>Login</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h">
@@ -134,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h">
       <Filter>Common\Utility\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -51,7 +51,7 @@ void WvsCenter::NotifyWorldChanged()
 		{
 			//printf("On Notify World Changed\n");
 			OutPacket oPacket;
-			oPacket.Encode2(CenterPacketFlag::CenterStatChanged);
+			oPacket.Encode2(CenterSendPacketFlag::CenterStatChanged);
 			oPacket.Encode2(WvsBase::GetInstance<WvsCenter>()->GetChannelCount());
 			socket.second->SendPacket(&oPacket);
 		}

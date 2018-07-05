@@ -3,7 +3,7 @@
 #include "Net\OutPacket.h"
 
 #include "Net\PacketFlags\GamePacketFlags.hpp"
-#include "Net\PacketFlags\ClientPacketFlags.hpp"
+#include "Net\PacketFlags\LoginPacketFlags.hpp"
 #include "WvsGame.h"
 #include "User.h"
 
@@ -28,7 +28,7 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
-	case ClientPacketFlag::ClientMigrateIn:
+	case LoginRecvPacketFlag::Client_ClientMigrateIn:
 		OnMigrateIn(iPacket);
 		break;
 	default:

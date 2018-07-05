@@ -25,6 +25,7 @@ public:
 	bool IsAutoStartQuest(int nQuestID);
 	bool IsAutoCompleteQuest(int nQuestID);
 	bool CheckStartDemand(int nQuestID, User *pUser);
+	bool CheckCompleteDemand(int nQuestID, User *pUser);
 
 	QuestAct* GetStartAct(int nQuestID);
 	QuestAct* GetCompleteAct(int nQuestID);

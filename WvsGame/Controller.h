@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <set>
 #include <algorithm>
 
 class User;
@@ -8,8 +9,8 @@ class Npc;
 
 class Controller
 {
-	std::vector<Mob*> m_lCtrlMob;
-	std::vector<Npc*> m_lCtrlNpc;
+	std::set<Mob*> m_lCtrlMob;
+	std::set<Npc*> m_lCtrlNpc;
 
 	User *pUser;
 public:
@@ -28,6 +29,6 @@ public:
 	void AddCtrlNpc(Npc* ctrl);
 	void RemoveCtrlNpc(Npc* ctrl);
 
-	std::vector<Mob*>& GetMobCtrlList();
+	std::set<Mob*>& GetMobCtrlList();
 };
 

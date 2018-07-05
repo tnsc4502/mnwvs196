@@ -152,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\crypto.cpp" />
@@ -172,7 +171,6 @@
     <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
     <ClInclude Include="..\Common\Net\asio.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />

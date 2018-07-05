@@ -263,6 +263,8 @@ void GA_Character::Save(bool isNewCharacter)
 		skill.second->Save();
 	for (auto& questRecord : mQuestRecord)
 		questRecord.second->Save();
+	for (auto& questRecord : mQuestComplete)
+		questRecord.second->Save();
 }
 
 int GA_Character::FindEmptySlotPosition(int nTI)
@@ -417,6 +419,7 @@ void GA_Character::SetQuest(int nKey, const std::string & sInfo)
 		pNewRecord->nState = 1;
 		pNewRecord->nQuestID = nKey;
 		pNewRecord->sStringRecord = sInfo;
+		mQuestRecord.insert({ nKey, pNewRecord });
 	}
 	else
 		findIter->second->sStringRecord = sInfo;
@@ -432,7 +435,7 @@ std::mutex & GA_Character::GetCharacterDatLock()
 	return mCharacterLock;
 }
 
-void GA_Character::DecodeCharacterData(InPacket *iPacket)
+void GA_Character::DecodeCharacterData(InPacket *iPacket, bool bToCenter)
 {
 	long long int flag = iPacket->Decode8();
 	iPacket->Decode1();
@@ -512,6 +515,7 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket)
 	{
 		iPacket->Decode1();
 		int nStartedQuestSize = iPacket->Decode2();
+		printf("Decode Quest Data : size = %d\n", nStartedQuestSize);
 		for (int i = 0; i < nStartedQuestSize; ++i)
 		{
 			GW_QuestRecord *pRecord = new GW_QuestRecord;
@@ -953,7 +957,7 @@ void GA_Character::DecodeSkillRecord(InPacket * iPacket)
 	}
 }
 
-void GA_Character::EncodeCharacterData(OutPacket *oPacket)
+void GA_Character::EncodeCharacterData(OutPacket *oPacket, bool bToCenter)
 {
 	long long int flag = 0xFFFFFFFFFFFFFFFF 	;
 	oPacket->Encode8(flag);

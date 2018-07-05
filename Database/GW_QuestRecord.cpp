@@ -29,12 +29,12 @@ void GW_QuestRecord::Save()
 
 	queryStatement.reset(GET_DB_SESSION);
 	queryStatement << "INSERT INTO QuestRecord VALUES(null, "
-		<< nQuestID << ", "
 		<< nCharacterID << ", "
+		<< nQuestID << ", "
 		<< nState << ", "
-		<< tTime << ", "
-		<< sStringRecord << ", "
-		<< mobRecord << ")";
+		<< tTime << ", \'"
+		<< sStringRecord << "\', \'"
+		<< mobRecord << "\')";
 	queryStatement.execute();
 }
 

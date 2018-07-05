@@ -111,9 +111,6 @@
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
@@ -148,9 +145,6 @@
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="MobPacketFlags.h">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
@@ -285,6 +279,9 @@
     <ClInclude Include="QWUQuestRecord.h">
       <Filter>WvsGame\InGame\Quest</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Net\PacketFlags\MobPacketFlags.h">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -307,9 +304,6 @@
       <Filter>Common\Net</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
     <ClCompile Include="Center.cpp">
@@ -337,9 +331,6 @@
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="MobPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
@@ -446,6 +437,12 @@
     </ClCompile>
     <ClCompile Include="QWUQuestRecord.cpp">
       <Filter>WvsGame\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\MobPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Net\PacketFlags\FieldPacketFlags.cpp">
+      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

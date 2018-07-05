@@ -257,8 +257,6 @@ void Mob::OnMobDead(int nHitX, int nHitY, int nMesoUp, int nMesoUpByItem)
 	);
 	int nOwnType, nOwnPartyID, nLastDamageCharacterID;
 	DistributeExp(nOwnType, nOwnPartyID, nLastDamageCharacterID);
-
-	delete this;
 }
 
 void Mob::DistributeExp(int & refOwnType, int & refOwnParyID, int & refLastDamageCharacterID)

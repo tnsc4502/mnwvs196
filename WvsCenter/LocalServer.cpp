@@ -33,16 +33,16 @@ void LocalServer::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
-		case LoginPacketFlag::RegisterCenterRequest:
+		case LoginSendPacketFlag::Center_RegisterCenterRequest:
 			OnRegisterCenterRequest(iPacket);
 			break;
-		case LoginPacketFlag::RequestCharacterList:
+		case LoginSendPacketFlag::Center_RequestCharacterList:
 			OnRequestCharacterList(iPacket);
 			break;
-		case LoginPacketFlag::RequestCreateNewCharacter:
+		case LoginSendPacketFlag::Center_RequestCreateNewCharacter:
 			OnRequestCreateNewCharacter(iPacket);
 			break;
-		case LoginPacketFlag::RequestGameServerInfo:
+		case LoginSendPacketFlag::Center_RequestGameServerInfo:
 			OnRequestGameServerInfo(iPacket);
 			break;
 		case GamePacketFlag::RequestMigrateIn:
@@ -67,7 +67,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 	}
 
 	OutPacket oPacket;
-	oPacket.Encode2(CenterPacketFlag::RegisterCenterAck);
+	oPacket.Encode2(CenterSendPacketFlag::RegisterCenterAck);
 	oPacket.Encode1(1); //Success;
 	if (serverType == ServerConstants::SVR_LOGIN)
 	{
@@ -76,6 +76,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 		oPacket.Encode1(pWorld->GetWorldInfo().nEventType);
 		oPacket.EncodeStr(pWorld->GetWorldInfo().strWorldDesc);
 		oPacket.EncodeStr(pWorld->GetWorldInfo().strEventDesc);
+		WvsBase::GetInstance<WvsCenter>()->NotifyWorldChanged();
 		//printf("[LocalServer::OnRegisterCenterRequest]Encoding World Information.\n");
 	}
 	SendPacket(&oPacket);
@@ -145,7 +146,7 @@ void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
 	int nCharacterID = iPacket->Decode4();
 	
 	OutPacket oPacket;
-	oPacket.Encode2(CenterPacketFlag::GameServerInfoResponse);
+	oPacket.Encode2(CenterSendPacketFlag::GameServerInfoResponse);
 	oPacket.Encode4(nLoginSocketID);
 	oPacket.Encode2(0);
 	oPacket.Encode4(WvsBase::GetInstance<WvsCenter>()->GetChannel(nChannelID).GetExternalIP());

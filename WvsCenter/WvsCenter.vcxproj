@@ -154,7 +154,6 @@
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />

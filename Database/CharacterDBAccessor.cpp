@@ -29,7 +29,7 @@ void CharacterDBAccessor::PostLoadCharacterListRequest(SocketBase *pSrv, int uLo
 	OutPacket oPacket;
 	GW_CharacterList chrList;
 	chrList.Load(nAccountID, nWorldID);
-	oPacket.Encode2(CenterPacketFlag::CharacterListResponse);
+	oPacket.Encode2(CenterSendPacketFlag::CharacterListResponse);
 	oPacket.Encode4(uLocalSocketSN);
 	oPacket.Encode4(chrList.nCount);
 	for (int i = 0; i < chrList.nCount; ++i)
@@ -140,9 +140,9 @@ void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClient
 	GA_Character chrEntry;
 	chrEntry.Load(nCharacterID);
 	OutPacket oPacket;
-	oPacket.Encode2(CenterPacketFlag::CenterMigrateInResult);
+	oPacket.Encode2(CenterSendPacketFlag::CenterMigrateInResult);
 	oPacket.Encode4(nClientSocketID);
-	chrEntry.EncodeCharacterData(&oPacket);
+	chrEntry.EncodeCharacterData(&oPacket, false);
 	pSrv->SendPacket(&oPacket);
 }
 
@@ -150,6 +150,6 @@ void CharacterDBAccessor::OnCharacterSaveRequest(void *iPacket)
 {
 	InPacket *iPacket_ = (InPacket*)iPacket;
 	GA_Character chr;
-	chr.DecodeCharacterData(iPacket_);
+	chr.DecodeCharacterData(iPacket_, true);
 	chr.Save(false);
 }

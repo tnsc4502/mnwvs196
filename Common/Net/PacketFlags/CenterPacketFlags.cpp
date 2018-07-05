@@ -1,3 +1,3 @@
 #include "CenterPacketFlags.hpp"
 
-REGISTER_TABLE_NAME(CenterPacketFlag);
+REGISTER_TABLE_NAME(CenterSendPacketFlag);

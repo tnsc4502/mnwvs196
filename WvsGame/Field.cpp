@@ -1,6 +1,6 @@
 #include "Field.h"
 #include "LifePool.h"
-#include "MobPacketFlags.h"
+#include "..\Common\Net\PacketFlags\UserPacketFlags.h"
 #include "Net\InPacket.h"
 #include "Net\OutPacket.h"
 #include "Mob.h"

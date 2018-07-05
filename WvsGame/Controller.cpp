@@ -26,7 +26,7 @@ int Controller::GetTotalControlledCount() const
 
 void Controller::AddCtrlMob(Mob * ctrl)
 {
-	m_lCtrlMob.push_back(ctrl);
+	m_lCtrlMob.insert(ctrl);
 }
 
 void Controller::RemoveCtrlMob(Mob * ctrl)
@@ -43,7 +43,7 @@ int Controller::GetNpcCtrlCount() const
 
 void Controller::AddCtrlNpc(Npc* ctrl)
 {
-	m_lCtrlNpc.push_back(ctrl);
+	m_lCtrlNpc.insert(ctrl);
 }
 
 void Controller::RemoveCtrlNpc(Npc * ctrl)
@@ -53,7 +53,7 @@ void Controller::RemoveCtrlNpc(Npc * ctrl)
 		m_lCtrlNpc.erase(result);
 }
 
-std::vector<Mob*>& Controller::GetMobCtrlList()
+std::set<Mob*>& Controller::GetMobCtrlList()
 {
 	return m_lCtrlMob;
 }

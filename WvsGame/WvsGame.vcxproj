@@ -159,10 +159,10 @@
     <ClInclude Include="..\Common\Net\InPacket.h" />
     <ClInclude Include="..\Common\Net\OutPacket.h" />
     <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\ClientPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
+    <ClInclude Include="..\Common\Net\PacketFlags\MobPacketFlags.h" />
     <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h" />
     <ClInclude Include="..\Common\Net\SocketBase.h" />
@@ -192,7 +192,6 @@
     <ClInclude Include="ItemInfo.h" />
     <ClInclude Include="LifePool.h" />
     <ClInclude Include="Mob.h" />
-    <ClInclude Include="MobPacketFlags.h" />
     <ClInclude Include="MobTemplate.h" />
     <ClInclude Include="MovePath.h" />
     <ClInclude Include="NPC.h" />
@@ -226,9 +225,10 @@
     <ClCompile Include="..\Common\Net\InPacket.cpp" />
     <ClCompile Include="..\Common\Net\OutPacket.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\FieldPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
+    <ClCompile Include="..\Common\Net\PacketFlags\MobPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="..\Common\Net\SocketBase.cpp" />
     <ClCompile Include="..\Common\Net\WvsBase.cpp" />
@@ -251,7 +251,6 @@
     <ClCompile Include="LifePool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mob.cpp" />
-    <ClCompile Include="MobPacketFlags.cpp" />
     <ClCompile Include="MobTemplate.cpp" />
     <ClCompile Include="MovePath.cpp" />
     <ClCompile Include="NPC.cpp" />

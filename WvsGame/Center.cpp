@@ -79,7 +79,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 
 	//向Center Server發送Hand Shake封包
 	OutPacket oPacket;
-	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
+	oPacket.Encode2(LoginSendPacketFlag::Center_RegisterCenterRequest);
 
 	//WvsGame的ServerType為SRV_GAME
 	oPacket.Encode1(ServerConstants::ServerType::SVR_GAME);
@@ -107,7 +107,7 @@ void Center::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
-	case CenterPacketFlag::RegisterCenterAck:
+	case CenterSendPacketFlag::RegisterCenterAck:
 	{
 		auto result = iPacket->Decode1();
 		if (!result)
@@ -118,7 +118,7 @@ void Center::OnPacket(InPacket *iPacket)
 		WvsLogger::LogRaw("Center Server Authenciated Ok. The Connection Between Local Server Has Builded.\n");
 		break;
 	}
-	case CenterPacketFlag::CenterMigrateInResult:
+	case CenterSendPacketFlag::CenterMigrateInResult:
 		OnCenterMigrateInResult(iPacket);
 		break;
 	}
@@ -135,7 +135,7 @@ void Center::OnCenterMigrateInResult(InPacket *iPacket)
 	int nClientSocketID = iPacket->Decode4();
 	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocketList()[nClientSocketID];
 	OutPacket oPacket;
-	oPacket.Encode2(GamePacketFlag::ClientMigrateIn);
+	oPacket.Encode2(GamePacketFlag::Client_SetFieldStage);
 	oPacket.Encode4(0); //Channel ID
 	oPacket.Encode1(0);
 	oPacket.Encode4(0);

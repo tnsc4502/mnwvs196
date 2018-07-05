@@ -49,6 +49,10 @@ void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iter
 	}
 	else
 	{
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
+		bConnectionFailed = true;
+		OnDisconnect();
+		return;
 	}
 }
 
@@ -66,7 +70,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 
 	//向Center Server發送Hand Shake封包
 	OutPacket oPacket;
-	oPacket.Encode2(LoginPacketFlag::RegisterCenterRequest);
+	oPacket.Encode2(LoginSendPacketFlag::Center_RegisterCenterRequest);
 
 	//WvsLogin的ServerType為SVR_LOGIN
 	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
@@ -82,7 +86,7 @@ void Center::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
-	case CenterPacketFlag::RegisterCenterAck:
+	case CenterSendPacketFlag::RegisterCenterAck:
 	{
 		auto result = iPacket->Decode1();
 		if (!result)
@@ -94,13 +98,13 @@ void Center::OnPacket(InPacket *iPacket)
 		OnUpdateWorldInfo(iPacket);
 		break;
 	}
-	case CenterPacketFlag::CenterStatChanged:
+	case CenterSendPacketFlag::CenterStatChanged:
 		mWorldInfo.nGameCount = iPacket->Decode2();
 		break;
-	case CenterPacketFlag::CharacterListResponse:
+	case CenterSendPacketFlag::CharacterListResponse:
 		OnCharacterListResponse(iPacket);
 		break;
-	case CenterPacketFlag::GameServerInfoResponse:
+	case CenterSendPacketFlag::GameServerInfoResponse:
 		OnGameServerInfoResponse(iPacket);
 
 		break;
@@ -109,7 +113,7 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
-
+	WvsBase::GetInstance<WvsLogin>()->SetCenterOpened(nCenterIndex, false);
 }
 
 void Center::OnUpdateWorldInfo(InPacket *iPacket)
@@ -126,7 +130,7 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	int nLoginSocketID = iPacket->Decode4();
 	auto pSocket = WvsBase::GetInstance<WvsLogin>()->GetSocketList()[nLoginSocketID];
 	OutPacket oPacket;
-	oPacket.Encode2(LoginPacketFlag::ClientSelectWorldResult);
+	oPacket.Encode2(LoginSendPacketFlag::Client_ClientSelectWorldResult);
 	oPacket.Encode1(0);
 	oPacket.EncodeStr("normal");
 	oPacket.Encode4(0);
@@ -179,7 +183,7 @@ void Center::OnGameServerInfoResponse(InPacket *iPacket)
 	int nLoginSocketID = iPacket->Decode4();
 	auto pSocket = WvsBase::GetInstance<WvsLogin>()->GetSocketList()[nLoginSocketID]; 
 	OutPacket oPacket;
-	oPacket.Encode2(LoginPacketFlag::ClientSelectCharacterResult);
+	oPacket.Encode2(LoginSendPacketFlag::Client_ClientSelectCharacterResult);
 	oPacket.EncodeBuffer(iPacket->GetPacket() + 6, iPacket->GetPacketSize() - 6);
 	pSocket->SendPacket(&oPacket);
 }

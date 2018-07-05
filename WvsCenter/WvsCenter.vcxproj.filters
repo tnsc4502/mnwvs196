@@ -40,9 +40,6 @@
     <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\ClientPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
       <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>

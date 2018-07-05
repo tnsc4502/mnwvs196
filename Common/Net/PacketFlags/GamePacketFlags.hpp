@@ -15,7 +15,7 @@ MAKE_GAME_PACKET_FLAG(RequestMigrateOut, 0x6002);
 
 
 //Flags to Game
-MAKE_GAME_PACKET_FLAG(ClientMigrateIn, 0x1BF);
+MAKE_GAME_PACKET_FLAG(Client_SetFieldStage, 0x1BF); //Stage::OnSetField
 
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END

@@ -260,6 +260,68 @@ bool QuestMan::CheckStartDemand(int nQuestID, User * pUser)
 	return true;
 }
 
+bool QuestMan::CheckCompleteDemand(int nQuestID, User * pUser)
+{
+	auto findIter = m_mCompleteDemand.find(nQuestID);
+	if (findIter == m_mCompleteDemand.end())
+		return false;
+	auto pDemand = findIter->second;
+
+	//Check level req.
+	int nLevel = pUser->GetCharacterData()->mLevel->nLevel;
+	if ((pDemand->nLVMax != 0 && nLevel > pDemand->nLVMax) ||
+		(pDemand->nLVMin != 0 && nLevel < pDemand->nLVMin))
+		return false;
+
+	//Check field req.
+	bool bCheck = pDemand->m_aFieldEnter.size() == 0 ? true : false;
+	for (auto& field : pDemand->m_aFieldEnter)
+		if (pUser->GetField()->GetFieldID() == field)
+		{
+			bCheck = true;
+			break;
+		}
+	if (!bCheck)
+		return false;
+
+	//Check job req.
+	bCheck = pDemand->m_aDemandJob.size() == 0 ? true : false;
+	for (auto& job : pDemand->m_aDemandJob)
+		if (pUser->GetCharacterData()->mStat->nJob == job)
+		{
+			bCheck = true;
+			break;
+		}
+	if (!bCheck)
+		return false;
+
+	//Check quest req.
+	for (auto& quest : pDemand->m_mDemandQuest)
+		if (QWUQuestRecord::GetState(pUser, quest.first) < quest.second)
+			return false;
+
+	//Check skill req.
+	for (auto& skill : pDemand->m_mDemandSkill)
+		if (SkillInfo::GetInstance()->GetSkillLevel(
+			pUser->GetCharacterData(),
+			skill.second,
+			nullptr,
+			false,
+			false,
+			false,
+			false) < skill.second)
+			return false;
+
+	//Check item req.
+	for (auto& item : pDemand->m_mDemandItem)
+	{
+		auto nCount = pUser->GetCharacterData()->GetItemCount(item.first / 1000000, item.first);
+		if (nCount < item.second)
+			return false;
+	}
+	return true;
+}
+
 QuestAct * QuestMan::GetStartAct(int nQuestID)
 {
 	auto findIter = m_mStartAct.find(nQuestID);
