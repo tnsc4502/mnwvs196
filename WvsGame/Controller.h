@@ -9,8 +9,8 @@ class Npc;
 
 class Controller
 {
-	std::set<Mob*> m_lCtrlMob;
-	std::set<Npc*> m_lCtrlNpc;
+	std::vector<Mob*> m_lCtrlMob;
+	std::vector<Npc*> m_lCtrlNpc;
 
 	User *pUser;
 public:
@@ -29,6 +29,6 @@ public:
 	void AddCtrlNpc(Npc* ctrl);
 	void RemoveCtrlNpc(Npc* ctrl);
 
-	std::set<Mob*>& GetMobCtrlList();
+	std::vector<Mob*>& GetMobCtrlList();
 };
 

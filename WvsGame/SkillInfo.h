@@ -7,8 +7,6 @@ struct GA_Character;
 struct GW_SkillRecord;
 class SkillEntry;
 
-#define PARSE_SKILLDATA(attribute) ((std::string)skillCommonImg[#attribute]) == "" ? 0 : (int)evaluator.Eval(((std::string)skillCommonImg[#attribute]), "", d);
-#define PARSE_SKILLDATA_STRING(attribute) #attribute == "" ? 0 : (int)evaluator.Eval(#attribute, "", d);
 
 class SkillInfo
 {
@@ -34,7 +32,7 @@ public:
 	SkillEntry* LoadSkill(int nSkillRootID, int nSkillID, void* pData);
 	void LoadLevelData(int nSkillID, SkillEntry* pEntry, void* pData);
 	void LoadLevelDataByLevelNode(int nSkillID, SkillEntry* pEntry, void* pData);
-	void LoadLevelDataSpecial();
+
 	int GetSkillLevel(GA_Character* pCharacter, int nSkillID, SkillEntry** pEntry, int bNoPvPLevelCheck, int bPureStealSLV, int bNotApplySteal, int bCheckSkillRoot);
 
 	GW_SkillRecord* GetSkillRecord(int nSkillID, int nSLV, long long int tExpired);

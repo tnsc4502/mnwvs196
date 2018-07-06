@@ -2,7 +2,7 @@
 
 struct SkillLevelData
 {
-	int
+	int m_nLevelDataPtrBase = 0,
 		m_nCraft = 0,
 		m_nSpeed = 0,
 		m_nMoneyCon = 0,

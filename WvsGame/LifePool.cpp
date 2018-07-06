@@ -202,7 +202,7 @@ void LifePool::OnEnter(User *pUser)
 		mob.second->MakeEnterFieldPacket(&oPacket);
 		pUser->SendPacket(&oPacket);
 	}
-	WvsLogger::LogFormat("LifePool::OnEnter : Total Controlled = %d\n", m_mController[pUser->GetUserID()]->second->GetTotalControlledCount());
+	WvsLogger::LogFormat("LifePool::OnEnter : Total Controlled = %d Null Controlled = %d\n size of m_hCtrl = %d", m_mController[pUser->GetUserID()]->second->GetTotalControlledCount(), m_pCtrlNull->GetTotalControlledCount(), m_hCtrl.size());
 }
 
 void LifePool::InsertController(User* pUser)
@@ -277,18 +277,22 @@ void LifePool::RedistributeLife()
 	if (nCtrlCount > 0)
 	{
 		auto& nonControlled = m_pCtrlNull->GetMobCtrlList();
-		for (auto pMob : nonControlled)
+		//for (auto pMob : nonControlled)
+		for(auto iter = nonControlled.begin(); iter != nonControlled.end(); )
 		{
+			auto pMob = *iter;
 			pCtrl = m_hCtrl.begin()->second;
 
 			//控制NPC與怪物數量總和超過50，重新配置
 			if (pCtrl->GetTotalControlledCount() >= 50)
 				break;
 			pCtrl->AddCtrlMob(pMob);
-			m_pCtrlNull->RemoveCtrlMob(pMob);
 			pMob->SetController(pCtrl);
 			pMob->SendChangeControllerPacket(pCtrl->GetUser(), 1);
 			UpdateCtrlHeap(pCtrl);
+
+			m_pCtrlNull->RemoveCtrlMob(pMob);
+			iter = nonControlled.begin();
 		}
 		//NPC
 
@@ -310,7 +314,7 @@ void LifePool::RedistributeLife()
 					|| ((nMaxNpcCtrl + nMaxMobCtrl - (nMaxMobCtrl != 0)) <= 20))
 					break;
 				Mob* pMob = *(maxCtrl->GetMobCtrlList().rbegin());
-				maxCtrl->GetMobCtrlList().erase(*maxCtrl->GetMobCtrlList().rbegin());
+				maxCtrl->GetMobCtrlList().pop_back();
 				pMob->SendChangeControllerPacket(maxCtrl->GetUser(), 0);
 
 				minCtrl->AddCtrlMob(pMob);

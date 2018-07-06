@@ -604,15 +604,53 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_ShootAttack, 0xCA);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_MagicAttack, 0xCB);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_BodyAttack, 0xCC);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_AreaDot, 0xCD);
+MAKE_USER_RECV_PACKET_FLAG(User_OnFullTrueDamaged, 0xCF); //UserLocal::SetFullTrueDamaged
+MAKE_USER_RECV_PACKET_FLAG(User_OnBanMapByMobRequest, 0xE1); //UserLocal::SendBanMapByMobRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnSelectNpc, 0xE3);
 MAKE_USER_RECV_PACKET_FLAG(User_OnScriptMessageAnswer, 0xE5);
+//MAKE_USER_RECV_PACKET_FLAG(User_OnRetOnVideoByScript, 0xE5); //UserLocal::RetOnVideoByScript
+MAKE_USER_RECV_PACKET_FLAG(User_OnFinalAttackRequestPacket, 0xED); //UserLocal::SendFinalAttackRequestPacket
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChat, 0xD1);
+MAKE_USER_RECV_PACKET_FLAG(User_OnRequestUpgradeTombEffect, 0xDE); //UserLocal::RequestUpgradeTombEffect
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUpRequest, 0x13E);
-MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUseRequest, 0x13F);
+MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUseRequest, 0x13F); //UserLocal::SendSkillUseRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillCancelRequest, 0x140);
 MAKE_USER_RECV_PACKET_FLAG(User_OnQuestRequest, 0x154);
+MAKE_USER_RECV_PACKET_FLAG(User_OnSendClientResolution, 0x165); //UserLocal::SendClientResolution
+MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateLapidification, 0x179); //UserLocal::SendUpdateLapidification
+MAKE_USER_RECV_PACKET_FLAG(User_OnTempAct, 0x1A9); //UserLocal::SetTempAct
+MAKE_USER_RECV_PACKET_FLAG(User_OnKeyDownAreaMovePathFlush, 0x181); //UserLocal::KeyDownAreaMovePathFlush
+MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateZeroTagCoolTimeOut, 0x18D); //UserLocal::UpdateZeroTagCoolTimeOut
+MAKE_USER_RECV_PACKET_FLAG(User_OnRequestIncCombo, 0x1CE); //UserLocal::RequestIncCombo
+MAKE_USER_RECV_PACKET_FLAG(User_OnRequestDecCombo, 0x1CF); //UserLocal::RequestDecCombo
+MAKE_USER_RECV_PACKET_FLAG(User_OnRequestSetBlessOfDarkness, 0x1D0); //UserLocal::RequestSetBlessOfDarkness
+MAKE_USER_RECV_PACKET_FLAG(User_OnBroadcastOneTimeActionToSplit, 0x1D8); //UserLocal::BroadcastOneTimeActionToSplit
+MAKE_USER_RECV_PACKET_FLAG(User_OnBroadcastAffectedEffectToSplit, 0x1D9); //UserLocal::BroadcastAffectedEffectToSplit
+MAKE_USER_RECV_PACKET_FLAG(User_OnSetOffPacketForTrinity, 0x1ED); //UserLocal::SendSetOffPacketForTrinity
+MAKE_USER_RECV_PACKET_FLAG(User_OnMobZoneStateChangeRequest, 0x1FA); //UserLocal::SendMobZoneStateChangeRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnChangeCharacterRequest, 0x204);
+MAKE_USER_RECV_PACKET_FLAG(User_OnCheckNpcSpeechQuest, 0x219); //UserLocal::CheckNpcSpeechQuest
+MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateGoToStarPlanet, 0x2AE); //UserLocal::UpdateGoToStarPlanet
+MAKE_USER_RECV_PACKET_FLAG(User_OnDamaged_BattlePvP, 0x31D); //UserLocal::SetDamaged_BattlePvP
+MAKE_USER_RECV_PACKET_FLAG(User_OnLand, 0x337); //UserLocal::OnLand
+MAKE_USER_RECV_PACKET_FLAG(User_OnStartGatherRequest, 0x3B8); //UserLocal::GatherRequest
+MAKE_USER_RECV_PACKET_FLAG(User_OnEndGatherRequest, 0x3B9); //UserLocal::GatherRequest
 
+/*MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
+*/
 FLAG_COLLECTION_BODY_END		
 #endif

@@ -21,6 +21,7 @@
 
 #include "QuestMan.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\WzResMan.hpp"
 
 #include <functional>
 
@@ -90,6 +91,11 @@ void AsyncTimerTest(int i)
 
 int main(int argc, char **argv)
 {
+	auto skillWz = stWzResMan->GetWz(Wz::Skill)["3212"]["skill"]["27111005"]["common"];
+	for (auto& skill : skillWz)
+	{
+		std::cout << skill.Name() << " : " << (std::string)skill << std::endl;
+	}
 	//printf("Test %d", WvsGameConstants::GetJobLevel(434));
 	/*GA_Character chr;
 	chr.Load(11);
