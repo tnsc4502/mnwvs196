@@ -1,7 +1,7 @@
 #include "MovePath.h"
 
-#include <Net\InPacket.h>
-#include <Net\OutPacket.h>
+#include <..\WvsLib\Net\InPacket.h>
+#include <..\WvsLib\Net\OutPacket.h>
 
 MovePath::MovePath()
 {
