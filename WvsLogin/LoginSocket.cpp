@@ -1,12 +1,12 @@
 #include "LoginSocket.h"
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
-#include "Net\PacketFlags\LoginPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 
-#include "WvsLoginConstants.hpp"
+#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
 #include "WvsLogin.h"
 
 LoginSocket::LoginSocket(asio::io_service& serverService)
@@ -107,7 +107,7 @@ void LoginSocket::OnCheckPasswordRequst(InPacket *iPacket)
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
 	oPacket.Encode1(1);
-	oPacket.Encode1(0xC2);
+	oPacket.Encode1((char)0xC2);
 	for (int i = 1; i <= 23; ++i)
 	{
 		oPacket.Encode1(0x01);

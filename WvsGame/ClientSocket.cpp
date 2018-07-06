@@ -1,9 +1,9 @@
 #include "ClientSocket.h"
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
-#include "Net\PacketFlags\GamePacketFlags.hpp"
-#include "Net\PacketFlags\LoginPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
 #include "WvsGame.h"
 #include "User.h"
 

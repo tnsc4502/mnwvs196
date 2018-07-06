@@ -6,6 +6,8 @@
 *.iml
 Release/
 Debug/
+Library/boost_1_63_0/
+Library/poco-1.7.8-all/
 x64/
 .idea/
 *.rtf

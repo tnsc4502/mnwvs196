@@ -101,12 +101,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Common\;..\Library\boost_1_63_0\;..\Library\poco-1.7.8-all\Data\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Debug;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\x64\Debug\;..\Library\poco-1.7.8-all\lib64;..\Library\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DataBase.lib;WvsLib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,14 +136,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Common\;..\Library\boost_1_63_0\;..\Library\poco-1.7.8-all\Data\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Library\poco-1.7.8-all\lib64;..\x64\Release;..\Library\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>WvsLib.lib;database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -150,33 +151,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Net\crypto.cpp" />
-    <ClCompile Include="..\Common\Net\InPacket.cpp" />
-    <ClCompile Include="..\Common\Net\OutPacket.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\SocketBase.cpp" />
-    <ClCompile Include="..\Common\Net\WvsBase.cpp" />
     <ClCompile Include="ChannelEntry.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsCenter.cpp" />
     <ClCompile Include="LocalServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\ConfigLoader.hpp" />
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
-    <ClInclude Include="..\Common\Net\asio.hpp" />
-    <ClInclude Include="..\Common\Net\crypto.hpp" />
-    <ClInclude Include="..\Common\Net\InPacket.h" />
-    <ClInclude Include="..\Common\Net\OutPacket.h" />
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\SocketBase.h" />
-    <ClInclude Include="..\Common\Net\WvsBase.h" />
     <ClInclude Include="ChannelEntry.h" />
     <ClInclude Include="WvsCenter.h" />
     <ClInclude Include="LocalServer.h" />

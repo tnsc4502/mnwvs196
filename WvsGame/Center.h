@@ -1,6 +1,6 @@
 #pragma once
-#include "Net\SocketBase.h"
-#include "WvsGameConstants.hpp"
+#include "..\WvsLib\Net\SocketBase.h"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
 
 class Center :
 	public SocketBase

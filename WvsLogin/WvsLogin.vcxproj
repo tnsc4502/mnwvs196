@@ -101,13 +101,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\Foundation\include;..\Common\;..\Library\boost_1_63_0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libboost_system-vc140-mt-1_63.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Library\poco-1.7.8-all\poco-1.7.8-all\lib;..\Library\boost_1_63_0\stage\lib;..\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;WvsLib.lib;libboost_system-vc140-mt-1_63.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,14 +136,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\Foundation\include;..\Common\;..\Library\boost_1_63_0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;I:\Programming\Utility\boost_1_63_0\bin.v2\libs\system\build\msvc-14.0\release\link-static\threading-multi;I:\Programming\Utility\boost_1_63_0\bin.v2\libs\date_time\build\msvc-14.0\release\link-static\threading-multi;I:\Programming\Utility\boost_1_63_0\stage\lib;..\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\Library\poco-1.7.8-all\lib64;..\x64\Release;..\Library\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>winmm.lib;WvsLib.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -151,40 +151,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\SocketBase.cpp" />
-    <ClCompile Include="..\Common\Net\crypto.cpp" />
-    <ClCompile Include="..\Common\Net\InPacket.cpp" />
-    <ClCompile Include="..\Common\Net\OutPacket.cpp" />
-    <ClCompile Include="..\Common\Net\WvsBase.cpp" />
-    <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp" />
-    <ClCompile Include="..\Common\Utility\Random\Rand32.cpp" />
-    <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="LoginSocket.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsLogin.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
-    <ClInclude Include="..\Common\Net\asio.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\SocketBase.h" />
-    <ClInclude Include="..\Common\Net\crypto.hpp" />
-    <ClInclude Include="..\Common\Net\InPacket.h" />
-    <ClInclude Include="..\Common\Net\OutPacket.h" />
-    <ClInclude Include="..\Common\Net\WvsBase.h" />
-    <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h" />
-    <ClInclude Include="..\Common\Utility\Random\Rand32.h" />
-    <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="LoginSocket.h" />
     <ClInclude Include="WvsLogin.h" />
-    <ClInclude Include="WvsLoginConstants.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

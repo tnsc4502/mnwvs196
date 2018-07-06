@@ -1,7 +1,6 @@
 #pragma once
-#include "Net\asio.hpp"
-#include "Net\WvsBase.h"
-#include "Net\WorldInfo.h"
+#include "..\WvsLib\Net\WvsBase.h"
+#include "..\WvsLib\Net\WorldInfo.h"
 #include "ChannelEntry.h"
 
 class WvsCenter : public WvsBase

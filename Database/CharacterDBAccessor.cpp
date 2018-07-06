@@ -5,10 +5,10 @@
 #include "GW_CharacterLevel.h"
 #include "GW_Avatar.hpp"
 
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
-#include "..\Common\Net\SocketBase.h"
-#include "..\Common\Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\SocketBase.h"
+#include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
 
 #include "GW_CharacterList.hpp"
 #include "GA_Character.hpp"

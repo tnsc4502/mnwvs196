@@ -1,29 +1,25 @@
 // WvsGame.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
-#include "Net\asio.hpp"
 #include <iostream>
 #include <thread>
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+
+#include "QuestMan.h"
+#include <functional>
 
 #include "ClientSocket.h"
 #include "WvsGame.h"
-
-#include "Constants\ConfigLoader.hpp"
 #include "ItemInfo.h"
 #include "SkillInfo.h"
-#include "..\Common\Utility\Task\AsnycScheduler.h"
+
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_MobReward.h"
-
-#include "QuestMan.h"
-#include "..\WvsLib\Logger\WvsLogger.h"
-#include "..\WvsLib\WzResMan.hpp"
-
-#include <functional>
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -91,11 +87,6 @@ void AsyncTimerTest(int i)
 
 int main(int argc, char **argv)
 {
-	auto skillWz = stWzResMan->GetWz(Wz::Skill)["3212"]["skill"]["27111005"]["common"];
-	for (auto& skill : skillWz)
-	{
-		std::cout << skill.Name() << " : " << (std::string)skill << std::endl;
-	}
 	//printf("Test %d", WvsGameConstants::GetJobLevel(434));
 	/*GA_Character chr;
 	chr.Load(11);

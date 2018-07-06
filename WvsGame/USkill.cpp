@@ -1,5 +1,5 @@
 #include "USkill.h"
-#include "..\Common\Net\InPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_SkillRecord.h"
@@ -12,8 +12,8 @@
 #include "SkillInfo.h"
 #include "QWUSkillRecord.h"
 
-#include "WvsGameConstants.hpp"
-#include "Utility\DateTime\GameDateTime.h"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\DateTime\GameDateTime.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 /*

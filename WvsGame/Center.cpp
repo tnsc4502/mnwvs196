@@ -2,17 +2,17 @@
 #include <functional>
 #include <thread>
 
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
-#include "Net\PacketFlags\LoginPacketFlags.hpp"
-#include "Net\PacketFlags\CenterPacketFlags.hpp"
-#include "Net\PacketFlags\GamePacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
 
-#include "Utility\DateTime\GameDateTime.h"
-#include "Utility\Random\Rand32.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Random\Rand32.h"
 
-#include "Constants\ServerConstants.hpp"
+#include "..\WvsLib\Constants\ServerConstants.hpp"
 
 #include "WvsGame.h"
 #include "User.h"

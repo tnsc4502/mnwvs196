@@ -1,5 +1,5 @@
 #pragma once
-#include "Net\SocketBase.h"
+#include "..\WvsLib\Net\SocketBase.h"
 
 //Server ºÝ¤§ Session
 class LocalServer : public SocketBase

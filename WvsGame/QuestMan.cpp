@@ -1,5 +1,5 @@
 #include "QuestMan.h"
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include "ActItem.h"
 #include "ActQuest.h"
 #include "ActSP.h"

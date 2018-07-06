@@ -1,9 +1,9 @@
 #include "ItemInfo.h"
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GW_ItemSlotBundle.h"
-#include "..\Common\Utility\Random\Rand32.h"
+#include "..\WvsLib\Random\Rand32.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 

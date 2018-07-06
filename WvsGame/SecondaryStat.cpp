@@ -5,7 +5,7 @@
 #include "SkillLevelData.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_ItemSlotEquip.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 

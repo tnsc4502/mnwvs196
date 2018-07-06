@@ -1,8 +1,8 @@
 #include "LifePool.h"
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
-#include "..\Common\Net\PacketFlags\MobPacketFlags.h"
-#include "..\Common\Net\PacketFlags\UserPacketFlags.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\PacketFlags\MobPacketFlags.h"
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 
@@ -14,7 +14,7 @@
 #include "Drop.h"
 #include "AttackInfo.h"
 #include "SecondaryStat.h"
-#include "WvsGameConstants.hpp"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
 
 #include <cmath>
 
@@ -40,19 +40,18 @@ void LifePool::Init(Field* pField, int nFieldID)
 {
 	m_pField = pField;
 
-	int sizeX = 1920;
-	int sizeY = 1080; //I dont know
-	int genSize = (int)(((double)sizeX * sizeY) * 0.0000048125f);
-	if (genSize < 1)
-		genSize = 1;
-	else if (genSize >= MAX_MOB_GEN)
-		genSize = MAX_MOB_GEN;
-	m_nMobCapacityMin = genSize;
-	m_nMobCapacityMax = genSize * 2;
+	int nSizeX = 1920;
+	int nSizeY = 1080; //I dont know
+	int nGenSize = (int)(((double)nSizeX * nSizeY) * 0.0000048125f);
+	if (nGenSize < 1)
+		nGenSize = 1;
+	else if (nGenSize >= MAX_MOB_GEN)
+		nGenSize = MAX_MOB_GEN;
+	m_nMobCapacityMin = nGenSize;
+	m_nMobCapacityMax = nGenSize * 2 * pField->GetMobRate();
 
 	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
 	auto& lifeData = mapWz["life"];
-	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "Map Size =  %d %d\n", m_pField->GetMapSizeX(), m_pField->GetMapSizeY());
 	for (auto& node : lifeData)
 	{
 		const auto &typeFlag = (std::string)node["type"];
@@ -195,14 +194,14 @@ void LifePool::OnEnter(User *pUser)
 		npc.second->SendChangeControllerPacket(pUser);
 		pUser->SendPacket(&oPacket);
 	}
-	WvsLogger::LogFormat("LifePool::OnEnter : Total Mob = %d\n", m_aMobGen.size());
+	//WvsLogger::LogFormat("LifePool::OnEnter : Total Mob = %d\n", m_aMobGen.size());
 	for (auto& mob : m_aMobGen)
 	{
 		OutPacket oPacket;
 		mob.second->MakeEnterFieldPacket(&oPacket);
 		pUser->SendPacket(&oPacket);
 	}
-	WvsLogger::LogFormat("LifePool::OnEnter : Total Controlled = %d Null Controlled = %d\n size of m_hCtrl = %d", m_mController[pUser->GetUserID()]->second->GetTotalControlledCount(), m_pCtrlNull->GetTotalControlledCount(), m_hCtrl.size());
+	//WvsLogger::LogFormat("LifePool::OnEnter : Total Controlled = %d Null Controlled = %d\n size of m_hCtrl = %d", m_mController[pUser->GetUserID()]->second->GetTotalControlledCount(), m_pCtrlNull->GetTotalControlledCount(), m_hCtrl.size());
 }
 
 void LifePool::InsertController(User* pUser)

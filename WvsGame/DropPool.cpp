@@ -7,7 +7,7 @@
 #include "QWUInventory.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
-#include "Utility\DateTime\GameDateTime.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
 
 DropPool::DropPool(Field *pField)
 	: m_pField(pField)

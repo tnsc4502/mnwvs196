@@ -1,7 +1,6 @@
 #pragma once
-#include "Net\asio.hpp"
-#include "Net\WvsBase.h"
-#include "WvsLoginConstants.hpp"
+#include "..\WvsLib\Net\WvsBase.h"
+#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
 #include "Center.h"
 #include <thread>
 #include <mutex>

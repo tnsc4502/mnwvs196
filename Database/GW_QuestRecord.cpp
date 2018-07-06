@@ -1,8 +1,8 @@
 #include "GW_QuestRecord.h"
 #include "WvsUnified.h"
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
-#include "..\Common\Utility\String\StringUtility.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\String\StringUtility.h"
 
 void GW_QuestRecord::Load(void* pRecordSet)
 {

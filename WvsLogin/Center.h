@@ -1,7 +1,7 @@
 #pragma once
-#include "Net\SocketBase.h"
-#include "WvsLoginConstants.hpp"
-#include "Net\WvsBase.h"
+#include "..\WvsLib\Net\SocketBase.h"
+#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
+#include "..\WvsLib\Net\WvsBase.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 class Center :

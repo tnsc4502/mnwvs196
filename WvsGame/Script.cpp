@@ -4,9 +4,9 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "QWUser.h"
-#include "..\ScriptLib\lvm.h"
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Script\lvm.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 
@@ -142,11 +142,11 @@ int Script::SelfAskAvatar(lua_State * L)
 {
 	Script* self = luaW_check<Script>(L, 1);
 	const char* text = luaL_checkstring(L, 2);
-	self->m_nUserInput = luaL_checkinteger(L, 3); //ticket
+	self->m_nUserInput = (int)luaL_checkinteger(L, 3); //ticket
 	int nArgs = lua_gettop(L);
 	self->m_aArrayObj.clear();
 	for (int i = 4; i < nArgs; ++i)
-		self->m_aArrayObj.push_back(lua_tointeger(L, i));
+		self->m_aArrayObj.push_back((int)lua_tointeger(L, i));
 	OutPacket oPacket;
 	oPacket.Encode2(0x56E);
 	oPacket.Encode1(4);

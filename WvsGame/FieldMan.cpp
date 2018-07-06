@@ -1,5 +1,5 @@
 #include "FieldMan.h"
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
@@ -71,9 +71,10 @@ void FieldMan::FieldFactory(int nFieldID)
 		newField->SetFirstUserEnter(infoData["onFirstUerEnter"]);
 		newField->SetUserEnter(infoData["onUserEnter"]);
 
+		//以下資訊不可靠，有些地圖(沒有該屬性)無法算
 		newField->SetMapSizeX(mapSizeX);
 		newField->SetMapSizeY(mapSizeY);
-		WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
+		//WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
 	//}
 	newField->GetPortalMap()->RestorePortal(newField, mapWz["portal"]);
 

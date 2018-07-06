@@ -4,7 +4,7 @@
 #include "Field.h"
 #include "DropPool.h"
 #include "SkillInfo.h"
-#include "..\Common\Net\InPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GA_Character.hpp"

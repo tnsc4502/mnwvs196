@@ -2,7 +2,7 @@
 #include "User.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_QuestRecord.h"
-#include "..\Common\Utility\DateTime\GameDateTime.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
 #include <mutex>
 
 

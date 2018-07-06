@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include "FieldPoint.h"
 
 class Portal;

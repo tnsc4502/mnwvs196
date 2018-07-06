@@ -1,7 +1,7 @@
 #include "WvsGame.h"
-#include "WvsGameConstants.hpp"
-#include "Utility\Task\AsnycScheduler.h"
-#include "Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "ClientSocket.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 

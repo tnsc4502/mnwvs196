@@ -13,7 +13,7 @@
 #include "Reward.h"
 #include "DropPool.h"
 #include <vector>
-#include "..\Common\Utility\String\StringUtility.h"
+#include "..\WvsLib\String\StringUtility.h"
 
 CommandManager::CommandManager()
 {

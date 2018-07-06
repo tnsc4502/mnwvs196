@@ -1,7 +1,7 @@
 #include "GW_Avatar.hpp"
 #include "WvsUnified.h"
 
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 void GW_Avatar::Load(int nCharacterID)
 {

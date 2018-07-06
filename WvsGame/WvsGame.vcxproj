@@ -101,13 +101,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Common\;..\Library\boost_1_63_0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib;..\Common;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Library\boost_1_63_0\stage\lib;..\x64\Debug;..\Library\poco-1.7.8-all\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Database.lib;WvsLib.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,42 +136,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;ASIO_MSVC=_MSC_VER;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\include;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Data\MySQL\include;..\Common\;I:\Programming\Utility\boost_1_63_0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Common\;..\Library\boost_1_63_0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\Foundation\x64\release_static_md;I:\Programming\Utility\poco-1.7.8-all\poco-1.7.8-all\lib64;..\Common;..\x64\Release;I:\Programming\Utility\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ScriptLib.lib;WvsLib.lib;EquationEvaluator.lib;winmm.lib;Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Library\poco-1.7.8-all\lib64;..\x64\Release;..\Library\boost_1_63_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>WvsLib.lib;winmm.lib;Database.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="..\Common\Utility\String\StringUtility.h" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp" />
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp" />
-    <ClInclude Include="..\Common\Net\asio.hpp" />
-    <ClInclude Include="..\Common\Net\crypto.hpp" />
-    <ClInclude Include="..\Common\Net\InPacket.h" />
-    <ClInclude Include="..\Common\Net\OutPacket.h" />
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\MobPacketFlags.h" />
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp" />
-    <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h" />
-    <ClInclude Include="..\Common\Net\SocketBase.h" />
-    <ClInclude Include="..\Common\Net\WorldInfo.h" />
-    <ClInclude Include="..\Common\Net\WvsBase.h" />
-    <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h" />
-    <ClInclude Include="..\Common\Utility\Random\Rand32.h" />
-    <ClInclude Include="..\Common\Utility\String\StringUtility.cpp" />
-    <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h" />
     <ClInclude Include="ActItem.h" />
     <ClInclude Include="ActQuest.h" />
     <ClInclude Include="ActSkill.h" />
@@ -218,23 +197,8 @@
     <ClInclude Include="User.h" />
     <ClInclude Include="USkill.h" />
     <ClInclude Include="WvsGame.h" />
-    <ClInclude Include="WvsGameConstants.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Net\crypto.cpp" />
-    <ClCompile Include="..\Common\Net\InPacket.cpp" />
-    <ClCompile Include="..\Common\Net\OutPacket.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\FieldPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\MobPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp" />
-    <ClCompile Include="..\Common\Net\SocketBase.cpp" />
-    <ClCompile Include="..\Common\Net\WvsBase.cpp" />
-    <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp" />
-    <ClCompile Include="..\Common\Utility\Random\Rand32.cpp" />
-    <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp" />
     <ClCompile Include="AttackInfo.cpp" />
     <ClCompile Include="BasicStat.cpp" />
     <ClCompile Include="Center.cpp" />

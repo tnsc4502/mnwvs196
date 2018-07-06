@@ -1,6 +1,6 @@
 #pragma once
 #include <map>
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 
 class NpcTemplate
 {

@@ -1,18 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Common">
-      <UniqueIdentifier>{f215a647-c07e-469b-9896-103b25901044}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Constants">
-      <UniqueIdentifier>{7d0f36bb-69c0-4dd1-a017-54d8c3aba861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Net">
-      <UniqueIdentifier>{0178111d-26fd-44f6-873c-f2f73ccf9518}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Net\PacketFlags">
-      <UniqueIdentifier>{1f4b136e-e19c-48d4-bbbe-43e7ff829ef1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WvsGame">
       <UniqueIdentifier>{3d9e624d-27aa-4a5d-9ad7-e1acb5119fce}</UniqueIdentifier>
     </Filter>
@@ -49,21 +37,6 @@
     <Filter Include="WvsGame\InGame\Skill">
       <UniqueIdentifier>{37706c17-4136-473d-a1bc-c0010f3cee5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Utility">
-      <UniqueIdentifier>{77471284-cb39-48f8-88cb-3df4f8b784ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\Random">
-      <UniqueIdentifier>{e77b7455-4df1-4c99-9152-0505e26b6096}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\DateTime">
-      <UniqueIdentifier>{6aa93c3d-db38-4a1c-a02c-f87b8bcfbdcc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\Task">
-      <UniqueIdentifier>{95a4882f-1d59-4b55-816d-316638a81316}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\String">
-      <UniqueIdentifier>{e8b75bb5-c64a-4fd9-930f-4124f24da6cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="WvsGame\InGame\Stat">
       <UniqueIdentifier>{ac78c2d2-0db9-4c78-98b7-00c2e0c96744}</UniqueIdentifier>
     </Filter>
@@ -76,55 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="..\Common\Utility\String\StringUtility.h">
-      <Filter>Common\Utility\String</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
     <ClInclude Include="WvsGame.h">
       <Filter>WvsGame</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\asio.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\crypto.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\InPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\OutPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\SocketBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\WvsBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\FieldPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="Center.h">
       <Filter>WvsGame</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\WorldInfo.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="ClientSocket.h">
       <Filter>WvsGame</Filter>
@@ -143,12 +74,6 @@
     </ClInclude>
     <ClInclude Include="User.h">
       <Filter>WvsGame\InGame\User</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\UserPacketFlags.h">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="MovePath.h">
       <Filter>WvsGame\InGame\Field\Life</Filter>
@@ -210,9 +135,6 @@
     <ClInclude Include="SkillLevelData.h">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
-    <ClInclude Include="WvsGameConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
     <ClInclude Include="USkill.h">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClInclude>
@@ -221,18 +143,6 @@
     </ClInclude>
     <ClInclude Include="CommandManager.h">
       <Filter>WvsGame\InGame\User</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\Random\Rand32.h">
-      <Filter>Common\Utility\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h">
-      <Filter>Common\Utility\DateTime</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h">
-      <Filter>Common\Utility\Task</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\String\StringUtility.cpp">
-      <Filter>Common\Utility\String</Filter>
     </ClInclude>
     <ClInclude Include="QWUSkillRecord.h">
       <Filter>WvsGame\InGame\Skill</Filter>
@@ -279,38 +189,14 @@
     <ClInclude Include="QWUQuestRecord.h">
       <Filter>WvsGame\InGame\Quest</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\MobPacketFlags.h">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsGame.cpp">
       <Filter>WvsGame</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\crypto.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\InPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\OutPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\SocketBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\WvsBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
     <ClCompile Include="Center.cpp">
       <Filter>WvsGame</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
     <ClCompile Include="ClientSocket.cpp">
       <Filter>WvsGame</Filter>
@@ -329,12 +215,6 @@
     </ClCompile>
     <ClCompile Include="User.cpp">
       <Filter>WvsGame\InGame\User</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\UserPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
     <ClCompile Include="MovePath.cpp">
       <Filter>WvsGame\InGame\Field\Life</Filter>
@@ -402,15 +282,6 @@
     <ClCompile Include="CommandManager.cpp">
       <Filter>WvsGame\InGame\User</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Utility\Random\Rand32.cpp">
-      <Filter>Common\Utility\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp">
-      <Filter>Common\Utility\DateTime</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp">
-      <Filter>Common\Utility\Task</Filter>
-    </ClCompile>
     <ClCompile Include="QWUSkillRecord.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
@@ -437,12 +308,6 @@
     </ClCompile>
     <ClCompile Include="QWUQuestRecord.cpp">
       <Filter>WvsGame\InGame\Quest</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\MobPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\FieldPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

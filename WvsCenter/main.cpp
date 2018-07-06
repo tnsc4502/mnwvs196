@@ -1,15 +1,14 @@
 ﻿// WvsGame.cpp : Defines the entry point for the console application.
 //
 
-#include "Net\asio.hpp"
 #include <iostream>
 #include <thread>
 #include "LocalServer.h"
 #include "WvsCenter.h"
 
-#include "Net\InPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
 
-#include "Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "..\Database\WvsUnified.h"
 
 #include "..\Database\GA_Character.hpp"

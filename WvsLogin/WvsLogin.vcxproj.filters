@@ -4,130 +4,31 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Net\crypto.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\InPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\OutPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\Common\Net\SocketBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="WvsLogin.cpp">
       <Filter>Login</Filter>
     </ClCompile>
     <ClCompile Include="LoginSocket.cpp">
       <Filter>Login</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\WvsBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="Center.cpp">
       <Filter>Login</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Utility\Task\AsnycScheduler.cpp">
-      <Filter>Common\Utility\Task</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Utility\Random\Rand32.cpp">
-      <Filter>Common\Utility\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Utility\DateTime\GameDateTime.cpp">
-      <Filter>Common\Utility\DateTime</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Common">
-      <UniqueIdentifier>{5ba5e934-241a-46a5-8e87-2dd5dcdf7f41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Constants">
-      <UniqueIdentifier>{5b760197-ed09-4386-b0f5-6eda78b50014}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Net">
-      <UniqueIdentifier>{17b2f3ed-9ea4-4ad9-9624-905d7fe86f00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Login">
       <UniqueIdentifier>{777aa3c0-ac9a-42d2-bba0-56893a605bce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common\Net\PacketFlags">
-      <UniqueIdentifier>{1279af95-c8df-434c-94a5-5a0116001b73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility">
-      <UniqueIdentifier>{58dbcba2-2103-43bb-a692-e1de93575b84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\Task">
-      <UniqueIdentifier>{dc35c18f-653e-4cf3-b695-1447d52151d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\Random">
-      <UniqueIdentifier>{c1a59779-99d4-4a25-926d-bdf5a547df9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Utility\DateTime">
-      <UniqueIdentifier>{08b2c226-81c7-4185-b89d-a66a30634549}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\asio.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\crypto.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\InPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\OutPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\SocketBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
     <ClInclude Include="WvsLogin.h">
       <Filter>Login</Filter>
     </ClInclude>
     <ClInclude Include="LoginSocket.h">
       <Filter>Login</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Net\WvsBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="WvsLoginConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
     <ClInclude Include="Center.h">
       <Filter>Login</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\Task\AsnycScheduler.h">
-      <Filter>Common\Utility\Task</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\Random\Rand32.h">
-      <Filter>Common\Utility\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Utility\DateTime\GameDateTime.h">
-      <Filter>Common\Utility\DateTime</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

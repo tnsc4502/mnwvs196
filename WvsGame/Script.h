@@ -7,13 +7,11 @@
 
 // Lua is written in C, so compiler needs to know how to link its libraries
 
-#include "..\ScriptLib\lapi.h"
-#include "..\ScriptLib\lua.h"
-#include "..\ScriptLib\lauxlib.h"
-#include "..\ScriptLib\lualib.h"
-
-
-#include "..\ScriptLib\luawrapper.hpp"
+#include "..\WvsLib\Script\lapi.h"
+#include "..\WvsLib\Script\lua.h"
+#include "..\WvsLib\Script\lauxlib.h"
+#include "..\WvsLib\Script\lualib.h"
+#include "..\WvsLib\Script\luawrapper.hpp"
 
 class User;
 class InPacket;

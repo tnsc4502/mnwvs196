@@ -1,48 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Common">
-      <UniqueIdentifier>{24efd9ee-025a-4cb5-a45f-9b9fd957ddc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Constants">
-      <UniqueIdentifier>{42a5435f-3c14-4e04-af8d-d2879f904aa4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Net">
-      <UniqueIdentifier>{63ff4d5b-2649-4445-9772-9b4bf56798d5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Center">
       <UniqueIdentifier>{ab5572ef-26a9-4566-a74f-099c67a04171}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Common\Net\PacketFlags">
-      <UniqueIdentifier>{c3f7e24d-87a7-492b-a205-2f1268f83453}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\Net\crypto.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\InPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\OutPacket.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\Common\Net\WvsBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\SocketBase.cpp">
-      <Filter>Common\Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\LoginPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\CenterPacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
     <ClCompile Include="WvsCenter.cpp">
       <Filter>Center</Filter>
     </ClCompile>
@@ -52,44 +19,8 @@
     <ClCompile Include="ChannelEntry.cpp">
       <Filter>Center</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Net\PacketFlags\GamePacketFlags.cpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\Constants\CryptoConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Constants\ServerConstants.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\asio.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\crypto.hpp">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\InPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\OutPacket.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\WvsBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\SocketBase.h">
-      <Filter>Common\Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\LoginPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\PacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\CenterPacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="WvsCenter.h">
       <Filter>Center</Filter>
     </ClInclude>
@@ -98,12 +29,6 @@
     </ClInclude>
     <ClInclude Include="ChannelEntry.h">
       <Filter>Center</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Constants\ConfigLoader.hpp">
-      <Filter>Common\Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Net\PacketFlags\GamePacketFlags.hpp">
-      <Filter>Common\Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

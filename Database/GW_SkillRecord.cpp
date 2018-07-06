@@ -1,8 +1,8 @@
 #include "GW_SkillRecord.h"
 #include "WvsUnified.h"
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
-#include "..\WvsGame\WvsGameConstants.hpp"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
 
 void GW_SkillRecord::Encode(OutPacket * oPacket)
 {

@@ -2,13 +2,13 @@
 #include <functional>
 #include <thread>
 
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
-#include "Net\PacketFlags\LoginPacketFlags.hpp"
-#include "Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
 
-#include "Constants\ServerConstants.hpp"
+#include "..\WvsLib\Constants\ServerConstants.hpp"
 
 #include "WvsLogin.h"
 #include "..\WvsLib\Logger\WvsLogger.h"

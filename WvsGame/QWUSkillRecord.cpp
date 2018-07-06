@@ -1,12 +1,12 @@
 #include "QWUSkillRecord.h"
-#include "..\Common\Net\OutPacket.h"
-#include "..\Common\Net\PacketFlags\UserPacketFlags.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_SkillRecord.h"
 #include "User.h"
 #include "SkillInfo.h"
-#include "WvsGameConstants.hpp"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 QWUSkillRecord::QWUSkillRecord()

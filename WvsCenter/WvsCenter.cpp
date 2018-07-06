@@ -1,11 +1,11 @@
 #include "WvsCenter.h"
 
-#include "Net\PacketFlags\CenterPacketFlags.hpp"
-#include "Net\OutPacket.h"
-#include "Net\InPacket.h"
+#include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
 
-#include "Constants\ServerConstants.hpp"
-#include "Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
 
 WvsCenter::WvsCenter()
 {

@@ -1,7 +1,7 @@
 
-#include "..\EquationEvaluator\Evaluator.h"
+#include "..\WvsLib\Evaluator\Evaluator.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
-#include "..\WvsLib\WzResMan.hpp"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_SkillRecord.h"
 #include "ItemInfo.h"
@@ -14,7 +14,7 @@
 
 
 #define CHECK_SKILL_ATTRIBUTE(var, attribute) if(attributeSet.find(#attribute) != attributeSetEnd) (mappingTable[(&(var)) - pAttributeBase]=(std::string)skillCommonImg[#attribute]);
-#define PARSE_SKILLDATA(attribute) ((std::string)skillCommonImg[#attribute]) == "" ? 0 : (int)evaluator.Eval(((std::string)skillCommonImg[#attribute]), "", d);
+#define PARSE_SKILLDATA(attribute) ((std::string)skillCommonImg[#attribute]) == "" ? 0 : (int)Evaluator::Eval(((std::string)skillCommonImg[#attribute]), "", d);
 
 SkillInfo::SkillInfo()
 {
@@ -115,11 +115,9 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 	if (m_nOnLoadingSkills == 0 && m_mSkillByRootID.size() >= 221)
 	{
 		WvsLogger::LogRaw("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
-		//LoadLevelDataSpecial();
-
 		stWzResMan->ReleaseMemory();
 		//system("pause");
-		auto pSkill = GetSkillByID(2211010)->GetLevelData(5);
+		//auto pSkill = GetSkillByID(2211010)->GetLevelData(5);
 		//printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End 2 %d.\n", pSkill->m_nMpCon);
 		/*for (auto& p : m_mSkillByRootID)
 		{
@@ -129,14 +127,14 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 					printf("ID: %d Total : %d\n", pp.second->GetSkillID(), (int)pp.second->GetAllLevelData().size());
 			}
 		}*/
-		int nTest = GetSkillByID(2211010)->GetMaxLevel();
+		/*int nTest = GetSkillByID(1000)->GetMaxLevel();
 		printf("Test 2211010 : %d %d %d %d %d %d\n", 
 			nTest,
-			GetSkillByID(2211010)->GetLevelData(20)->m_nMpCon, 
-			GetSkillByID(2211010)->GetLevelData(20)->m_nDamage,
-			GetSkillByID(2211010)->GetLevelData(20)->m_nMobCount, 
-			GetSkillByID(2211010)->GetLevelData(20)->m_nAttackCount, 
-			GetSkillByID(2211010)->GetLevelData(20)->m_nTime);
+			GetSkillByID(1000)->GetLevelData(3)->m_nMpCon,
+			GetSkillByID(1000)->GetLevelData(3)->m_nDamage,
+			GetSkillByID(1000)->GetLevelData(3)->m_nMobCount,
+			GetSkillByID(1000)->GetLevelData(3)->m_nAttackCount,
+			GetSkillByID(1000)->GetLevelData(3)->m_nTime);*/
 	}
 }
 
@@ -172,18 +170,22 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 {
 	auto& skillCommonImg = *((WZ::Node*)pData);
 	int nMaxLevel = pEntry->GetMaxLevel();
-	Evaluator evaluator;
 	double d;
 	pEntry->AddLevelData(nullptr); //lvl 0
 
+	//變數對應到的算式，key是變數的指標位置與 m_nLevelDataPtrBase 的距離
 	std::map<std::ptrdiff_t, std::string> mappingTable;
+
+	//屬性對應到的算式
 	std::unordered_map<std::string, std::string> attributeSet;
 	for (auto& skill : skillCommonImg)
 		attributeSet[skill.Name()] = (std::string)skill;
+
+	//避免.end()一直被呼叫
 	auto attributeSetEnd = attributeSet.end();
 
-	for (int i = 1; i <= 1; ++i)
-	{
+	//for (int i = 1; i <= 1; ++i)
+	//{
 		SkillLevelData* pLevelData = new SkillLevelData();
 
 		//找出Level Data的位置基底
@@ -392,14 +394,15 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nIllusion, illusion);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_bConsumeOnPickup, consumeOnPickup);
 
-		if (pLevelData->m_bConsumeOnPickup)
+		//下面這個先暫時忽略
+		/*if (pLevelData->m_bConsumeOnPickup)
 		{
 			int party = 0;
 			//party = PARSE_SKILLDATA2(party);
 			pLevelData->m_bConsumeOnPickup = party > 0 ? 2 : pLevelData->m_bConsumeOnPickup;
-		}
+		}*/
 		delete pLevelData;
-	}
+	//}
 
 	SkillLevelData** apLevelData = new SkillLevelData*[nMaxLevel];
 	for (int i = 0; i < nMaxLevel; ++i)
@@ -427,10 +430,9 @@ void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void
 	pEntry->AddLevelData(nullptr); //for lvl 0
 
 	double d = 0;
-	Evaluator evaluator;
 	for (auto& skillCommonImg : skillLevelImg)
 	{
-		d = (int)skillCommonImg;
+		d = atof(skillCommonImg.Name().c_str());
 
 		SkillLevelData* pLevelData = new SkillLevelData;
 		pLevelData->m_nIndiePad = PARSE_SKILLDATA(indiePad);

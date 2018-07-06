@@ -1,5 +1,5 @@
 #pragma once
-#include "Net\SocketBase.h"
+#include "..\WvsLib\Net\SocketBase.h"
 
 class LoginSocket :
 	public SocketBase

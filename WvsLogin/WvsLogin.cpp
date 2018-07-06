@@ -2,12 +2,11 @@
 #include <thread>
 #include <iostream>
 #include <functional>
-#include "Net\OutPacket.h"
-#include "Utility\Task\AsnycScheduler.h"
+#include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Task\AsnycScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
-
-#include "Constants\ConfigLoader.hpp"
-#include "Constants\ServerConstants.hpp"
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Constants\ServerConstants.hpp"
 
 WvsLogin::WvsLogin()
 {

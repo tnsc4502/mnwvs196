@@ -4,12 +4,13 @@
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "Reward.h"
 #include "DropPool.h"
-#include "Utility\Random\Rand32.h"
 #include "User.h"
-#include "Net\OutPacket.h"
 #include "ItemInfo.h"
 #include "QWUser.h"
 #include "Field.h"
+
+#include "..\WvsLib\Random\Rand32.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 Mob::Mob()
 {

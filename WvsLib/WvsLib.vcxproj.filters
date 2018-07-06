@@ -4,62 +4,44 @@
     <Filter Include="Wz">
       <UniqueIdentifier>{825e9316-72a5-462d-aad6-906fdfc7159f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AES">
-      <UniqueIdentifier>{8ffd96e9-42d1-4901-81ea-2d0bd22cac4a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Memory">
       <UniqueIdentifier>{a5469138-92ca-4b31-8b77-e1b56b87d3b1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Logger">
       <UniqueIdentifier>{978749dc-1468-4283-a46a-4dd1c751fe8e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Evaluator">
+      <UniqueIdentifier>{89dcec1b-d90e-4d38-9be1-174832661886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Script">
+      <UniqueIdentifier>{51cd7a3b-1c4e-414a-bee2-74c456140c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{764d05c8-bd81-457e-8a32-ab4ede81f544}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{8bb1c74e-9439-4e2a-aa6b-d2b7d17a5835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DateTime">
+      <UniqueIdentifier>{1993fa0b-801e-46fb-aa63-7bf63ab52edb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Task">
+      <UniqueIdentifier>{0f3b03c9-4455-48bb-9e9e-c92f50abfc02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{caded852-0627-4135-96cb-565b662f785e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Random">
+      <UniqueIdentifier>{3a470695-d4c4-41de-a4d3-6e80b2d2343d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net\PacketFlags">
+      <UniqueIdentifier>{2361a4f5-120d-45f2-a471-6a116fbd94ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Constants">
+      <UniqueIdentifier>{a1af38c5-999e-4c01-84ff-3653c7bd56f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mapfile.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="sprite.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="spritedata.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="wz.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="wzcrypto.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="wzimg.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="wzmain.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="WzResMan.hpp">
-      <Filter>Wz</Filter>
-    </ClInclude>
-    <ClInclude Include="brg_endian.h">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="brg_types.h">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="WzAES.hpp">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="aes.h">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="aes_ni.h">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="aesopt.h">
-      <Filter>AES</Filter>
-    </ClInclude>
-    <ClInclude Include="aestab.h">
-      <Filter>AES</Filter>
-    </ClInclude>
     <ClInclude Include="Memory\Arena.h">
       <Filter>Memory</Filter>
     </ClInclude>
@@ -84,44 +66,215 @@
     <ClInclude Include="Logger\WvsLogger.h">
       <Filter>Logger</Filter>
     </ClInclude>
+    <ClInclude Include="Script\lcode.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lctype.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ldebug.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ldo.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lfunc.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lgc.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\llex.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\llimits.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lmem.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lobject.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lopcodes.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lparser.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lprefix.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lstate.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lstring.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ltable.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\ltm.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lua.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lua.hpp">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\luaconf.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lualib.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\luawrapper.hpp">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\luawrapperutil.hpp">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lundump.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lvm.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lzio.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lapi.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\lauxlib.h">
+      <Filter>Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\Evaluator.h">
+      <Filter>Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Evaluator\exprtk.hpp">
+      <Filter>Evaluator</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\mapfile.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\sprite.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\spritedata.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\wz.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\WzAES.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\wzcrypto.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\wzimg.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\wzmain.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Wz\WzResMan.hpp">
+      <Filter>Wz</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\aesopt.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\aestab.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\brg_endian.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\brg_types.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\aes.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\aes_ni.h">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\WvsCrypto.hpp">
+      <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\asio.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\InPacket.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\OutPacket.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\SocketBase.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\WorldInfo.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\WvsBase.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\CenterPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\FieldPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\GamePacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\LoginPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\MobPacketFlags.h">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\PacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\UserPacketFlags.h">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\WvsContextPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\ConfigLoader.hpp">
+      <Filter>Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\CryptoConstants.hpp">
+      <Filter>Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\ServerConstants.hpp">
+      <Filter>Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Random\Rand32.h">
+      <Filter>Random</Filter>
+    </ClInclude>
+    <ClInclude Include="String\StringUtility.h">
+      <Filter>String</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\AsnycScheduler.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="DateTime\GameDateTime.h">
+      <Filter>DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\WvsLoginConstants.hpp">
+      <Filter>Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants\WvsGameConstants.hpp">
+      <Filter>Constants</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mapfile.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="wzcrypto.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="wzimg.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="wzmain.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="wznode.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="WzResMan.cpp">
-      <Filter>Wz</Filter>
-    </ClCompile>
-    <ClCompile Include="WzAES.cpp">
-      <Filter>AES</Filter>
-    </ClCompile>
-    <ClCompile Include="aes_modes.c">
-      <Filter>AES</Filter>
-    </ClCompile>
-    <ClCompile Include="aes_ni.c">
-      <Filter>AES</Filter>
-    </ClCompile>
-    <ClCompile Include="aescrypt.c">
-      <Filter>AES</Filter>
-    </ClCompile>
-    <ClCompile Include="aeskey.c">
-      <Filter>AES</Filter>
-    </ClCompile>
-    <ClCompile Include="aestab.c">
-      <Filter>AES</Filter>
-    </ClCompile>
     <ClCompile Include="Memory\Arena.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
@@ -137,10 +290,208 @@
     <ClCompile Include="Logger\WvsLogger.cpp">
       <Filter>Logger</Filter>
     </ClCompile>
+    <ClCompile Include="Script\lbitlib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lcode.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lcorolib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lctype.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ldblib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ldebug.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ldo.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ldump.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lfunc.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lgc.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\linit.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\liolib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\llex.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lmathlib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lmem.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\loadlib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lobject.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lopcodes.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\loslib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lparser.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lstate.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lstring.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lstrlib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ltable.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ltablib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\ltm.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lua.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\luac.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lundump.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lutf8lib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lvm.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lzio.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lapi.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lauxlib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\lbaselib.cpp">
+      <Filter>Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Evaluator\Evaluator.cpp">
+      <Filter>Evaluator</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\mapfile.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\WzAES.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\wzcrypto.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\wzimg.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\wzmain.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\wznode.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\WzResMan.cpp">
+      <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\aescrypt.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\aeskey.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\aestab.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\aes_modes.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\aes_ni.c">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\WvsCrypto.cpp">
+      <Filter>Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\InPacket.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\OutPacket.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\SocketBase.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\WvsBase.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\FieldPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\GamePacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\LoginPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\MobPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\UserPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\CenterPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Random\Rand32.cpp">
+      <Filter>Random</Filter>
+    </ClCompile>
+    <ClCompile Include="String\StringUtility.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\AsnycScheduler.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="DateTime\GameDateTime.cpp">
+      <Filter>DateTime</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Memory\MemoryPool.tcc">
       <Filter>Memory</Filter>
+    </None>
+    <None Include="Script\Makefile">
+      <Filter>Script</Filter>
+    </None>
+    <None Include="Script\ScriptLib.vcxproj">
+      <Filter>Script</Filter>
+    </None>
+    <None Include="Script\ScriptLib.vcxproj.filters">
+      <Filter>Script</Filter>
     </None>
   </ItemGroup>
 </Project>

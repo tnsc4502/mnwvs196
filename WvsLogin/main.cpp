@@ -1,17 +1,16 @@
 ﻿// WvsGame.cpp : Defines the entry point for the console application.
 //
 
-#include "Net\asio.hpp"
 #include <iostream>
 #include <thread>
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 #include "WvsLogin.h"
 #include "LoginSocket.h"
-#include "WvsLoginConstants.hpp"
+#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
 
-#include "..\Common\Utility\Task\AsnycScheduler.h"
-#include "Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Constants\ConfigLoader.hpp"
 //#include "..\WvsLib\Logger\WvsLogger.h"
 
 void ConnectionAcceptorThread(short nPort)

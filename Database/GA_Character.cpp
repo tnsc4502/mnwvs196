@@ -1,6 +1,6 @@
 #include "GA_Character.hpp"
 #include "WvsUnified.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 #include "GW_ItemSlotEquip.h"
 #include "GW_ItemSlotBundle.h"
 #include "GW_CharacterStat.h"
@@ -24,7 +24,6 @@ GA_Character::GA_Character()
 
 GA_Character::~GA_Character()
 {
-	printf("Destruct Data Called\n");
 	delete mAvatarData;
 	delete mStat;
 	delete mLevel;
@@ -515,7 +514,6 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket, bool bToCenter)
 	{
 		iPacket->Decode1();
 		int nStartedQuestSize = iPacket->Decode2();
-		printf("Decode Quest Data : size = %d\n", nStartedQuestSize);
 		for (int i = 0; i < nStartedQuestSize; ++i)
 		{
 			GW_QuestRecord *pRecord = new GW_QuestRecord;

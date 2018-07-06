@@ -1,7 +1,7 @@
 #pragma once
 #include <atomic>
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 struct GW_ItemSlotBase
 {

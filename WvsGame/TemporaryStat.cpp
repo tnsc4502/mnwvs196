@@ -1,5 +1,5 @@
 #include "TemporaryStat.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 TemporaryStat::TS_Flag::TS_Flag(int dwFlagValue)
 {

@@ -1,9 +1,9 @@
 #include "GW_CharacterStat.h"
 #include "WvsUnified.h"
-#include "..\Common\Utility\String\StringUtility.h"
-#include "..\WvsGame\WvsGameConstants.hpp"
-#include "..\Common\Net\InPacket.h"
-#include "..\Common\Net\OutPacket.h"
+#include "..\WvsLib\String\StringUtility.h"
+#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
 GW_CharacterStat::GW_CharacterStat()
 {

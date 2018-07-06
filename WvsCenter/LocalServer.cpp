@@ -1,14 +1,14 @@
 
 #include "..\Database\CharacterDBAccessor.h"
 #include "LocalServer.h"
-#include "Net\InPacket.h"
-#include "Net\OutPacket.h"
+#include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 
-#include "Net\PacketFlags\LoginPacketFlags.hpp"
-#include "Net\PacketFlags\CenterPacketFlags.hpp"
-#include "Net\PacketFlags\GamePacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
 
-#include "Constants\ServerConstants.hpp"
+#include "..\WvsLib\Constants\ServerConstants.hpp"
 #include "WvsCenter.h"
 
 
@@ -28,7 +28,7 @@ void LocalServer::OnClosed()
 
 void LocalServer::OnPacket(InPacket *iPacket)
 {
-	printf("[WvsCenter][LocalServer::OnPacket]封包接收：");
+	WvsLogger::LogRaw("[WvsCenter][LocalServer::OnPacket]封包接收：");
 	iPacket->Print();
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
@@ -58,7 +58,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 {
 	auto serverType = iPacket->Decode1();
 	SetServerType(serverType);
-	printf("[WvsCenter][LocalServer::OnRegisterCenterRequest]收到新的[%s]連線請求。\n", (serverType == ServerConstants::SVR_LOGIN ? "WvsLogin" : "WvsGame"));
+	WvsLogger::LogFormat("[WvsCenter][LocalServer::OnRegisterCenterRequest]收到新的[%s]連線請求。\n", (serverType == ServerConstants::SVR_LOGIN ? "WvsLogin" : "WvsGame"));
 
 	if (serverType == ServerConstants::SVR_GAME)
 	{
@@ -139,7 +139,7 @@ void LocalServer::OnRequestGameServerInfo(InPacket *iPacket)
 	int nWorldID = iPacket->Decode4();
 	if (nWorldID != WvsBase::GetInstance<WvsCenter>()->GetWorldInfo().nWorldID)
 	{
-		printf("[WvsCenter][LocalServer::OnRequstGameServerInfo]異常：客戶端嘗試連線至不存在的頻道伺服器[WvsGame]。\n");
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsCenter][LocalServer::OnRequstGameServerInfo]異常：客戶端嘗試連線至不存在的頻道伺服器[WvsGame]。\n");
 		return;
 	}
 	int nChannelID = iPacket->Decode4();
