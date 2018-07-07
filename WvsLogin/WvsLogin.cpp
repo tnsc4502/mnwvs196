@@ -19,7 +19,7 @@ WvsLogin::~WvsLogin()
 
 int WvsLogin::GetCenterCount() const
 {
-	return WvsLoginConstants::kMaxNumberOfCenters;
+	return m_nCenterCount;
 }
 
 void WvsLogin::SetCenterOpened(int nCenterIdx, bool bConnecting)
@@ -39,7 +39,8 @@ std::shared_ptr<Center>& WvsLogin::GetCenter(int idx)
 
 void WvsLogin::ConnectToCenter(int nCenterIdx)
 {
-	try {
+	try 
+	{
 		aCenterServerService[nCenterIdx].reset(new asio::io_service());
 		aCenterList[nCenterIdx] = std::make_shared<Center>(*aCenterServerService[nCenterIdx]);
 		aCenterList[nCenterIdx]->SetDisconnectedNotifyFunc(&Center::OnNotifyCenterDisconnected);
@@ -53,7 +54,8 @@ void WvsLogin::ConnectToCenter(int nCenterIdx)
 		std::error_code ec;
 		aCenterServerService[nCenterIdx]->run(ec);
 	}
-	catch (std::exception& e) {
+	catch (std::exception& e) 
+	{
 		printf("Exception occurred : %s\n", e.what());
 	}
 }
@@ -63,25 +65,34 @@ void WvsLogin::CenterAliveMonitor(int i)
 	if (IsCenterOpened(i))
 		return;
 	SetCenterOpened(i, true);
-	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
-	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
-	if (aCenterList[i] && aCenterList[i]->IsConnectionFailed())
+	try 
 	{
-		aCenterList[i].reset();
-		aCenterServerService[i]->stop();
-		WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", i);
-		if (aCenterWorkThread[i])
+		WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
+		int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
+		if (aCenterList[i] && aCenterList[i]->IsConnectionFailed())
 		{
+			aCenterList[i].reset();
+			aCenterServerService[i]->stop();
+			WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", i);
+			/*if (aCenterWorkThread[i])
+			{
+				aCenterWorkThread[i]->detach();
+				*aCenterWorkThread[i] = std::thread(&WvsLogin::ConnectToCenter, this, i);
+			}
+			else*/
 			aCenterWorkThread[i]->detach();
-			*aCenterWorkThread[i] = std::thread(&WvsLogin::ConnectToCenter, this, i);
+			aCenterWorkThread[i].reset(new std::thread(&WvsLogin::ConnectToCenter, this, i)); 
 		}
+	}
+	catch (std::exception& e) 
+	{
 	}
 }
 
 void WvsLogin::InitializeCenter()
 {
-	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
-	for (int i = 0; i < centerSize; ++i) 
+	m_nCenterCount = ConfigLoader::GetInstance()->IntValue("CenterCount");
+	for (int i = 0; i < m_nCenterCount; ++i)
 	{
 		SetCenterOpened(i, false);
 		aCenterWorkThread[i].reset(new std::thread(&WvsLogin::ConnectToCenter, this, i));

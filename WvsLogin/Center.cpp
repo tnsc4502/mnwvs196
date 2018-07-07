@@ -30,6 +30,7 @@ void Center::SetCenterIndex(int idx)
 
 void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
 {
+	WvsLogger::LogRaw("OnConnectToCenter Called\n");
 	asio::ip::tcp::resolver::query centerSrvQuery(strAddr, std::to_string(nPort)); 
 	
 	mResolver.async_resolve(centerSrvQuery,
@@ -40,6 +41,7 @@ void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
 
 void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
 {
+	WvsLogger::LogRaw("OnResolve Called\n");
 	if (!err)
 	{
 		asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
@@ -58,6 +60,7 @@ void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iter
 
 void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
 {
+	WvsLogger::LogRaw("OnConnect Called\n");
 	if (err)
 	{
 		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
@@ -73,7 +76,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	oPacket.Encode2(LoginSendPacketFlag::Center_RegisterCenterRequest);
 
 	//WvsLogin的ServerType為SVR_LOGIN
-	oPacket.Encode1(ServerConstants::ServerType::SVR_LOGIN);
+	oPacket.Encode1(ServerConstants::ServerType::SRV_LOGIN);
 
 	SendPacket(&oPacket); 
 	OnWaitingPacket();

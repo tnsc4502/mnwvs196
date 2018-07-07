@@ -11,12 +11,13 @@ class WvsLogin : public WvsBase
 private:
 	void ConnectToCenter(int nCenterIdx);
 
-	std::shared_ptr<Center> aCenterList[WvsLoginConstants::kMaxNumberOfCenters];
-	std::shared_ptr<asio::io_service> aCenterServerService[WvsLoginConstants::kMaxNumberOfCenters];
-	std::shared_ptr<std::thread> aCenterWorkThread[WvsLoginConstants::kMaxNumberOfCenters];
+	int m_nCenterCount = 0;
+	std::shared_ptr<Center> aCenterList[ServerConstants::kMaxNumberOfCenters];
+	std::shared_ptr<asio::io_service> aCenterServerService[ServerConstants::kMaxNumberOfCenters];
+	std::shared_ptr<std::thread> aCenterWorkThread[ServerConstants::kMaxNumberOfCenters];
 
 	//紀錄Center instance是否正在連線，用於避免重連的異常
-	bool aIsConnecting[WvsLoginConstants::kMaxNumberOfCenters];
+	bool aIsConnecting[ServerConstants::kMaxNumberOfCenters];
 	void CenterAliveMonitor(int idx);
 
 public:

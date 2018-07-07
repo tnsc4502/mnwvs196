@@ -1,6 +1,6 @@
 #pragma once
 #include "..\WvsLib\Net\WvsBase.h"
-#include "ChannelEntry.h"
+#include "LocalServerEntry.h"
 
 #include <map>
 
@@ -8,7 +8,8 @@ class WvsCenter : public WvsBase
 {
 private:
 	//ChannelEntry aChannel[30];
-	std::map<int, ChannelEntry*> m_mChannel;
+	std::map<int, LocalServerEntry*> m_mChannel;
+	LocalServerEntry* m_pShopEntry;
 
 	int nConnectedChannel = 0;
 
@@ -18,12 +19,17 @@ public:
 	~WvsCenter();
 
 	void RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket);
+	void RegisterCashShop(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket);
 
-	ChannelEntry* GetChannel(int idx);
+	LocalServerEntry* GetChannel(int idx);
+
 	int GetChannelCount();
 
 	void Init();
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 	void NotifyWorldChanged();
+
+	LocalServerEntry* GetShop();
+	void SetShop(LocalServerEntry* pEntry);
 };
 

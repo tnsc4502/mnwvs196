@@ -796,6 +796,7 @@ void SecondaryStat::DecodeInternal(User* pUser, InPacket * iPacket)
 	bool bDecodeInternal = iPacket->Decode1() == 1;
 	if (!bDecodeInternal)
 		return;
+	int nChannelID = iPacket->Decode4();
 
 	//Decode Temporary Internal
 	int nCount = iPacket->Decode4(), nSkillID, tDurationRemained, nSLV;
@@ -822,6 +823,7 @@ void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 {
 	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
 
+	oPacket->Encode4(pUser->GetChannelID());
 
 	//Encode Temporary Internal
 	auto pSS = pUser->GetSecondaryStat();

@@ -1,14 +1,15 @@
+#pragma once
 #include <string>
 
 namespace ServerConstants
 {
 	enum ServerType
 	{
-		SVR_LOGIN,
-		SVR_CENTER,
-		SVR_GAME,
-		SVR_SHOP,
-		SVR_CLAIM
+		SRV_LOGIN,
+		SRV_CENTER,
+		SRV_GAME,
+		SRV_SHOP,
+		SRV_CLAIM
 	};
 
 	enum class GameLocale { TW = 6 };
@@ -18,4 +19,5 @@ namespace ServerConstants
 	constexpr int kGameLocale = (int)GameLocale::TW;
 
 	const std::string strGameSubVersion = "3";
+	const int kMaxNumberOfCenters = 30;
 }

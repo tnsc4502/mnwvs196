@@ -8,7 +8,7 @@
 #include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
-#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.h"
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\FieldPacketFlags.hpp"
 
 #include "..\WvsLib\DateTime\GameDateTime.h"
@@ -84,7 +84,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	oPacket.Encode2(LoginSendPacketFlag::Center_RegisterCenterRequest);
 
 	//WvsGame的ServerType為SRV_GAME
-	oPacket.Encode1(ServerConstants::ServerType::SVR_GAME);
+	oPacket.Encode1(ServerConstants::ServerType::SRV_GAME);
 
 	//[+07-07] Game的頻道ID
 	oPacket.Encode1((int)WvsBase::GetInstance<WvsGame>()->GetChannelID());
@@ -126,6 +126,7 @@ void Center::OnPacket(InPacket *iPacket)
 	case CenterSendPacketFlag::CenterMigrateInResult:
 		OnCenterMigrateInResult(iPacket);
 		break;
+	case CenterSendPacketFlag::MigrateCashShopResult:
 	case CenterSendPacketFlag::TransferChannelResult:
 		OnTransferChannelResult(iPacket);
 		break;
@@ -179,7 +180,7 @@ void Center::OnTransferChannelResult(InPacket * iPacket)
 	int nClientSocketID = iPacket->Decode4();
 	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocketList()[nClientSocketID];
 	OutPacket oPacket;
-	bool bSuccess = iPacket->Decode1();
+	bool bSuccess = iPacket->Decode1() == 1 ? true : false;
 	if (bSuccess)
 	{
 		oPacket.Encode2(UserSendPacketFlag::UserLocal_OnTransferChannel);
@@ -194,3 +195,4 @@ void Center::OnTransferChannelResult(InPacket * iPacket)
 	}
 	pSocket->SendPacket(&oPacket);
 }
+

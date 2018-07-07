@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="WvsShop.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="Center.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSocket.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shop">
+      <UniqueIdentifier>{28b753a8-a855-4210-8544-5c7bb108af97}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="WvsShop.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="Center.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSocket.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

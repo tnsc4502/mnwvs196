@@ -10,7 +10,7 @@
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
-#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.h"
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 
 #include "FieldMan.h"
 #include "Portal.h"
@@ -307,6 +307,11 @@ int User::GetUserID() const
 	return m_pCharacterData->nCharacterID;
 }
 
+int User::GetChannelID() const
+{
+	return WvsBase::GetInstance<WvsGame>()->GetChannelID();
+}
+
 void User::SendPacket(OutPacket *oPacket)
 {
 	m_pSocket->SendPacket(oPacket);
@@ -359,6 +364,9 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case UserRecvPacketFlag::User_OnUserTransferChannelRequest:
 		OnTransferChannelRequest(iPacket);
+		break;
+	case UserRecvPacketFlag::User_OnUserMigrateToCashShopRequest:
+		OnMigrateToCashShopRequest(iPacket);
 		break;
 	case UserRecvPacketFlag::User_OnUserMoveRequest:
 		m_pField->OnUserMove(this, iPacket);
@@ -443,19 +451,32 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 void User::OnTransferChannelRequest(InPacket * iPacket)
 {
 	int nChannelID = iPacket->Decode1();
-	
+
 	if (nChannelID == WvsBase::GetInstance<WvsGame>()->GetChannelID())
 	{
 		//SendTransferChannelIgnored
 	}
 	//Check if the server is connected.
 	//Check if the user can attach additional process.
+
 	SetTransferStatus(TransferStatus::eOnTransferChannel);
 	OutPacket oPacket;
 	oPacket.Encode2(GameSendPacketFlag::RequestTransferChannel);
 	oPacket.Encode4(m_pSocket->GetSocketID());
 	oPacket.Encode4(m_nCharacterID);
 	oPacket.Encode1(nChannelID);
+	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
+}
+
+void User::OnMigrateToCashShopRequest(InPacket * iPacket)
+{
+	//Check if the server is connected.
+	//Check if the user can attach additional process.
+	SetTransferStatus(TransferStatus::eOnTransferShop);
+	OutPacket oPacket;
+	oPacket.Encode2(GameSendPacketFlag::RequestTransferShop);
+	oPacket.Encode4(m_pSocket->GetSocketID());
+	oPacket.Encode4(m_nCharacterID);
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 }
 

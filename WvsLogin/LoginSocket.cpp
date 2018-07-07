@@ -133,8 +133,8 @@ void LoginSocket::SendWorldInformation()
 {
 	SendChannelBackground();
 
-	int numCenter = sizeof(WvsLoginConstants::CenterServerList) / sizeof(WvsLoginConstants::CenterServerList[0]);
-	for (int i = 0; i < numCenter; ++i)
+	int nCenterCount = WvsBase::GetInstance<WvsLogin>()->GetCenterCount();
+	for (int i = 0; i < nCenterCount; ++i)
 	{
 		auto& pCenter = WvsBase::GetInstance<WvsLogin>()->GetCenter(i);
 		if (pCenter && pCenter->IsConnected())

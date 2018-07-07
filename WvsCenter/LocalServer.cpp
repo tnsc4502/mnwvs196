@@ -6,6 +6,7 @@
 
 #include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\ShopPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
 
 #include "..\WvsLib\Constants\ServerConstants.hpp"
@@ -52,8 +53,12 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		case GameSendPacketFlag::RequestMigrateOut:
 			OnRequestMigrateOut(iPacket);
 			break;
+		case ShopSendPacketFlag::RequestMigrateOut:
 		case GameSendPacketFlag::RequestTransferChannel:
 			OnRequestTransferChannel(iPacket);
+			break;
+		case GameSendPacketFlag::RequestTransferShop:
+			OnRequestMigrateCashShop(iPacket);
 			break;
 	}
 }
@@ -62,9 +67,10 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 {
 	auto serverType = iPacket->Decode1();
 	SetServerType(serverType);
-	WvsLogger::LogFormat("[WvsCenter][LocalServer::OnRegisterCenterRequest]收到新的[%s]連線請求。\n", (serverType == ServerConstants::SVR_LOGIN ? "WvsLogin" : "WvsGame"));
+	const char* pInstanceName = (serverType == ServerConstants::SRV_LOGIN ? "WvsLogin" : (serverType == ServerConstants::SRV_GAME ? "WvsGame" : "WvsShop"));
+	WvsLogger::LogFormat("[WvsCenter][LocalServer::OnRegisterCenterRequest]收到新的[%s][%d]連線請求。\n", pInstanceName, serverType);
 
-	if (serverType == ServerConstants::SVR_GAME)
+	if (serverType == ServerConstants::SRV_GAME)
 	{
 		WvsBase::GetInstance<WvsCenter>()->RegisterChannel(shared_from_this(), iPacket);
 		WvsBase::GetInstance<WvsCenter>()->NotifyWorldChanged();
@@ -73,7 +79,7 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 	OutPacket oPacket;
 	oPacket.Encode2(CenterSendPacketFlag::RegisterCenterAck);
 	oPacket.Encode1(1); //Success;
-	if (serverType == ServerConstants::SVR_LOGIN)
+	if (serverType == ServerConstants::SRV_LOGIN)
 	{
 		auto pWorld = WvsWorld::GetInstance();
 		oPacket.Encode1(pWorld->GetWorldInfo().nWorldID);
@@ -83,6 +89,10 @@ void LocalServer::OnRegisterCenterRequest(InPacket *iPacket)
 		WvsBase::GetInstance<WvsCenter>()->NotifyWorldChanged();
 		//printf("[LocalServer::OnRegisterCenterRequest]Encoding World Information.\n");
 	}
+	
+	if (serverType == ServerConstants::SRV_SHOP)
+		WvsBase::GetInstance<WvsCenter>()->RegisterCashShop(shared_from_this(), iPacket);
+
 	SendPacket(&oPacket);
 }
 
@@ -186,7 +196,7 @@ void LocalServer::OnRequestMigrateIn(InPacket *iPacket)
 	{
 		oPacket.Encode1(1);
 		pUserTransferStatus->Encode(&oPacket);
-		WvsWorld::GetInstance()->ClearUserTransferStatus(nCharacterID);
+		//WvsWorld::GetInstance()->ClearUserTransferStatus(nCharacterID);
 	}
 	//CharacterDBAccessor::GetInstance()->PostCharacterDataRequest(this, nClientSocketID, nCharacterID, &oPacket); // for Client
 	this->SendPacket(&oPacket);
@@ -221,6 +231,27 @@ void LocalServer::OnRequestTransferChannel(InPacket * iPacket)
 	oPacket.Encode1((pEntry != nullptr ? 1 : 0)); //bSuccess
 	if (pEntry != nullptr)
 	{
+		oPacket.Encode1(1);
+		oPacket.Encode4(pEntry->GetExternalIP());
+		oPacket.Encode2(pEntry->GetExternalPort());
+		oPacket.Encode4(0);
+	}
+	this->SendPacket(&oPacket);
+}
+
+void LocalServer::OnRequestMigrateCashShop(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	OutPacket oPacket;
+	oPacket.Encode2(CenterSendPacketFlag::MigrateCashShopResult);
+	oPacket.Encode4(nClientSocketID);
+	auto pEntry = WvsBase::GetInstance<WvsCenter>()->GetShop();
+	if (WvsBase::GetInstance<WvsCenter>()->GetShop() == nullptr)
+		oPacket.Encode1(0); //bSuccess
+	else
+	{
+		oPacket.Encode1(1);
 		oPacket.Encode1(1);
 		oPacket.Encode4(pEntry->GetExternalIP());
 		oPacket.Encode2(pEntry->GetExternalPort());

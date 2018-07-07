@@ -120,6 +120,7 @@ public:
 
 	//Basic Routine
 	int GetUserID() const;
+	int GetChannelID() const;
 	std::mutex& GetLock();
 	void Update();
 
@@ -139,6 +140,7 @@ public:
 
 	void OnTransferFieldRequest(InPacket* iPacket);
 	void OnTransferChannelRequest(InPacket* iPacket);
+	void OnMigrateToCashShopRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
 	void OnAttack(int nType, InPacket *iPacket);
 	void OnLevelUp();

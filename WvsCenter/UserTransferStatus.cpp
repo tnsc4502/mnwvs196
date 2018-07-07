@@ -13,7 +13,7 @@ UserTransferStatus::~UserTransferStatus()
 
 void UserTransferStatus::Decode(InPacket * iPacket)
 {
-	
+	m_nChannelID = iPacket->Decode4();
 	//Decode Temporary Status
 	int nCount = iPacket->Decode4();
 	m_aTS.resize(nCount);
@@ -23,7 +23,7 @@ void UserTransferStatus::Decode(InPacket * iPacket)
 
 void UserTransferStatus::Encode(OutPacket * oPacket) const
 {
-	
+	oPacket->Encode4(m_nChannelID);
 	//Encode Temporary Status
 	oPacket->Encode4((int)m_aTS.size());
 	for (auto& ts : m_aTS)

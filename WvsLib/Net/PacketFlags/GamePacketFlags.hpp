@@ -13,6 +13,7 @@ MAKE_FLAG_COLLECTION_BODY(GameSendPacketFlag)
 MAKE_GAME_PACKET_FLAG(RequestMigrateIn, 0x6001);
 MAKE_GAME_PACKET_FLAG(RequestMigrateOut, 0x6002);
 MAKE_GAME_PACKET_FLAG(RequestTransferChannel, 0x6003);
+MAKE_GAME_PACKET_FLAG(RequestTransferShop, 0x6004);
 
 
 //Flags to Game

@@ -234,13 +234,7 @@
     <ClInclude Include="Net\PacketFlags\LoginPacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
     </ClInclude>
-    <ClInclude Include="Net\PacketFlags\MobPacketFlags.h">
-      <Filter>Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp">
-      <Filter>Net\PacketFlags</Filter>
-    </ClInclude>
-    <ClInclude Include="Net\PacketFlags\UserPacketFlags.h">
       <Filter>Net\PacketFlags</Filter>
     </ClInclude>
     <ClInclude Include="Net\PacketFlags\WvsContextPacketFlags.hpp">
@@ -272,6 +266,15 @@
     </ClInclude>
     <ClInclude Include="Constants\WvsGameConstants.hpp">
       <Filter>Constants</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\UserPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\MobPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="DateTime\GameDateTime.cpp">
       <Filter>DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\ShopPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

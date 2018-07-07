@@ -41,6 +41,7 @@ public:
 	void OnPacket(InPacket *iPacket);
 	void OnCenterMigrateInResult(InPacket *iPacket);
 	void OnTransferChannelResult(InPacket *iPacket);
+	void OnMigrateCashShopResult(InPacket *iPacket);
 
 	static void OnNotifyCenterDisconnected(SocketBase *pSocket);
 };

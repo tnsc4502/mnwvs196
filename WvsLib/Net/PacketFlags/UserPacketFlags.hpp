@@ -600,6 +600,7 @@ FLAG_COLLECTION_BODY_END
 MAKE_FLAG_COLLECTION_BODY(UserRecvPacketFlag)
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserTransferFieldRequest, 0xB3);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserTransferChannelRequest, 0xB4);
+MAKE_USER_RECV_PACKET_FLAG(User_OnUserMigrateToCashShopRequest, 0xB9);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserMoveRequest, 0xC4);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_MeleeAttack, 0xC9);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_ShootAttack, 0xCA);

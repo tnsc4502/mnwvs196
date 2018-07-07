@@ -1,15 +1,15 @@
 #pragma once
 #include "LocalServer.h"
-class ChannelEntry
+class LocalServerEntry
 {
 private:
-	std::shared_ptr<SocketBase> pGameSrv;
+	std::shared_ptr<SocketBase> pLocalSocket;
 	int nMaxUser, nTotalUser, nExternalIP;
 	short nExternalPort;
 
 public:
-	ChannelEntry();
-	~ChannelEntry();
+	LocalServerEntry();
+	~LocalServerEntry();
 
 	void SetExternalIP(int ipInDWORD);
 	void SetExternalPort(short port);
@@ -17,14 +17,14 @@ public:
 	int GetExternalIP() const;
 	short GetExternalPort() const;
 
-	void SetGameServer(std::shared_ptr<SocketBase> &srv)
+	void SetLocalSocket(std::shared_ptr<SocketBase> &pSocket)
 	{
-		pGameSrv = srv;
+		pLocalSocket = pSocket;
 	}
 
-	std::shared_ptr<SocketBase> &GetGameServer()
+	std::shared_ptr<SocketBase> &GetLocalSocket()
 	{
-		return pGameSrv;
+		return pLocalSocket;
 	}
 };
 

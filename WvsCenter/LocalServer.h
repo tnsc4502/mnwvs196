@@ -21,5 +21,6 @@ public:
 	void OnRequestMigrateIn(InPacket *iPacket);
 	void OnRequestMigrateOut(InPacket *iPacket);
 	void OnRequestTransferChannel(InPacket *iPacket);
+	void OnRequestMigrateCashShop(InPacket *iPacket);
 };
 

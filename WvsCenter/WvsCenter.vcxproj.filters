@@ -19,14 +19,14 @@
     <ClCompile Include="LocalServer.cpp">
       <Filter>Center</Filter>
     </ClCompile>
-    <ClCompile Include="ChannelEntry.cpp">
-      <Filter>Center</Filter>
-    </ClCompile>
     <ClCompile Include="UserTransferStatus.cpp">
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="WvsWorld.cpp">
       <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalServerEntry.cpp">
+      <Filter>Center</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,14 +36,14 @@
     <ClInclude Include="LocalServer.h">
       <Filter>Center</Filter>
     </ClInclude>
-    <ClInclude Include="ChannelEntry.h">
-      <Filter>Center</Filter>
-    </ClInclude>
     <ClInclude Include="UserTransferStatus.h">
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="WvsWorld.h">
       <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalServerEntry.h">
+      <Filter>Center</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

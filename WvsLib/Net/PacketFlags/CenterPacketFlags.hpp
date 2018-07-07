@@ -12,6 +12,7 @@ MAKE_CENTER_SEND_PACKET_FLAG(CharacterListResponse, 3);
 MAKE_CENTER_SEND_PACKET_FLAG(GameServerInfoResponse, 4);
 MAKE_CENTER_SEND_PACKET_FLAG(CenterMigrateInResult, 5);
 MAKE_CENTER_SEND_PACKET_FLAG(TransferChannelResult, 6);
+MAKE_CENTER_SEND_PACKET_FLAG(MigrateCashShopResult, 7);
 
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END

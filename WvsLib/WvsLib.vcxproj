@@ -145,9 +145,10 @@
     <ClInclude Include="Net\PacketFlags\FieldPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\GamePacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\LoginPacketFlags.hpp" />
-    <ClInclude Include="Net\PacketFlags\MobPacketFlags.h" />
+    <ClInclude Include="Net\PacketFlags\MobPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp" />
-    <ClInclude Include="Net\PacketFlags\UserPacketFlags.h" />
+    <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp" />
+    <ClInclude Include="Net\PacketFlags\UserPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\WvsContextPacketFlags.hpp" />
     <ClInclude Include="Net\SocketBase.h" />
     <ClInclude Include="Net\WorldInfo.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\MobPacketFlags.cpp" />
+    <ClCompile Include="Net\PacketFlags\ShopPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="Net\SocketBase.cpp" />
     <ClCompile Include="Net\WvsBase.cpp" />

@@ -1,8 +1,8 @@
 #include "LifePool.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
-#include "..\WvsLib\Net\PacketFlags\MobPacketFlags.h"
-#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.h"
+#include "..\WvsLib\Net\PacketFlags\MobPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 

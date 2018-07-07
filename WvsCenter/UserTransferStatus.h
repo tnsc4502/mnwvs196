@@ -9,6 +9,7 @@ class OutPacket;
 */
 class UserTransferStatus
 {
+	int m_nChannelID;
 	struct TransferTemporaryStatus
 	{
 		int nSkillID, nSLV, tTime;

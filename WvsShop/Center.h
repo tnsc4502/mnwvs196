@@ -29,31 +29,12 @@ public:
 	void OnPacket(InPacket *iPacket);
 	void OnClosed();
 
-	const WorldInfo& GetWorldInfo()
-	{
-		return m_WorldInfo;
-	}
+	const WorldInfo& GetWorldInfo();
+	bool IsConnectionFailed() const;
+	bool IsConnected() const;
+	static void OnNotifyCenterDisconnected(SocketBase *pSocket);
 
-	bool IsConnectionFailed() const
-	{
-		return bConnectionFailed;
-	}
-
-	bool IsConnected() const
-	{
-		return bIsConnected;
-	}
-
-	void OnUpdateChannelInfo(InPacket *iPacket);
-	void OnUpdateWorldInfo(InPacket *iPacket);
-	void OnCharacterListResponse(InPacket *iPacket);
-	void OnGameServerInfoResponse(InPacket *iPacket);
-
-	static void OnNotifyCenterDisconnected(SocketBase *pSocket)
-	{
-		WvsLogger::LogRaw("[WvsLogin][Center]與Center Server中斷連線。\n");
-		((Center*)pSocket)->bIsConnected = false;
-		((Center*)pSocket)->bConnectionFailed = true;
-	}
+	void OnCenterMigrateInResult(InPacket *iPacket);
+	void OnCenterMigrateOutResult(InPacket *iPacket);
 };
 
