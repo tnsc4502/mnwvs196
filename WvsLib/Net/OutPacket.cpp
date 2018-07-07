@@ -185,7 +185,7 @@ void OutPacket::SharedPacket::DecRefCount()
 	if (--nRefCount <= 0)
 	{
 		delete[] aBuff;
-		//stMemoryPoolMan->DestructArray(aBuff);
+		//MSMemoryPoolMan::GetInstance()->DestructArray(aBuff);
 		delete this;
 	}
 }

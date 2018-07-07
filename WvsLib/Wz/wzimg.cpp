@@ -12,7 +12,7 @@ namespace WZ {
 vector<Img *> Img::Imgs;
 void * Img::operator new(size_t size) {
 #pragma warning(disable:4267)
-	return stWzMemoryPoolMan->AllocateArray(size);
+	return WzMemoryPoolMan::GetInstance()->AllocateArray(size);
 #pragma warning(default:4267)
     /*static char * nbuf = nullptr;
     static size_t nrem = 0;

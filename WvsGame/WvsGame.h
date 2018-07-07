@@ -11,13 +11,13 @@ class WvsGame : public WvsBase
 {
 	std::mutex m_mUserLock;
 
-	int nExternalPort = 0;
-	int aExternalIP[4];
-	std::map<int, std::shared_ptr<User>> mUserMap;
+	int m_nExternalPort = 0, m_nChannelID = 0;
+	int m_aExternalIP[4];
+	std::map<int, std::shared_ptr<User>> m_mUserMap;
 
-	std::shared_ptr<Center> aCenterPtr;
-	asio::io_service* aCenterServerService;
-	std::thread* aCenterWorkThread;
+	std::shared_ptr<Center> m_pCenterPtr;
+	asio::io_service* m_pCenterServerService;
+	std::thread* m_CenterWorkThread;
 
 	void WvsGame::CenterAliveMonitor();
 
@@ -27,7 +27,7 @@ public:
 
 	std::shared_ptr<Center>& GetCenter()
 	{
-		return aCenterPtr;
+		return m_pCenterPtr;
 	}
 
 	//WvsGame 只允許一個Center
@@ -44,6 +44,7 @@ public:
 
 	int* GetExternalIP() const;
 	short GetExternalPort() const;
+	int GetChannelID() const;
 
 	User* FindUser(int nUserID);
 };

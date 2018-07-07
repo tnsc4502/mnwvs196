@@ -16,7 +16,7 @@ private:
 
 	asio::ip::tcp::resolver mResolver;
 
-	CenterInfo mWorldInfo;
+	CenterInfo m_WorldInfo;
 
 	void OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
 	void OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
@@ -29,17 +29,18 @@ public:
 
 	const CenterInfo& GetWorldInfo()
 	{
-		return mWorldInfo;
+		return m_WorldInfo;
 	}
 
-	bool IsConnected() const { return mWorldInfo.bIsConnected; }
-	bool IsConnectionFailed() const { return mWorldInfo.bConnectionFailed; }
+	bool IsConnected() const { return m_WorldInfo.bIsConnected; }
+	bool IsConnectionFailed() const { return m_WorldInfo.bConnectionFailed; }
 
 	void SetCenterIndex(int idx);
 
 	void OnConnectToCenter(const std::string& strAddr, short nPort);
 	void OnPacket(InPacket *iPacket);
 	void OnCenterMigrateInResult(InPacket *iPacket);
+	void OnTransferChannelResult(InPacket *iPacket);
 
 	static void OnNotifyCenterDisconnected(SocketBase *pSocket);
 };

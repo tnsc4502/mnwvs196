@@ -1,5 +1,6 @@
 #include "USkill.h"
 #include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Net\OutPacket.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_SkillRecord.h"
@@ -30,12 +31,14 @@ pRef = &pSS->m_mSetByTS[TemporaryStat::TS_##name]; pRef->second.clear();\
 pSS->n##name = bResetBySkill ? 0 : value;\
 pSS->r##name = bResetBySkill ? 0 : nSkillID;\
 pSS->t##name = bResetBySkill ? 0 : nDuration;\
+pSS->nLv##name = bResetBySkill ? 0 : nSLV;\
 if(!bResetBySkill)\
 {\
-	pRef->first = GameDateTime::GetTime();\
+	pRef->first = bForcedSetTime ? nForcedSetTime : GameDateTime::GetTime();\
 	pRef->second.push_back(&pSS->n##name);\
 	pRef->second.push_back(&pSS->r##name);\
 	pRef->second.push_back(&pSS->t##name);\
+	pRef->second.push_back(&pSS->nLv##name);\
 }\
 
 void USkill::OnSkillUseRequest(User * pUser, InPacket * iPacket)
@@ -116,7 +119,7 @@ void USkill::SendFailPacket(User* pUser)
 {
 }
 
-void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill, int nSLV, InPacket * iPacket, int nOptionValue, bool bResetBySkill)
+void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill, int nSLV, InPacket * iPacket, int nOptionValue, bool bResetBySkill, int nForcedSetTime, bool bForcedSetTime)
 {
 	nSLV = (nSLV > pSkill->GetMaxLevel() ? pSkill->GetMaxLevel() : nSLV);
 	auto pSkillLVLData = pSkill->GetLevelData(nSLV);

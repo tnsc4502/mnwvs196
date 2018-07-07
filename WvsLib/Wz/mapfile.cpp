@@ -18,7 +18,7 @@ char * ToString(int n) {
     return s;
 }
 char * AllocString(uint16_t len) {
-	return (char*)stWzMemoryPoolMan->AllocateArray(len);
+	return (char*)WzMemoryPoolMan::GetInstance()->AllocateArray(len);
     /*static char * adata = nullptr;
     static uint32_t aremain = 0;
     if (aremain < len) {

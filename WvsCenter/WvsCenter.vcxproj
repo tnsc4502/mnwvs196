@@ -153,13 +153,17 @@
   <ItemGroup>
     <ClCompile Include="ChannelEntry.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="UserTransferStatus.cpp" />
     <ClCompile Include="WvsCenter.cpp" />
     <ClCompile Include="LocalServer.cpp" />
+    <ClCompile Include="WvsWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChannelEntry.h" />
+    <ClInclude Include="UserTransferStatus.h" />
     <ClInclude Include="WvsCenter.h" />
     <ClInclude Include="LocalServer.h" />
+    <ClInclude Include="WvsWorld.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -256,42 +256,34 @@ AttackInfo * User::TryParsingBodyAttack(int nType, InPacket * iPacket)
 
 void User::OnIssueReloginCookie(InPacket * iPacket)
 {
-	MigrateOut();
+	OnMigrateOut();
 }
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
-	: pSocket(_pSocket),
+	: m_pSocket(_pSocket),
 	m_pCharacterData(new GA_Character()),
 	  m_pBasicStat(new BasicStat),
 	  m_pSecondaryStat(new SecondaryStat)
 {
-	m_pCharacterData->DecodeCharacterData(iPacket, false);
 	_pSocket->SetUser(this);
-	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
-	m_pField->OnEnter(this);
-	auto bindT = std::bind(&User::Update, this);
-	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
-	m_pUpdateTimer = pUpdateTimer;
-	pUpdateTimer->Start();
-
-	OutPacket oPacket;
-	oPacket.Encode2(0x11A);
-	for (int i = 0; i < 5; ++i) 
-	{
-		oPacket.EncodeStr("");
-		oPacket.Encode1(-1);
-	}
-	SendPacket(&oPacket);
-	SendCharacterStat(true, 0);
+	m_pCharacterData->DecodeCharacterData(iPacket, false);
+	m_pSecondaryStat->DecodeInternal(this, iPacket);
 }
 
 User::~User()
 {
 	OutPacket oPacket;
-	oPacket.Encode2(GamePacketFlag::RequestMigrateOut);
-	oPacket.Encode4(pSocket->GetSocketID());
+	oPacket.Encode2(GameSendPacketFlag::RequestMigrateOut);
+	oPacket.Encode4(m_pSocket->GetSocketID());
 	oPacket.Encode4(GetUserID());
 	m_pCharacterData->EncodeCharacterData(&oPacket, true);
+	if (m_nTransferStatus == TransferStatus::eOnTransferShop || m_nTransferStatus == TransferStatus::eOnTransferChannel) 
+	{
+		oPacket.Encode1(0); //bGameEnd
+		m_pSecondaryStat->EncodeInternal(this, &oPacket);
+	}
+	else
+		oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
@@ -317,7 +309,7 @@ int User::GetUserID() const
 
 void User::SendPacket(OutPacket *oPacket)
 {
-	pSocket->SendPacket(oPacket);
+	m_pSocket->SendPacket(oPacket);
 }
 
 GA_Character * User::GetCharacterData()
@@ -364,6 +356,9 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case UserRecvPacketFlag::User_OnUserTransferFieldRequest:
 		OnTransferFieldRequest(iPacket);
+		break;
+	case UserRecvPacketFlag::User_OnUserTransferChannelRequest:
+		OnTransferChannelRequest(iPacket);
 		break;
 	case UserRecvPacketFlag::User_OnUserMoveRequest:
 		m_pField->OnUserMove(this, iPacket);
@@ -413,7 +408,7 @@ void User::OnPacket(InPacket *iPacket)
 void User::OnTransferFieldRequest(InPacket * iPacket)
 {
 	if (!m_pField)
-		pSocket->GetSocket().close();
+		m_pSocket->GetSocket().close();
 	iPacket->Decode1(); //ms_RTTI_CField ?
 	int dwFieldReturn = iPacket->Decode4();
 	std::string sPortalName = iPacket->DecodeStr();
@@ -423,6 +418,7 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		iPacket->Decode2(); //not sure
 	}
 	std::lock_guard<std::mutex> user_lock(m_mtxUserlock);
+	SetTransferStatus(TransferStatus::eOnTransferField);
 	/*
 	if(m_character.characterStat.nHP == 0)
 	{
@@ -442,6 +438,25 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		m_pField->OnEnter(this);
 		m_pCharacterData->nFieldID = m_pField->GetFieldID();
 	}
+}
+
+void User::OnTransferChannelRequest(InPacket * iPacket)
+{
+	int nChannelID = iPacket->Decode1();
+	
+	if (nChannelID == WvsBase::GetInstance<WvsGame>()->GetChannelID())
+	{
+		//SendTransferChannelIgnored
+	}
+	//Check if the server is connected.
+	//Check if the user can attach additional process.
+	SetTransferStatus(TransferStatus::eOnTransferChannel);
+	OutPacket oPacket;
+	oPacket.Encode2(GameSendPacketFlag::RequestTransferChannel);
+	oPacket.Encode4(m_pSocket->GetSocketID());
+	oPacket.Encode4(m_nCharacterID);
+	oPacket.Encode1(nChannelID);
+	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 }
 
 void User::OnChat(InPacket *iPacket)
@@ -506,7 +521,7 @@ void User::OnAvatarModified()
 {
 	OutPacket oPacket;
 	oPacket.Encode2(UserSendPacketFlag::UserRemote_OnAvatarModified);
-	oPacket.Encode4(nCharacterID);
+	oPacket.Encode4(m_nCharacterID);
 	int dwAvatarModFlag = 1;
 	oPacket.Encode1(dwAvatarModFlag); //m_dwAvatarModFlag
 	if (dwAvatarModFlag & 1)
@@ -525,6 +540,11 @@ void User::OnAvatarModified()
 	oPacket.Encode4(0);
 
 	m_pField->BroadcastPacket(&oPacket);
+}
+
+void User::EncodeCharacterData(OutPacket * oPacket)
+{
+	m_pCharacterData->EncodeCharacterData(oPacket, false);
 }
 
 void User::EncodeCoupleInfo(OutPacket * oPacket)
@@ -556,7 +576,7 @@ void User::EncodeMarriageInfo(OutPacket * oPacket)
 	oPacket->Encode1(0);
 	for (int i = 0; i < 0; ++i)
 	{
-		oPacket->Encode4(nCharacterID); //
+		oPacket->Encode4(m_nCharacterID); //
 		oPacket->Encode4(0); //nPairID
 		oPacket->Encode4(0); //nItemID
 	}
@@ -710,10 +730,20 @@ void User::ResetTemporaryStat(int tCur, int nReasonID)
 	}
 }
 
-void User::MigrateOut()
+void User::OnMigrateOut()
 {
 	LeaveField();
-	pSocket->GetSocket().close();
+	m_pSocket->GetSocket().close();
+}
+
+void User::SetTransferStatus(TransferStatus e)
+{
+	m_nTransferStatus = e;
+}
+
+User::TransferStatus User::GetTransferStatus() const
+{
+	return m_nTransferStatus;
 }
 
 User * User::FindUser(int nUserID)
@@ -797,14 +827,14 @@ void User::OnScriptMessageAnswer(InPacket * iPacket)
 void User::OnScriptRun()
 {
 	std::unique_lock<std::mutex> lock(m_scriptLock);
-	m_cndVariable.wait(lock);
+	m_cvForScript.wait(lock);
 
 	delete m_pScript;
 }
 
 void User::OnScriptDone()
 {
-	m_cndVariable.notify_all();
+	m_cvForScript.notify_all();
 }
 
 void User::OnQuestRequest(InPacket * iPacket)
@@ -1132,4 +1162,25 @@ void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStr
 void User::LeaveField()
 {
 	m_pField->OnLeave(this);
+}
+
+void User::OnMigrateIn()
+{
+	OutPacket oPacket;
+	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnEventNameTag);
+	for (int i = 0; i < 5; ++i)
+	{
+		oPacket.EncodeStr("");
+		oPacket.Encode1(-1);
+	}
+	SendPacket(&oPacket);
+	SendCharacterStat(true, 0);
+
+	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
+	m_pField->OnEnter(this);
+	auto bindT = std::bind(&User::Update, this);
+	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
+	m_pUpdateTimer = pUpdateTimer;
+	pUpdateTimer->Start();
+	SetTransferStatus(TransferStatus::eOnTransferNone);
 }

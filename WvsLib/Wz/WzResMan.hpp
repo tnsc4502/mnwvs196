@@ -88,7 +88,7 @@ public:
 
 	void ReleaseMemory()
 	{
-		stWzMemoryPoolMan->Release();
+		WzMemoryPoolMan::GetInstance()->Release();
 		ConfigLoader::GetInstance()->LoadConfig("GlobalSetting.txt");
 		WZ::AddPath(ConfigLoader::GetInstance()->StrValue("WzDir"));
 		Init();

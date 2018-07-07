@@ -5,10 +5,12 @@
 #include "BasicStat.h"
 #include "TemporaryStat.h"
 
-#define ADD_TEMPORARY(stat) int n##stat, t##stat, r##stat, b##stat, x##stat, c##stat, y##stat;
+#define ADD_TEMPORARY(stat) int nLv##stat, n##stat, t##stat, r##stat, b##stat, x##stat, c##stat, y##stat;
 
+class User;
 struct GA_Character;
 class OutPacket;
+class InPacket;
 
 class SecondaryStat : public BasicStat
 {
@@ -525,5 +527,8 @@ public:
 	void EncodeIndieTempStat(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	bool EnDecode4Byte(TemporaryStat::TS_Flag& flag);
 	void ResetByTime(int tCur);
+
+	void DecodeInternal(User* pUser, InPacket *iPacket);
+	void EncodeInternal(User* pUser, OutPacket *oPacket);
 };
 

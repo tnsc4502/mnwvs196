@@ -99,7 +99,7 @@ void Center::OnPacket(InPacket *iPacket)
 		break;
 	}
 	case CenterSendPacketFlag::CenterStatChanged:
-		mWorldInfo.nGameCount = iPacket->Decode2();
+		OnUpdateChannelInfo(iPacket);
 		break;
 	case CenterSendPacketFlag::CharacterListResponse:
 		OnCharacterListResponse(iPacket);
@@ -116,12 +116,20 @@ void Center::OnClosed()
 	WvsBase::GetInstance<WvsLogin>()->SetCenterOpened(nCenterIndex, false);
 }
 
+void Center::OnUpdateChannelInfo(InPacket * iPacket)
+{
+	m_WorldInfo.nGameCount = iPacket->Decode2();
+	memset(m_WorldInfo.m_aChannelStatus, 0, sizeof(int) * ServerConstants::kMaxChannelCount);
+	for (int i = 0; i < m_WorldInfo.nGameCount; ++i)
+		m_WorldInfo.m_aChannelStatus[(iPacket->Decode1())] = 1;
+}
+
 void Center::OnUpdateWorldInfo(InPacket *iPacket)
 {
-	mWorldInfo.nWorldID = iPacket->Decode1();
-	mWorldInfo.nEventType = iPacket->Decode1();
-	mWorldInfo.strWorldDesc = iPacket->DecodeStr();
-	mWorldInfo.strEventDesc = iPacket->DecodeStr();
+	m_WorldInfo.nWorldID = iPacket->Decode1();
+	m_WorldInfo.nEventType = iPacket->Decode1();
+	m_WorldInfo.strWorldDesc = iPacket->DecodeStr();
+	m_WorldInfo.strEventDesc = iPacket->DecodeStr();
 	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][Center::OnUpdateWorld]遊戲伺服器世界資訊更新。\n");
 }
 

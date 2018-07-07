@@ -1,14 +1,14 @@
 #pragma once
 #include "..\WvsLib\Net\WvsBase.h"
-#include "..\WvsLib\Net\WorldInfo.h"
 #include "ChannelEntry.h"
+
+#include <map>
 
 class WvsCenter : public WvsBase
 {
 private:
-	WorldInfo mWorldInfo;
-
-	ChannelEntry aChannel[30];
+	//ChannelEntry aChannel[30];
+	std::map<int, ChannelEntry*> m_mChannel;
 
 	int nConnectedChannel = 0;
 
@@ -19,23 +19,10 @@ public:
 
 	void RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket);
 
-	ChannelEntry& GetChannel(int idx)
-	{
-		return aChannel[idx];
-	}
-
-	int GetChannelCount()
-	{
-		return nConnectedChannel;
-	}
-
-	const WorldInfo& GetWorldInfo() const
-	{
-		return mWorldInfo;
-	}
+	ChannelEntry* GetChannel(int idx);
+	int GetChannelCount();
 
 	void Init();
-
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 	void NotifyWorldChanged();
 };

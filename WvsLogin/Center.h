@@ -13,7 +13,7 @@ private:
 	bool bIsConnected = false, bConnectionFailed = false;
 	asio::ip::tcp::resolver mResolver;
 
-	WorldInfo mWorldInfo;
+	WorldInfo m_WorldInfo;
 
 	void OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
 	void OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator);
@@ -30,7 +30,7 @@ public:
 
 	const WorldInfo& GetWorldInfo()
 	{
-		return mWorldInfo;
+		return m_WorldInfo;
 	}
 
 	bool IsConnectionFailed() const
@@ -43,6 +43,7 @@ public:
 		return bIsConnected;
 	}
 
+	void OnUpdateChannelInfo(InPacket *iPacket);
 	void OnUpdateWorldInfo(InPacket *iPacket);
 	void OnCharacterListResponse(InPacket *iPacket);
 	void OnGameServerInfoResponse(InPacket *iPacket);

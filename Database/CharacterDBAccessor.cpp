@@ -135,15 +135,12 @@ void CharacterDBAccessor::GetDefaultCharacterStat(int *aStat)
 	aStat[STAT_AP] = 0;
 }
 
-void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClientSocketID, int nCharacterID)
+void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClientSocketID, int nCharacterID, void *oPacket_)
 {
 	GA_Character chrEntry;
 	chrEntry.Load(nCharacterID);
-	OutPacket oPacket;
-	oPacket.Encode2(CenterSendPacketFlag::CenterMigrateInResult);
-	oPacket.Encode4(nClientSocketID);
-	chrEntry.EncodeCharacterData(&oPacket, false);
-	pSrv->SendPacket(&oPacket);
+	OutPacket *oPacket = (OutPacket*)oPacket_;
+	chrEntry.EncodeCharacterData(oPacket, false);
 }
 
 void CharacterDBAccessor::OnCharacterSaveRequest(void *iPacket)

@@ -5,6 +5,7 @@
 #include <thread>
 #include "LocalServer.h"
 #include "WvsCenter.h"
+#include "WvsWorld.h"
 
 #include "..\WvsLib\Net\InPacket.h"
 
@@ -14,6 +15,8 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterList.hpp"
 #include "..\Database\GW_ItemSlotEquip.h"
+
+#include "..\WvsGame\User.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -45,6 +48,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 	WvsBase::GetInstance<WvsCenter>()->Init();
+	WvsWorld::GetInstance()->InitializeWorld();
 
 	// start the connection acceptor thread
 

@@ -147,11 +147,15 @@ void LoginSocket::SendWorldInformation()
 			oPacket.EncodeStr(pCenter->GetWorldInfo().strEventDesc);
 			oPacket.Encode2(0x64);
 			oPacket.Encode2(0x64);
-			oPacket.Encode1(pCenter->GetWorldInfo().nGameCount);
-			for (int i = 1; i <= pCenter->GetWorldInfo().nGameCount; ++i)
+			int nMaxChannelCount = pCenter->GetWorldInfo().nGameCount;
+			for (int i = 0; i < 30; ++i)
+				if (pCenter->GetWorldInfo().m_aChannelStatus[i] == 1 && i + 1 > nMaxChannelCount)
+					nMaxChannelCount = i + 1;
+			oPacket.Encode1(nMaxChannelCount);
+			for (int i = 1; i <= nMaxChannelCount; ++i)
 			{
 				oPacket.EncodeStr("Channel " + std::to_string(i));
-				oPacket.Encode4(1);
+				oPacket.Encode4(pCenter->GetWorldInfo().m_aChannelStatus[i - 1] == 0 ? 100000 : 1);
 				oPacket.Encode1(pCenter->GetWorldInfo().nWorldID);
 				oPacket.Encode2(i - 1);
 			}

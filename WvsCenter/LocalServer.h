@@ -20,5 +20,6 @@ public:
 	void OnRequestGameServerInfo(InPacket *iPacket);
 	void OnRequestMigrateIn(InPacket *iPacket);
 	void OnRequestMigrateOut(InPacket *iPacket);
+	void OnRequestTransferChannel(InPacket *iPacket);
 };
 

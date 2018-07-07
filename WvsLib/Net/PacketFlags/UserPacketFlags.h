@@ -12,6 +12,7 @@ MAKE_FLAG_COLLECTION_BODY(UserSendPacketFlag)
 
 //¹ïÀ³ClientªºWvsContext::OnPacket
 
+MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnTransferChannel, 0x11);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnInventoryOperation, 0x45);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnInventoryGrow, 0x46);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnStatChanged, 0x47);
@@ -598,6 +599,7 @@ FLAG_COLLECTION_BODY_END
 //Start Recv
 MAKE_FLAG_COLLECTION_BODY(UserRecvPacketFlag)
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserTransferFieldRequest, 0xB3);
+MAKE_USER_RECV_PACKET_FLAG(User_OnUserTransferChannelRequest, 0xB4);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserMoveRequest, 0xC4);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_MeleeAttack, 0xC9);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserAttack_ShootAttack, 0xCA);

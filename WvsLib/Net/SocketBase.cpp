@@ -15,8 +15,8 @@ SocketBase::SocketBase(asio::io_service& serverService, bool isLocalServer)
 	: mSocket(serverService),
 	bIsLocalServer(isLocalServer),
 	nSocketID(SocketCount++),
-	aRecvIV((unsigned char*)stMemoryPoolMan->AllocateArray(16)),
-	aSendIV((unsigned char*)stMemoryPoolMan->AllocateArray(16))
+	aRecvIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16)),
+	aSendIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16))
 {
 	//????
 	if (SocketCount >= 4294940000)
@@ -25,8 +25,8 @@ SocketBase::SocketBase(asio::io_service& serverService, bool isLocalServer)
 
 SocketBase::~SocketBase()
 {
-	stMemoryPoolMan->DestructArray(aRecvIV);
-	stMemoryPoolMan->DestructArray(aSendIV);
+	MSMemoryPoolMan::GetInstance()->DestructArray(aRecvIV);
+	MSMemoryPoolMan::GetInstance()->DestructArray(aSendIV);
 }
 
 void SocketBase::Init()
@@ -103,7 +103,7 @@ void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t byt
 void SocketBase::OnWaitingPacket()
 {
 	auto buffer = new unsigned char[4];
-	//aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(4));
+	//aRecivedPacket.reset((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(4));
 	asio::async_read(mSocket,
 		asio::buffer(buffer, 4),
 		std::bind(&SocketBase::OnReceive,
@@ -124,7 +124,7 @@ void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transfer
 
 		delete[] buffer;
 		buffer = new unsigned char[nPacketLen];
-		//aRecivedPacket.reset((unsigned char*)stMemoryPoolMan->AllocateArray(nPacketLen));
+		//aRecivedPacket.reset((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(nPacketLen));
 
 		asio::async_read(mSocket,
 			asio::buffer(buffer, nPacketLen),

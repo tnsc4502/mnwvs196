@@ -29,19 +29,19 @@ public:
 	{
 		//printf("On Release");
 		if (type == Type::string) {
-			stWzMemoryPoolMan->DestructArray(value.string);
+			WzMemoryPoolMan::GetInstance()->DestructArray(value.string);
 			value.string = nullptr;
 		}
 			//delete[] value.string;*/
 		if (type == Type::img) {
-			stWzMemoryPoolMan->DestructArray((char*)value.img);
+			WzMemoryPoolMan::GetInstance()->DestructArray((char*)value.img);
 		}
 			/*delete this->value.img;*/
 		for(int i = 0; i < num; ++i)
 			children[i].Release();
 		if(children)
-			stWzMemoryPoolMan->DestructArray(children);
-		stWzMemoryPoolMan->DestructArray(name);
+			WzMemoryPoolMan::GetInstance()->DestructArray(children);
+		WzMemoryPoolMan::GetInstance()->DestructArray(name);
 		children = nullptr;
 		num = 0;
 		//this->~Data();
@@ -238,7 +238,7 @@ void Node::Reserve(int n) {
     remain -= n;
     d += n;*/
     data->num = n;
-	data->children = (Data*)stWzMemoryPoolMan->AllocateArray(n * sizeof(Data));
+	data->children = (Data*)WzMemoryPoolMan::GetInstance()->AllocateArray(n * sizeof(Data));
 }
 
 Node Node::begin() const {

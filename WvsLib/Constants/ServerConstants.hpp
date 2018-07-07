@@ -13,6 +13,7 @@ namespace ServerConstants
 
 	enum class GameLocale { TW = 6 };
 
+	constexpr int kMaxChannelCount = 30;
 	constexpr int kGameVersion = 196;
 	constexpr int kGameLocale = (int)GameLocale::TW;
 

@@ -24,28 +24,18 @@ class Script;
 
 class User : public FieldObj
 {
-
-private:
-	std::mutex m_mtxUserlock, m_scriptLock;
-	int nCharacterID;
-	ClientSocket *pSocket;
-	GA_Character *m_pCharacterData;
-	BasicStat* m_pBasicStat;
-	SecondaryStat* m_pSecondaryStat;
-	void *m_pUpdateTimer;
-	Script* m_pScript = nullptr;
-	std::condition_variable m_cndVariable;
-
-	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
-	AttackInfo* TryParsingMeleeAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingMagicAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingShootAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingAreaDot(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingBodyAttack(int nType, InPacket *iPacket);
-
-	void OnIssueReloginCookie(InPacket* iPacket);
-
 public:
+
+	//User正在進行的轉換狀態
+	//TransferChannel與TransferShop 要附帶SecondaryStat::EncodeInternal以便Center做轉傳
+	enum class TransferStatus : unsigned char
+	{
+		eOnTransferNone = 0x00, //正常 
+		eOnTransferField = 0x01, //更換地圖中
+		eOnTransferChannel = 0x02, //更換頻道中
+		eOnTransferShop = 0x03, //進入商城中
+	};
+
 	enum class Message : unsigned char
 	{
 		eDropPickUpMessage = 0x00,
@@ -100,9 +90,31 @@ public:
 
 	};
 
+private:
+	std::mutex m_mtxUserlock, m_scriptLock;
+	int m_nCharacterID;
+	ClientSocket *m_pSocket;
+	GA_Character *m_pCharacterData;
+	BasicStat* m_pBasicStat;
+	SecondaryStat* m_pSecondaryStat;
+	void *m_pUpdateTimer;
+	Script* m_pScript = nullptr;
+	std::condition_variable m_cvForScript;
+	TransferStatus m_nTransferStatus;
+
+	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
+	AttackInfo* TryParsingMeleeAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingMagicAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingShootAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingAreaDot(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingBodyAttack(int nType, InPacket *iPacket);
+
+	void OnIssueReloginCookie(InPacket* iPacket);
+
+public:
+
 	static User* FindUser(int nUserID);
 
-	User() {}
 	User(ClientSocket *pSocket, InPacket *iPacket);
 	~User();
 
@@ -118,9 +130,15 @@ public:
 	void SendPacket(OutPacket *oPacket);
 	void OnPacket(InPacket *iPacket);
 	void LeaveField();
-	void MigrateOut();
+	void OnMigrateIn();
+	void OnMigrateOut();
+
+	//TransferStatus
+	void SetTransferStatus(TransferStatus e);
+	TransferStatus GetTransferStatus() const;
 
 	void OnTransferFieldRequest(InPacket* iPacket);
+	void OnTransferChannelRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
 	void OnAttack(int nType, InPacket *iPacket);
 	void OnLevelUp();
@@ -129,6 +147,7 @@ public:
 
 	//Avatar
 	void OnAvatarModified();
+	void EncodeCharacterData(OutPacket *oPacket);
 	void EncodeCoupleInfo(OutPacket *oPacket);
 	void EncodeFriendshipInfo(OutPacket *oPacket);
 	void EncodeMarriageInfo(OutPacket *oPacket);

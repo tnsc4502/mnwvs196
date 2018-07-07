@@ -51,7 +51,7 @@ void ClientSocket::OnMigrateIn(InPacket *iPacket)
 	iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
 	OutPacket oPacket;
-	oPacket.Encode2(GamePacketFlag::RequestMigrateIn);
+	oPacket.Encode2(GameSendPacketFlag::RequestMigrateIn);
 	oPacket.Encode4(GetSocketID());
 	oPacket.Encode4(nCharacterID);
 	pCenter->SendPacket(&oPacket);

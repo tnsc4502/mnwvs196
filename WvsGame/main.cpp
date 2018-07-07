@@ -119,11 +119,11 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	WvsBase::GetInstance<WvsGame>()->SetExternalIP(ConfigLoader::GetInstance()->StrValue("externalIP"));
-	WvsBase::GetInstance<WvsGame>()->SetExternalPort(ConfigLoader::GetInstance()->IntValue("port"));
+	WvsBase::GetInstance<WvsGame>()->SetExternalIP(ConfigLoader::GetInstance()->StrValue("ExternalIP"));
+	WvsBase::GetInstance<WvsGame>()->SetExternalPort(ConfigLoader::GetInstance()->IntValue("Port"));
 	// start the connection acceptor thread
 
-	std::thread thread1(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));
+	std::thread thread1(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("Port"));
 
 	//WvsGameConstants::nGamePort = (argc > 1 ? atoi(argv[1]) : 7575);
 	//WvsGameConstants::strGameDesc = "Channel : " + std::to_string((argc > 1 ? atoi(argv[1]) : 7575) - 7575);

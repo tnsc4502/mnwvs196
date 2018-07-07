@@ -15,6 +15,12 @@ private:
 
 	memt::Arena *pArena = new memt::Arena();
 public:
+	static WzMemoryPoolMan* GetInstance() 
+	{
+		static WzMemoryPoolMan* pInstance = new WzMemoryPoolMan;
+		return pInstance;
+	}
+
 	WzMemoryPoolMan() {};
 
 	/*static MemoryPoolMan *GetInstance()
@@ -68,9 +74,6 @@ public:
 	}
 };
 
-//Used for WZ.
-extern WzMemoryPoolMan *stWzMemoryPoolMan;
-
 class MSMemoryPoolMan
 {
 private:
@@ -79,6 +82,12 @@ private:
 	memt::Arena *pArena = new memt::Arena();
 
 public:
+	static MSMemoryPoolMan* GetInstance()
+	{
+		static MSMemoryPoolMan* pInstance = new MSMemoryPoolMan;
+		return pInstance;
+	}
+
 	MSMemoryPoolMan() {};
 
 #pragma warning(disable:4312)  
@@ -116,14 +125,11 @@ public:
 	}
 };
 
-//Memory Allocator for regular use.
-extern MSMemoryPoolMan *stMemoryPoolMan;
-
 struct ArenaUniquePtrDeleter
 {
 	void operator()(unsigned char* ptr)
 	{
-		//stMemoryPoolMan->DestructArray(ptr);
+		//MSMemoryPoolMan::GetInstance()->DestructArray(ptr);
 		//delete[] ptr;
 	}
 };
