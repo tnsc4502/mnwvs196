@@ -22,47 +22,34 @@ int WvsLogin::GetCenterCount() const
 	return m_nCenterCount;
 }
 
-void WvsLogin::SetCenterConnecting(int nCenterIdx, bool bConnecting)
-{ 
-	aIsConnecting[nCenterIdx] = bConnecting;
-}
-
-bool WvsLogin::IsCenterConnecting(int nCenterIdx) const
-{
-	return aIsConnecting[nCenterIdx];
-}
-
 std::shared_ptr<Center>& WvsLogin::GetCenter(int idx)
 {
-	return aCenterList[idx];
+	return m_apCenterInstance[idx];
 }
 
 void WvsLogin::ConnectToCenter(int nCenterIdx)
 {
-	aCenterList[nCenterIdx]->SetDisconnectedNotifyFunc(&Center::OnNotifyCenterDisconnected);
-	aCenterList[nCenterIdx]->SetCenterIndex(nCenterIdx);
-	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "開啟Connection\n");
-	aCenterList[nCenterIdx]->OnConnectToCenter(
+	m_apCenterInstance[nCenterIdx]->SetSocketDisconnectedCallBack(std::bind(&Center::OnNotifyCenterDisconnected, m_apCenterInstance[nCenterIdx].get()));
+	m_apCenterInstance[nCenterIdx]->SetCenterIndex(nCenterIdx);
+	m_apCenterInstance[nCenterIdx]->Connect(
 		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
 		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
 	);
 }
 
-void WvsLogin::CenterAliveMonitor(int i)
+void WvsLogin::CenterAliveMonitor(int nCenterIndex)
 {
-	if (IsCenterConnecting(i))
+	if (m_apCenterInstance[nCenterIndex]->CheckSocketStatus(SocketBase::SocketStatus::eConnecting))
 		return;
-	SetCenterConnecting(i, true);
 	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
-	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
-	if (aCenterList[i] && aCenterList[i]->IsConnectionFailed())
+
+	if (m_apCenterInstance[nCenterIndex] && (m_apCenterInstance[nCenterIndex]->CheckSocketStatus(SocketBase::SocketStatus::eClosed)))
 	{
-		WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", i);
+		WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", nCenterIndex);
 
-		aCenterWorkThread[i]->detach();
-		*aCenterWorkThread[i] = (std::thread(&WvsLogin::ConnectToCenter, this, i));
+		m_apCenterWorkThread[nCenterIndex]->detach();
+		*m_apCenterWorkThread[nCenterIndex] = (std::thread(&WvsLogin::ConnectToCenter, this, nCenterIndex));
 	}
-
 }
 
 void WvsLogin::InitializeCenter()
@@ -70,12 +57,11 @@ void WvsLogin::InitializeCenter()
 	m_nCenterCount = ConfigLoader::GetInstance()->IntValue("CenterCount");
 	for (int i = 0; i < m_nCenterCount; ++i)
 	{
-		SetCenterConnecting(i, false);
 		aCenterServerService[i].reset(new asio::io_service());
-		aCenterList[i] = std::make_shared<Center>(*aCenterServerService[i]);
-		aCenterWorkThread[i].reset(new std::thread(&WvsLogin::ConnectToCenter, this, i));
-		auto holderFunc = std::bind(&WvsLogin::CenterAliveMonitor, this, i);
-		auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 100, true);
+		m_apCenterInstance[i] = std::make_shared<Center>(*aCenterServerService[i]);
+		m_apCenterWorkThread[i].reset(new std::thread(&WvsLogin::ConnectToCenter, this, i));
+		auto fHolderFunc = std::bind(&WvsLogin::CenterAliveMonitor, this, i);
+		auto pAliveHolder = AsnycScheduler::CreateTask(fHolderFunc, 10 * 100, true);
 
 		std::thread tCenterWorkThread([&] {
 			asio::io_service::work work(*aCenterServerService[i]);
@@ -83,7 +69,7 @@ void WvsLogin::InitializeCenter()
 			aCenterServerService[i]->run(ec);
 		});
 		tCenterWorkThread.detach();
-		aliveHolder->Start();
+		pAliveHolder->Start();
 	}
 }
 

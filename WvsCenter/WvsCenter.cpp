@@ -46,7 +46,7 @@ LocalServerEntry * WvsCenter::GetChannel(int idx)
 
 int WvsCenter::GetChannelCount()
 {
-	return m_mChannel.size();
+	return (int)m_mChannel.size();
 }
 
 void WvsCenter::Init()

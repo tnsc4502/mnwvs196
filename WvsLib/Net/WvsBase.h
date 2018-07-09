@@ -7,21 +7,21 @@
 class WvsBase
 {
 private:
-	asio::io_service mIOService;
-	asio::ip::tcp::acceptor *mAcceptor;
-	static std::map<unsigned int, SocketBase*> aSocketList;
+	asio::io_service m_IOService;
+	asio::ip::tcp::acceptor *m_pAcceptor;
+	static std::map<unsigned int, SocketBase*> m_mSocketList;
+	int m_nExternalPort = 0, m_aExternalIP[4];
 
 	template<typename SOCKET_TYPE>
-	void OnAccepted(std::shared_ptr<SOCKET_TYPE> acceptedSocket, const std::error_code& ec)
+	void OnAccepted(std::shared_ptr<SOCKET_TYPE> pAcceptedSocket, const std::error_code& ec)
 	{
 		WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "[WvsBase]新的連線成功建立。\n");
-		OnSocketConnected((SocketBase*)(acceptedSocket.get()));
-		acceptedSocket->SetDisconnectedNotifyFunc(OnSocketDisconnected);
-		acceptedSocket->Init();
+		OnSocketConnected((SocketBase*)(pAcceptedSocket.get()));
+		
+		pAcceptedSocket->SetSocketDisconnectedCallBack(std::bind(&WvsBase::OnSocketDisconnected, this, std::placeholders::_1));
+		pAcceptedSocket->Init();
 		BeginAccept<SOCKET_TYPE>();
 	}
-
-	static WvsBase* pInstance;
 
 protected:
 	WvsBase();
@@ -32,51 +32,35 @@ public:
 	template<typename WVS_TYPE>
 	static WVS_TYPE *GetInstance()
 	{
-		static WVS_TYPE *sWvsWorld = new WVS_TYPE();
-		pInstance = sWvsWorld;
-		return sWvsWorld;
-	}
-
-	static WvsBase* GetRawInstance()
-	{
+		static WVS_TYPE *pInstance = new WVS_TYPE();
 		return pInstance;
 	}
 
-	static void OnSocketConnected(SocketBase *pSocket);
-	static void OnSocketDisconnected(SocketBase *pSocket);
-
+	void OnSocketConnected(SocketBase *pSocket);
+	void OnSocketDisconnected(SocketBase *pSocket);
 	virtual void OnNotifySocketDisconnected(SocketBase *pSocket) = 0;
 
 	void CreateAcceptor(short nPort);
 
 	//Template參數表示客戶端 (來源) 的Class型別
+	//注意Template function不可把實體跟宣告分離
 	template<typename SOCKET_TYPE>
 	void BeginAccept()
 	{
 		std::shared_ptr<SOCKET_TYPE> session(new SOCKET_TYPE(GetIOService()));
-		/*while (1)
-		{
-			std::shared_ptr<SOCKET_TYPE> session(new SOCKET_TYPE(GetIOService()));
-			std::error_code ec;
-			mAcceptor->accept(session->GetSocket(), ec);
-			if (!ec)
-			{
-				session->SetDisconnectedNotifyFunc(OnSocketDisconnected);
-				session->Init();
-			}
-		}*/
-		mAcceptor->async_accept(session->GetSocket(), std::bind(&WvsBase::OnAccepted<SOCKET_TYPE>, this, session, std::placeholders::_1));
+		m_pAcceptor->async_accept(session->GetSocket(), std::bind(&WvsBase::OnAccepted<SOCKET_TYPE>, this, session, std::placeholders::_1));
 	}
 
 	virtual void Init();
 	asio::io_service& GetIOService();
 
-	std::map<unsigned int, SocketBase*>& GetSocketList()
-	{
-		return aSocketList;
-	}
+	void SetExternalIP(const std::string& ip);
+	void SetExternalPort(short nPort);
+	int* GetExternalIP() const;
+	short GetExternalPort() const;
 
-	SocketBase* GetSocket(int nSocketID);
+	const std::map<unsigned int, SocketBase*>& GetSocketList() const;
+	SocketBase* GetSocket(unsigned int nSocketID);
 
 };
 

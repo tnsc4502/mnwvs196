@@ -15,11 +15,16 @@ WvsGame::~WvsGame()
 
 }
 
+std::shared_ptr<Center>& WvsGame::GetCenter()
+{
+	return m_pCenterInstance;
+}
+
 void WvsGame::ConnectToCenter(int nCenterIdx)
 {
-	m_pCenterPtr->SetDisconnectedNotifyFunc(&Center::OnNotifyCenterDisconnected);
-	m_pCenterPtr->SetCenterIndex(nCenterIdx);
-	m_pCenterPtr->OnConnectToCenter(
+	m_pCenterInstance->SetSocketDisconnectedCallBack(std::bind(&Center::OnNotifyCenterDisconnected, m_pCenterInstance.get()));
+	m_pCenterInstance->SetCenterIndex(nCenterIdx);
+	m_pCenterInstance->Connect(
 		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
 		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
 	);
@@ -27,15 +32,14 @@ void WvsGame::ConnectToCenter(int nCenterIdx)
 
 void WvsGame::CenterAliveMonitor()
 {
-	if (IsCenterConnecting())
+	if (m_pCenterInstance->CheckSocketStatus(SocketBase::SocketStatus::eConnecting))
 		return;
-	SetCenterConnecting(true);
 	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
-	if (m_pCenterPtr && m_pCenterPtr->GetWorldInfo().bConnectionFailed) 
+	if (m_pCenterInstance && m_pCenterInstance->CheckSocketStatus(SocketBase::SocketStatus::eClosed))
 	{
 		WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Center Server %d 尚未連線，嘗試重新連線。\n", 0);
-		m_CenterWorkThread->detach();
-		*m_CenterWorkThread = std::thread(&WvsGame::ConnectToCenter, this, 0);
+		m_pCenterWorkThread->detach();
+		*m_pCenterWorkThread = std::thread(&WvsGame::ConnectToCenter, this, 0);
 	}
 }
 
@@ -43,8 +47,8 @@ void WvsGame::InitializeCenter()
 {
 	m_nChannelID = ConfigLoader::GetInstance()->IntValue("ChannelID");
 	m_pCenterServerService = new asio::io_service();
-	m_pCenterPtr = std::make_shared<Center>(*m_pCenterServerService);
-	m_CenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
+	m_pCenterInstance = std::make_shared<Center>(*m_pCenterServerService);
+	m_pCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
 	auto holderFunc = std::bind(&WvsGame::CenterAliveMonitor, this);
 	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
 	aliveHolder->Start();
@@ -75,51 +79,9 @@ void WvsGame::OnNotifySocketDisconnected(SocketBase *pSocket)
 	}
 }
 
-void WvsGame::SetExternalIP(const std::string& ip)
-{
-	int ipPos = 0, strPos = 0;
-	std::string tmpStr = "";
-	while (strPos <= ip.size() )
-	{
-		if (strPos == ip.size() || ip[strPos] == '.')
-		{
-			m_aExternalIP[ipPos++] = atoi(tmpStr.c_str());
-			tmpStr = "";
-		}
-		else
-			tmpStr += ip[strPos];
-		++strPos;
-	}
-}
-
-void WvsGame::SetExternalPort(short nPort)
-{
-	m_nExternalPort = nPort;
-}
-
-int* WvsGame::GetExternalIP() const
-{
-	return (int*)m_aExternalIP;
-}
-
-short WvsGame::GetExternalPort() const
-{
-	return m_nExternalPort;
-}
-
 int WvsGame::GetChannelID() const
 {
 	return m_nChannelID;
-}
-
-bool WvsGame::IsCenterConnecting() const
-{
-	return m_bIsCenterConnecting;
-}
-
-void WvsGame::SetCenterConnecting(bool bConnecting)
-{
-	m_bIsCenterConnecting = false;
 }
 
 User * WvsGame::FindUser(int nUserID)

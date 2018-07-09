@@ -8,25 +8,39 @@
 #include "..\Crypto\WvsCrypto.hpp"
 #include "..\Logger\WvsLogger.h"
 
-//0~99«O¯d
-unsigned int SocketBase::SocketCount = 100;
+std::mutex SocketBase::stSocketRecordMtx;
+std::set<unsigned int> SocketBase::stSocketIDRecord;
+
 
 SocketBase::SocketBase(asio::io_service& serverService, bool isLocalServer)
 	: mSocket(serverService),
+	mResolver(serverService),
 	bIsLocalServer(isLocalServer),
-	nSocketID(SocketCount++),
+	nSocketID(SocketBase::DesignateSocketID()),
 	aRecvIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16)),
 	aSendIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16))
 {
-	//????
-	if (SocketCount >= 4294940000)
-		SocketCount = 0;
 }
 
 SocketBase::~SocketBase()
 {
 	MSMemoryPoolMan::GetInstance()->DestructArray(aRecvIV);
 	MSMemoryPoolMan::GetInstance()->DestructArray(aSendIV);
+}
+
+void SocketBase::SetSocketDisconnectedCallBack(const std::function<void(SocketBase *)>& fObject)
+{
+	m_fSocketDisconnectedCallBack = fObject;
+}
+
+void SocketBase::SetServerType(unsigned char type)
+{
+	nServerType = type;
+}
+
+unsigned char SocketBase::GetServerType()
+{
+	return nServerType;
 }
 
 void SocketBase::Init()
@@ -46,9 +60,89 @@ void SocketBase::Init()
 void SocketBase::OnDisconnect()
 {
 	//printf("[SocketBase::OnDisconnect]\n");
-	OnNotifySocketDisconnected(this);
+	m_eSocketStatus = SocketStatus::eClosed;
+	ReleaseSocketID(GetSocketID());
+	m_fSocketDisconnectedCallBack(this);
 	mSocket.close();
 	OnClosed();
+}
+
+void SocketBase::Connect(const std::string & strAddr, short nPort)
+{
+	m_eSocketStatus = SocketStatus::eConnecting;
+	asio::ip::tcp::resolver::query centerSrvQuery(strAddr, std::to_string(nPort));
+
+	mResolver.async_resolve(centerSrvQuery,
+		std::bind(&SocketBase::OnResolve, std::dynamic_pointer_cast<SocketBase>(shared_from_this()),
+			std::placeholders::_1,
+			std::placeholders::_2));
+}
+
+void SocketBase::OnResolve(const std::error_code & err, asio::ip::tcp::resolver::iterator endpoint_iterator)
+{
+	if (!err)
+	{
+		asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
+		GetSocket().async_connect(endpoint,
+			std::bind(&SocketBase::OnConnectResult, std::static_pointer_cast<SocketBase>(shared_from_this()),
+				std::placeholders::_1, ++endpoint_iterator));
+	}
+	else
+	{
+		OnConnectFailed();
+		return;
+	}
+}
+
+void SocketBase::OnConnectResult(const std::error_code & err, asio::ip::tcp::resolver::iterator endpoint_iterator)
+{
+	if (err)
+	{
+		m_eSocketStatus = SocketStatus::eClosed;
+		OnConnectFailed();
+	}
+	else
+	{
+		m_eSocketStatus = SocketStatus::eConnected;
+		OnConnected();
+	}
+}
+
+void SocketBase::OnConnected()
+{
+}
+
+void SocketBase::OnConnectFailed()
+{
+}
+
+unsigned int SocketBase::DesignateSocketID()
+{
+	static bool bRandSeedSet = false;
+	if (!bRandSeedSet)
+	{
+		srand((unsigned int)time(nullptr));
+		bRandSeedSet = true;
+	}
+	const unsigned int RESERVED_INDEX = 100;
+	const unsigned int MAX_RAND_RANGE = RESERVED_INDEX + (INT_MAX - 1 - RESERVED_INDEX) * 2;
+	long long int liRnd = 0;
+	unsigned int nRndSocketID = 0;
+	std::lock_guard<std::mutex> lock(stSocketRecordMtx);
+	do
+	{
+		liRnd = (long long int)(rand() % 0x7FFF) * (long long int)(rand() % 0x7FFF) * (long long int)(rand() % 0x7FFF) * (long long int)(rand() % 0x7FFF);
+		nRndSocketID = RESERVED_INDEX + liRnd % ((long long int)MAX_RAND_RANGE);
+	} 
+	while ((stSocketIDRecord.find(nRndSocketID) != stSocketIDRecord.end()));
+	stSocketIDRecord.insert(nRndSocketID);
+	return nRndSocketID;
+}
+
+void SocketBase::ReleaseSocketID(unsigned int nSocketID)
+{
+	std::lock_guard<std::mutex> lock(stSocketRecordMtx);
+	stSocketIDRecord.erase(nSocketID);
 }
 
 void SocketBase::EncodeHandShakeInfo(OutPacket *oPacket)
@@ -65,6 +159,16 @@ void SocketBase::EncodeHandShakeInfo(OutPacket *oPacket)
 asio::ip::tcp::socket& SocketBase::GetSocket()
 {
 	return mSocket;
+}
+
+SocketBase::SocketStatus SocketBase::GetSocketStatus() const
+{
+	return m_eSocketStatus;
+}
+
+bool SocketBase::CheckSocketStatus(SocketStatus e) const
+{
+	return (m_eSocketStatus & e) == e;
 }
 
 void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)

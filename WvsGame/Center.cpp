@@ -22,8 +22,7 @@
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 Center::Center(asio::io_service& serverService)
-	: SocketBase(serverService, true),
-	  mResolver(serverService)
+	: SocketBase(serverService, true)
 {
 }
 
@@ -36,48 +35,14 @@ void Center::SetCenterIndex(int idx)
 	nCenterIndex = idx;
 }
 
-void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
-{
-	asio::ip::tcp::resolver::query centerSrvQuery(strAddr, std::to_string(nPort)); 
-	
-	mResolver.async_resolve(centerSrvQuery,
-		std::bind(&Center::OnResolve, std::dynamic_pointer_cast<Center>(shared_from_this()),
-			std::placeholders::_1,
-			std::placeholders::_2));
-}
-
 void Center::OnNotifyCenterDisconnected(SocketBase *pSocket)
 {
 	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center]與Center Server中斷連線。\n");
-	((Center*)pSocket)->m_WorldInfo.bIsConnected = false;
-	((Center*)pSocket)->m_WorldInfo.bConnectionFailed = true;
 }
 
-void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
+void Center::OnConnected()
 {
-	if (!err)
-	{
-		asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
-		GetSocket().async_connect(endpoint,
-			std::bind(&Center::OnConnect, std::dynamic_pointer_cast<Center>(shared_from_this()),
-				std::placeholders::_1, ++endpoint_iterator));
-	}
-	else
-	{
-		OnConnectFailed();
-		return;
-	}
-}
-
-void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
-{
-	if (err)
-	{
-		OnConnectFailed();
-		return;
-	}
 	WvsLogger::LogRaw("[WvsGame][Center::OnConnect]Center Server 認證完成，與世界伺服器連線成功建立。\n");
-	m_WorldInfo.bIsConnected = true;
 
 	//向Center Server發送Hand Shake封包
 	OutPacket oPacket;
@@ -97,10 +62,6 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 	//Encode Port
 	oPacket.Encode2(WvsBase::GetInstance<WvsGame>()->GetExternalPort());
 
-	//printf("[WvsGame][Center::OnConnect]將發送HandShake封包至Center Server。");
-	//InPacket iPacket(oPacket.GetPacket(), oPacket.GetPacketSize());
-	//iPacket.Print();
-	//printf("\n");
 	SendPacket(&oPacket);
 	OnWaitingPacket();
 }
@@ -135,20 +96,18 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
-	WvsBase::GetInstance<WvsGame>()->SetCenterConnecting(false);
 }
 
 void Center::OnConnectFailed()
 {
 	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsGame][Center::OnConnect]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
-	m_WorldInfo.bConnectionFailed = true;
 	OnDisconnect();
 }
 
 void Center::OnCenterMigrateInResult(InPacket *iPacket)
 {
-	int nClientSocketID = iPacket->Decode4();
-	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocketList()[nClientSocketID];
+	unsigned int nClientSocketID = iPacket->Decode4();
+	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocket(nClientSocketID);
 	OutPacket oPacket;
 	oPacket.Encode2(GameSendPacketFlag::Client_SetFieldStage);
 	oPacket.Encode4(WvsBase::GetInstance<WvsGame>()->GetChannelID()); //Channel ID
@@ -184,8 +143,8 @@ void Center::OnCenterMigrateInResult(InPacket *iPacket)
 
 void Center::OnTransferChannelResult(InPacket * iPacket)
 {
-	int nClientSocketID = iPacket->Decode4();
-	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocketList()[nClientSocketID];
+	unsigned int nClientSocketID = iPacket->Decode4();
+	auto pSocket = WvsBase::GetInstance<WvsGame>()->GetSocket(nClientSocketID);
 	OutPacket oPacket;
 	bool bSuccess = iPacket->Decode1() == 1 ? true : false;
 	if (bSuccess)

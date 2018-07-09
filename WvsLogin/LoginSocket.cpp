@@ -137,7 +137,7 @@ void LoginSocket::SendWorldInformation()
 	for (int i = 0; i < nCenterCount; ++i)
 	{
 		auto& pCenter = WvsBase::GetInstance<WvsLogin>()->GetCenter(i);
-		if (pCenter && pCenter->IsConnected())
+		if (pCenter && pCenter->CheckSocketStatus(SocketBase::SocketStatus::eConnected))
 		{
 			OutPacket oPacket;
 			oPacket.Encode2(LoginSendPacketFlag::Client_WorldInformationResponse);
@@ -180,19 +180,19 @@ void LoginSocket::SendWorldInformation()
 
 void LoginSocket::OnClientSelectWorld(InPacket *iPacket)
 {
-	bool isRelogin = iPacket->Decode1() == 1;
-	int worldIndex = iPacket->Decode1();
-	int channelIndex = iPacket->Decode1();
-	if (WvsBase::GetInstance<WvsLogin>()->GetCenter(worldIndex)->IsConnected())
+	bool bIsRelogin = iPacket->Decode1() == 1;
+	int nWorldIndex = iPacket->Decode1();
+	int nChannelIndex = iPacket->Decode1();
+	if (WvsBase::GetInstance<WvsLogin>()->GetCenter(nWorldIndex)->CheckSocketStatus(SocketBase::SocketStatus::eConnected))
 	{
 		OutPacket oPacket;
 		oPacket.Encode2(LoginSendPacketFlag::Center_RequestCharacterList);
 		oPacket.Encode4(GetSocketID());
 		oPacket.Encode4(mLoginData.nAccountID);
-		oPacket.Encode1(channelIndex);
-		WvsBase::GetInstance<WvsLogin>()->GetCenter(worldIndex)->SendPacket(&oPacket);
-		nChannelID = channelIndex;
-		nWorldID = worldIndex;
+		oPacket.Encode1(nChannelIndex);
+		WvsBase::GetInstance<WvsLogin>()->GetCenter(nWorldIndex)->SendPacket(&oPacket);
+		nChannelID = nChannelIndex;
+		nWorldID = nWorldIndex;
 	}
 	else
 		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][LoginSocket::OnClientSelectWorld][錯誤]客戶端嘗試連線至不存在的Center Server。\n");

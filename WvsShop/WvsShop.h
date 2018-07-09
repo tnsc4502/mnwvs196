@@ -8,15 +8,12 @@ class WvsShop : public WvsBase
 	int m_nExternalPort = 0;
 	int m_aExternalIP[4];
 
-	std::shared_ptr<Center> aCenterList;
+	std::shared_ptr<Center> m_pCenterInstance;
 	asio::io_service* m_pCenterServerService;
-	std::thread* aCenterWorkThread;
+	std::thread* m_pCenterWorkThread;
 
 	std::mutex m_mUserLock;
 	std::map<int, std::shared_ptr<User>> m_mUserMap;
-
-	//紀錄Center instance是否正在連線，用於避免重連的異常
-	bool aIsConnecting;
 
 	void ConnectToCenter();
 	void CenterAliveMonitor();
@@ -25,21 +22,10 @@ public:
 	WvsShop();
 	~WvsShop();
 
-	void SetExternalIP(const std::string& ip);
-	void SetExternalPort(short nPort);
-	int* GetExternalIP() const;
-	short GetExternalPort() const;
-
 	std::shared_ptr<Center>& GetCenter();
 	void InitializeCenter(); 
 
 	void OnUserConnected(std::shared_ptr<User> &pUser);
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
-
-	//設定Center instance的連線狀況
-	void SetCenterConnecting(bool bConnecting);
-
-	//取得Center instance的連線狀況
-	bool IsCenterConnecting() const;
 };
 

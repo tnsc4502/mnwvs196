@@ -17,8 +17,7 @@
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 Center::Center(asio::io_service& serverService)
-	: SocketBase(serverService, true),
-	  mResolver(serverService)
+	: SocketBase(serverService, true)
 {
 }
 
@@ -31,41 +30,9 @@ void Center::SetCenterIndex(int idx)
 	nCenterIndex = idx;
 }
 
-void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
+void Center::OnConnected()
 {
-	asio::ip::tcp::resolver::query centerSrvQuery(strAddr, std::to_string(nPort)); 
-	
-	mResolver.async_resolve(centerSrvQuery,
-		std::bind(&Center::OnResolve, std::dynamic_pointer_cast<Center>(shared_from_this()),
-			std::placeholders::_1,
-			std::placeholders::_2));
-}
-
-void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
-{
-	if (!err)
-	{
-		asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
-		GetSocket().async_connect(endpoint,
-			std::bind(&Center::OnConnect, std::dynamic_pointer_cast<Center>(shared_from_this()),
-				std::placeholders::_1, ++endpoint_iterator));
-	}
-	else
-	{
-		OnConnectFailed();
-		return;
-	}
-}
-
-void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
-{
-	if (err)
-	{
-		OnConnectFailed();
-		return;
-	}
 	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsShop][Center::OnConnect]成功連線到Center Server！\n");
-	bIsConnected = true;
 
 	//向Center Server發送Hand Shake封包
 	OutPacket oPacket;
@@ -116,15 +83,12 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
-	WvsBase::GetInstance<WvsShop>()->SetCenterConnecting(false);
 }
 
 void Center::OnConnectFailed()
 {
 	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsShop][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
-	bConnectionFailed = true;
 	OnDisconnect();
-	WvsBase::GetInstance<WvsShop>()->SetCenterConnecting(false);
 }
 
 const WorldInfo & Center::GetWorldInfo()
@@ -132,28 +96,16 @@ const WorldInfo & Center::GetWorldInfo()
 	return m_WorldInfo;
 }
 
-bool Center::IsConnectionFailed() const
-{
-	return bConnectionFailed;
-}
-
-bool Center::IsConnected() const
-{
-	return bIsConnected;
-}
-
 void Center::OnNotifyCenterDisconnected(SocketBase * pSocket)
 {
 	WvsLogger::LogRaw("[WvsLogin][Center]與Center Server中斷連線。\n");
-	((Center*)pSocket)->bIsConnected = false;
-	((Center*)pSocket)->bConnectionFailed = true;
 }
 
 void Center::OnCenterMigrateInResult(InPacket *iPacket)
 {
 
-	int nClientSocketID = iPacket->Decode4();
-	auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocketList()[nClientSocketID];
+	unsigned int nClientSocketID = iPacket->Decode4();
+	auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocket(nClientSocketID);
 	OutPacket oPacket;
 	oPacket.Encode2(ShopSendPacketFlag::Client_SetCashShop);
 	oPacket.EncodeHexString("01 00 00 00 6B FE 8F 06");

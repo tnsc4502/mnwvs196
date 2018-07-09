@@ -1,9 +1,9 @@
 #include "WvsBase.h"
 #include <mutex>
 #include "..\Logger\WvsLogger.h"
+#include "..\String\StringUtility.h"
 
-std::map<unsigned int, SocketBase*> WvsBase::aSocketList;
-WvsBase* WvsBase::pInstance;
+std::map<unsigned int, SocketBase*> WvsBase::m_mSocketList;
 
 WvsBase::WvsBase()
 {
@@ -15,13 +15,18 @@ WvsBase::~WvsBase()
 
 asio::io_service& WvsBase::GetIOService()
 {
-	return mIOService;
+	return m_IOService;
 }
 
-SocketBase * WvsBase::GetSocket(int nSocketID)
+const std::map<unsigned int, SocketBase*>& WvsBase::GetSocketList() const
 {
-	auto findIter = aSocketList.find(nSocketID);
-	return findIter == aSocketList.end() ? nullptr : findIter->second;
+	return m_mSocketList;
+}
+
+SocketBase * WvsBase::GetSocket(unsigned int nSocketID)
+{
+	auto findIter = m_mSocketList.find(nSocketID);
+	return findIter == m_mSocketList.end() ? nullptr : findIter->second;
 }
 
 void WvsBase::Init()
@@ -33,13 +38,13 @@ void WvsBase::CreateAcceptor(short nPort)
 {
 	WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "[WvsBase::CreateAcceptor]成功於Port %d建立Wvs伺服器程序。\n", nPort);
 	asio::ip::tcp::endpoint endpoint(asio::ip::tcp::v4(), nPort);
-	mAcceptor = new asio::ip::tcp::acceptor(mIOService, endpoint);
+	m_pAcceptor = new asio::ip::tcp::acceptor(m_IOService, endpoint);
 }
 
 void WvsBase::OnSocketConnected(SocketBase *pSocket)
 {
-	aSocketList.insert({ pSocket->GetSocketID(), pSocket });
-	pSocket->SetDisconnectedNotifyFunc(WvsBase::OnSocketDisconnected);
+	m_mSocketList.insert({ pSocket->GetSocketID(), pSocket });
+	pSocket->SetSocketDisconnectedCallBack(std::bind(&WvsBase::OnSocketDisconnected, this, std::placeholders::_1));
 }
 
 void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
@@ -47,16 +52,39 @@ void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
 	//printf("OnSocketDisconnected called!\n ");
 	/*static std::mutex localLock;
 	std::lock_guard<std::mutex> lock(localLock);*/
-	auto findIter = aSocketList.find(pSocket->GetSocketID());
-	if (findIter == aSocketList.end())
+	auto findIter = m_mSocketList.find(pSocket->GetSocketID());
+	if (findIter == m_mSocketList.end())
 		return;
-	WvsLogger::LogFormat(WvsLogger::LEVEL_WARNING, "[WvsBase::OnSocketDisconnected]移除遠端連線Socket實體，Socket ID = %d\n", pSocket->GetSocketID());
-	pInstance->OnNotifySocketDisconnected(pSocket);
-	aSocketList.erase(pSocket->GetSocketID());
+	WvsLogger::LogFormat(WvsLogger::LEVEL_WARNING, "[WvsBase::OnSocketDisconnected]移除遠端連線Socket實體，Socket ID = %u\n", pSocket->GetSocketID());
+	OnNotifySocketDisconnected(pSocket);
+	m_mSocketList.erase(pSocket->GetSocketID());
 }
 
 void WvsBase::OnNotifySocketDisconnected(SocketBase *pSocket)
 {
 	//WvsBase is an ADT, so won't become recursive call.
 	this->OnNotifySocketDisconnected(pSocket);
+}
+
+int* WvsBase::GetExternalIP() const
+{
+	return (int*)m_aExternalIP;
+}
+
+short WvsBase::GetExternalPort() const
+{
+	return m_nExternalPort;
+}
+
+void WvsBase::SetExternalIP(const std::string& ip)
+{
+	std::vector<std::string> aIP;
+	StringUtility::Split(ip, aIP, ".");
+	for (int i = 0; i < 4; ++i)
+		m_aExternalIP[i] = atoi(aIP[i].c_str());
+}
+
+void WvsBase::SetExternalPort(short nPort)
+{
+	m_nExternalPort = nPort;
 }

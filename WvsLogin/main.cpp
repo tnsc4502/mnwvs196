@@ -15,9 +15,9 @@
 
 void ConnectionAcceptorThread(short nPort)
 {
-	WvsLogin *loginServer = WvsBase::GetInstance<WvsLogin>();
-	loginServer->CreateAcceptor(nPort);
-	loginServer->BeginAccept<LoginSocket>();
+	WvsLogin *pLoginServer = WvsBase::GetInstance<WvsLogin>();
+	pLoginServer->CreateAcceptor(nPort);
+	pLoginServer->BeginAccept<LoginSocket>();
 }
 
 void Count()
@@ -28,13 +28,23 @@ void Count()
 
 int main(int argc, char** argv)
 {
+	/*測試SOCKETID配給的效能與隨機分布
+	for (int i = 0; i < 10000000; ++i)
+	{
+		unsigned int rnd = SocketBase::DesignateSocketID();
+		SocketBase::ReleaseSocketID(rnd);
+	}
+	while (1)
+	{
+		unsigned int rnd = SocketBase::DesignateSocketID();
+		std::system("pause");
+	}*/
+		
 	/*auto func = std::bind(Count);
 	auto pTest = AsnycScheduler::CreateTask(func, 100, false);
 	pTest->Start();*/
-	WvsLogin *loginServer = WvsBase::GetInstance<WvsLogin>();
+	WvsLogin *pLoginServer = WvsBase::GetInstance<WvsLogin>();
 
-	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "Please run this program with command line, and given the config file path.\n");
-	WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Error Code : %d\n", 10000);
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
 	else
@@ -43,8 +53,8 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	loginServer->Init();
-	loginServer->InitializeCenter();
+	pLoginServer->Init();
+	pLoginServer->InitializeCenter();
 
 	std::thread initLoginServerThread(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));
 
