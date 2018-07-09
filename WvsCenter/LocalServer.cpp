@@ -50,10 +50,11 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		case GameSendPacketFlag::RequestMigrateIn:
 			OnRequestMigrateIn(iPacket);
 			break;
+		case ShopSendPacketFlag::RequestMigrateOut:
 		case GameSendPacketFlag::RequestMigrateOut:
 			OnRequestMigrateOut(iPacket);
 			break;
-		case ShopSendPacketFlag::RequestMigrateOut:
+		case ShopSendPacketFlag::RequestTransferToGame:
 		case GameSendPacketFlag::RequestTransferChannel:
 			OnRequestTransferChannel(iPacket);
 			break;
@@ -221,6 +222,7 @@ void LocalServer::OnRequestMigrateOut(InPacket * iPacket)
 
 void LocalServer::OnRequestTransferChannel(InPacket * iPacket)
 {
+	WvsLogger::LogRaw("OnRequestTransferChannel\n");
 	int nClientSocketID = iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
 	int nChannelID = iPacket->Decode1();

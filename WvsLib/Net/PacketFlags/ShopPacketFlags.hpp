@@ -11,7 +11,8 @@ MAKE_FLAG_COLLECTION_BODY(ShopSendPacketFlag)
 
 //Flags to Center
 MAKE_SHOP_PACKET_FLAG(RequestMigrateIn, 0x8001);
-MAKE_SHOP_PACKET_FLAG(RequestMigrateOut, 0x8002);
+MAKE_SHOP_PACKET_FLAG(RequestTransferToGame, 0x8002);
+MAKE_SHOP_PACKET_FLAG(RequestMigrateOut, 0x8003);
 
 
 //Flags to Game

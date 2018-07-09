@@ -76,5 +76,7 @@ public:
 		return aSocketList;
 	}
 
+	SocketBase* GetSocket(int nSocketID);
+
 };
 

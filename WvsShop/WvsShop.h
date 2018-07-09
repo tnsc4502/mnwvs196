@@ -9,7 +9,7 @@ class WvsShop : public WvsBase
 	int m_aExternalIP[4];
 
 	std::shared_ptr<Center> aCenterList;
-	asio::io_service* aCenterServerService;
+	asio::io_service* m_pCenterServerService;
 	std::thread* aCenterWorkThread;
 
 	std::mutex m_mUserLock;
@@ -34,13 +34,12 @@ public:
 	void InitializeCenter(); 
 
 	void OnUserConnected(std::shared_ptr<User> &pUser);
-	void OnUserMigrateOut(SocketBase *pSocket);
-	void OnNotifySocketDisconnected(SocketBase *pSocket) {}
+	void OnNotifySocketDisconnected(SocketBase *pSocket);
 
 	//設定Center instance的連線狀況
-	void SetCenterOpened(bool bConnecting);
+	void SetCenterConnecting(bool bConnecting);
 
 	//取得Center instance的連線狀況
-	bool IsCenterOpened() const;
+	bool IsCenterConnecting() const;
 };
 

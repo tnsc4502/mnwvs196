@@ -13,6 +13,8 @@ class WvsGame : public WvsBase
 
 	int m_nExternalPort = 0, m_nChannelID = 0;
 	int m_aExternalIP[4];
+	bool m_bIsCenterConnecting = false;
+
 	std::map<int, std::shared_ptr<User>> m_mUserMap;
 
 	std::shared_ptr<Center> m_pCenterPtr;
@@ -45,6 +47,9 @@ public:
 	int* GetExternalIP() const;
 	short GetExternalPort() const;
 	int GetChannelID() const;
+
+	bool IsCenterConnecting() const;
+	void SetCenterConnecting(bool bConnecting);
 
 	User* FindUser(int nUserID);
 };

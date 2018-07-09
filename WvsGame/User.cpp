@@ -445,6 +445,7 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		PostTransferField(m_pField->GetFieldID(), pTargetPortal, false);
 		m_pField->OnEnter(this);
 		m_pCharacterData->nFieldID = m_pField->GetFieldID();
+		SetTransferStatus(TransferStatus::eOnTransferNone);
 	}
 }
 

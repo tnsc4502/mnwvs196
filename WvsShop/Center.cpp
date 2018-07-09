@@ -52,9 +52,7 @@ void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iter
 	}
 	else
 	{
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsShop][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
-		bConnectionFailed = true;
-		OnDisconnect();
+		OnConnectFailed();
 		return;
 	}
 }
@@ -63,9 +61,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 {
 	if (err)
 	{
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsShop][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
-		bConnectionFailed = true;
-		OnDisconnect();
+		OnConnectFailed();
 		return;
 	}
 	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsShop][Center::OnConnect]成功連線到Center Server！\n");
@@ -120,7 +116,15 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
-	WvsBase::GetInstance<WvsShop>()->SetCenterOpened(false);
+	WvsBase::GetInstance<WvsShop>()->SetCenterConnecting(false);
+}
+
+void Center::OnConnectFailed()
+{
+	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsShop][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
+	bConnectionFailed = true;
+	OnDisconnect();
+	WvsBase::GetInstance<WvsShop>()->SetCenterConnecting(false);
 }
 
 const WorldInfo & Center::GetWorldInfo()
@@ -166,7 +170,7 @@ void Center::OnCenterMigrateInResult(InPacket *iPacket)
 void Center::OnCenterMigrateOutResult(InPacket * iPacket)
 {
 	int nClientSocketID = iPacket->Decode4();
-	auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocketList()[nClientSocketID];
+	auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocket(nClientSocketID);
 	OutPacket oPacket;
 	bool bSuccess = iPacket->Decode1() == 1 ? true : false;
 	if (bSuccess)
@@ -177,5 +181,4 @@ void Center::OnCenterMigrateOutResult(InPacket * iPacket)
 		oPacket.EncodeBuffer(iPacket->GetPacket() + 7, iPacket->GetPacketSize() - 7);
 	}
 	pSocket->SendPacket(&oPacket);
-	WvsBase::GetInstance<WvsShop>()->OnUserMigrateOut(pSocket);
 }

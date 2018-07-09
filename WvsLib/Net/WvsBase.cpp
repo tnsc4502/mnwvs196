@@ -18,6 +18,12 @@ asio::io_service& WvsBase::GetIOService()
 	return mIOService;
 }
 
+SocketBase * WvsBase::GetSocket(int nSocketID)
+{
+	auto findIter = aSocketList.find(nSocketID);
+	return findIter == aSocketList.end() ? nullptr : findIter->second;
+}
+
 void WvsBase::Init()
 {
 
@@ -44,9 +50,9 @@ void WvsBase::OnSocketDisconnected(SocketBase *pSocket)
 	auto findIter = aSocketList.find(pSocket->GetSocketID());
 	if (findIter == aSocketList.end())
 		return;
-	aSocketList.erase(pSocket->GetSocketID());
 	WvsLogger::LogFormat(WvsLogger::LEVEL_WARNING, "[WvsBase::OnSocketDisconnected]移除遠端連線Socket實體，Socket ID = %d\n", pSocket->GetSocketID());
 	pInstance->OnNotifySocketDisconnected(pSocket);
+	aSocketList.erase(pSocket->GetSocketID());
 }
 
 void WvsBase::OnNotifySocketDisconnected(SocketBase *pSocket)

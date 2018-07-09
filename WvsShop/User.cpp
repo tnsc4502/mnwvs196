@@ -36,7 +36,7 @@ User::~User()
 {
 	WvsLogger::LogRaw("Migrate Out, Encoding Character data to center.\n");
 	OutPacket oPacket;
-	oPacket.Encode2((int)ShopSendPacketFlag::RequestMigrateOut);
+	oPacket.Encode2((short)ShopSendPacketFlag::RequestMigrateOut);
 	oPacket.Encode4(m_pSocket->GetSocketID());
 	oPacket.Encode4(GetUserID());
 	m_pCharacterData->EncodeCharacterData(&oPacket, true);
@@ -80,7 +80,7 @@ void User::Update()
 void User::OnMigrateOutCashShop()
 {
 	OutPacket oPacket;
-	oPacket.Encode2((int)ShopSendPacketFlag::RequestMigrateOut);
+	oPacket.Encode2((short)ShopSendPacketFlag::RequestTransferToGame);
 	oPacket.Encode4(m_pSocket->GetSocketID());
 	oPacket.Encode4(m_nCharacterID);
 	oPacket.Encode1(m_nChannelID);

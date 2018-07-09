@@ -28,6 +28,7 @@ public:
 	void OnConnectToCenter(const std::string& strAddr, short nPort);
 	void OnPacket(InPacket *iPacket);
 	void OnClosed();
+	void OnConnectFailed();
 
 	const WorldInfo& GetWorldInfo()
 	{

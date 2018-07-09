@@ -31,9 +31,9 @@ public:
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 
 	//設定Center instance的連線狀況
-	void SetCenterOpened(int nCenterIdx, bool bConnecting);
+	void SetCenterConnecting(int nCenterIdx, bool bConnecting);
 
 	//取得Center instance的連線狀況
-	bool IsCenterOpened(int nCenterIdx) const;
+	bool IsCenterConnecting(int nCenterIdx) const;
 };
 

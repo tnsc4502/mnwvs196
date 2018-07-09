@@ -30,7 +30,6 @@ void Center::SetCenterIndex(int idx)
 
 void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
 {
-	WvsLogger::LogRaw("OnConnectToCenter Called\n");
 	asio::ip::tcp::resolver::query centerSrvQuery(strAddr, std::to_string(nPort)); 
 	
 	mResolver.async_resolve(centerSrvQuery,
@@ -41,7 +40,6 @@ void Center::OnConnectToCenter(const std::string& strAddr, short nPort)
 
 void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
 {
-	WvsLogger::LogRaw("OnResolve Called\n");
 	if (!err)
 	{
 		asio::ip::tcp::endpoint endpoint = *endpoint_iterator;
@@ -51,21 +49,16 @@ void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iter
 	}
 	else
 	{
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
-		bConnectionFailed = true;
-		OnDisconnect();
+		OnConnectFailed();
 		return;
 	}
 }
 
 void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iterator endpoint_iterator)
 {
-	WvsLogger::LogRaw("OnConnect Called\n");
 	if (err)
 	{
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsLogin][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
-		bConnectionFailed = true;
-		OnDisconnect();
+		OnConnectFailed();
 		return;
 	}
 	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][Center::OnConnect]成功連線到Center Server！\n");
@@ -116,7 +109,7 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
-	WvsBase::GetInstance<WvsLogin>()->SetCenterOpened(nCenterIndex, false);
+	WvsBase::GetInstance<WvsLogin>()->SetCenterConnecting(nCenterIndex, false);
 }
 
 void Center::OnUpdateChannelInfo(InPacket * iPacket)
@@ -134,6 +127,13 @@ void Center::OnUpdateWorldInfo(InPacket *iPacket)
 	m_WorldInfo.strWorldDesc = iPacket->DecodeStr();
 	m_WorldInfo.strEventDesc = iPacket->DecodeStr();
 	WvsLogger::LogRaw(WvsLogger::LEVEL_INFO, "[WvsLogin][Center::OnUpdateWorld]遊戲伺服器世界資訊更新。\n");
+}
+
+void Center::OnConnectFailed()
+{
+	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsShop][Center::OnConnect]無法連線到Center Server，可能是服務尚未啟動或者確認連線資訊。\n");
+	bConnectionFailed = true;
+	OnDisconnect();
 }
 
 void Center::OnCharacterListResponse(InPacket *iPacket)

@@ -64,6 +64,8 @@ void Center::OnResolve(const std::error_code& err, asio::ip::tcp::resolver::iter
 	}
 	else
 	{
+		OnConnectFailed();
+		return;
 	}
 }
 
@@ -71,9 +73,7 @@ void Center::OnConnect(const std::error_code& err, asio::ip::tcp::resolver::iter
 {
 	if (err)
 	{
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsGame][Center::OnConnect]Center Server拒絕當前LocalServer連接，程式即將終止。\n"); 
-		m_WorldInfo.bConnectionFailed = true;
-		OnDisconnect();
+		OnConnectFailed();
 		return;
 	}
 	WvsLogger::LogRaw("[WvsGame][Center::OnConnect]Center Server 認證完成，與世界伺服器連線成功建立。\n");
@@ -135,7 +135,14 @@ void Center::OnPacket(InPacket *iPacket)
 
 void Center::OnClosed()
 {
+	WvsBase::GetInstance<WvsGame>()->SetCenterConnecting(false);
+}
 
+void Center::OnConnectFailed()
+{
+	WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "[WvsGame][Center::OnConnect]Center Server拒絕當前LocalServer連接，程式即將終止。\n");
+	m_WorldInfo.bConnectionFailed = true;
+	OnDisconnect();
 }
 
 void Center::OnCenterMigrateInResult(InPacket *iPacket)
