@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 Dont use anything in MNMS Directory!!!!!!!!!!!!!!!
 =======
->>>>>>> 3c581d94417ece1c85fa6d822d4a1a3d53a83fcc
 關於此專案
 About this project
 ----
