@@ -19,6 +19,7 @@ class OutPacket;
 
 class Script
 {
+public:
 	enum ScriptType
 	{
 		OnSay = 0x00,
@@ -61,24 +62,8 @@ class Script
 
 	friend class ScriptMan;
 
-	lua_State* L;
-	//std::unique_ptr<lua_State, void(*)(lua_State*)> L;
-	std::mutex m_mtxWaitLock;
-	std::condition_variable m_cndVariable, m_doneVariable;
-
-	static int SelfSayNextGroup(lua_State* L);
-	static int SelfSay(lua_State* L);
-	static int SelfAskAvatar(lua_State* L);
-	static int SelfSayNext(lua_State* L);
-	static int SelfAskText(lua_State* L);
-	static int SelfAskNumber(lua_State* L);
-	static int SelfAskYesNo(lua_State* L);
-	static int SelfAskMenu(lua_State* L);
-	static int SelfPushArray(lua_State* L);
-	static Script* GetSelf(lua_State* L);
-
-	static luaL_Reg SelfTable[];
-	static luaL_Reg SelfMetatable[];
+private:
+	lua_State* L, *C;
 
 	int m_nID, m_nUserInput;
 	std::string m_fileName, m_strUserInput;
@@ -86,6 +71,7 @@ class Script
 	std::thread* m_pThread;
 	std::vector<int> m_aArrayObj;
 	bool m_bDone = false;
+	bool m_bResume = false;
 
 public:
 	void Wait();
@@ -96,13 +82,19 @@ public:
 
 	void OnPacket(InPacket *iPacket);
 
-	Script(const std::string& file, int nNpcID);
+	Script(const std::string& file, int nNpcIDconst, const std::vector<void(*)(lua_State*)>& aReg);
 	~Script();
+	static Script* GetSelf(lua_State * L);
 
-	static int LuaRegisterSelf(lua_State* L);
+	int GetID() const; 
 
 	void SetUser(User *pUser);
+	User* GetUser();
 
 	std::thread* GetThread();
 	void SetThread(std::thread* pThread);
+
+	std::vector<int>& GetArrayObj();
+	const std::string& GetUserStringInput() const;
+	int GetUserIntInput() const;
 };

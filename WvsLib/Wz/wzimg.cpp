@@ -63,6 +63,8 @@ void Img::SubProperty(Node n) {
     n.Reserve(count);
     for (int i = 0; i < count; ++i) {
         char * name = file.ReadPropString(offset);
+		std::string str(name);
+
         uint8_t a = file.Read<uint8_t>();
         switch (a) {
         case 0x00: n.g(name, i).Set(i); break;
@@ -79,8 +81,9 @@ void Img::SubProperty(Node n) {
         case 0x08: n.g(name, i).Set(file.ReadPropString(offset)); break;
         case 0x09: {
             uint32_t p = file.Read<uint32_t>();
-            p += file.Tell();
-            ExtendedProperty(n.g(name, i));
+            p += file.Tell();		
+			//if (!(str.find("swing") < str.size() && str.find("shoot") < str.size() && str.find("stab") < str.size()))
+				ExtendedProperty(n.g(name, i));
             file.Seek(p);
             break;
         }

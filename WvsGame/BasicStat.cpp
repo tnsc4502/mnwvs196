@@ -19,9 +19,8 @@ BasicStat::~BasicStat()
 	delete m_bOption;
 }
 
-void BasicStat::SetFrom(int nFieldType, GA_Character * pChar, BasicStat* pSS_, void * pFs, void * pNonBodyEquip, int nMHPForPvP, void * pPSD)
+void BasicStat::SetFrom(GA_Character * pChar, int nMaxHPIncRate, int nMaxMPIncRate, int nBasicStatInc)
 {
-	const SecondaryStat* pSS = (const SecondaryStat*)pSS_;
 	const GW_CharacterStat *pCS = pChar->mStat;
 
 	nGender = pChar->nGender;
@@ -54,4 +53,10 @@ void BasicStat::SetFrom(int nFieldType, GA_Character * pChar, BasicStat* pSS_, v
 
 		//Apply item option here.
 	}
+	nMHP = nMHP * (nMaxHPIncRate + 100) / 100;
+	nMMP = nMMP * (nMaxMPIncRate + 100) / 100;
+	if (nMHP > 500000)
+		nMHP = 500000;
+	if (nMMP > 500000)
+		nMMP = 500000;
 }

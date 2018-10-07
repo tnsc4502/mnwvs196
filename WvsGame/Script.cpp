@@ -10,23 +10,6 @@
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 
-luaL_Reg Script::SelfMetatable[] = {
-	{ "askAvatar", SelfAskAvatar },
-	{ "askText", SelfAskText },
-	{ "askYesNo", SelfAskYesNo },
-	{ "askNumber", SelfAskNumber },
-	{ "askMenu", SelfAskMenu },
-	{ "sayNext", SelfSayNext },
-	{ "sayNextGroup", SelfSayNextGroup },
-	{ "say", SelfSay },
-	{ "pushArray", SelfPushArray },
-	{ NULL, NULL }
-};
-
-luaL_Reg Script::SelfTable[] = {
-	{ NULL, NULL }
-};
-
 Script * Script::GetSelf(lua_State * L)
 {
 	long long ptr = luaL_checkinteger(L, 1);
@@ -35,36 +18,30 @@ Script * Script::GetSelf(lua_State * L)
 
 void Script::Wait()
 {
-	std::unique_lock<std::mutex> lock(m_mtxWaitLock);
-	WvsLogger::LogRaw("Ready to wait\n");
-	m_cndVariable.wait(lock);
-	WvsLogger::LogRaw("Finish wait\n");
+	lua_yield(L, 0);
 }
 
 void Script::Notify()
 {
-	std::lock_guard<std::mutex> lock(m_mtxWaitLock);
-	m_cndVariable.notify_one();
+	Run();
 }
 
-Script::Script(const std::string & file, int nNpcID) :
+Script::Script(const std::string & file, int nNpcID, const std::vector<void(*)(lua_State*)>& aReg) :
 	L(luaL_newstate())
 {
+	C = lua_newthread(L);
 	m_fileName = file;
 	m_nID = nNpcID;
-	lua_pushinteger(L, (long long int)(this));
-	lua_setglobal(L, "selfPtr");
-	lua_pushinteger(L, (long long int)(m_pUser));
-	lua_setglobal(L, "userPtr");
-	LuaRegisterSelf(L);
+	for (auto& f : aReg)
+		f(L);
 	if (luaL_loadfile(L, m_fileName.c_str()))
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "Error, can't open script.\n");
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "Error, Unable to open the specific script.\n");
+	L->selfPtr = this;
 }
 
-int Script::LuaRegisterSelf(lua_State * L)
+int Script::GetID() const
 {
-	luaW_register<Script>(L, "Self", SelfTable, SelfMetatable, GetSelf);
-	return 1;
+	return m_nID;
 }
 
 void Script::SetUser(User * pUser)
@@ -72,7 +49,12 @@ void Script::SetUser(User * pUser)
 	m_pUser = pUser;
 }
 
-std::thread * Script::GetThread()
+User * Script::GetUser()
+{
+	return m_pUser;
+}
+
+/*std::thread * Script::GetThread()
 {
 	return m_pThread;
 }
@@ -80,230 +62,35 @@ std::thread * Script::GetThread()
 void Script::SetThread(std::thread * pThread)
 {
 	m_pThread = pThread;
-}
+}*/
 
-int Script::SelfSayNextGroup(lua_State * L)
+std::vector<int>& Script::GetArrayObj()
 {
-	Script* self = luaW_check<Script>(L, 1); //+1
-	int nPages = lua_gettop(L); //+1
-
-	//note that the index should start from 2
-	for (int i = 2; i <= nPages; )
-	{
-		auto msg = lua_tostring(L, i);
-		WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "SelfSayNextGroup Args %d = %s\n", i, msg);
-		OutPacket oPacket;
-		oPacket.Encode2(0x56E); //opcode
-		oPacket.Encode1(4);
-		oPacket.Encode4(self->m_nID);
-		oPacket.Encode1(0);
-		oPacket.Encode1((char)ScriptType::OnSay); //OnSay
-		oPacket.Encode2(0);
-		oPacket.Encode1(0);
-		oPacket.EncodeStr(msg); //message
-		oPacket.Encode1(i > 2 ? 1 : 0); //show next page
-		oPacket.Encode1(i < nPages ? 1 : 0); //show prev page
-		oPacket.Encode4(0);
-		self->m_pUser->SendPacket(&oPacket);
-
-		self->Wait();
-		i += (self->m_nUserInput == 0 ? -1 : 1);
-		if (i < 2)
-			break;
-	}
-
-	lua_pushstring(L, "");
-	return 1;
+	return m_aArrayObj;
 }
 
-int Script::SelfSay(lua_State * L)
+const std::string & Script::GetUserStringInput() const
 {
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnSay); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode1(0);
-	oPacket.Encode1(0);
-	oPacket.Encode4(0);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushstring(L, "");
-	return 1;
+	return m_strUserInput;
 }
 
-int Script::SelfAskAvatar(lua_State * L)
+int Script::GetUserIntInput() const
 {
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	self->m_nUserInput = (int)luaL_checkinteger(L, 3); //ticket
-	int nArgs = lua_gettop(L);
-	self->m_aArrayObj.clear();
-	for (int i = 4; i < nArgs; ++i)
-		self->m_aArrayObj.push_back((int)lua_tointeger(L, i));
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnAskAvatar); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.Encode1(0); //bAngelicBuster
-	oPacket.Encode1(0); //bZeroBeta
-	oPacket.EncodeStr(text);
-	oPacket.Encode1((char)self->m_aArrayObj.size());
-	for (auto& v : self->m_aArrayObj)
-		oPacket.Encode4(v);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushinteger(L, self->m_nUserInput);
-	return 1;
+	return m_nUserInput;
 }
 
-int Script::SelfAskText(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	const char * defaultText = luaL_checkstring(L, 3);
-	int nMinValue = (int)luaL_checkinteger(L, 4);
-	int nMaxValue = (int)luaL_checkinteger(L, 5);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnAskText); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.EncodeStr(defaultText);
-	oPacket.Encode2(nMinValue);
-	oPacket.Encode2(nMaxValue);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushstring(L, self->m_strUserInput.c_str());
-	return 1;
-}
-
-int Script::SelfAskNumber(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	int nDefaultValue = (int)luaL_checkinteger(L, 3);
-	int nMinValue = (int)luaL_checkinteger(L, 4);
-	int nMaxValue = (int)luaL_checkinteger(L, 5);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnAskNumber); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode4(nDefaultValue);
-	oPacket.Encode4(nMinValue);
-	oPacket.Encode4(nMaxValue);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushinteger(L, self->m_nUserInput);
-	return 1;
-}
-
-int Script::SelfAskYesNo(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnAskYesNo); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushinteger(L, self->m_nUserInput);
-	return 1;
-}
-
-int Script::SelfAskMenu(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnAskMenu); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	self->m_pUser->SendPacket(&oPacket);
-	self->Wait();
-	lua_pushinteger(L, self->m_nUserInput);
-	return 1;
-}
-
-int Script::SelfPushArray(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	int nValue = (int)luaL_checkinteger(L, 2);
-	self->m_aArrayObj.push_back(nValue);
-	return 1;
-}
-
-int Script::SelfSayNext(lua_State * L)
-{
-	Script* self = luaW_check<Script>(L, 1);
-	const char* text = luaL_checkstring(L, 2);
-	int nCurPage = 1;
-	int nNextPage = 1;
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->m_nID);
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)ScriptType::OnSay); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode1(nCurPage > 0 ? 1 : 0);
-	oPacket.Encode1(nCurPage < nNextPage ? 1 : 0);
-	oPacket.Encode4(0);
-	self->m_pUser->SendPacket(&oPacket);
-
-	self->Wait();
-	lua_pushinteger(L, nCurPage + (self->m_nUserInput == 0 ? -1 : 1));
-	return 1;
-}
 
 void Script::Run()
 {
-	lua_pcall(L, 0, 0, 0);
-	std::lock_guard<std::mutex> lock(m_mtxWaitLock);
-	m_pUser->SetScript(nullptr);
-	if (L) lua_close(L);
-	m_bDone = true;
+	//m_bResume = 1代表被yield的腳本繼續執行並且把對話結果壓入堆疊中
+	auto nResult = lua_resume(L, C, m_bResume ? 1 : 0);
+	m_bResume = false;
+	if (nResult == LUA_OK || nResult != LUA_YIELD)
+		Abort();
 }
 
 void Script::Abort()
 {
-	try {
-		luaL_error(L, "abort");
-	}
-	catch (...) {}
-	std::lock_guard<std::mutex> lock(m_mtxWaitLock);
 	m_pUser->SetScript(nullptr);
 	if (L) lua_close(L);
 	m_bDone = true;
@@ -311,7 +98,6 @@ void Script::Abort()
 
 bool Script::IsDone()
 {
-	std::lock_guard<std::mutex> lock(m_mtxWaitLock);
 	return m_bDone;
 }
 
@@ -340,6 +126,8 @@ void Script::OnPacket(InPacket * iPacket)
 				m_nUserInput = 0;
 			else if (nAction == 1)
 				m_nUserInput = 1;
+			lua_pushinteger(L, m_nUserInput);
+			m_bResume = true;
 			break;
 		}
 		case ScriptType::OnAskText:
@@ -347,8 +135,9 @@ void Script::OnPacket(InPacket * iPacket)
 			nAction = iPacket->Decode1();
 			if (nAction == 0)
 				Abort();
-			else if (nAction == 1)
-				m_strUserInput = iPacket->DecodeStr();
+			else if (nAction == 1) 
+				lua_pushstring(L, iPacket->DecodeStr().c_str());
+			m_bResume = true;
 			break;
 		}
 		case ScriptType::OnAskNumber:
@@ -358,6 +147,8 @@ void Script::OnPacket(InPacket * iPacket)
 				Abort();
 			else if (nAction == 1)
 				m_nUserInput = iPacket->Decode4();
+			lua_pushinteger(L, m_nUserInput);
+			m_bResume = true;
 			break;
 		}
 		case ScriptType::OnAskMenu:
@@ -367,6 +158,8 @@ void Script::OnPacket(InPacket * iPacket)
 				Abort();
 			else if (nAction == 1)
 				m_nUserInput = iPacket->Decode4();
+			lua_pushinteger(L, m_nUserInput);
+			m_bResume = true;
 			break;
 		}
 		case ScriptType::OnAskAvatar:
@@ -378,9 +171,13 @@ void Script::OnPacket(InPacket * iPacket)
 				Abort();
 			else if (nAction == 1) 
 			{
-				m_pUser->SendCharacterStat(false, QWUser::SetHair(m_pUser, m_aArrayObj[iPacket->Decode1()]));
+				m_nUserInput = iPacket->Decode1();
+				if (m_nUserInput < m_aArrayObj.size()) 
+					m_pUser->SendCharacterStat(false, QWUser::SetHair(m_pUser, m_aArrayObj[m_nUserInput]));
 				m_aArrayObj.clear();
 			}
+			lua_pushinteger(L, m_nUserInput);
+			m_bResume = true;
 			break;
 		}
 	}

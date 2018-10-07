@@ -1,8 +1,19 @@
 #pragma once
-#include <string>
-#include <map>
+#include "StateChangeItem.h"
+#include "EquipItem.h"
+#include "BundleItem.h"
+#include "UpgradeItem.h"
+#include "PortalScrollItem.h"
+#include "PetFoodItem.h"
+#include "MobSummonItem.h"
+#include "TamingMobFoodItem.h"
+#include "BridleItem.h"
+#include "SkillLearnItem.h"
+#include "PortableChairItem.h"
+
 #include <vector>
 
+class User;
 struct GW_ItemSlotBase;
 
 class ItemInfo
@@ -21,173 +32,6 @@ public:
 		ITEMVARIATION_GACHAPON
 	};
 
-	/*
-	該物品造成的能力提升屬性 -- 正服沒有這個class
-	*/
-	struct BasicIncrementStat
-	{
-		//增加 inc
-		int	niSTR,
-			niDEX,
-			niINT,
-			niLUK,
-			niMaxHP,
-			niMaxMP,
-			niPAD,
-			niMAD,
-			niPDD,
-			niMDD,
-			niACC,
-			niEVA,
-			niCraft,
-			niSpeed,
-			niJump,
-			niSwim,
-			niFatigue;
-	};
-
-	/*
-	該物品的限制屬性，例如可否交易等 -- 正服沒有這個class
-	*/
-	struct BasicAbilityStat
-	{
-		bool bTimeLimited,
-			bCash,
-			bQuest,
-			bPartyQuest,
-			bOnly,
-			bTradeBlock,
-			bNotSale,
-			bExpireOnLogout,
-			bBigSize;
-	};
-
-	struct EquipItem 
-	{
-		std::string sItemName;
-		BasicAbilityStat abilityStat;
-		BasicIncrementStat incStat;
-
-		//能力需求 request
-		int nItemID, 
-			nrSTR, 
-			nrINT, 
-			nrDEX, 
-			nrLUK, 
-			nrPOP, 
-			nrJob, 
-			nrLevel, 
-			nrMobLevel,
-			nRUC, 
-			nSellPrice, 
-			nSwim, 
-			nTamingMob, 
-			nKnockBack,
-			nIncRMAF,
-			nIncRMAI,
-			nIncRMAL,
-			nElemDefault,
-			
-			//使用此裝備對寵物的影響
-			dwPetAbilityFlag;
-	};
-
-	struct BundleItem 
-	{
-		std::string sItemName;
-		double dSellUnitPrice;
-		int nItemID, 
-			nPAD, 
-			nMAD, 
-			nRequiredLEV, 
-			nSellPrice, 
-			nMaxPerSlot;
-
-		BasicAbilityStat abilityStat;
-	};
-
-	struct UpgradeItem 
-	{
-		std::string sItemName;
-		BasicIncrementStat incStat;
-		int nItemID,
-			nSuccessRate, 
-			nCursedRate;
-	};
-
-	struct StateChangeItem
-	{
-		std::string sItemName;
-		int nItemID;
-		std::vector<std::pair<std::string, int>> spec;
-	};
-
-	struct PortalScrollItem
-	{
-		std::string sItemName;
-		int nItemID;
-		std::vector<std::pair<std::string, int>> spec;
-	};
-
-	struct MobSummonItem
-	{
-		std::string sItemName;
-		int nItemID, 
-			nType;
-		
-		// pair < MobID, Prob >
-		std::vector<std::pair<int ,int>> lMob;
-	};
-
-	struct PetFoodItem
-	{
-		std::string sItemName;
-		int nItemID, 
-			niRepleteness;
-		std::vector<int> ldwPet;
-	};
-
-	struct TamingMobFoodItem
-	{
-		std::string sItemName;
-		int nItemID, 
-			niFatigue;
-	};
-
-	struct BridleItem
-	{
-		std::string sItemName;
-		int nItemID, 
-			nCreateItemID, 
-			dwTargetMobID, 
-			nBridleMsgType, 
-			nBridleProp, 
-			nBridleHP, 
-			nUseDelay;
-
-		double dBridlePropChg;
-	};
-
-	struct SkillLearnItem
-	{
-		std::string sItemName;
-		int nItemID,
-			nMasterLevel,
-			nSuccessRate,
-			nReqLevel;
-
-		std::vector<int> aSkill;
-	};
-
-	struct PortableChairItem
-	{
-		std::string sItemName;
-		int nItemID,
-			nReqLevel,
-			nPortableChairRecoveryRateHP,
-			nPortableChairRecoveryRateMP;
-	};
-
 	ItemInfo();
 	~ItemInfo();
 
@@ -203,7 +47,7 @@ public:
 	void RegisterNoRollbackItem();
 	void RegisterSetHalloweenItem();
 
-	void RegisterEquipItemInfo(ItemInfo::EquipItem* pEqpItem, int nItemID, void* pProp);
+	void RegisterEquipItemInfo(EquipItem* pEqpItem, int nItemID, void* pProp);
 
 	/*
 	一般升級用卷軸
@@ -276,22 +120,22 @@ public:
 	GW_ItemSlotBase* GetItemSlot(int nItemID, ItemVariationOption enOption);
 
 private:
-	std::map<int, ItemInfo::EquipItem*> m_mEquipItem;
-	std::map<int, ItemInfo::BundleItem*> m_mBundleItem;
-	std::map<int, ItemInfo::UpgradeItem*> m_mUpgradeItem;
-	std::map<int, ItemInfo::StateChangeItem*> m_mStateChangeItem;
-	std::map<int, ItemInfo::PortalScrollItem*> m_mPortalScrollItem;
-	std::map<int, ItemInfo::MobSummonItem*> m_mMobSummonItem;
-	std::map<int, ItemInfo::PetFoodItem*> m_mPetFoodItem;
-	std::map<int, ItemInfo::TamingMobFoodItem*> m_mTamingMobFoodItem;
-	std::map<int, ItemInfo::BridleItem*> m_mBridleItem;
-	std::map<int, ItemInfo::SkillLearnItem*> m_mSkillLearnItem;
-	std::map<int, ItemInfo::PortableChairItem*> m_mPortableChairItem;
+	std::map<int, EquipItem*> m_mEquipItem;
+	std::map<int, BundleItem*> m_mBundleItem;
+	std::map<int, UpgradeItem*> m_mUpgradeItem;
+	std::map<int, StateChangeItem*> m_mStateChangeItem;
+	std::map<int, PortalScrollItem*> m_mPortalScrollItem;
+	std::map<int, MobSummonItem*> m_mMobSummonItem;
+	std::map<int, PetFoodItem*> m_mPetFoodItem;
+	std::map<int, TamingMobFoodItem*> m_mTamingMobFoodItem;
+	std::map<int, BridleItem*> m_mBridleItem;
+	std::map<int, SkillLearnItem*> m_mSkillLearnItem;
+	std::map<int, PortableChairItem*> m_mPortableChairItem;
 
 	std::map<int, std::string> m_mItemString, m_mMapString;
 	
-	void LoadIncrementStat(ItemInfo::BasicIncrementStat& refStat, void *pProp);
-	void LoadAbilityStat(ItemInfo::BasicAbilityStat& refStat, void *pProp);
+	void LoadIncrementStat(BasicIncrementStat& refStat, void *pProp);
+	void LoadAbilityStat(BasicAbilityStat& refStat, void *pProp);
 
 
 	/*

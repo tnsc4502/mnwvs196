@@ -10,7 +10,6 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_CharacterMoney.h"
-#include "InventoryManipulator.h"
 #include "BasicStat.h"
 
 QWUInventory::QWUInventory()
@@ -180,6 +179,22 @@ bool QWUInventory::RawRemoveItemByID(User * pUser, int nItemID, int nCount)
 	return nCount == 0;
 }
 
+bool QWUInventory::RawRemoveItem(User * pUser, int nTI, int nPOS, int nCount, std::vector<InventoryManipulator::ChangeLog>& aChangeLog, int & nDecRet, GW_ItemSlotBase ** ppItemRemoved)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	if (pUser->GetCharacterData()->mStat->nHP != 0)
+		return InventoryManipulator::RawRemoveItem(
+			pUser->GetCharacterData(),
+			nTI,
+			nPOS,
+			nCount,
+			aChangeLog,
+			&nDecRet,
+			ppItemRemoved
+		);
+	return false;
+}
+
 /*
 此處對pUser上鎖
 */
@@ -202,4 +217,11 @@ bool QWUInventory::RawAddItemByID(User * pUser, int nItemID, int nCount)
 	pUser->SendPacket(&oPacket);
 	pUser->SendCharacterStat(true, 0);
 	return nTotalAdded == nCount;
+}
+
+void QWUInventory::SendInventoryOperation(User* pUser, int bOnExclResult, std::vector<InventoryManipulator::ChangeLog>& aChangeLog)
+{
+	OutPacket oPacket;
+	InventoryManipulator::MakeInventoryOperation(&oPacket, bOnExclResult, aChangeLog);
+	pUser->SendPacket(&oPacket);
 }

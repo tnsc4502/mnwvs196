@@ -15,7 +15,7 @@ class InPacket;
 class SecondaryStat : public BasicStat
 {
 public:
-	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS;
+	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS, m_mSetByItem;
 
 	ADD_TEMPORARY(IndiePAD);
 	ADD_TEMPORARY(IndieMAD);
@@ -521,12 +521,12 @@ public:
 	SecondaryStat();
 	~SecondaryStat();
 
-	void SetFrom(int nFieldType, GA_Character* pChar, BasicStat* pBS, void *pFs, void* pNonBodyEquip, int nMHPForPvP, void* pPSD);
+	void SetFrom(GA_Character* pChar, BasicStat* pBS);
 	void EncodeForLocal(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	void EncodeForRemote(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	void EncodeIndieTempStat(OutPacket *oPacket, TemporaryStat::TS_Flag& flag);
 	bool EnDecode4Byte(TemporaryStat::TS_Flag& flag);
-	void ResetByTime(int tCur);
+	void ResetByTime(User* pUser, int tCur);
 
 	void DecodeInternal(User* pUser, InPacket *iPacket);
 	void EncodeInternal(User* pUser, OutPacket *oPacket);

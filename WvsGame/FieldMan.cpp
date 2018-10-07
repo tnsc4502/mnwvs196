@@ -17,6 +17,12 @@ FieldMan::~FieldMan()
 {
 }
 
+FieldMan * FieldMan::GetInstance()
+{
+	static FieldMan *sPtrFieldMan = new FieldMan();
+	return sPtrFieldMan;
+}
+
 void FieldMan::RegisterField(int nFieldID)
 {
 	std::lock_guard<std::mutex> guard(fieldManMutex);

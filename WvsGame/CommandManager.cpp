@@ -93,6 +93,20 @@ void CommandManager::Process(User * pUser, const std::string & input)
 				}
 				--nLevel;
 			}
+
+			//Beginner
+			auto pSkills = SkillInfo::GetInstance()->GetSkillsByRootID((nJob / 100) * 100);
+			for (const auto& pSkill : *pSkills)
+			{
+				auto pEntry = pSkill.second;
+				auto pMaxLevelData = pEntry->GetLevelData(pEntry->GetMaxLevel());
+				USkill::OnSkillUpRequest(
+					pUser,
+					pEntry->GetSkillID(),
+					pEntry->GetMaxLevel(),
+					false,
+					false);
+			}
 		}
 	}
 }

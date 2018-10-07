@@ -1474,21 +1474,10 @@ void USkill::DoActiveSkill_SmokeShell(User* pUser, const SkillEntry * pSkill, in
 {
 }
 
-void USkill::ResetTemporaryByTime(User * pUser, int tCur)
+void USkill::ResetTemporaryByTime(User * pUser, const std::vector<int>& aResetReason)
 {
-	std::vector<int> resetReason;
-	auto pSS = pUser->GetSecondaryStat();
-	for (auto& setFlag : pSS->m_mSetByTS)
-	{
-		int nSkillID = *(setFlag.second.second[1]);
-		int tValue = *(setFlag.second.second[2]);
-		//printf("Skill ID %d, T Val = %d, Set Time = %d, Now = %d Diff = %d\n", nSkillID, tValue, setFlag.second.first, tCur, (tCur - setFlag.second.first));
-		//expired
-		if ((tCur - setFlag.second.first)  > *(setFlag.second.second[2]))
-			resetReason.push_back(*(setFlag.second.second[1]));
-	}
 	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
-	for (auto nReason : resetReason)
+	for (auto nReason : aResetReason)
 	{
 		SkillEntry* pSkill = nullptr;
 		auto nSLV = SkillInfo::GetInstance()->GetSkillLevel(pUser->GetCharacterData(), nReason, &pSkill, 0, 0, 0, 0);

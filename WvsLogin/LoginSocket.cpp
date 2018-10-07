@@ -82,6 +82,7 @@ void LoginSocket::OnLoginBackgroundRequest()
 
 void LoginSocket::OnCheckPasswordRequst(InPacket *iPacket)
 {
+	mLoginData.nAccountID = 1;
 	iPacket->DecodeBuffer(nullptr, 22);
 	auto sID = iPacket->DecodeStr();
 	auto sPasswd = iPacket->DecodeStr();

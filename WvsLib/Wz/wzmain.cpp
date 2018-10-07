@@ -114,9 +114,13 @@ void File::Init(Node n) {
         }
         if (!success) die();
         file.Seek(fileStart + 2);
-    } else {
-        int16_t eversion = file.Read<int16_t>();
-        if (eversion != EncVersion) die();
+	}
+	else {
+		int16_t eversion = file.Read<int16_t>();
+		if (eversion != EncVersion) {
+			printf("Wz Version Error, file name = %s\n", filename.string().c_str());
+			die();
+		}
     }
     if (file.ReadCInt() == 0) die();
     file.Seek(fileStart + 2);

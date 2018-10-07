@@ -1,5 +1,6 @@
 #include "SecondaryStat.h"
 #include "BasicStat.h"
+#include "ItemInfo.h"
 #include "SkillInfo.h"
 #include "SkillEntry.h"
 #include "SkillLevelData.h"
@@ -27,7 +28,7 @@ SecondaryStat::~SecondaryStat()
 {
 }
 
-void SecondaryStat::SetFrom(int nFieldType, GA_Character * pChar, BasicStat * pBS, void * pFs, void * pNonBodyEquip, int nMHPForPvP, void * pPSD)
+void SecondaryStat::SetFrom(GA_Character * pChar, BasicStat * pBS)
 {
 	const GW_CharacterStat *pCS = pChar->mStat;
 
@@ -787,8 +788,28 @@ bool SecondaryStat::EnDecode4Byte(TemporaryStat::TS_Flag & flag)
 	return false;
 }
 
-void SecondaryStat::ResetByTime(int tCur)
+void SecondaryStat::ResetByTime(User* pUser, int tCur)
 {
+	std::vector<int> aSkillResetReason;
+	auto pSS = pUser->GetSecondaryStat();
+	for (auto& setFlag : pSS->m_mSetByTS)
+	{
+		int nID = *(setFlag.second.second[1]);
+		int tValue = *(setFlag.second.second[2]);
+		//printf("Skill ID %d, T Val = %d, Set Time = %d, Now = %d Diff = %d\n", nSkillID, tValue, setFlag.second.first, tCur, (tCur - setFlag.second.first));
+		//expired
+		if (!((tCur - setFlag.second.first) > tValue))
+			continue;
+		if (nID < 0)
+		{
+			auto pItemInfo = ItemInfo::GetInstance()->GetStateChangeItem(-nID);
+			if (pItemInfo)
+				pUser->SendTemporaryStatReset(pItemInfo->Apply(pUser, 0, false, true));
+		}
+		else 
+			aSkillResetReason.push_back(nID);
+	}
+	USkill::ResetTemporaryByTime(pUser, aSkillResetReason);
 }
 
 void SecondaryStat::DecodeInternal(User* pUser, InPacket * iPacket)
@@ -806,16 +827,23 @@ void SecondaryStat::DecodeInternal(User* pUser, InPacket * iPacket)
 		tDurationRemained = iPacket->Decode4();
 		nSLV = iPacket->Decode4();
 		WvsLogger::LogFormat("Decode Internal ID = %d, tValue = %d, nSLV = %d\n", nSkillID, tDurationRemained, nSLV);
-		USkill::DoActiveSkill_SelfStatChange(
-			pUser,
-			SkillInfo::GetInstance()->GetSkillByID(nSkillID),
-			nSLV,
-			nullptr,
-			0,
-			false,
-			tDurationRemained,
-			true
-		);
+		if (nSkillID < 0)
+		{
+			auto pItem = ItemInfo::GetInstance()->GetStateChangeItem(-nSkillID);
+			if (pItem)
+				pItem->Apply(pUser, 0, false, false, true, tDurationRemained);
+		}
+		else
+			USkill::DoActiveSkill_SelfStatChange(
+				pUser,
+				SkillInfo::GetInstance()->GetSkillByID(nSkillID),
+				nSLV,
+				nullptr,
+				0,
+				false,
+				tDurationRemained,
+				true
+			);
 	}
 }
 

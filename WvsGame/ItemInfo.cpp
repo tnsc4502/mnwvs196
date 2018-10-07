@@ -4,7 +4,6 @@
 #include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\WvsLib\Random\Rand32.h"
-
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 ItemInfo::ItemInfo()
@@ -78,14 +77,20 @@ void ItemInfo::IterateEquipItem(void *dataNode)
 	
 	for (auto& data : dataImg)
 	{
+		if (data.Name() == "Hair" || data.Name() == "Face" || data.Name() == "Afterimage")
+			continue;
 		if (!isdigit(data.Name()[0])) //展開資料夾
+		{
+			clock_t tStart = clock();
 			IterateEquipItem((void*)(&data));
+			printf("%s loading : %.2fs\n", data.Name().c_str(), (double)(clock() - tStart) / CLOCKS_PER_SEC);
+		}
 		else
 		{
 			nItemID = atoi(data.Name().c_str());
-			if (nItemID < 1000)
+			if (nItemID < 20000)
 				continue;
-			ItemInfo::EquipItem* pNewEquip = new ItemInfo::EquipItem();
+			EquipItem* pNewEquip = new EquipItem();
 			pNewEquip->nItemID = nItemID;
 			pNewEquip->sItemName = m_mItemString[nItemID];
 			RegisterEquipItemInfo(pNewEquip, nItemID, (void*)&(data));
@@ -108,7 +113,7 @@ void ItemInfo::IterateBundleItem()
 			{
 				auto& infoImg = item["info"];
 				int nItemID = atoi(item.Name().c_str());
-				ItemInfo::BundleItem* pNewBundle = new ItemInfo::BundleItem;
+				BundleItem* pNewBundle = new BundleItem;
 				LoadAbilityStat(pNewBundle->abilityStat, (void*)&infoImg);
 				pNewBundle->nItemID = nItemID;
 				pNewBundle->sItemName = m_mItemString[nItemID];
@@ -180,7 +185,7 @@ void ItemInfo::RegisterSetHalloweenItem()
 {
 }
 
-void ItemInfo::RegisterEquipItemInfo(ItemInfo::EquipItem * pEqpItem, int nItemID, void * pProp)
+void ItemInfo::RegisterEquipItemInfo(EquipItem * pEqpItem, int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
 
@@ -225,7 +230,7 @@ void ItemInfo::RegisterEquipItemInfo(ItemInfo::EquipItem * pEqpItem, int nItemID
 void ItemInfo::RegisterUpgradeItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	ItemInfo::UpgradeItem *pNewUpgradeItem = new ItemInfo::UpgradeItem;
+	UpgradeItem *pNewUpgradeItem = new UpgradeItem;
 
 	pNewUpgradeItem->nItemID = nItemID;
 	LoadIncrementStat(pNewUpgradeItem->incStat, (void*)&infoImg);
@@ -236,30 +241,30 @@ void ItemInfo::RegisterUpgradeItem(int nItemID, void * pProp)
 
 void ItemInfo::RegisterPortalScrollItem(int nItemID, void * pProp)
 {
-	ItemInfo::PortalScrollItem *pNewPortalScrollItem = new ItemInfo::PortalScrollItem;
+	PortalScrollItem *pNewPortalScrollItem = new PortalScrollItem;
 	pNewPortalScrollItem->nItemID = nItemID;
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
 	for (auto& effect : specImg)
-		pNewPortalScrollItem->spec.push_back({ effect.Name(), (int)effect });
+		pNewPortalScrollItem->spec.insert({ effect.Name(), (int)effect });
 	m_mPortalScrollItem[nItemID] = pNewPortalScrollItem;
 }
 
 void ItemInfo::RegisterMobSummonItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	ItemInfo::MobSummonItem *pNewMobSummonItem = new ItemInfo::MobSummonItem;
+	MobSummonItem *pNewMobSummonItem = new MobSummonItem;
 	pNewMobSummonItem->nItemID = nItemID;
 	pNewMobSummonItem->nType = infoImg["type"];
 	auto& mobImg = (*((WZ::Node*)pProp))["mob"];
 	for (auto& mob : mobImg)
-		pNewMobSummonItem->lMob.push_back({ (int)(mob["id"]), (int)(mob["prob"]) });
+		pNewMobSummonItem->lMob.insert({ (int)(mob["id"]), (int)(mob["prob"]) });
 	m_mMobSummonItem[nItemID] = pNewMobSummonItem;
 }
 
 void ItemInfo::RegisterPetFoodItem(int nItemID, void * pProp)
 {
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
-	ItemInfo::PetFoodItem *pNewFoodItem = new ItemInfo::PetFoodItem;
+	PetFoodItem *pNewFoodItem = new PetFoodItem;
 	pNewFoodItem->nItemID = nItemID;
 	pNewFoodItem->niRepleteness = specImg["inc"];
 	for (auto& petID : specImg)
@@ -271,7 +276,7 @@ void ItemInfo::RegisterPetFoodItem(int nItemID, void * pProp)
 void ItemInfo::RegisterTamingMobFoodItem(int nItemID, void * pProp)
 {
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
-	ItemInfo::TamingMobFoodItem *pNewTamingMobFoodItem = new ItemInfo::TamingMobFoodItem;
+	TamingMobFoodItem *pNewTamingMobFoodItem = new TamingMobFoodItem;
 	pNewTamingMobFoodItem->nItemID = nItemID;
 	pNewTamingMobFoodItem->niFatigue = specImg["incFatigue"];
 	m_mTamingMobFoodItem[nItemID] = pNewTamingMobFoodItem;
@@ -280,7 +285,7 @@ void ItemInfo::RegisterTamingMobFoodItem(int nItemID, void * pProp)
 void ItemInfo::RegisterBridleItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	ItemInfo::BridleItem *pNewBridleItem = new ItemInfo::BridleItem;
+	BridleItem *pNewBridleItem = new BridleItem;
 	pNewBridleItem->nItemID = nItemID;
 	pNewBridleItem->dwTargetMobID = infoImg["mob"];
 	pNewBridleItem->nCreateItemID = infoImg["create"];
@@ -295,7 +300,7 @@ void ItemInfo::RegisterBridleItem(int nItemID, void * pProp)
 void ItemInfo::RegisterPortableChairItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	ItemInfo::PortableChairItem *pNewPortableChairItem = new ItemInfo::PortableChairItem;
+	PortableChairItem *pNewPortableChairItem = new PortableChairItem;
 	pNewPortableChairItem->nItemID = nItemID;
 	pNewPortableChairItem->nReqLevel = infoImg["reqLevel"];
 	pNewPortableChairItem->nPortableChairRecoveryRateMP = infoImg["recoveryMP"];
@@ -306,7 +311,7 @@ void ItemInfo::RegisterPortableChairItem(int nItemID, void * pProp)
 void ItemInfo::RegisterSkillLearnItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	ItemInfo::SkillLearnItem *pNewSkillLearnItem = new ItemInfo::SkillLearnItem;
+	SkillLearnItem *pNewSkillLearnItem = new SkillLearnItem;
 	pNewSkillLearnItem->nItemID = nItemID;
 	pNewSkillLearnItem->nMasterLevel = infoImg["masterLevel"];
 	pNewSkillLearnItem->nSuccessRate = infoImg["success"];
@@ -320,75 +325,75 @@ void ItemInfo::RegisterSkillLearnItem(int nItemID, void * pProp)
 
 void ItemInfo::RegisterStateChangeItem(int nItemID, void * pProp)
 {
-	ItemInfo::StateChangeItem *pNewStateChangeItem = new ItemInfo::StateChangeItem;
+	StateChangeItem *pNewStateChangeItem = new StateChangeItem;
 	pNewStateChangeItem->nItemID = nItemID;
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
 	for(auto& effect : specImg)
-		pNewStateChangeItem->spec.push_back({ effect.Name(), (int)effect });
+		pNewStateChangeItem->spec.insert({ effect.Name(), (int)effect });
 	m_mStateChangeItem[nItemID] = pNewStateChangeItem;
 }
 
-ItemInfo::EquipItem * ItemInfo::GetEquipItem(int nItemID)
+EquipItem * ItemInfo::GetEquipItem(int nItemID)
 {
 	auto findIter = m_mEquipItem.find(nItemID);
 	return (findIter != m_mEquipItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::StateChangeItem * ItemInfo::GetStateChangeItem(int nItemID)
+StateChangeItem * ItemInfo::GetStateChangeItem(int nItemID)
 {
 	auto findIter = m_mStateChangeItem.find(nItemID);
 	return (findIter != m_mStateChangeItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::BundleItem * ItemInfo::GetBundleItem(int nItemID)
+BundleItem * ItemInfo::GetBundleItem(int nItemID)
 {
 	auto findIter = m_mBundleItem.find(nItemID);
 	return (findIter != m_mBundleItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::UpgradeItem * ItemInfo::GetUpgradeItem(int nItemID)
+UpgradeItem * ItemInfo::GetUpgradeItem(int nItemID)
 {
 	auto findIter = m_mUpgradeItem.find(nItemID);
 	return (findIter != m_mUpgradeItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::PortalScrollItem * ItemInfo::GetPortalScrollItem(int nItemID)
+PortalScrollItem * ItemInfo::GetPortalScrollItem(int nItemID)
 {
 	auto findIter = m_mPortalScrollItem.find(nItemID);
 	return (findIter != m_mPortalScrollItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::MobSummonItem * ItemInfo::GetMobSummonItem(int nItemID)
+MobSummonItem * ItemInfo::GetMobSummonItem(int nItemID)
 {
 	auto findIter = m_mMobSummonItem.find(nItemID);
 	return (findIter != m_mMobSummonItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::PetFoodItem * ItemInfo::GetPetFoodItem(int nItemID)
+PetFoodItem * ItemInfo::GetPetFoodItem(int nItemID)
 {
 	auto findIter = m_mPetFoodItem.find(nItemID);
 	return (findIter != m_mPetFoodItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::TamingMobFoodItem * ItemInfo::GetTamingMobFoodItem(int nItemID)
+TamingMobFoodItem * ItemInfo::GetTamingMobFoodItem(int nItemID)
 {
 	auto findIter = m_mTamingMobFoodItem.find(nItemID);
 	return (findIter != m_mTamingMobFoodItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::BridleItem * ItemInfo::GetBridleItem(int nItemID)
+BridleItem * ItemInfo::GetBridleItem(int nItemID)
 {
 	auto findIter = m_mBridleItem.find(nItemID);
 	return (findIter != m_mBridleItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::SkillLearnItem * ItemInfo::GetSkillLearnItem(int nItemID)
+SkillLearnItem * ItemInfo::GetSkillLearnItem(int nItemID)
 {
 	auto findIter = m_mSkillLearnItem.find(nItemID);
 	return (findIter != m_mSkillLearnItem.end() ? findIter->second : nullptr);
 }
 
-ItemInfo::PortableChairItem * ItemInfo::GetPortableChairItem(int nItemID)
+PortableChairItem * ItemInfo::GetPortableChairItem(int nItemID)
 {
 	auto findIter = m_mPortableChairItem.find(nItemID);
 	return (findIter != m_mPortableChairItem.end() ? findIter->second : nullptr);
@@ -535,7 +540,7 @@ bool ItemInfo::IsQuestItem(int nItemID)
 	return false;
 }
 
-void ItemInfo::LoadIncrementStat(ItemInfo::BasicIncrementStat & refStat, void * pProp)
+void ItemInfo::LoadIncrementStat(BasicIncrementStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));
 	refStat.niSTR = infoImg["incSTR"];
@@ -556,7 +561,7 @@ void ItemInfo::LoadIncrementStat(ItemInfo::BasicIncrementStat & refStat, void * 
 	refStat.niSwim = infoImg["incSwim"];
 }
 
-void ItemInfo::LoadAbilityStat(ItemInfo::BasicAbilityStat & refStat, void * pProp)
+void ItemInfo::LoadAbilityStat(BasicAbilityStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));	
 	refStat.bTimeLimited = ((int)infoImg["timeLimited"]) == 1;
@@ -728,3 +733,4 @@ int ItemInfo::GetVariation(int v, ItemVariationOption enOption)
 	}
 	return result;
 }
+

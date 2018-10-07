@@ -237,9 +237,6 @@
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
     </ClInclude>
-    <ClInclude Include="Net\PacketFlags\WvsContextPacketFlags.hpp">
-      <Filter>Net\PacketFlags</Filter>
-    </ClInclude>
     <ClInclude Include="Constants\ConfigLoader.hpp">
       <Filter>Constants</Filter>
     </ClInclude>

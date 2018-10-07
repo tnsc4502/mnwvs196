@@ -57,6 +57,7 @@ public:
 private:
     Data * data;
 	std::recursive_mutex m_lock;
+	std::mutex m_lock2;
 };
 //extern Node Base;
 //extern uint16_t Version;

@@ -17,6 +17,7 @@
 #include "PortalMap.h"
 #include "WvsGame.h"
 #include "Field.h"
+#include "QWUser.h"
 #include "QWUInventory.h"
 #include "BasicStat.h"
 #include "SecondaryStat.h"
@@ -25,6 +26,7 @@
 #include "AttackInfo.h"
 #include "NpcTemplate.h"
 #include "LifePool.h"
+#include "ItemInfo.h"
 #include "SkillInfo.h"
 #include "CommandManager.h"
 #include "QuestMan.h"
@@ -341,6 +343,12 @@ void User::OnPacket(InPacket *iPacket)
 	int nType = (unsigned short)iPacket->Decode2();
 	switch (nType)
 	{
+	case UserRecvPacketFlag::User_OnStatChangeItemUseRequest:
+		OnStatChangeItemUseRequest(iPacket, false);
+		break;
+	case UserRecvPacketFlag::User_OnStatChangeItemCancelRequest:
+		OnStatChangeItemCancelRequest(iPacket);
+		break;
 	case 0x16B:
 	{
 		std::string strSkill = iPacket->DecodeStr();
@@ -604,8 +612,20 @@ void User::EncodeMarriageInfo(OutPacket * oPacket)
 	}
 }
 
-void User::ValidateStat()
+void User::ValidateStat(bool bCalledByConstructor)
 {
+	m_pBasicStat->SetFrom(m_pCharacterData, m_pSecondaryStat->nMaxHP, m_pSecondaryStat->nMaxMP, m_pSecondaryStat->nBasicStatUp);
+	m_pSecondaryStat->SetFrom(m_pCharacterData, m_pBasicStat);
+	long long int liFlag = 0;
+	if (m_pCharacterData->mStat->nHP > m_pBasicStat->nMHP)
+		liFlag |= QWUser::IncHP(this, 0, false);
+	if (m_pCharacterData->mStat->nMP > m_pBasicStat->nMMP)
+		liFlag |= QWUser::IncMP(this, 0, false);
+	if (!bCalledByConstructor)
+	{
+		if (liFlag)
+			SendCharacterStat(false, liFlag);
+	}
 }
 
 void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
@@ -670,6 +690,8 @@ void User::SendCharacterStat(bool bOnExclRequest, long long int liFlag)
 
 void User::SendTemporaryStatReset(TemporaryStat::TS_Flag& flag)
 {
+	if (flag.IsEmpty())
+		return;
 	OutPacket oPacket;
 	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnTemporaryStatReset);
 	flag.Encode(&oPacket);
@@ -683,6 +705,8 @@ void User::SendTemporaryStatReset(TemporaryStat::TS_Flag& flag)
 
 void User::SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay)
 {
+	if (flag.IsEmpty())
+		return;
 	OutPacket oPacket;
 	oPacket.Encode2(UserSendPacketFlag::UserLocal_OnTemporaryStatSet);
 	m_pSecondaryStat->EncodeForLocal(&oPacket, flag);
@@ -741,7 +765,7 @@ std::mutex & User::GetLock()
 
 void User::Update()
 {
-	USkill::ResetTemporaryByTime(this, GameDateTime::GetTime());
+	m_pSecondaryStat->ResetByTime(this, GameDateTime::GetTime());
 }
 
 void User::ResetTemporaryStat(int tCur, int nReasonID)
@@ -749,6 +773,51 @@ void User::ResetTemporaryStat(int tCur, int nReasonID)
 	if (nReasonID == 0)
 	{
 		
+	}
+}
+
+void User::OnStatChangeItemUseRequest(InPacket * iPacket, bool bByPet)
+{
+	int tTick = iPacket->Decode4();
+	short nTI = iPacket->Decode2();
+	int nItemID = iPacket->Decode4();
+
+	auto pItem = m_pCharacterData->GetItem(2, nTI);
+	auto pItemInfo = ItemInfo::GetInstance()->GetStateChangeItem(nItemID);
+	if (pItem == nullptr || pItem->nItemID != nItemID || pItemInfo == nullptr)
+	{
+		SendCharacterStat(true, 0);
+		return;
+	}
+	int nDecRet = 0;
+	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
+	bool bRemoveResult = QWUInventory::RawRemoveItem(
+		this,
+		2, // = Consume
+		nTI,
+		1,
+		aChangeLog,
+		nDecRet,
+		nullptr);
+	if(!bRemoveResult || nDecRet != 1)
+	{
+		SendCharacterStat(true, 0);
+		return;
+	}
+	QWUInventory::SendInventoryOperation(this, false, aChangeLog);
+	auto tsFlag = pItemInfo->Apply(this, GameDateTime::GetTime(), false);
+	SendTemporaryStatReset(tsFlag);
+	SendTemporaryStatSet(tsFlag, 0);
+}
+
+void User::OnStatChangeItemCancelRequest(InPacket * iPacket)
+{
+	int nItemID = -iPacket->Decode4();
+	auto pItemInfo = ItemInfo::GetInstance()->GetStateChangeItem(nItemID);
+	if (pItemInfo) 
+	{
+		auto tsFlag = pItemInfo->Apply(this, 0, false, true);
+		SendTemporaryStatReset(tsFlag);
 	}
 }
 
@@ -832,9 +901,10 @@ void User::OnSelectNpc(InPacket * iPacket)
 		pScript->SetUser(this);
 		SetScript(pScript);
 		
-		std::thread* t = new std::thread(&Script::Run, pScript);
-		pScript->SetThread(t);
-		t->detach();
+		pScript->Run();
+		//std::thread* t = new std::thread(&Script::Run, pScript);
+		//pScript->SetThread(t);
+		//t->detach();
 	}
 }
 

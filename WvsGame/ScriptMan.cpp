@@ -1,5 +1,5 @@
 #include "ScriptMan.h"
-
+#include "ScriptNPCConversation.h"
 
 ScriptMan * ScriptMan::GetInstance()
 {
@@ -9,7 +9,9 @@ ScriptMan * ScriptMan::GetInstance()
 
 Script * ScriptMan::GetScript(const std::string & file, int nNpcID)
 {
-	auto pScript = new Script(file, nNpcID);
+	auto pScript = new Script(file, nNpcID, {
+		&ScriptNPCConversation::Register
+	});
 	luaL_openlibs(pScript->L);
 	return pScript;
 }

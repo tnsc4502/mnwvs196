@@ -157,11 +157,14 @@ public:
 	//Stat
 	SecondaryStat* GetSecondaryStat();
 	BasicStat* GetBasicStat();
-	void ValidateStat();
+	void ValidateStat(bool bCalledByConstructor = false);
 	void SendCharacterStat(bool bOnExclRequest, long long int liFlag);
 	void SendTemporaryStatReset(TemporaryStat::TS_Flag& flag);
 	void SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay);
 	void ResetTemporaryStat(int tCur, int nReasonID);
+
+	void OnStatChangeItemUseRequest(InPacket *iPacket, bool bByPet);
+	void OnStatChangeItemCancelRequest(InPacket *iPacket);
 
 	//Message
 	void SendDropPickUpResultPacket(bool bPickedUp, bool bIsMoney, int nItemID, int nCount, bool bOnExcelRequest);

@@ -149,7 +149,6 @@
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\UserPacketFlags.hpp" />
-    <ClInclude Include="Net\PacketFlags\WvsContextPacketFlags.hpp" />
     <ClInclude Include="Net\SocketBase.h" />
     <ClInclude Include="Net\WorldInfo.h" />
     <ClInclude Include="Net\WvsBase.h" />

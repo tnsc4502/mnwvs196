@@ -86,7 +86,7 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 	int nY = iPacket->Decode2();
 	int nObjectID = iPacket->Decode4();
 	bool bDropRemained = false;
-	std::lock_guard<std::mutex> dropPoolock(m_mtxDropPoolLock);
+	std::lock_guard<std::mutex> dropPoolLock(m_mtxDropPoolLock);
 	auto findIter = m_mDrop.find(nObjectID);
 	if (findIter != m_mDrop.end())
 	{
@@ -117,7 +117,7 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 			OutPacket oPacket;
 			pDrop->MakeLeaveFieldPacket(&oPacket, 2, pUser->GetUserID());
 			m_pField->SplitSendPacket(&oPacket, nullptr);
-			delete pDrop->m_pItem;
+			//delete pDrop->m_pItem;
 			delete pDrop;
 			m_mDrop.erase(nObjectID);
 		}

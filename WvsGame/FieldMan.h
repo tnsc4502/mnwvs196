@@ -10,12 +10,7 @@ private:
 
 public:
 
-	static FieldMan *GetInstance()
-	{
-		static FieldMan *sPtrFieldMan = new FieldMan();
-		return sPtrFieldMan;
-	}
-
+	static FieldMan *GetInstance();
 	void RegisterField(int nFieldID);
 	void FieldFactory(int nFieldID);
 	Field* GetField(int nFieldID);

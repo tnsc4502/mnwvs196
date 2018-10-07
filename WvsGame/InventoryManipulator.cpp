@@ -5,6 +5,7 @@
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 
+#include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 InventoryManipulator::InventoryManipulator()
@@ -266,7 +267,7 @@ void InventoryManipulator::InsertChangeLog(std::vector<ChangeLog>& aChangeLog, i
 
 void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnExclResult, std::vector<InventoryManipulator::ChangeLog>& aChangeLog)
 {
-	oPacket->Encode2(0x45);
+	oPacket->Encode2((short)UserSendPacketFlag::UserLocal_OnInventoryOperation);
 	oPacket->Encode1(bOnExclResult);
 	oPacket->Encode1((char)aChangeLog.size());
 	oPacket->Encode1(0);
@@ -284,11 +285,12 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 				oPacket->Encode2((short)change.nPOS2);
 			if (change.nChange == 3 && change.nPOS < 0)
 				oPacket->Encode1(1);
+			oPacket->Encode1(0);
 		}
 		else 
 		{
 			change.pItem->RawEncode(oPacket);
-			oPacket->Encode4(0); // what's this?
+			//oPacket->Encode4(0); // what's this?
 		}
 	}
 	//printf("Encoding Inventory Operation Done\n");

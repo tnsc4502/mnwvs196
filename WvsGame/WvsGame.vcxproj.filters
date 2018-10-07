@@ -46,6 +46,9 @@
     <Filter Include="WvsGame\InGame\Script">
       <UniqueIdentifier>{f1354e9d-9bbb-4208-ac5e-75e8952995d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Item">
+      <UniqueIdentifier>{685d3e38-c927-4852-be7e-3dfd8dbe1b91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -109,9 +112,6 @@
       <Filter>WvsGame\InGame\Field</Filter>
     </ClInclude>
     <ClInclude Include="InventoryManipulator.h">
-      <Filter>WvsGame\InGame\Inventory</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemInfo.h">
       <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
     <ClInclude Include="SkillInfo.h">
@@ -189,6 +189,48 @@
     <ClInclude Include="QWUQuestRecord.h">
       <Filter>WvsGame\InGame\Quest</Filter>
     </ClInclude>
+    <ClInclude Include="StateChangeItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemInfo.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicItemStat.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BridleItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="BundleItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="MobSummonItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="PetFoodItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="PortableChairItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="PortalScrollItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillLearnItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="TamingMobFoodItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="UpgradeItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptNPCConversation.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -249,9 +291,6 @@
     <ClCompile Include="InventoryManipulator.cpp">
       <Filter>WvsGame\InGame\Inventory</Filter>
     </ClCompile>
-    <ClCompile Include="ItemInfo.cpp">
-      <Filter>WvsGame\InGame\Inventory</Filter>
-    </ClCompile>
     <ClCompile Include="SkillInfo.cpp">
       <Filter>WvsGame\InGame\Skill</Filter>
     </ClCompile>
@@ -308,6 +347,45 @@
     </ClCompile>
     <ClCompile Include="QWUQuestRecord.cpp">
       <Filter>WvsGame\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="StateChangeItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemInfo.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="BridleItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="BundleItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="MobSummonItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="PetFoodItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="PortableChairItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="PortalScrollItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillLearnItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="TamingMobFoodItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="UpgradeItem.cpp">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptNPCConversation.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

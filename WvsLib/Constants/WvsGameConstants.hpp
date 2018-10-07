@@ -179,7 +179,7 @@ namespace WvsGameConstants
 		return a1 == 10000 || a1 == 10100 || a1 == 10110 || a1 == 10111 || a1 == 10112;
 	}
 
-	static int GetEvenJobLevel(int a1)
+	static int GetEvanJobLevel(int a1)
 	{
 		signed int result; // eax@2
 
@@ -221,7 +221,7 @@ namespace WvsGameConstants
 		}
 		else if (IsEvanJob(nJob))
 		{
-			result = GetEvenJobLevel(nJob);
+			result = GetEvanJobLevel(nJob);
 		}
 		else
 		{

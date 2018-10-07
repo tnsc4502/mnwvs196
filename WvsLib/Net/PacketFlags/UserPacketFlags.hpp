@@ -615,7 +615,9 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnScriptMessageAnswer, 0xE5);
 MAKE_USER_RECV_PACKET_FLAG(User_OnFinalAttackRequestPacket, 0xED); //UserLocal::SendFinalAttackRequestPacket
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChat, 0xD1);
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestUpgradeTombEffect, 0xDE); //UserLocal::RequestUpgradeTombEffect
-MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7);
+MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7); 
+MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemUseRequest, 0xFC);
+MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemCancelRequest, 0xFD);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUpRequest, 0x13E);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUseRequest, 0x13F); //UserLocal::SendSkillUseRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillCancelRequest, 0x140);
