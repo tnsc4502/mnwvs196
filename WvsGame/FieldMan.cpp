@@ -3,11 +3,18 @@
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
+#include "Field.h"
+#include "FieldSet.h"
 #include "PortalMap.h"
 
 #include <mutex>
+#include <filesystem>
+#include <fstream>
+#include <streambuf>
 
 std::mutex fieldManMutex;
+
+namespace fs = std::experimental::filesystem;
 
 FieldMan::FieldMan()
 {
@@ -84,17 +91,44 @@ void FieldMan::FieldFactory(int nFieldID)
 	//}
 	newField->GetPortalMap()->RestorePortal(newField, mapWz["portal"]);
 
-	mField[nFieldID] = newField;
-	mField[nFieldID]->SetFieldID(nFieldID);
-	mField[nFieldID]->InitLifePool();
+	m_mField[nFieldID] = newField;
+	m_mField[nFieldID]->SetFieldID(nFieldID);
+	m_mField[nFieldID]->InitLifePool();
+}
+
+void FieldMan::LoadFieldSet()
+{
+	std::string strPath = "./DataSrv/FieldSet";
+	for (auto &file : fs::directory_iterator(strPath))
+	{
+		FieldSet *pFieldSet = new FieldSet;
+		std::wstring wStr = file.path();
+		//Convert std::wstring to std::string, note that the path shouldn't include any NON-ASCII character.
+		pFieldSet->Init(std::string{ wStr.begin(), wStr.end() });
+		m_mFieldSet[pFieldSet->GetFieldSetName()] = pFieldSet;
+
+		std::cout << file << std::endl; 
+		std::ifstream t(file.path());
+		std::string str((std::istreambuf_iterator<char>(t)),
+			std::istreambuf_iterator<char>());
+		std::cout << str << std::endl;
+	}
 }
 
 Field* FieldMan::GetField(int nFieldID)
 {
 	//printf("Get Field ID = %d\n", nFieldID);
 	//Prevent Double Registerations Or Enter On-Registering Map
-	auto fieldResult = mField.find(nFieldID);
-	if (fieldResult == mField.end())
+	auto fieldResult = m_mField.find(nFieldID);
+	if (fieldResult == m_mField.end())
 		RegisterField(nFieldID);
-	return mField[nFieldID];
+	return m_mField[nFieldID];
+}
+
+FieldSet * FieldMan::GetFieldSet(const std::string & sFieldSetName)
+{
+	auto fieldResult = m_mFieldSet.find(sFieldSetName);
+	if (fieldResult == m_mFieldSet.end())
+		return nullptr;
+	return fieldResult->second;
 }

@@ -1,6 +1,6 @@
 #include "WvsGame.h"
 #include "..\WvsLib\Constants\WvsGameConstants.hpp"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "ClientSocket.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
@@ -50,7 +50,7 @@ void WvsGame::InitializeCenter()
 	m_pCenterInstance = std::make_shared<Center>(*m_pCenterServerService);
 	m_pCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);
 	auto holderFunc = std::bind(&WvsGame::CenterAliveMonitor, this);
-	auto aliveHolder = AsnycScheduler::CreateTask(holderFunc, 10 * 1000, true);
+	auto aliveHolder = AsyncScheduler::CreateTask(holderFunc, 10 * 1000, true);
 	aliveHolder->Start();
 
 

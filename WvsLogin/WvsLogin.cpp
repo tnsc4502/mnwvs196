@@ -3,7 +3,7 @@
 #include <iostream>
 #include <functional>
 #include "..\WvsLib\Net\OutPacket.h"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "..\WvsLib\Constants\ServerConstants.hpp"
@@ -61,7 +61,7 @@ void WvsLogin::InitializeCenter()
 		m_apCenterInstance[i] = std::make_shared<Center>(*aCenterServerService[i]);
 		m_apCenterWorkThread[i].reset(new std::thread(&WvsLogin::ConnectToCenter, this, i));
 		auto fHolderFunc = std::bind(&WvsLogin::CenterAliveMonitor, this, i);
-		auto pAliveHolder = AsnycScheduler::CreateTask(fHolderFunc, 10 * 100, true);
+		auto pAliveHolder = AsyncScheduler::CreateTask(fHolderFunc, 10 * 100, true);
 
 		std::thread tCenterWorkThread([&] {
 			asio::io_service::work work(*aCenterServerService[i]);

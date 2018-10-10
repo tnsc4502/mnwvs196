@@ -2,7 +2,7 @@
 #include <map>
 #include <functional>
 #include "User.h"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 
 class LifePool;
 class Mob;
@@ -10,6 +10,7 @@ class Portal;
 class PortalMap;
 class TownPortalPool;
 class DropPool;
+class FieldSet;
 
 class Field
 {
@@ -20,6 +21,7 @@ class Field
 	PortalMap *m_pPortalMap;
 	DropPool *m_pDropPool;
 	TownPortalPool *m_pTownPortalPool;
+	FieldSet* m_pParentFieldSet = nullptr;
 
 	std::string m_sStreetName, 
 				m_sMapName, 
@@ -54,8 +56,7 @@ class Field
 		pField->Update();
 	}
 
-	std::_Binder<std::_Unforced, void(*)(Field* pField), Field* const> m_updateBinder;
-	AsnycScheduler::AsnycScheduler<decltype(m_updateBinder)>* m_asyncUpdateTimer;
+	AsyncScheduler* m_asyncUpdateTimer;
 
 public:
 	Field();
@@ -110,6 +111,9 @@ public:
 
 	void SetMapSizeY(int y);
 	int GetMapSizeY();
+
+	void SetFieldSet(FieldSet *pFieldSet);
+	FieldSet *GetFieldSet();
 
 	void InitLifePool();
 

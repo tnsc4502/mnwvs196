@@ -54,17 +54,17 @@ struct GW_ItemSlotBase
 				  liItemSN = -1,
 				  liCashItemSN = -1;
 
-	bool isInBag = false, isPet = false;
+	bool bIsInBag = false, bIsPet = false;
 
 public:
 	GW_ItemSlotBase();
 	~GW_ItemSlotBase();
 
-	virtual void Encode(OutPacket *oPacket) const = 0;
+	virtual void Encode(OutPacket *oPacket, bool bForInternal) const = 0;
 	virtual void RawEncode(OutPacket *oPacket) const = 0;
 
 	void DecodeItemSlot(InPacket *iPacket, GW_ItemSlotType type);
-	virtual void Decode(InPacket *iPacket) = 0;
+	virtual void Decode(InPacket *iPacket, bool bForInternal) = 0;
 	virtual void RawDecode(InPacket *iPacket) = 0;
 
 	void EncodeInventoryPosition(OutPacket *oPacket) const;

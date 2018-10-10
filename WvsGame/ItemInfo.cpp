@@ -200,6 +200,7 @@ void ItemInfo::RegisterEquipItemInfo(EquipItem * pEqpItem, int nItemID, void * p
 	pEqpItem->nrPOP = infoImg["reqPOP"];
 	pEqpItem->nrJob = infoImg["reqJob"];
 	pEqpItem->nrLevel = infoImg["reqLevel"];
+	pEqpItem->nRUC = infoImg["tuc"];
 	//pEqpItem->nrMobLevel = infoImg["reqMobLevel"];
 	pEqpItem->nSellPrice = infoImg["price"];
 	pEqpItem->nKnockBack = infoImg["knockback"];
@@ -207,6 +208,7 @@ void ItemInfo::RegisterEquipItemInfo(EquipItem * pEqpItem, int nItemID, void * p
 	pEqpItem->nIncRMAI = infoImg["incRMAI"];
 	pEqpItem->nIncRMAL = infoImg["incRMAL"];
 	pEqpItem->nElemDefault = infoImg["elemDefault"];
+	pEqpItem->nCuttable = (int)infoImg["tradeAvailable"];
 	pEqpItem->dwPetAbilityFlag = 0;
 	if (nItemID / 10000 == 181)
 	{
@@ -418,13 +420,13 @@ bool ItemInfo::ExpireOnLogout(int nItemID)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bExpireOnLogout;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eExpireOnLogout) != 0;
 		}
 		else
 		{
 			auto pItem = GetBundleItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bExpireOnLogout;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eExpireOnLogout) != 0;
 		}
 	return false;
 }
@@ -475,13 +477,13 @@ bool ItemInfo::IsNotSaleItem(int nItemID)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bNotSale;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eNotSale) != 0;
 		}
 		else
 		{
 			auto pItem = GetBundleItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bNotSale;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eNotSale) != 0;
 		}
 	return false;
 }
@@ -493,13 +495,13 @@ bool ItemInfo::IsOnlyItem(int nItemID)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bOnly;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eOnly) != 0;
 		}
 		else
 		{
 			auto pItem = GetBundleItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bOnly;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eOnly) != 0;
 		}
 	return false;
 }
@@ -511,13 +513,13 @@ bool ItemInfo::IsTradeBlockItem(int nItemID)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bTradeBlock;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eTradeBlock) != 0;
 		}
 		else
 		{
 			auto pItem = GetBundleItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bTradeBlock;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eTradeBlock) != 0;
 		}
 	return false;
 }
@@ -529,13 +531,13 @@ bool ItemInfo::IsQuestItem(int nItemID)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bQuest;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eQuest) != 0;
 		}
 		else
 		{
 			auto pItem = GetBundleItem(nItemID);
 			if (pItem != nullptr)
-				return pItem->abilityStat.bQuest;
+				return (pItem->abilityStat.nAttribute & ItemAttribute::eQuest) != 0;
 		}
 	return false;
 }
@@ -564,12 +566,27 @@ void ItemInfo::LoadIncrementStat(BasicIncrementStat & refStat, void * pProp)
 void ItemInfo::LoadAbilityStat(BasicAbilityStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));	
+	refStat.nAttribute = (int)infoImg["info/bagType"];
+	if (((int)infoImg["notSale"]) == 1)
+		refStat.nAttribute |= ItemAttribute::eNotSale;
+	if (((int)infoImg["expireOnLogout"]) == 1)
+		refStat.nAttribute |= ItemAttribute::eExpireOnLogout;
+	if (((int)infoImg["info/pickUpBlock"] == 1))
+		refStat.nAttribute |= ItemAttribute::ePickUpBlock;
+	if (((int)infoImg["only"]) == 1)
+		refStat.nAttribute |= ItemAttribute::eOnly;
+	if (((int)infoImg["info/accountSharable"] == 1))
+		refStat.nAttribute |= ItemAttribute::eAccountSharable;
+	if (((int)infoImg["quest"]) == 1)
+		refStat.nAttribute |= ItemAttribute::eQuest;
+	if (((int)infoImg["tradeBlock"]) == 1)
+		refStat.nAttribute |= ItemAttribute::eTradeBlock;
+	if (((int)infoImg["info/accountShareTag"] == 1))
+		refStat.nAttribute |= ItemAttribute::eAccountShareTag;
+	if (((int)infoImg["info/mobHP"] == 1) && (int)infoImg["info/mobHP"] < 100)
+		refStat.nAttribute |= ItemAttribute::eMobHP;
+
 	refStat.bTimeLimited = ((int)infoImg["timeLimited"]) == 1;
-	refStat.bQuest = ((int)infoImg["quest"]) == 1;
-	refStat.bOnly = ((int)infoImg["only"]) == 1;
-	refStat.bNotSale = ((int)infoImg["notSale"]) == 1;
-	refStat.bTradeBlock = ((int)infoImg["tradeBlock"]) == 1;
-	refStat.bExpireOnLogout = ((int)infoImg["expireOnLogout"]) == 1;
 }
 
 GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOption)
@@ -616,7 +633,11 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 			pEquip->nSpeed = GetVariation(nValue, enOption);
 		if ((nValue = pItem->incStat.niJump))
 			pEquip->nJump = GetVariation(nValue, enOption);
+		pEquip->nRUC = pItem->nRUC;
+		pEquip->nCuttable = pItem->nCuttable;
+
 		ret = pEquip;
+		ret->nAttribute = pItem->abilityStat.nAttribute;
 	}
 	else if (nType > 1 && nType <= 4)
 	{
@@ -626,6 +647,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 
 		ret = new GW_ItemSlotBundle;
 		((GW_ItemSlotBundle*)ret)->nNumber = 1;
+		ret->nAttribute = pItem->abilityStat.nAttribute;
 	}
 	if (ret)
 	{

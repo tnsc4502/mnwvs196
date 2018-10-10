@@ -8,6 +8,7 @@
 #include "PortalMap.h"
 #include "TownPortalPool.h"
 #include "DropPool.h"
+#include "FieldSet.h"
 
 #include <mutex>
 #include <functional>
@@ -17,12 +18,11 @@ std::mutex fieldUserMutex;
 
 Field::Field()
 	: m_pLifePool(new LifePool), 
-	  m_updateBinder(std::bind(&Field::UpdateTrigger, this)),
 	  m_pPortalMap(new PortalMap),
 	  m_pTownPortalPool(new TownPortalPool)
 {
 	m_pDropPool = new DropPool(this);
-	m_asyncUpdateTimer = AsnycScheduler::CreateTask(m_updateBinder, 5000, true);
+	m_asyncUpdateTimer = AsyncScheduler::CreateTask(std::bind(&Field::UpdateTrigger, this), 5000, true);
 	//this->m_asyncUpdateTimer = (void*)timer;
 	InitLifePool();
 }
@@ -197,6 +197,16 @@ int Field::GetMapSizeY()
 	return m_nMapSizeY;
 }
 
+void Field::SetFieldSet(FieldSet * pFieldSet)
+{
+	m_pParentFieldSet = pFieldSet;
+}
+
+FieldSet * Field::GetFieldSet()
+{
+	return m_pParentFieldSet;
+}
+
 void Field::InitLifePool()
 {
 	std::lock_guard<std::mutex> lifePoolGuard(fieldUserMutex);
@@ -221,6 +231,8 @@ void Field::OnEnter(User *pUser)
 	m_mUser[pUser->GetUserID()] = pUser;
 	m_pLifePool->OnEnter(pUser);
 	m_pDropPool->OnEnter(pUser);
+	if (m_pParentFieldSet != nullptr)
+		m_pParentFieldSet->OnUserEnterField(pUser);
 }
 
 void Field::OnLeave(User * pUser)
@@ -229,7 +241,7 @@ void Field::OnLeave(User * pUser)
 	m_mUser.erase(pUser->GetUserID());
 	m_pLifePool->RemoveController(pUser);
 	if (m_mUser.size() == 0 && m_asyncUpdateTimer->IsStarted())
-		m_asyncUpdateTimer->Abort();
+		m_asyncUpdateTimer->Pause();
 }
 
 //發送oPacket給該地圖的其他User，其中pExcept是例外對象

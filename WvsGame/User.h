@@ -12,6 +12,7 @@ class Field;
 class Portal;
 class InPacket;
 class Npc;
+class AsyncScheduler;
 struct GA_Character;
 
 class BasicStat;
@@ -97,7 +98,7 @@ private:
 	GA_Character *m_pCharacterData;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
-	void *m_pUpdateTimer;
+	AsyncScheduler *m_pUpdateTimer;
 	Script* m_pScript = nullptr;
 	std::condition_variable m_cvForScript;
 	TransferStatus m_nTransferStatus;
@@ -139,6 +140,7 @@ public:
 	TransferStatus GetTransferStatus() const;
 
 	void OnTransferFieldRequest(InPacket* iPacket);
+	bool TryTransferField(int nFieldID, const std::string& sPortalName);
 	void OnTransferChannelRequest(InPacket* iPacket);
 	void OnMigrateToCashShopRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);

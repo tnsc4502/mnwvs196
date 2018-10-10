@@ -30,13 +30,10 @@ struct BasicIncrementStat
 */
 struct BasicAbilityStat
 {
+	int nAttribute;
+
 	bool bTimeLimited,
 		bCash,
-		bQuest,
 		bPartyQuest,
-		bOnly,
-		bTradeBlock,
-		bNotSale,
-		bExpireOnLogout,
 		bBigSize;
 };

@@ -18,10 +18,10 @@ void GW_CharacterMoney::Load(int nCharacterID)
 	nMoney = recordSet["Money"];
 }
 
-void GW_CharacterMoney::Save(int nCharacterID, bool isNewCharacter)
+void GW_CharacterMoney::Save(int nCharacterID, bool bIsNewCharacter)
 {
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	if (isNewCharacter)
+	if (bIsNewCharacter)
 		queryStatement << "INSERT INTO CharacterMoney(CharacterID, Money) VALUES(" 
 		<< nCharacterID << ","
 		<< nMoney << ")";

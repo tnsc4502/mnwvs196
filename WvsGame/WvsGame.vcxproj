@@ -155,6 +155,7 @@
     <ClInclude Include="ActQuest.h" />
     <ClInclude Include="ActSkill.h" />
     <ClInclude Include="AttackInfo.h" />
+    <ClInclude Include="BackupItem.h" />
     <ClInclude Include="BasicItemStat.h" />
     <ClInclude Include="BasicStat.h" />
     <ClInclude Include="BridleItem.h" />
@@ -166,11 +167,13 @@
     <ClInclude Include="Drop.h" />
     <ClInclude Include="DropPool.h" />
     <ClInclude Include="EquipItem.h" />
+    <ClInclude Include="ExchangeElement.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="FieldMan.h" />
     <ClInclude Include="FieldObj.h" />
     <ClInclude Include="FieldPoint.h" />
     <ClInclude Include="ActSP.h" />
+    <ClInclude Include="FieldSet.h" />
     <ClInclude Include="InventoryManipulator.h" />
     <ClInclude Include="ItemInfo.h" />
     <ClInclude Include="LifePool.h" />
@@ -192,8 +195,13 @@
     <ClInclude Include="QWUQuestRecord.h" />
     <ClInclude Include="QWUser.h" />
     <ClInclude Include="QWUSkillRecord.h" />
+    <ClInclude Include="Reactor.h" />
+    <ClInclude Include="ReactorPool.h" />
+    <ClInclude Include="ReactorTemplate.h" />
     <ClInclude Include="Reward.h" />
     <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptFieldSet.h" />
+    <ClInclude Include="ScriptInventory.h" />
     <ClInclude Include="ScriptMan.h" />
     <ClInclude Include="ScriptNPCConversation.h" />
     <ClInclude Include="SecondaryStat.h" />
@@ -226,6 +234,7 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="FieldMan.cpp" />
     <ClCompile Include="FieldObj.cpp" />
+    <ClCompile Include="FieldSet.cpp" />
     <ClCompile Include="InventoryManipulator.cpp" />
     <ClCompile Include="ItemInfo.cpp" />
     <ClCompile Include="LifePool.cpp" />
@@ -246,8 +255,13 @@
     <ClCompile Include="QWUQuestRecord.cpp" />
     <ClCompile Include="QWUser.cpp" />
     <ClCompile Include="QWUSkillRecord.cpp" />
+    <ClCompile Include="Reactor.cpp" />
+    <ClCompile Include="ReactorPool.cpp" />
+    <ClCompile Include="ReactorTemplate.cpp" />
     <ClCompile Include="Reward.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptFieldSet.cpp" />
+    <ClCompile Include="ScriptInventory.cpp" />
     <ClCompile Include="ScriptMan.cpp" />
     <ClCompile Include="ScriptNPCConversation.cpp" />
     <ClCompile Include="SecondaryStat.cpp" />

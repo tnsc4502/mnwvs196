@@ -38,9 +38,9 @@ GW_ItemSlotBase::ATOMIC_COUNT_TYPE GW_ItemSlotBase::InitItemSN(GW_ItemSlotType t
 /*
 Encode Item Type, Where Equip = 1, Stackable = 2, Pet = 3
 */
-void GW_ItemSlotBase::Encode(OutPacket *oPacket) const
+void GW_ItemSlotBase::Encode(OutPacket *oPacket, bool bForInternal) const
 {
-	oPacket->Encode1(nType == EQUIP ? 1 : (isPet ? 3 : 2)); //Pet = 3
+	oPacket->Encode1(nType == EQUIP ? 1 : (bIsPet ? 3 : 2)); //Pet = 3
 }
 
 /*
@@ -48,7 +48,7 @@ Encode Basic Item Information
 */
 void GW_ItemSlotBase::RawEncode(OutPacket *oPacket) const
 {
-	GW_ItemSlotBase::Encode(oPacket);
+	GW_ItemSlotBase::Encode(oPacket, false);
 	oPacket->Encode4(nItemID);
 	bool isCashItem = liCashItemSN != -1; //liCashItemSN.QuadPart
 	oPacket->Encode1(isCashItem); //
@@ -70,7 +70,7 @@ void GW_ItemSlotBase::EncodeInventoryPosition(OutPacket *oPacket) const
 		if (encodePos > 100 && encodePos < 1000)
 			encodePos -= 100;
 	}
-	if (isInBag)
+	if (bIsInBag)
 		oPacket->Encode4(encodePos % 100 - 1);
 	else if (nType == GW_ItemSlotType::EQUIP)
 		oPacket->Encode2(encodePos);
@@ -103,14 +103,14 @@ bool GW_ItemSlotBase::IsTreatSingly() const
 		/*|| liExpireDate != 0*/);
 }
 
-void GW_ItemSlotBase::Decode(InPacket *iPacket)
+void GW_ItemSlotBase::Decode(InPacket *iPacket, bool bForInternal)
 {
-	isPet = (iPacket->Decode1() == 3);
+	bIsPet = (iPacket->Decode1() == 3);
 }
 
 void GW_ItemSlotBase::RawDecode(InPacket *iPacket)
 {
-	GW_ItemSlotBase::Decode(iPacket);
+	GW_ItemSlotBase::Decode(iPacket, false);
 	nItemID = iPacket->Decode4();
 	bool isCashItem = iPacket->Decode1() == 1;
 	if (isCashItem)

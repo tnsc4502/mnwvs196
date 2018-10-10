@@ -11,15 +11,17 @@
 #include "WvsGame.h"
 #include "ItemInfo.h"
 #include "SkillInfo.h"
+#include "FieldMan.h"
 
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_MobReward.h"
+#include "ReactorTemplate.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -28,9 +30,9 @@ void ConnectionAcceptorThread(short nPort)
 	gameServer->BeginAccept<ClientSocket>();
 }
 
-void CheckSkillInfoLoading(int i)
+void CheckSkillInfoLoading(int *i)
 {
-	//printf("%d:%d\n", i, rand());
+	printf("%d::::::::::::::::%p::::::::::::::::::::::%d\n", *i, i, rand());
 	/*int count = SkillInfo::GetInstance()->GetLoadingSkillCount();
 	if (count == 0)
 		stWzResMan->ReleaseMemory();*/
@@ -80,23 +82,16 @@ void SaveItemTest()
 
 void AsyncTimerTest(int i)
 {
-	auto bindResult = std::bind(CheckSkillInfoLoading, i);
-	auto t = AsnycScheduler::CreateTask(bindResult, 500, true);
-	t->Start();
+	//auto bindResult = std::bind(CheckSkillInfoLoading, i);
+	//auto t = AsyncScheduler::CreateTask(bindResult, 500, true);
+	//t->Start();
 }
+
 
 int main(int argc, char **argv)
 {
-	//printf("Test %d", WvsGameConstants::GetJobLevel(434));
-	/*GA_Character chr;
-	chr.Load(11);
-	OutPacket oPacket;
-	chr.EncodeCharacterData(&oPacket);
-
-	InPacket iPacket(oPacket.GetPacket(), oPacket.GetPacketSize());
-	chr.DecodeCharacterData(&iPacket);*/
-	//for (int i = 0; i < 100000; ++i)
-	//	AsyncTimerTest(i);
+	ReactorTemplate::Load();
+	FieldMan::GetInstance()->LoadFieldSet();
 	GW_MobReward::GetInstance()->Load();
 	auto pReward = GW_MobReward::GetInstance()->GetMobReward(100100);
 	auto& ref = pReward->GetRewardList();

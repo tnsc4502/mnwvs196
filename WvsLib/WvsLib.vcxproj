@@ -146,6 +146,7 @@
     <ClInclude Include="Net\PacketFlags\GamePacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\LoginPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\MobPacketFlags.hpp" />
+    <ClInclude Include="Net\PacketFlags\NPCPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\UserPacketFlags.hpp" />
@@ -182,7 +183,7 @@
     <ClInclude Include="Script\lvm.h" />
     <ClInclude Include="Script\lzio.h" />
     <ClInclude Include="String\StringUtility.h" />
-    <ClInclude Include="Task\AsnycScheduler.h" />
+    <ClInclude Include="Task\AsyncScheduler.h" />
     <ClInclude Include="Wz\mapfile.hpp" />
     <ClInclude Include="Wz\sprite.hpp" />
     <ClInclude Include="Wz\spritedata.hpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Wz\WzResMan.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Constants\ConfigLoader.cpp" />
     <ClCompile Include="Crypto\aescrypt.c" />
     <ClCompile Include="Crypto\aeskey.c" />
     <ClCompile Include="Crypto\aestab.c" />
@@ -214,6 +216,7 @@
     <ClCompile Include="Net\PacketFlags\GamePacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\MobPacketFlags.cpp" />
+    <ClCompile Include="Net\PacketFlags\NPCPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\ShopPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="Net\SocketBase.cpp" />
@@ -255,7 +258,7 @@
     <ClCompile Include="Script\lvm.cpp" />
     <ClCompile Include="Script\lzio.cpp" />
     <ClCompile Include="String\StringUtility.cpp" />
-    <ClCompile Include="Task\AsnycScheduler.cpp" />
+    <ClCompile Include="Task\AsyncScheduler.cpp" />
     <ClCompile Include="Wz\mapfile.cpp" />
     <ClCompile Include="Wz\WzAES.cpp" />
     <ClCompile Include="Wz\wzcrypto.cpp" />

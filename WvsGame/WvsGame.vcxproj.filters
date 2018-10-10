@@ -49,6 +49,9 @@
     <Filter Include="WvsGame\InGame\Item">
       <UniqueIdentifier>{685d3e38-c927-4852-be7e-3dfd8dbe1b91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Field\Reactor">
+      <UniqueIdentifier>{bd58782b-1204-4a20-bdf6-394f8403b18c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -231,6 +234,30 @@
     <ClInclude Include="ScriptNPCConversation.h">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClInclude>
+    <ClInclude Include="BackupItem.h">
+      <Filter>WvsGame\InGame\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="ExchangeElement.h">
+      <Filter>WvsGame\InGame\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptInventory.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldSet.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptFieldSet.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ReactorTemplate.h">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="Reactor.h">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="ReactorPool.h">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -386,6 +413,24 @@
     </ClCompile>
     <ClCompile Include="ScriptNPCConversation.cpp">
       <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptInventory.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldSet.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptFieldSet.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Reactor.cpp">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="ReactorPool.cpp">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="ReactorTemplate.cpp">
+      <Filter>WvsGame\InGame\Field\Reactor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

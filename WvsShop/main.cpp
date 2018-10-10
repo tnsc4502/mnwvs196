@@ -8,7 +8,7 @@
 #include "ClientSocket.h"
 #include "..\WvsLib\Constants\WvsLoginConstants.hpp"
 
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 //#include "..\WvsLib\Logger\WvsLogger.h"
 

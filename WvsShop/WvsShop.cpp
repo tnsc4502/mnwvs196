@@ -5,7 +5,7 @@
 #include "User.h"
 #include "ClientSocket.h"
 #include "..\WvsLib\Net\OutPacket.h"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "..\WvsLib\Constants\ServerConstants.hpp"
@@ -56,7 +56,7 @@ void WvsShop::InitializeCenter()
 	m_pCenterInstance = std::make_shared<Center>(*m_pCenterServerService);
 	m_pCenterWorkThread = (new std::thread(&WvsShop::ConnectToCenter, this));
 	auto fHolderFunc = std::bind(&WvsShop::CenterAliveMonitor, this);
-	auto pAliveHolder = AsnycScheduler::CreateTask(fHolderFunc, 10 * 100, true);
+	auto pAliveHolder = AsyncScheduler::CreateTask(fHolderFunc, 10 * 100, true);
 	pAliveHolder->Start();
 
 

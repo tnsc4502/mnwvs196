@@ -140,7 +140,7 @@ void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClient
 	GA_Character chrEntry;
 	chrEntry.Load(nCharacterID);
 	OutPacket *oPacket = (OutPacket*)oPacket_;
-	chrEntry.EncodeCharacterData(oPacket, false);
+	chrEntry.EncodeCharacterData(oPacket, true);
 }
 
 void CharacterDBAccessor::OnCharacterSaveRequest(void *iPacket)

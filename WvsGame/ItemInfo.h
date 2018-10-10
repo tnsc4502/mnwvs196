@@ -22,6 +22,18 @@ private:
 	bool m_bInitialized = false;
 
 public:
+	enum ItemAttribute
+	{
+		eNotSale = 0x10,
+		eExpireOnLogout = 0x20,
+		ePickUpBlock = 0x40,
+		eOnly = 0x80,
+		eAccountSharable = 0x100,
+		eQuest = 0x200,
+		eTradeBlock = 0x400,
+		eAccountShareTag = 0x800,
+		eMobHP = 0x1000
+	};
 
 	enum ItemVariationOption
 	{

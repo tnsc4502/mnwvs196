@@ -20,81 +20,95 @@ class OutPacket;
 class Script
 {
 public:
-	enum ScriptType
+	struct NPCConverstaionInfo
 	{
-		OnSay = 0x00,
-		OnSayImage = 0x02,
-		OnAskYesNo = 0x03,
-		OnAskText = 0x04,
-		OnAskNumber = 0x05,
-		OnAskMenu = 0x06,
-		OnAskQuiz = 0xFF,
-		OnAskSpeedQuiz = 0xFF,
-		OnAskAvatar = 0x0B,
-		OnAskAvatarZero = 0x26,
-		OnAskMixHair = 0x2C,
-		OnAskMixHairExZero = 0x2D,
-		OnAskCustomMixHairAndProb = 0x2F,
-		OnAskMixHairNew = 0x30,
-		OnAskMixHairNewExZero = 0x30,
-		OnAskAndroid = 0x0C,
-		OnAskPet = 0x0D,
-		OnAskPetAll = 0x0E,
-		OnAskActionPetEvolution = 0x0F,
-		OnInitialQuiz = 0x08,
-		OnInitialSpeedQuiz = 0x09,
-		OnICQuiz = 0x0A,
-		OnAskAcceptDecline = 0x11,
-		OnAskBoxText = 0xFF,
-		OnAskSlideMenu = 0x14,
-		OnAskSelectMenu = 0x1B,
-		OnAskAngelicBuster = 0x1C,
-		OnSayIllustration = 0x1D, //1D 1E
-		OnAskYesNoIllustration = 0x1F, //0x1F 0x20 0x22 0x23
-		OnAskMenuIllustration = 0x21, //0x21, 0x24
-		OnAskWeaponBox = 0x28,
-		OnAskUserSurvey = 0x2A,
-		OnAskScreenShinningStarMsg = 0x33,
-		OnAskNumberUseKeyPad = 0x36,
-		OnSpinOffGuitarRhythmGame = 0x37,
-		OnGhostParkEnter = 0x38,
+		std::string m_sTalkText;
+		int m_nMsgType, 
+			m_nSpeakerTypeID = 4, 
+			m_nSpeakerTemplateID, 
+			m_nSpeakerTemplateID_, 
+			m_tWait = 0, 
+			m_nPage = 0;
+		unsigned char m_nParam = 0, m_eColor = 0;
+
+		std::vector<std::string> m_aStrObj;
+		std::vector<int> m_aIntObj;
+	};
+
+	struct NPCConversationState
+	{
+		std::vector<NPCConverstaionInfo> m_aPageStack;
+		int m_nCurPage = 0, m_nUserInput = 0;
+		std::string m_strUserInput;
+		bool m_bResume = false, m_bPaging = false;
 	};
 
 	friend class ScriptMan;
 
 private:
-	lua_State* L, *C;
+	lua_State* L, *C; //L = Basic Lua State, C = Coroutine State
+	NPCConversationState m_sState;
+	NPCConverstaionInfo m_sLastConversationInfo;
 
-	int m_nID, m_nUserInput;
-	std::string m_fileName, m_strUserInput;
+	int m_nID;
+	std::string m_fileName;
 	User *m_pUser;
-	std::thread* m_pThread;
-	std::vector<int> m_aArrayObj;
 	bool m_bDone = false;
-	bool m_bResume = false;
+
+	void(*m_pOnPacketInvoker)(InPacket*, Script*, lua_State*);
 
 public:
+	Script(const std::string& file, int nNpcIDconst, const std::vector<void(*)(lua_State*)>& aReg);
+	~Script();
+	static Script* GetSelf(lua_State * L);
+
 	void Wait();
 	void Notify();
 	void Run();
 	void Abort();
 	bool IsDone();
-
 	void OnPacket(InPacket *iPacket);
 
-	Script(const std::string& file, int nNpcIDconst, const std::vector<void(*)(lua_State*)>& aReg);
-	~Script();
-	static Script* GetSelf(lua_State * L);
-
 	int GetID() const; 
-
 	void SetUser(User *pUser);
 	User* GetUser();
+	lua_State* GetLuaState();
+	lua_State* GetLuaCoroutineState();
 
-	std::thread* GetThread();
-	void SetThread(std::thread* pThread);
+	NPCConversationState& GetConverstaionState();
 
-	std::vector<int>& GetArrayObj();
-	const std::string& GetUserStringInput() const;
-	int GetUserIntInput() const;
+	void SetLastConversationInfo(const NPCConverstaionInfo& refInfo);
+	NPCConverstaionInfo& GetLastConversationInfo();
+	
+	template<typename T>
+	void RetrieveArray(std::vector<T>& out, int nLuaObjIndex);
+
+	template<>
+	void RetrieveArray<std::string>(std::vector<std::string>& out, int nLuaObjIndex);
 };
+
+template<typename T>
+inline void Script::RetrieveArray(std::vector<T>& out, int nLuaObjIndex)
+{
+	int nSize = (int)lua_rawlen(L, nLuaObjIndex);
+	for (int i = 0; i < nSize; ++i)
+	{
+		lua_pushinteger(L, i + 1);
+		lua_gettable(L, -2);
+		out.push_back((T)lua_tonumber(L, -1));
+		lua_pop(L, 1);
+	}
+}
+
+template<>
+inline void Script::RetrieveArray<std::string>(std::vector<std::string>& out, int nLuaObjIndex)
+{
+	int nSize = (int)lua_rawlen(L, nLuaObjIndex);
+	for (int i = 0; i < nSize; ++i)
+	{
+		lua_pushinteger(L, i + 1);
+		lua_gettable(L, -2);
+		out.push_back(lua_tostring(L, -1));
+		lua_pop(L, 1);
+	}
+}

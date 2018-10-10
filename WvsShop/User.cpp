@@ -13,20 +13,20 @@
 
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\ShopPacketFlags.hpp"
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: m_pSocket(_pSocket),
 	m_pCharacterData(new GA_Character())
 {
 	_pSocket->SetUser(this);
-	m_pCharacterData->DecodeCharacterData(iPacket, false);
+	m_pCharacterData->DecodeCharacterData(iPacket, true);
 	if (!iPacket->Decode1())
 		m_nChannelID = 0;
 	else
 		m_nChannelID = iPacket->Decode4();
 	auto bindT = std::bind(&User::Update, this);
-	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
+	auto pUpdateTimer = AsyncScheduler::CreateTask(bindT, 2000, true);
 	m_pUpdateTimer = pUpdateTimer;
 	pUpdateTimer->Start();
 	//m_pSecondaryStat->DecodeInternal(this, iPacket);
@@ -44,7 +44,7 @@ User::~User()
 	WvsBase::GetInstance<WvsShop>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
-	((AsnycScheduler::AsnycScheduler<decltype(bindT)>*)m_pUpdateTimer)->Abort();
+	((AsyncScheduler::AsyncScheduler<decltype(bindT)>*)m_pUpdateTimer)->Abort();
 
 
 	delete m_pCharacterData;

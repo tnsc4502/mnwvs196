@@ -268,7 +268,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	  m_pSecondaryStat(new SecondaryStat)
 {
 	_pSocket->SetUser(this);
-	m_pCharacterData->DecodeCharacterData(iPacket, false);
+	m_pCharacterData->DecodeCharacterData(iPacket, true);
 	m_pSecondaryStat->DecodeInternal(this, iPacket);
 }
 
@@ -289,7 +289,7 @@ User::~User()
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
-	((AsnycScheduler::AsnycScheduler<decltype(bindT)>*)m_pUpdateTimer)->Abort();
+	m_pUpdateTimer->Abort();
 	//m_pField->OnLeave(this);
 	LeaveField();
 	
@@ -433,8 +433,6 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		iPacket->Decode2(); //not sure
 		iPacket->Decode2(); //not sure
 	}
-	std::lock_guard<std::mutex> user_lock(m_mtxUserlock);
-	SetTransferStatus(TransferStatus::eOnTransferField);
 	/*
 	if(m_character.characterStat.nHP == 0)
 	{
@@ -443,8 +441,19 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		....
 	}
 	*/
+	TryTransferField(dwFieldReturn, sPortalName);
+}
+
+bool User::TryTransferField(int nFieldID, const std::string& sPortalName)
+{
+	std::lock_guard<std::mutex> user_lock(m_mtxUserlock);
+	SetTransferStatus(TransferStatus::eOnTransferField);
 	Portal* pPortal = m_pField->GetPortalMap()->FindPortal(sPortalName);
-	Field *pTargetField = FieldMan::GetInstance()->GetField(dwFieldReturn == -1 ? pPortal->GetTargetMap() : dwFieldReturn);
+	Field *pTargetField = FieldMan::GetInstance()->GetField(
+		nFieldID == -1 ?
+		pPortal->GetTargetMap() :
+		nFieldID
+	);
 	if (pTargetField != nullptr)
 	{
 		Portal* pTargetPortal = pPortal == nullptr ? nullptr : pTargetField->GetPortalMap()->FindPortal(pPortal->GetTargetPortalName());
@@ -454,7 +463,9 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 		m_pField->OnEnter(this);
 		m_pCharacterData->nFieldID = m_pField->GetFieldID();
 		SetTransferStatus(TransferStatus::eOnTransferNone);
+		return true;
 	}
+	return false;
 }
 
 void User::OnTransferChannelRequest(InPacket * iPacket)
@@ -912,8 +923,6 @@ void User::OnScriptMessageAnswer(InPacket * iPacket)
 {
 	if (GetScript() != nullptr)
 		m_pScript->OnPacket(iPacket);
-	if(GetScript() != nullptr)
-		m_pScript->Notify();
 }
 
 void User::OnScriptRun()
@@ -1271,7 +1280,7 @@ void User::OnMigrateIn()
 	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
 	m_pField->OnEnter(this);
 	auto bindT = std::bind(&User::Update, this);
-	auto pUpdateTimer = AsnycScheduler::CreateTask(bindT, 2000, true);
+	auto pUpdateTimer = AsyncScheduler::CreateTask(bindT, 2000, true);
 	m_pUpdateTimer = pUpdateTimer;
 	pUpdateTimer->Start();
 	SetTransferStatus(TransferStatus::eOnTransferNone);

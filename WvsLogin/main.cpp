@@ -9,7 +9,7 @@
 #include "LoginSocket.h"
 #include "..\WvsLib\Constants\WvsLoginConstants.hpp"
 
-#include "..\WvsLib\Task\AsnycScheduler.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 //#include "..\WvsLib\Logger\WvsLogger.h"
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 	}*/
 		
 	/*auto func = std::bind(Count);
-	auto pTest = AsnycScheduler::CreateTask(func, 100, false);
+	auto pTest = AsyncScheduler::CreateTask(func, 100, false);
 	pTest->Start();*/
 	WvsLogin *pLoginServer = WvsBase::GetInstance<WvsLogin>();
 

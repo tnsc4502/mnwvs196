@@ -88,9 +88,11 @@ void GW_ItemSlotBundle::Save(int nCharacterID, GW_ItemSlotType type)
 	queryStatement.execute();
 }
 
-void GW_ItemSlotBundle::Encode(OutPacket *oPacket) const
+void GW_ItemSlotBundle::Encode(OutPacket *oPacket, bool bForInternal) const
 {
 	EncodeInventoryPosition(oPacket);
+	if (bForInternal)
+		oPacket->Encode8(liItemSN);
 	RawEncode(oPacket);
 }
 
@@ -107,14 +109,16 @@ void GW_ItemSlotBundle::RawEncode(OutPacket *oPacket) const
 	//          Throwing Start            Bullet
 	if ((nItemID / 10000 == 207) || (nItemID / 10000 == 233) || (nItemID / 10000 == 287))
 		oPacket->Encode8(liItemSN);
-	oPacket->Encode8(liItemSN);
+	oPacket->Encode8(0);
 	for (int i = 0; i < 2; ++i)
 		oPacket->Encode4(0);
 	oPacket->Encode1(0);
 }
 
-void GW_ItemSlotBundle::Decode(InPacket *iPacket)
+void GW_ItemSlotBundle::Decode(InPacket *iPacket, bool bForInternal)
 {
+	if (bForInternal)
+		liItemSN = iPacket->Decode8();
 	RawDecode(iPacket);
 }
 
@@ -126,7 +130,7 @@ void GW_ItemSlotBundle::RawDecode(InPacket *iPacket)
 	nAttribute = iPacket->Decode2();
 	if ((nItemID / 10000 == 207) || (nItemID / 10000 == 233) || (nItemID / 10000 == 287))
 		liItemSN = iPacket->Decode8();
-	liItemSN = iPacket->Decode8();
+	iPacket->Decode8();
 	iPacket->DecodeBuffer(nullptr, 9);
 }
 

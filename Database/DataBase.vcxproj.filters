@@ -19,6 +19,7 @@
     <ClInclude Include="GW_SkillRecord.h" />
     <ClInclude Include="GW_MobReward.h" />
     <ClInclude Include="GW_QuestRecord.h" />
+    <ClInclude Include="GW_CharacterSlotCount.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CharacterDBAccessor.cpp" />
@@ -35,5 +36,6 @@
     <ClCompile Include="GW_SkillRecord.cpp" />
     <ClCompile Include="GW_MobReward.cpp" />
     <ClCompile Include="GW_QuestRecord.cpp" />
+    <ClCompile Include="GW_CharacterSlotCount.cpp" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #include "GW_ItemSlotEquip.h"
 #include "WvsUnified.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 #include "Poco\Data\MySQL\MySQLException.h"
 
 #define ADD_EQUIP_FLAG(name, container)\
@@ -44,8 +45,9 @@ void GW_ItemSlotEquip::Load(ATOMIC_COUNT_TYPE SN)
 	liExpireDate = recordSet["ExpireDate"];
 	nAttribute = recordSet["Attribute"];
 	nPOS = recordSet["POS"];
-	nRUC = (char)(unsigned short)recordSet["RUC"];
-	nCUC = (char)(unsigned short)recordSet["CUC"];
+	nRUC = (unsigned char)(unsigned short)recordSet["RUC"];
+	nCUC = (unsigned char)(unsigned short)recordSet["CUC"];
+	nCuttable = recordSet["Cuttable"];
 	nSTR = recordSet["I_STR"];
 	nDEX = recordSet["I_DEX"];
 	nINT = recordSet["I_INT"];
@@ -75,13 +77,15 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 		{
 			liItemSN *= -1;
 			queryStatement << "UPDATE ItemSlot_EQP Set CharacterID = -1 Where CharacterID = " << nCharacterID << " and ItemSN = " << liItemSN;
+
+			//WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Del SQL = %s\n", queryStatement.toString().c_str());
 			queryStatement.execute();
 			return;
 		}
 		if (liItemSN == -1)
 		{
 			liItemSN = IncItemSN(GW_ItemSlotType::EQUIP);
-			queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
+			queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, Cuttable, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
 				<< liItemSN << ", "
 				<< nItemID << ", "
 				<< nCharacterID << ", "
@@ -90,6 +94,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 				<< nPOS << ", "
 				<< (unsigned short)nRUC << ", "
 				<< (unsigned short)nCUC << ", "
+				<< (unsigned short)nCuttable << ", "
 				<< nSTR << ", "
 				<< nDEX << ", "
 				<< nINT << ", "
@@ -105,6 +110,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 				<< nSpeed << ", "
 				<< nCraft << ", "
 				<< nJump << ")";
+			//WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Insert SQL = %s\n", queryStatement.toString().c_str());
 		}
 		else
 		{
@@ -116,6 +122,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 				<< "POS ='" << nPOS << "', "
 				<< "RUC ='" << (unsigned short)nRUC << "', "
 				<< "CUC ='" << (unsigned short)nCUC << "', "
+				<< "Cuttable = '" << (unsigned short)nCuttable << "', "
 				<< "I_STR = '" << nSTR << "', "
 				<< "I_DEX = '" << nDEX << "', "
 				<< "I_INT = '" << nINT << "', "
@@ -131,6 +138,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 				<< "I_Speed = '" << nSpeed << "', "
 				<< "I_Craft = '" << nCraft << "', "
 				<< "I_Jump = '" << nJump << "' WHERE ItemSN = " << liItemSN;
+			//WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "Update SQL = %s\n", queryStatement.toString().c_str());
 		}
 		queryStatement.execute();
 	}
@@ -142,9 +150,11 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 /*
 Equip Encoder Entry (Then Encoding Position Info And Equip Attributes Info.)
 */
-void GW_ItemSlotEquip::Encode(OutPacket *oPacket) const
+void GW_ItemSlotEquip::Encode(OutPacket *oPacket, bool bForInternal) const
 {
 	EncodeInventoryPosition(oPacket);
+	if (bForInternal)
+		oPacket->Encode8(liItemSN);
 	RawEncode(oPacket);
 }
 
@@ -208,7 +218,24 @@ void GW_ItemSlotEquip::EncodeEquipBase(OutPacket *oPacket) const
 			oPacket->Encode8(x.liValue);
 	}
 
-	oPacket->Encode4(0);
+	nFlag = 0;
+	aEquipBasicValue.clear();
+	ADD_EQUIP_FLAG(DamR, aEquipBasicValue);
+	ADD_EQUIP_FLAG(StatR, aEquipBasicValue);
+	ADD_EQUIP_FLAG(Cuttable, aEquipBasicValue);
+	oPacket->Encode4(nFlag);
+
+	for (const auto& x : aEquipBasicValue)
+	{
+		if (x.type == 1)
+			oPacket->Encode1(x.cValue);
+		else if (x.type == 2)
+			oPacket->Encode2(x.sValue);
+		else if (x.type == 4)
+			oPacket->Encode4(x.iValue);
+		else if (x.type == 8)
+			oPacket->Encode8(x.liValue);
+	}
 	/*oPacket->Encode1(0);
 	oPacket->Encode1(0);
 	oPacket->Encode1(0);
@@ -271,8 +298,10 @@ void GW_ItemSlotEquip::EncodeEquipAdvanced(OutPacket *oPacket) const
 	oPacket->EncodeTime(-2);
 }
 
-void GW_ItemSlotEquip::Decode(InPacket *iPacket)
+void GW_ItemSlotEquip::Decode(InPacket *iPacket, bool bForInternal)
 {
+	if (bForInternal)
+		liItemSN = iPacket->Decode8();
 	RawDecode(iPacket);
 }
 
@@ -305,6 +334,9 @@ void GW_ItemSlotEquip::DecodeEquipBase(InPacket *iPacket)
 	DECODE_EQUIP_FLAG(Attribute);
 
 	nFlag = iPacket->Decode4();
+	DECODE_EQUIP_FLAG(DamR);
+	DECODE_EQUIP_FLAG(StatR);
+	DECODE_EQUIP_FLAG(Cuttable);
 }
 #pragma warning(default:4244) 
 

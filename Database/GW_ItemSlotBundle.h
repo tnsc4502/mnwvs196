@@ -13,10 +13,10 @@ public:
 	void Load(ATOMIC_COUNT_TYPE SN, GW_ItemSlotType type);
 	void Save(int nCharacterID, GW_ItemSlotType type);
 
-	void Encode(OutPacket *oPacket) const;
+	void Encode(OutPacket *oPacket, bool bForInternal) const;
 	void RawEncode(OutPacket *oPacket) const;
 
-	void Decode(InPacket *iPacket);
+	void Decode(InPacket *iPacket, bool bForInternal);
 	void RawDecode(InPacket *iPacket); 
 	GW_ItemSlotBase * MakeClone();
 };

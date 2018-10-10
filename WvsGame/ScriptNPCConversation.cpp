@@ -4,9 +4,11 @@
 #include "QWUser.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
+#include "..\WvsLib\Script\luaconf.h"
 #include "..\WvsLib\Script\lvm.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\PacketFlags\NPCPacketFlags.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 ScriptNPCConversation::ScriptNPCConversation()
@@ -20,7 +22,6 @@ ScriptNPCConversation::~ScriptNPCConversation()
 
 void ScriptNPCConversation::Register(lua_State * L)
 {
-
 	luaL_Reg SelfMetatable[] = {
 		{ NULL, NULL }
 	};
@@ -32,67 +33,151 @@ void ScriptNPCConversation::Register(lua_State * L)
 		{ "askNumber", SelfAskNumber },
 		{ "askMenu", SelfAskMenu },
 		{ "sayNext", SelfSayNext },
-		{ "sayNextGroup", SelfSayNextGroup },
 		{ "say", SelfSay },
-		{ "pushArray", SelfPushArray },
+		{ "debug", Debug },
 		{ NULL, NULL }
 	};
+	lua_pushinteger(L, ScriptStyle::ePlayerTalk);
+	lua_setglobal(L, "style_playerTalk");
+	lua_pushinteger(L, ScriptStyle::ePlayerRespond);
+	lua_setglobal(L, "style_playerRespond");
+	lua_pushinteger(L, ScriptStyle::eFullScreen);
+	lua_setglobal(L, "style_fullScreen");
+	lua_pushinteger(L, ScriptStyle::eInverseDirection);
+	lua_setglobal(L, "style_inverseDirection");
+	lua_pushinteger(L, ScriptStyle::eNoESC);
+	lua_setglobal(L, "style_noESC");
+
 	luaW_register<Script>(L, "self", SelfTable, SelfMetatable, &(Script::GetSelf));
 }
 
-int ScriptNPCConversation::SelfSayNextGroup(lua_State * L)
+void ScriptNPCConversation::OnPacket(InPacket * iPacket, Script * pScript, lua_State* L)
 {
-	Script* self = (Script*)(L->selfPtr); //+0
-	int nPages = lua_gettop(L); //+1
-
-	//note that the index should start from 2
-	for (int i = 1; i <= nPages; )
+	char nMsgType = iPacket->Decode1(), nAction = 0;
+	if (nMsgType != ScriptType::OnSay || pScript->GetConverstaionState().m_bPaging == false) 
 	{
-		auto msg = lua_tostring(L, i);
-		WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "SelfSayNextGroup Args %d = %s\n", i, msg);
-		OutPacket oPacket;
-		oPacket.Encode2(0x56E); //opcode
-		oPacket.Encode1(4);
-		oPacket.Encode4(self->GetID());
-		oPacket.Encode1(0);
-		oPacket.Encode1((char)Script::Script::ScriptType::OnSay); //OnSay
-		oPacket.Encode2(0);
-		oPacket.Encode1(0);
-		oPacket.EncodeStr(msg); //message
-		oPacket.Encode1(i > 2 ? 1 : 0); //show next page
-		oPacket.Encode1(i < nPages ? 1 : 0); //show prev page
-		oPacket.Encode4(0);
-		self->GetUser()->SendPacket(&oPacket);
-
-		self->Wait();
-		i += (self->GetUserIntInput() == 0 ? -1 : 1);
-		if (i < 2)
-			break;
+		pScript->GetConverstaionState().m_aPageStack.clear();
+		pScript->GetConverstaionState().m_nCurPage = 0;
 	}
 
-	lua_pushstring(L, "");
-	return 1;
+	switch (nMsgType)
+	{
+		case ScriptType::OnSay:
+		{
+			nAction = iPacket->Decode1();
+			if (nAction == (char)0xFF)
+				pScript->Abort();
+			else if (nAction == 0) 
+			{
+				pScript->GetConverstaionState().m_nUserInput = 0;
+				if (pScript->GetConverstaionState().m_bPaging 
+					&& pScript->GetConverstaionState().m_nCurPage != 1)
+				{
+					SelfSayNextImpl(L, --(pScript->GetConverstaionState().m_nCurPage) - 1);
+					return;
+				}
+			}
+			else if (nAction == 1) 
+			{
+				pScript->GetConverstaionState().m_nUserInput = 1;
+				if (pScript->GetConverstaionState().m_bPaging
+					&& pScript->GetConverstaionState().m_nCurPage != pScript->GetConverstaionState().m_aPageStack.size())
+				{
+					SelfSayNextImpl(L, ++(pScript->GetConverstaionState().m_nCurPage) - 1);
+					return;
+				}
+			}
+			break;
+		}
+		case ScriptType::OnAskYesNo:
+		{
+			nAction = iPacket->Decode1();
+			if (nAction == (char)0xFF)
+				pScript->Abort();
+			else if (nAction == 0)
+				pScript->GetConverstaionState().m_nUserInput = 0;
+			else if (nAction == 1)
+				pScript->GetConverstaionState().m_nUserInput = 1;
+			lua_pushinteger(L, pScript->GetConverstaionState().m_nUserInput);
+			pScript->GetConverstaionState().m_bResume = true;
+			break;
+		}
+		case ScriptType::OnAskText:
+		{
+			nAction = iPacket->Decode1();
+			if (nAction == 0)
+				pScript->Abort();
+			else if (nAction == 1)
+				lua_pushstring(L, iPacket->DecodeStr().c_str());
+			pScript->GetConverstaionState().m_bResume = true;
+			break;
+		}
+		case ScriptType::OnAskNumber:
+		{
+			nAction = iPacket->Decode1();
+			if (nAction == 0)
+				pScript->Abort();
+			else if (nAction == 1)
+				pScript->GetConverstaionState().m_nUserInput = iPacket->Decode4();
+			lua_pushinteger(L, pScript->GetConverstaionState().m_nUserInput);
+			pScript->GetConverstaionState().m_bResume = true;
+			break;
+		}
+		case ScriptType::OnAskMenu:
+		{
+			nAction = iPacket->Decode1();
+			if (nAction == 0)
+				pScript->Abort();
+			else if (nAction == 1)
+				pScript->GetConverstaionState().m_nUserInput = iPacket->Decode4();
+			lua_pushinteger(L, pScript->GetConverstaionState().m_nUserInput);
+			pScript->GetConverstaionState().m_bResume = true;
+			break;
+		}
+		case ScriptType::OnAskAvatar:
+		{
+			iPacket->Decode1();
+			iPacket->Decode1();
+			nAction = iPacket->Decode1();
+			if (nAction == 0)
+				pScript->Abort();
+			else if (nAction == 1)
+			{
+				auto& refInfo = pScript->GetLastConversationInfo();
+				pScript->GetConverstaionState().m_nUserInput = iPacket->Decode1();
+				if (pScript->GetConverstaionState().m_nUserInput < refInfo.m_aIntObj.size())
+					pScript->GetUser()->SendCharacterStat(false, QWUser::SetHair(pScript->GetUser(), refInfo.m_aIntObj[pScript->GetConverstaionState().m_nUserInput]));
+				refInfo.m_aIntObj.clear();
+			}
+			lua_pushinteger(L, pScript->GetConverstaionState().m_nUserInput);
+			pScript->GetConverstaionState().m_bResume = true;
+			break;
+		}
+	}
+	pScript->GetConverstaionState().m_bPaging = false;
+	if (pScript->IsDone())
+	{
+		delete pScript;
+		return;
+	}
+	pScript->Notify();
 }
 
 int ScriptNPCConversation::SelfSay(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
 	const char* text = luaL_checkstring(L, 1);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnSay); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode1(0);
-	oPacket.Encode1(0);
-	oPacket.Encode4(0);
-	self->GetUser()->SendPacket(&oPacket);
+
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnSay;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	//====================
+
+	CheckMessageParameter(L, 2, &info);
+	MakeMessagePacket(L, &info);
 	self->Wait();
-	lua_pushstring(L, "");
 	return 1;
 }
 
@@ -101,25 +186,17 @@ int ScriptNPCConversation::SelfAskAvatar(lua_State * L)
 	Script* self = (Script*)(L->selfPtr);
 	const char* text = luaL_checkstring(L, 1);
 	int nTicket = (int)luaL_checkinteger(L, 2); //ticket
-	int nArgs = lua_gettop(L);
-	self->GetArrayObj().clear();
-	for (int i = 3; i < nArgs; ++i)
-		self->GetArrayObj().push_back((int)lua_tointeger(L, i));
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnAskAvatar); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.Encode1(0); //bAngelicBuster
-	oPacket.Encode1(0); //bZeroBeta
-	oPacket.EncodeStr(text);
-	oPacket.Encode1((char)self->GetArrayObj().size());
-	for (auto& v : self->GetArrayObj())
-		oPacket.Encode4(v);
-	self->GetUser()->SendPacket(&oPacket);
+	//int nArgs = lua_gettop(L); 
+
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnAskAvatar;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	//====================
+
+	self->RetrieveArray(info.m_aIntObj, -1);
+	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
 }
@@ -127,23 +204,23 @@ int ScriptNPCConversation::SelfAskAvatar(lua_State * L)
 int ScriptNPCConversation::SelfAskText(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
+
 	const char* text = luaL_checkstring(L, 1);
 	const char * defaultText = luaL_checkstring(L, 2);
 	int nMinValue = (int)luaL_checkinteger(L, 3);
 	int nMaxValue = (int)luaL_checkinteger(L, 4);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnAskText); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.EncodeStr(defaultText);
-	oPacket.Encode2(nMinValue);
-	oPacket.Encode2(nMaxValue);
-	self->GetUser()->SendPacket(&oPacket);
+
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnAskText;
+	info.m_sTalkText = text;
+	info.m_aStrObj.push_back(defaultText);
+	info.m_nSpeakerTemplateID = self->GetID();
+	info.m_aIntObj.push_back(nMinValue);
+	info.m_aIntObj.push_back(nMaxValue);
+	//====================
+
+	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
 }
@@ -155,19 +232,18 @@ int ScriptNPCConversation::SelfAskNumber(lua_State * L)
 	int nDefaultValue = (int)luaL_checkinteger(L, 2);
 	int nMinValue = (int)luaL_checkinteger(L, 3);
 	int nMaxValue = (int)luaL_checkinteger(L, 4);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnAskNumber); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode4(nDefaultValue);
-	oPacket.Encode4(nMinValue);
-	oPacket.Encode4(nMaxValue);
-	self->GetUser()->SendPacket(&oPacket);
+
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnAskNumber;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	info.m_aIntObj.push_back(nDefaultValue);
+	info.m_aIntObj.push_back(nMinValue);
+	info.m_aIntObj.push_back(nMaxValue);
+	//====================
+
+	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
 }
@@ -176,19 +252,17 @@ int ScriptNPCConversation::SelfAskYesNo(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
 	const char* text = luaL_checkstring(L, 1);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnAskYesNo); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	self->GetUser()->SendPacket(&oPacket);
-	self->Wait();
 
-	//
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnAskYesNo;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	//====================
+
+	CheckMessageParameter(L, 2, &info);
+	MakeMessagePacket(L, &info);
+	self->Wait();
 	return 1;
 }
 
@@ -196,49 +270,203 @@ int ScriptNPCConversation::SelfAskMenu(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
 	const char* text = luaL_checkstring(L, 1);
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnAskMenu); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	self->GetUser()->SendPacket(&oPacket);
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnAskMenu;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	//====================
+
+	CheckMessageParameter(L, 2, &info);
+	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
 }
 
-int ScriptNPCConversation::SelfPushArray(lua_State * L)
+int ScriptNPCConversation::Debug(lua_State * L)
 {
-	Script* self = (Script*)L->selfPtr;
-	int nValue = (int)luaL_checkinteger(L, 1);
-	self->GetArrayObj().push_back(nValue);
+	Script* self = (Script*)(L->selfPtr);
+	const char* text = luaL_checkstring(L, 1);
+	WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "[Script Debug]%s\n", text);
 	return 1;
+}
+
+void ScriptNPCConversation::CheckMessageParameter(lua_State * L, int nStartIndex, void * pInfo_)
+{
+	auto pInfo = (Script::NPCConverstaionInfo*)pInfo_;
+	int nArgs = lua_gettop(L), nValue;
+	for (int i = nStartIndex; i <= nArgs; ++i)
+	{
+		nValue = (int)lua_tointeger(L, i);
+		pInfo->m_nParam |= nValue;
+		pInfo->m_nSpeakerTypeID = 3;
+		pInfo->m_nSpeakerTemplateID_ = pInfo->m_nSpeakerTemplateID;
+	}
+}
+
+void ScriptNPCConversation::MakeMessagePacket(lua_State * L, void * pInfo_)
+{
+	Script *self = (Script*)L->selfPtr;
+	auto pInfo = (Script::NPCConverstaionInfo*)pInfo_;
+	OutPacket oPacket;
+	oPacket.Encode2((short)NPCPacketFlags::NPC_ScriptMessage);
+	oPacket.Encode1(pInfo->m_nSpeakerTypeID);
+	oPacket.Encode4(pInfo->m_nSpeakerTemplateID);
+	oPacket.Encode1(0); //Unk, set another speaker template id
+	oPacket.Encode1(pInfo->m_nMsgType);
+	oPacket.Encode2(pInfo->m_nParam);
+	oPacket.Encode1(pInfo->m_eColor);
+	switch (pInfo->m_nMsgType)
+	{
+		case ScriptType::OnSay:
+		{
+			if (pInfo->m_nParam & 4)
+				oPacket.Encode4(pInfo->m_nSpeakerTemplateID_);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			oPacket.Encode1(pInfo->m_nPage != 0 ? 1 : 0);
+			oPacket.Encode1(self->GetConverstaionState().m_bPaging);
+			oPacket.Encode4(pInfo->m_tWait);
+			break;
+		}
+		case ScriptType::OnSayImage:
+		{
+			oPacket.Encode1((unsigned char)pInfo->m_aStrObj.size());
+			for (const auto& str : pInfo->m_aStrObj)
+				oPacket.EncodeStr(str);
+			break;
+		}
+		case ScriptType::OnAskMenu:
+		case ScriptType::OnAskYesNo:
+		case ScriptType::OnAskAndroid:
+		case ScriptType::OnAskPet:
+		case ScriptType::OnAskPetAll:
+		case ScriptType::OnAskActionPetEvolution:
+		case ScriptType::OnAskAcceptDecline:
+		{
+			if (pInfo->m_nParam & 4)
+				oPacket.Encode4(pInfo->m_nSpeakerTemplateID_);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			break;
+		}
+		case ScriptType::OnAskText:
+		case ScriptType::OnAskNumber:
+		{
+			if (pInfo->m_nMsgType == ScriptType::OnAskText && (pInfo->m_nParam & 4))
+				oPacket.Encode4(pInfo->m_nSpeakerTemplateID_);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			if (pInfo->m_nMsgType == ScriptType::OnAskText)
+				oPacket.EncodeStr(pInfo->m_aStrObj[0]);
+			else
+				oPacket.Encode4(pInfo->m_aIntObj[0]);
+			oPacket.Encode4(pInfo->m_aIntObj[0 + pInfo->m_nMsgType == ScriptType::OnAskNumber]);
+			oPacket.Encode4(pInfo->m_aIntObj[1 + pInfo->m_nMsgType == ScriptType::OnAskNumber]);
+			break;
+		}
+		case ScriptType::OnInitialQuiz:
+		{
+			oPacket.Encode1(0);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			oPacket.EncodeStr(pInfo->m_aStrObj[0]);
+			oPacket.EncodeStr(pInfo->m_aStrObj[1]);
+			oPacket.Encode4(pInfo->m_aIntObj[0]);
+			oPacket.Encode4(pInfo->m_aIntObj[1]);
+			oPacket.Encode4(pInfo->m_tWait);
+			break;
+		}
+		case ScriptType::OnInitialSpeedQuiz:
+		case ScriptType::OnICQuiz:
+		case ScriptType::OnAskAvatar:
+		{
+			oPacket.Encode1(0); //bAngelicBuster
+			oPacket.Encode1(0); //bZeroBeta
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			oPacket.Encode1((unsigned char)pInfo->m_aIntObj.size());
+			for (const auto& value : pInfo->m_aIntObj)
+				oPacket.Encode4(value);
+			break;
+		}
+		case ScriptType::OnAskBoxText: 
+		case ScriptType::OnAskSlideMenu: 
+		case ScriptType::OnAskSelectMenu:
+		case ScriptType::OnAskAngelicBuster:
+		case ScriptType::OnAskMixHairNew:
+		//case ScriptType::OnAskMixHairNewExZero:
+		case ScriptType::OnAskScreenShinningStarMsg:
+			break;
+		case ScriptType::OnSayIllustration:
+		case ScriptType::OnAskYesNoIllustration:
+		case ScriptType::OnAskAvatarZero:
+		case ScriptType::OnAskWeaponBox: 
+		{
+			oPacket.Encode2(0);
+			oPacket.EncodeStr("");
+			oPacket.EncodeStr("");
+			oPacket.Encode2(0);
+			oPacket.Encode2(0);
+			oPacket.Encode2(0);
+			oPacket.Encode2(0);
+			break;
+		}
+		case ScriptType::OnAskUserSurvey:
+		{
+			oPacket.Encode4(0);
+			oPacket.Encode1(1);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			break;
+		}
+		case ScriptType::OnAskMixHair:
+		case ScriptType::OnAskMixHairExZero:
+		case ScriptType::OnAskCustomMixHairAndProb:
+		{
+			oPacket.Encode1(0);
+			oPacket.Encode4(0);
+			oPacket.Encode4(0);
+			oPacket.EncodeStr(pInfo->m_sTalkText);
+			break;
+		}
+		case  ScriptType::OnAskNumberUseKeyPad:
+		case  ScriptType::OnSpinOffGuitarRhythmGame:
+		case  ScriptType::OnGhostParkEnter:
+		{
+			oPacket.Encode4(0);
+			break;
+		}
+	}
+	if (!self->IsDone()) 
+	{
+		self->GetUser()->SendPacket(&oPacket);
+		self->SetLastConversationInfo(*pInfo);
+	}
 }
 
 int ScriptNPCConversation::SelfSayNext(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
 	const char* text = luaL_checkstring(L, 1);
-	int nCurPage = 1;
-	int nNextPage = 1;
-	OutPacket oPacket;
-	oPacket.Encode2(0x56E);
-	oPacket.Encode1(4);
-	oPacket.Encode4(self->GetID());
-	oPacket.Encode1(0);
-	oPacket.Encode1((char)Script::ScriptType::OnSay); //OnSay
-	oPacket.Encode2(0);
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(text);
-	oPacket.Encode1(nCurPage > 0 ? 1 : 0);
-	oPacket.Encode1(nCurPage < nNextPage ? 1 : 0);
-	oPacket.Encode4(0);
-	self->GetUser()->SendPacket(&oPacket);
+	
+	//====================
+	Script::NPCConverstaionInfo info;
+	info.m_nMsgType = ScriptType::OnSay;
+	info.m_sTalkText = text;
+	info.m_nSpeakerTemplateID = self->GetID();
+	info.m_nPage = self->GetConverstaionState().m_nCurPage;
+	//====================
 
+	self->GetConverstaionState().m_aPageStack.push_back(std::move(info));
+	self->GetConverstaionState().m_bPaging = true;
+	SelfSayNextImpl(L, self->GetConverstaionState().m_nCurPage++);
 	self->Wait();
-	lua_pushinteger(L, nCurPage + (self->GetUserIntInput() == 0 ? -1 : 1));
 	return 1;
+}
+
+void ScriptNPCConversation::SelfSayNextImpl(lua_State * L, int nPage)
+{
+	Script *self = (Script*)L->selfPtr;
+	auto& refStack = self->GetConverstaionState().m_aPageStack;
+	if (nPage >= refStack.size())
+		return;
+	auto& refInfo = refStack[nPage];
+
+	CheckMessageParameter(L, 2, &refInfo);
+	MakeMessagePacket(L, &refInfo);
 }

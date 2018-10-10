@@ -252,9 +252,6 @@
     <ClInclude Include="String\StringUtility.h">
       <Filter>String</Filter>
     </ClInclude>
-    <ClInclude Include="Task\AsnycScheduler.h">
-      <Filter>Task</Filter>
-    </ClInclude>
     <ClInclude Include="DateTime\GameDateTime.h">
       <Filter>DateTime</Filter>
     </ClInclude>
@@ -272,6 +269,12 @@
     </ClInclude>
     <ClInclude Include="Net\PacketFlags\MobPacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\PacketFlags\NPCPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\AsyncScheduler.h">
+      <Filter>Task</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -473,14 +476,20 @@
     <ClCompile Include="String\StringUtility.cpp">
       <Filter>String</Filter>
     </ClCompile>
-    <ClCompile Include="Task\AsnycScheduler.cpp">
-      <Filter>Task</Filter>
-    </ClCompile>
     <ClCompile Include="DateTime\GameDateTime.cpp">
       <Filter>DateTime</Filter>
     </ClCompile>
     <ClCompile Include="Net\PacketFlags\ShopPacketFlags.cpp">
       <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\NPCPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\AsyncScheduler.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Constants\ConfigLoader.cpp">
+      <Filter>Constants</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
