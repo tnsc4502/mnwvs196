@@ -859,7 +859,7 @@ void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 	for (auto& setFlag : pSS->m_mSetByTS)
 	{
 		int nSkillID = *(setFlag.second.second[1]);
-		int tDurationRemained = setFlag.second.first;
+		int tDurationRemained = (int)setFlag.second.first;
 		int nSLV = *(setFlag.second.second[3]);
 		oPacket->Encode4(nSkillID);
 		oPacket->Encode4(tDurationRemained);

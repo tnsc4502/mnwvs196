@@ -2,6 +2,7 @@
 #include "Portal.h"
 #include "TownPortalPool.h"
 #include "Field.h"
+#include "..\WvsLib\Wz\WzResMan.hpp"
 #include <algorithm>
 
 PortalMap::PortalMap()
@@ -18,8 +19,9 @@ PortalMap::~PortalMap()
 /*
 載入該地圖中的所有portals
 */
-void PortalMap::RestorePortal(Field * pField, WZ::Node & pPropPortal)
+void PortalMap::RestorePortal(Field * pField, void* pImg)
 {
+	WZ::Node & pPropPortal = *((WZ::Node*)pImg);
 	for (auto& portalNode : pPropPortal)
 	{
 		Portal* newPortal = new Portal(

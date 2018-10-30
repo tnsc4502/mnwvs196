@@ -3,6 +3,7 @@
 class ClientSocket;
 class OutPacket;
 class InPacket;
+class AsyncScheduler;
 struct GA_Character;
 
 class User
@@ -10,7 +11,7 @@ class User
 	int m_nCharacterID, m_nChannelID;
 	ClientSocket *m_pSocket;
 	GA_Character *m_pCharacterData;
-	void *m_pUpdateTimer;
+	AsyncScheduler *m_pUpdateTimer;
 
 public:
 	User(ClientSocket *pSocket, InPacket *iPacket);

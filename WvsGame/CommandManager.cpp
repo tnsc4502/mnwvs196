@@ -14,6 +14,7 @@
 #include "DropPool.h"
 #include <vector>
 #include "..\WvsLib\String\StringUtility.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
 
 CommandManager::CommandManager()
 {
@@ -53,6 +54,7 @@ void CommandManager::Process(User * pUser, const std::string & input)
 						&& token.size() >= 3)
 						((GW_ItemSlotBundle*)pNewItem)->nNumber = atoi(token[2].c_str());
 						
+					//pNewItem->liExpireDate = GameDateTime::GetDateExpireFromPeriod(1);
 					Reward reward;
 					reward.SetType(1);
 					reward.SetItem(pNewItem);

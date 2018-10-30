@@ -12,8 +12,8 @@
 #include "GW_QuestRecord.h"
 
 #include <algorithm>
-#include <chrono>
 
+#include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 GA_Character::GA_Character()
@@ -1012,8 +1012,8 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket, bool bForInternal)
 		oPacket->Encode1(0); //BLESS OF EMPRESS ORIGIN
 		oPacket->Encode1(0); //ULTRA EXPLORER
 
-		oPacket->EncodeTime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())); //TIME CURRENT TIME
-		oPacket->EncodeTime(-2); //TIME -2
+		oPacket->Encode8(GameDateTime::GetCurrentDate()); //TIME CURRENT TIME
+		oPacket->Encode8(GameDateTime::TIME_UNLIMITED); //TIME -2
 		oPacket->Encode4(0);
 		oPacket->Encode1((char)0xFF);
 		oPacket->Encode4(0);
@@ -1176,7 +1176,7 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket, bool bForInternal)
 			oPacket->Encode4(0);
 		for (int i = 0; i < 4; ++i)
 			oPacket->Encode4(0);
-		oPacket->EncodeTime(-2); //TIME
+		oPacket->Encode8(GameDateTime::TIME_UNLIMITED); //TIME
 		oPacket->Encode1(0);
 		oPacket->Encode1(1);
 	}
@@ -1291,7 +1291,7 @@ void GA_Character::EncodeInventoryData(OutPacket *oPacket, bool bForInternal)
 	if (bForInternal)
 		EncodeInventoryRemovedRecord(oPacket);
 
-	oPacket->EncodeTime(-2); // TIME
+	oPacket->Encode8(GameDateTime::TIME_UNLIMITED); // TIME
 	oPacket->Encode1(0);
 
 	for (const auto &eqp : mItemSlot[1])

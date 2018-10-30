@@ -146,8 +146,8 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 
 		int moveAbility = newMob->GetMobTemplate()->m_nMoveAbility;
 
-		newMob->SetHp(newMob->GetMobTemplate()->m_lnMaxHP);
-		newMob->SetMp((int)newMob->GetMobTemplate()->m_lnMaxMP);
+		newMob->SetHP(newMob->GetMobTemplate()->m_lnMaxHP);
+		newMob->SetMP((int)newMob->GetMobTemplate()->m_lnMaxMP);
 		newMob->SetMovePosition(x, y, bLeft & 1 | 2 * (moveAbility == 3 ? 6 : (moveAbility == 0 ? 1 : 0) + 1), fh);
 		newMob->SetMoveAction(5); //й╟кл = 5 ?
 
@@ -360,7 +360,7 @@ void LifePool::OnUserAttack(User * pUser, const SkillEntry * pSkill, AttackInfo 
 		{
 			//printf("Monster %d Damaged : %d Total : %d\n", dmgInfo.first, dmgValue, pMob->GetMobTemplate()->m_lnMaxHP);
 			pMob->OnMobHit(pUser, dmgValue, pInfo->m_nType);
-			if (pMob->GetHp() <= 0)
+			if (pMob->GetHP() <= 0)
 			{
 				pMob->OnMobDead(
 					pMob->GetPosX(),

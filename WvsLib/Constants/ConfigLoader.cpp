@@ -43,7 +43,7 @@ std::string ConfigLoader::StrValue(const std::string & key)
 {
 	auto findResult = aSettings.find(key);
 	if (findResult == aSettings.end())
-		return 0;
+		return "";
 	return findResult->second;
 }
 

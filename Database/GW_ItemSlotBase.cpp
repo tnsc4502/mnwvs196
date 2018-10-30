@@ -54,7 +54,7 @@ void GW_ItemSlotBase::RawEncode(OutPacket *oPacket) const
 	oPacket->Encode1(isCashItem); //
 	if (isCashItem)
 		oPacket->Encode8(liCashItemSN);	
-	oPacket->EncodeTime(liExpireDate);
+	oPacket->Encode8(liExpireDate);
 	oPacket->Encode4(-1); //Extended Slot ?
 }
 

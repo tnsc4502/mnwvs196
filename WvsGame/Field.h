@@ -1,26 +1,31 @@
 #pragma once
 #include <map>
+#include <mutex>
 #include <functional>
-#include "User.h"
-#include "..\WvsLib\Task\AsyncScheduler.h"
 
 class LifePool;
 class Mob;
 class Portal;
 class PortalMap;
 class TownPortalPool;
+class ReactorPool;
 class DropPool;
 class FieldSet;
+class User;
+class AsyncScheduler;
+class InPacket;
+class OutPacket;
 
 class Field
 {
-	std::mutex fieldUserMutex;
+	std::mutex m_mtxFieldUserMutex, m_mtxFieldLock;
 	std::map<int, User*> m_mUser; //m_lUser in WvsGame.idb
 	int m_nFieldID = 0;
 	LifePool *m_pLifePool;
 	PortalMap *m_pPortalMap;
 	DropPool *m_pDropPool;
 	TownPortalPool *m_pTownPortalPool;
+	ReactorPool *m_pReactorPool;
 	FieldSet* m_pParentFieldSet = nullptr;
 
 	std::string m_sStreetName, 
@@ -55,8 +60,6 @@ class Field
 	{
 		pField->Update();
 	}
-
-	AsyncScheduler* m_asyncUpdateTimer;
 
 public:
 	Field();
@@ -133,6 +136,9 @@ public:
 
 	PortalMap* GetPortalMap();
 	TownPortalPool* GetTownPortalPool();
+	ReactorPool* GetReactorPool();
+
+	std::mutex& GetFieldLock();
 
 	void Update();
 };

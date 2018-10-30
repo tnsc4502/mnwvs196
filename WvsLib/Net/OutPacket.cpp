@@ -108,18 +108,6 @@ void OutPacket::EncodeStr(const std::string &str)
 	m_pSharedPacket->nPacketSize += (unsigned int)str.size();
 }
 
-void OutPacket::EncodeTime(int64_t timeValue)
-{
-	if (timeValue == -1)
-		Encode8(150842304000000000L);
-	else if (timeValue == -2)
-		Encode8(94354848000000000L);
-	else if (timeValue == -3)
-		Encode8(150841440000000000L);
-	else
-		Encode8(timeValue * 10000L + 116444592000000000L);
-}
-
 void OutPacket::Release()
 {
 	delete[] m_pSharedPacket->aBuff;

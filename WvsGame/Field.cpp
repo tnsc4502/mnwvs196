@@ -1,28 +1,31 @@
 #include "Field.h"
 #include "LifePool.h"
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\ReactorPacketFlags.hpp"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
 #include "Mob.h"
 #include "MovePath.h"
 #include "PortalMap.h"
 #include "TownPortalPool.h"
+#include "ReactorPool.h"
 #include "DropPool.h"
 #include "FieldSet.h"
+#include "User.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 
 #include <mutex>
 #include <functional>
 
-
-std::mutex fieldUserMutex;
-
 Field::Field()
 	: m_pLifePool(new LifePool), 
 	  m_pPortalMap(new PortalMap),
-	  m_pTownPortalPool(new TownPortalPool)
+	  m_pTownPortalPool(new TownPortalPool),
+	  m_pReactorPool(new ReactorPool)
 {
 	m_pDropPool = new DropPool(this);
-	m_asyncUpdateTimer = AsyncScheduler::CreateTask(std::bind(&Field::UpdateTrigger, this), 5000, true);
+	//m_asyncUpdateTimer = AsyncScheduler::CreateTask(std::bind(&Field::UpdateTrigger, this), 5000, true);
 	//this->m_asyncUpdateTimer = (void*)timer;
 	InitLifePool();
 }
@@ -31,13 +34,15 @@ Field::~Field()
 {
 	delete m_pLifePool;
 	delete m_pPortalMap;
-	m_asyncUpdateTimer->Abort();
-	delete m_asyncUpdateTimer;
+	//m_asyncUpdateTimer->Abort();
+	//delete m_asyncUpdateTimer;
 }
 
 void Field::BroadcastPacket(OutPacket * oPacket)
 {
-	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
+	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
+	if (m_mUser.size() == 0)
+		return;
 	for (auto& user : m_mUser)
 		user.second->SendPacket(oPacket);
 }
@@ -209,7 +214,7 @@ FieldSet * Field::GetFieldSet()
 
 void Field::InitLifePool()
 {
-	std::lock_guard<std::mutex> lifePoolGuard(fieldUserMutex);
+	std::lock_guard<std::mutex> lifePoolGuard(m_mtxFieldUserMutex);
 	m_pLifePool->Init(this, m_nFieldID);
 }
 
@@ -225,29 +230,30 @@ DropPool * Field::GetDropPool()
 
 void Field::OnEnter(User *pUser)
 {
-	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
-	if (!m_asyncUpdateTimer->IsStarted())
-		m_asyncUpdateTimer->Start();
+	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
+	//if (!m_asyncUpdateTimer->IsStarted())
+	//	m_asyncUpdateTimer->Start();
 	m_mUser[pUser->GetUserID()] = pUser;
 	m_pLifePool->OnEnter(pUser);
 	m_pDropPool->OnEnter(pUser);
+	m_pReactorPool->OnEnter(pUser);
 	if (m_pParentFieldSet != nullptr)
 		m_pParentFieldSet->OnUserEnterField(pUser);
 }
 
 void Field::OnLeave(User * pUser)
 {
-	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
+	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
 	m_mUser.erase(pUser->GetUserID());
 	m_pLifePool->RemoveController(pUser);
-	if (m_mUser.size() == 0 && m_asyncUpdateTimer->IsStarted())
-		m_asyncUpdateTimer->Pause();
+	//if (m_mUser.size() == 0 && m_asyncUpdateTimer->IsStarted())
+	//	m_asyncUpdateTimer->Pause();
 }
 
 //發送oPacket給該地圖的其他User，其中pExcept是例外對象
 void Field::SplitSendPacket(OutPacket *oPacket, User *pExcept)
 {
-	std::lock_guard<std::mutex> userGuard(fieldUserMutex);
+	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
 	for (auto& user : m_mUser)
 	{
 		if ((pExcept == nullptr) || user.second->GetUserID() != pExcept->GetUserID())
@@ -262,6 +268,8 @@ void Field::OnPacket(User* pUser, InPacket *iPacket)
 		m_pLifePool->OnPacket(pUser, nType, iPacket);
 	else if (nType == 0x38B)
 		m_pDropPool->OnPacket(pUser, nType, iPacket);
+	else if (nType >= FlagMin(ReactorRecvPacketFlag) && nType <= FlagMax(ReactorRecvPacketFlag))
+		m_pReactorPool->OnPacket(pUser, nType, iPacket);
 	//if(nHeader >= )
 	/*if (nHeader >= MobRecvPacketFlag::MobRecvPacketFlag::minFlag && nHeader <= MobRecvPacketFlag::MobRecvPacketFlag::maxFlag)
 	{
@@ -294,6 +302,16 @@ PortalMap * Field::GetPortalMap()
 TownPortalPool * Field::GetTownPortalPool()
 {
 	return m_pTownPortalPool;
+}
+
+ReactorPool * Field::GetReactorPool()
+{
+	return m_pReactorPool;
+}
+
+std::mutex & Field::GetFieldLock()
+{
+	return m_mtxFieldLock;
 }
 
 void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
@@ -353,7 +371,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	ctrlAckPacket.Encode4(pMob->GetFieldObjectID());
 	ctrlAckPacket.Encode2(nMobCtrlSN);
 	ctrlAckPacket.Encode1(bNextAttackPossible);
-	ctrlAckPacket.Encode4((int)pMob->GetMp());
+	ctrlAckPacket.Encode4((int)pMob->GetMP());
 	ctrlAckPacket.Encode4(nSkillCommand);
 	ctrlAckPacket.Encode1(nSLV);
 	ctrlAckPacket.Encode4(0); //nForcedAttackIdx
@@ -398,6 +416,8 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 
 void Field::Update()
 {
+	int tCur = GameDateTime::GetTime();
 	//printf("Field Update Called\n");
 	m_pLifePool->Update();
+	m_pReactorPool->Update(tCur);
 }

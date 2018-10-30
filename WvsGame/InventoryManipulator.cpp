@@ -66,6 +66,8 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 		short nPOS = pCharacterData->FindEmptySlotPosition(nTI);
 		if (nPOS > 0) 
 		{
+			if (pItem->liItemSN != -1)
+				pCharacterData->mItemRemovedRecord[nTI].erase(pItem->liItemSN);
 			itemSlot[nPOS] = pItem;
 			pItem->nPOS = nPOS;
 			InsertChangeLog(aChangeLog, 0, nTI, nPOS, pItem, 0, 0);

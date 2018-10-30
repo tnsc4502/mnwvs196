@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 
@@ -11,8 +12,8 @@ struct GW_ItemSlotBase
 	{
 		EQUIP,
 		CONSUME,
-		INSTALL,
 		ETC,
+		INSTALL,
 		CASH
 	};
 
@@ -43,14 +44,13 @@ struct GW_ItemSlotBase
 
 	GW_ItemSlotType nType;
 	GW_ItemSlotStatus nStatus = GW_ItemSlotStatus::INVENTORY;
-	short 
-		nPOS = 0,
-		nAttribute = 0;
+	short nPOS = 0;
 
 	int nItemID = 0,
+		nAttribute = 0,
 		nCharacterID = -1;
 
-	long long int liExpireDate = -1,
+	long long int liExpireDate = GameDateTime::TIME_UNLIMITED,
 				  liItemSN = -1,
 				  liCashItemSN = -1;
 

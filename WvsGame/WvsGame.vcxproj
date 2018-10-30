@@ -212,6 +212,7 @@
     <ClInclude Include="StateChangeItem.h" />
     <ClInclude Include="TamingMobFoodItem.h" />
     <ClInclude Include="TemporaryStat.h" />
+    <ClInclude Include="TimerThread.h" />
     <ClInclude Include="TownPortal.h" />
     <ClInclude Include="TownPortalPool.h" />
     <ClInclude Include="UpgradeItem.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="StateChangeItem.cpp" />
     <ClCompile Include="TamingMobFoodItem.cpp" />
     <ClCompile Include="TemporaryStat.cpp" />
+    <ClCompile Include="TimerThread.cpp" />
     <ClCompile Include="TownPortal.cpp" />
     <ClCompile Include="TownPortalPool.cpp" />
     <ClCompile Include="UpgradeItem.cpp" />

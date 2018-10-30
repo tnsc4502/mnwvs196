@@ -52,7 +52,6 @@ public:
 	void EncodeBuffer(unsigned char *buff, int size);
 	void EncodeStr(const std::string &str);
 	void EncodeHexString(const std::string& str);
-	void EncodeTime(int64_t timeValue);
 	void Release();
 
 	void IncRefCount();

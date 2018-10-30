@@ -24,11 +24,14 @@ private:
 public:
 	enum ItemAttribute
 	{
+		eLocked = 0x01,
+		eTradeBlockAfterEquip = 0x02,
+		eUntradable = 0x08,
 		eNotSale = 0x10,
 		eExpireOnLogout = 0x20,
 		ePickUpBlock = 0x40,
 		eOnly = 0x80,
-		eAccountSharable = 0x100,
+		eAccountSharable = 0x1000,
 		eQuest = 0x200,
 		eTradeBlock = 0x400,
 		eAccountShareTag = 0x800,

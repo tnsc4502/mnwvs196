@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "..\WvsLib\Wz\WzResMan.hpp"
+#include <list>
 #include "FieldPoint.h"
 
 class Portal;
@@ -16,7 +16,7 @@ public:
 	PortalMap();
 	~PortalMap();
 
-	void RestorePortal(Field* pField, WZ::Node& pPropPortal);
+	void RestorePortal(Field* pField, void* pPropPortal);
 	void EnablePortal(const std::string& sName, bool bEnable);
 	Portal* FindCloseStartPoint(int x, int y);
 	Portal* FindPortal(const std::string& sName);

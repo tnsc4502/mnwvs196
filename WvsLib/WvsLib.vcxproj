@@ -148,6 +148,7 @@
     <ClInclude Include="Net\PacketFlags\MobPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\NPCPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp" />
+    <ClInclude Include="Net\PacketFlags\ReactorPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp" />
     <ClInclude Include="Net\PacketFlags\UserPacketFlags.hpp" />
     <ClInclude Include="Net\SocketBase.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Net\PacketFlags\LoginPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\MobPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\NPCPacketFlags.cpp" />
+    <ClCompile Include="Net\PacketFlags\ReactorPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\ShopPacketFlags.cpp" />
     <ClCompile Include="Net\PacketFlags\UserPacketFlags.cpp" />
     <ClCompile Include="Net\SocketBase.cpp" />

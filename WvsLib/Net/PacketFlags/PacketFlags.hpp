@@ -3,6 +3,9 @@
 #include <map>
 #include <string>
 
+#define FlagMin(FlagName) FlagName::FlagName::nMinFlag
+#define FlagMax(FlagName) FlagName::FlagName::nMaxFlag
+
 #define MAKE_FLAG_COLLECTION_BODY(FLAG_NAME) namespace FLAG_NAME {\
 struct FLAG_NAME \
 { \

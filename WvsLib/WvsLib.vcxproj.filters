@@ -276,6 +276,9 @@
     <ClInclude Include="Task\AsyncScheduler.h">
       <Filter>Task</Filter>
     </ClInclude>
+    <ClInclude Include="Net\PacketFlags\ReactorPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Memory\Arena.cpp">
@@ -490,6 +493,9 @@
     </ClCompile>
     <ClCompile Include="Constants\ConfigLoader.cpp">
       <Filter>Constants</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\ReactorPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

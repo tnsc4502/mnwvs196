@@ -12,7 +12,10 @@
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 #include "FieldMan.h"
+#include "TimerThread.h"
+#include "ReactorTemplate.h"
 
+#include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Constants\ConfigLoader.hpp"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
@@ -21,7 +24,6 @@
 
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_MobReward.h"
-#include "ReactorTemplate.h"
 
 void ConnectionAcceptorThread(short nPort)
 {
@@ -87,9 +89,12 @@ void AsyncTimerTest(int i)
 	//t->Start();
 }
 
+#include <chrono>
 
 int main(int argc, char **argv)
 {
+	TimerThread::RegisterTimerPool(50, 1000);
+
 	ReactorTemplate::Load();
 	FieldMan::GetInstance()->LoadFieldSet();
 	GW_MobReward::GetInstance()->Load();

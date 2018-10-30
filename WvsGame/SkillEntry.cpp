@@ -1,4 +1,5 @@
 #include "SkillEntry.h"
+#include "SkillLevelData.h"
 
 SkillEntry::SkillEntry()
 {

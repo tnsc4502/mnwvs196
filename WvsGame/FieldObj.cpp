@@ -15,102 +15,102 @@ Basic Attributes
 
 void FieldObj::SetFieldObjectID(int objID)
 {
-	nFieldObjectID = objID;
+	m_nFieldObjectID = objID;
 }
 
 int FieldObj::GetFieldObjectID() const
 {
-	return nFieldObjectID;
+	return m_nFieldObjectID;
 }
 
 void FieldObj::SetTemplateID(int templateID)
 {
-	nTemplateID = templateID;
+	m_nTemplateID = templateID;
 }
 
 int FieldObj::GetTemplateID() const
 {
-	return nTemplateID;
+	return m_nTemplateID;
 }
 
 void FieldObj::SetPosX(int x)
 {
-	nPosX = x;
+	m_ptPos.x = x;
 }
 
 int FieldObj::GetPosX() const
 {
-	return nPosX;
+	return m_ptPos.x;
 }
 
 void FieldObj::SetPosY(int y)
 {
-	nPosY = y;
+	m_ptPos.y = y;
 }
 
 int FieldObj::GetPosY() const
 {
-	return nPosY;
+	return m_ptPos.y;
 }
 
 void FieldObj::SetF(int f)
 {
-	nF = f;
+	m_nF = f;
 }
 
 int FieldObj::GetF() const
 {
-	return nF;
+	return m_nF;
 }
 
 void FieldObj::SetFh(int fh)
 {
-	nFh = fh;
+	m_nFh = fh;
 }
 
 int FieldObj::GetFh() const
 {
-	return nFh;
+	return m_nFh;
 }
 
 void FieldObj::SetCy(int cy)
 {
-	nCy = cy;
+	m_nCy = cy;
 }
 
 int FieldObj::GetCy() const
 {
-	return nCy;
+	return m_nCy;
 }
 
 void FieldObj::SetRx0(int rx0)
 {
-	nRx0 = rx0;
+	m_nRx0 = rx0;
 }
 
 int FieldObj::GetRx0() const
 {
-	return nRx0;
+	return m_nRx0;
 }
 
 void FieldObj::SetRx1(int rx1)
 {
-	nRx1 = rx1;
+	m_nRx1 = rx1;
 }
 
 int FieldObj::GetRx1() const
 {
-	return nRx1;
+	return m_nRx1;
 }
 
 void FieldObj::SetHide(int hide)
 {
-	nHide = hide;
+	m_nHide = hide;
 }
 
 bool FieldObj::IsHidden() const
 {
-	return nHide != 0;
+	return m_nHide != 0;
 }
 
 char FieldObj::GetMoveAction() const
@@ -121,26 +121,6 @@ char FieldObj::GetMoveAction() const
 void FieldObj::SetMoveAction(char moveAction)
 {
 	m_bMoveAction = moveAction;
-}
-
-void FieldObj::SetMp(long long int mp)
-{
-	m_nMp = mp;
-}
-
-void FieldObj::SetHp(long long int hp)
-{
-	m_nHp = hp;
-}
-
-long long int FieldObj::GetMp() const
-{
-	return m_nMp;
-}
-
-long long int FieldObj::GetHp() const
-{
-	return m_nHp;
 }
 
 Field * FieldObj::GetField()

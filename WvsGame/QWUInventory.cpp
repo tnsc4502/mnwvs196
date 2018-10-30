@@ -3,6 +3,7 @@
 #include "Reward.h"
 #include "Field.h"
 #include "DropPool.h"
+#include "ItemInfo.h"
 #include "SkillInfo.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\Database\GW_ItemSlotBase.h"
@@ -94,6 +95,13 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 			auto pItemDst = pCharacterData->GetItem(nTI, nPOS2);
 			if (nTI == 1)
 			{
+				if (pItemSrc->nAttribute & ItemInfo::ItemAttribute::eTradeBlockAfterEquip) 
+				{
+					pItemSrc->nAttribute &= (~ItemInfo::ItemAttribute::eTradeBlockAfterEquip);
+					pItemSrc->nAttribute |= (ItemInfo::ItemAttribute::eUntradable);
+					InventoryManipulator::InsertChangeLog(aChangeLog, 3, nTI, nPOS1, nullptr, nPOS2, 1);
+					InventoryManipulator::InsertChangeLog(aChangeLog, 0, nTI, nPOS1, pItemSrc, nPOS2, 1);
+				}
 				auto slotPos = pCharacterData->FindEmptySlotPosition(nTI);
 				InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
 				pUser->OnAvatarModified();

@@ -2,10 +2,12 @@
 #include "..\WvsLib\Wz\WzResMan.hpp"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "TimerThread.h"
 
 #include "Field.h"
 #include "FieldSet.h"
 #include "PortalMap.h"
+#include "ReactorPool.h"
 
 #include <mutex>
 #include <filesystem>
@@ -89,11 +91,13 @@ void FieldMan::FieldFactory(int nFieldID)
 		newField->SetMapSizeY(mapSizeY);
 		//WvsLogger::LogFormat(WvsLogger::LEVEL_INFO, "New Field Size X = %d, Y = %d\n", (int)infoData["forcedReturn"], mapSizeY);
 	//}
-	newField->GetPortalMap()->RestorePortal(newField, mapWz["portal"]);
+	newField->GetPortalMap()->RestorePortal(newField, &(mapWz["portal"]));
+	newField->GetReactorPool()->Init(newField, &(mapWz["reactor"]));
+	newField->SetFieldID(nFieldID);
+	newField->InitLifePool();
 
 	m_mField[nFieldID] = newField;
-	m_mField[nFieldID]->SetFieldID(nFieldID);
-	m_mField[nFieldID]->InitLifePool();
+	TimerThread::RegisterField(newField);
 }
 
 void FieldMan::LoadFieldSet()

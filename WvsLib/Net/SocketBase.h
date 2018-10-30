@@ -34,6 +34,7 @@ private:
 
 	asio::ip::tcp::socket mSocket;
 	asio::ip::tcp::resolver mResolver;
+	std::mutex m_mMutex;
 
 	unsigned char* aRecvIV, *aSendIV;
 	SocketStatus m_eSocketStatus = SocketStatus::eClosed;

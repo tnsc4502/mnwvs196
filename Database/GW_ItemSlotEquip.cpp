@@ -1,6 +1,8 @@
 #include "GW_ItemSlotEquip.h"
 #include "WvsUnified.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
+
 #include "Poco\Data\MySQL\MySQLException.h"
 
 #define ADD_EQUIP_FLAG(name, container)\
@@ -273,12 +275,12 @@ void GW_ItemSlotEquip::EncodeEquipAdvanced(OutPacket *oPacket) const
 
 	if (liCashItemSN == -1)
 		oPacket->Encode8(liItemSN);
-	oPacket->EncodeTime(-2);
+	oPacket->Encode8(GameDateTime::TIME_UNLIMITED);
 	oPacket->Encode4(-1);
 
 	//sub_684A26
 	oPacket->Encode8(0);
-	oPacket->EncodeTime(-2);
+	oPacket->Encode8(GameDateTime::TIME_UNLIMITED);
 	oPacket->Encode4(0);
 	for (int i = 0; i < 3; ++i)
 		oPacket->Encode4(0);
@@ -295,7 +297,7 @@ void GW_ItemSlotEquip::EncodeEquipAdvanced(OutPacket *oPacket) const
 	}
 
 	oPacket->Encode4(0);
-	oPacket->EncodeTime(-2);
+	oPacket->Encode8(GameDateTime::TIME_UNLIMITED);
 }
 
 void GW_ItemSlotEquip::Decode(InPacket *iPacket, bool bForInternal)

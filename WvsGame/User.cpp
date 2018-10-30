@@ -32,6 +32,7 @@
 #include "QuestMan.h"
 #include "QuestAct.h"
 #include "ActItem.h"
+#include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Random\Rand32.h"
 
@@ -545,7 +546,7 @@ void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
 
-	oPacket.EncodeTime(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+	oPacket.Encode8(GameDateTime::GetCurrentDate());
 	oPacket.EncodeHexString("64 00 00 00 00 00 00 01 A6 00 00 00 03 00 00 00 83 7D 26 5A 02 00 00 24 66 00 00 00 00 00 03 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 E0 FD 3B 37 4F 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 82 16 FB 52 01 00 00 24 0C 00 00 00 00 00 00 00 00 00 00 00 C8 00 00 00 F7 24 11 76 00 00 00 24 0C 00 00 00 01 00 00 24 02 00 00 24 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 96 00 00 00 00");
 	SendPacket(&oPacket);
 }

@@ -566,24 +566,26 @@ void ItemInfo::LoadIncrementStat(BasicIncrementStat & refStat, void * pProp)
 void ItemInfo::LoadAbilityStat(BasicAbilityStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));	
-	refStat.nAttribute = (int)infoImg["info/bagType"];
+	refStat.nAttribute = (int)infoImg["bagType"];
 	if (((int)infoImg["notSale"]) == 1)
 		refStat.nAttribute |= ItemAttribute::eNotSale;
 	if (((int)infoImg["expireOnLogout"]) == 1)
 		refStat.nAttribute |= ItemAttribute::eExpireOnLogout;
-	if (((int)infoImg["info/pickUpBlock"] == 1))
+	if (((int)infoImg["pickUpBlock"] == 1))
 		refStat.nAttribute |= ItemAttribute::ePickUpBlock;
+	if (((int)infoImg["equipTradeBlock"] == 1))
+		refStat.nAttribute |= ItemAttribute::eTradeBlockAfterEquip;
 	if (((int)infoImg["only"]) == 1)
 		refStat.nAttribute |= ItemAttribute::eOnly;
-	if (((int)infoImg["info/accountSharable"] == 1))
+	if (((int)infoImg["accountSharable"] == 1))
 		refStat.nAttribute |= ItemAttribute::eAccountSharable;
 	if (((int)infoImg["quest"]) == 1)
 		refStat.nAttribute |= ItemAttribute::eQuest;
 	if (((int)infoImg["tradeBlock"]) == 1)
 		refStat.nAttribute |= ItemAttribute::eTradeBlock;
-	if (((int)infoImg["info/accountShareTag"] == 1))
+	if (((int)infoImg["accountShareTag"] == 1))
 		refStat.nAttribute |= ItemAttribute::eAccountShareTag;
-	if (((int)infoImg["info/mobHP"] == 1) && (int)infoImg["info/mobHP"] < 100)
+	if (((int)infoImg["mobHP"] == 1) && (int)infoImg["mobHP"] < 100)
 		refStat.nAttribute |= ItemAttribute::eMobHP;
 
 	refStat.bTimeLimited = ((int)infoImg["timeLimited"]) == 1;
@@ -634,7 +636,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 		if ((nValue = pItem->incStat.niJump))
 			pEquip->nJump = GetVariation(nValue, enOption);
 		pEquip->nRUC = pItem->nRUC;
-		pEquip->nCuttable = pItem->nCuttable;
+		pEquip->nCuttable = (pItem->nCuttable == 0 ? 0xFF : pItem->nCuttable);
 
 		ret = pEquip;
 		ret->nAttribute = pItem->abilityStat.nAttribute;

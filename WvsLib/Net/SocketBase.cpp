@@ -173,6 +173,7 @@ bool SocketBase::CheckSocketStatus(SocketStatus e) const
 
 void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 {
+	std::lock_guard<std::mutex> lock(m_mMutex);
 	oPacket->IncRefCount();
 	if (!mSocket.is_open())
 	{

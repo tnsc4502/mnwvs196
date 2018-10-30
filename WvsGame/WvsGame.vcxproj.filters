@@ -258,9 +258,11 @@
     <ClInclude Include="ReactorPool.h">
       <Filter>WvsGame\InGame\Field\Reactor</Filter>
     </ClInclude>
+    <ClInclude Include="TimerThread.h">
+      <Filter>WvsGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="WvsGame.cpp">
       <Filter>WvsGame</Filter>
     </ClCompile>
@@ -431,6 +433,10 @@
     </ClCompile>
     <ClCompile Include="ReactorTemplate.cpp">
       <Filter>WvsGame\InGame\Field\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TimerThread.cpp">
+      <Filter>WvsGame</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

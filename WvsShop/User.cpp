@@ -26,9 +26,8 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	else
 		m_nChannelID = iPacket->Decode4();
 	auto bindT = std::bind(&User::Update, this);
-	auto pUpdateTimer = AsyncScheduler::CreateTask(bindT, 2000, true);
-	m_pUpdateTimer = pUpdateTimer;
-	pUpdateTimer->Start();
+	m_pUpdateTimer = AsyncScheduler::CreateTask(bindT, 2000, true);
+	m_pUpdateTimer->Start();
 	//m_pSecondaryStat->DecodeInternal(this, iPacket);
 }
 
@@ -44,7 +43,7 @@ User::~User()
 	WvsBase::GetInstance<WvsShop>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
-	((AsyncScheduler::AsyncScheduler<decltype(bindT)>*)m_pUpdateTimer)->Abort();
+	m_pUpdateTimer->Abort();
 
 
 	delete m_pCharacterData;
