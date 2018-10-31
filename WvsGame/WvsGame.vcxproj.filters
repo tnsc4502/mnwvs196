@@ -261,6 +261,15 @@
     <ClInclude Include="TimerThread.h">
       <Filter>WvsGame</Filter>
     </ClInclude>
+    <ClInclude Include="StaticFoothold.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="WvsPhysicalSpace2D.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FootholdTree.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WvsGame.cpp">
@@ -437,6 +446,15 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TimerThread.cpp">
       <Filter>WvsGame</Filter>
+    </ClCompile>
+    <ClCompile Include="WvsPhysicalSpace2D.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticFoothold.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FootholdTree.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

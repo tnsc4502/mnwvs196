@@ -14,6 +14,7 @@
 #include "FieldSet.h"
 #include "User.h"
 #include "..\WvsLib\Task\AsyncScheduler.h"
+#include "WvsPhysicalSpace2D.h"
 
 #include <mutex>
 #include <functional>
@@ -22,7 +23,8 @@ Field::Field()
 	: m_pLifePool(new LifePool), 
 	  m_pPortalMap(new PortalMap),
 	  m_pTownPortalPool(new TownPortalPool),
-	  m_pReactorPool(new ReactorPool)
+	  m_pReactorPool(new ReactorPool),
+	  m_pSpace2D(new WvsPhysicalSpace2D)
 {
 	m_pDropPool = new DropPool(this);
 	//m_asyncUpdateTimer = AsyncScheduler::CreateTask(std::bind(&Field::UpdateTrigger, this), 5000, true);
@@ -312,6 +314,11 @@ ReactorPool * Field::GetReactorPool()
 std::mutex & Field::GetFieldLock()
 {
 	return m_mtxFieldLock;
+}
+
+WvsPhysicalSpace2D * Field::GetSpace2D()
+{
+	return m_pSpace2D;
 }
 
 void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)

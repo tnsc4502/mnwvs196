@@ -8,6 +8,7 @@
 #include "FieldSet.h"
 #include "PortalMap.h"
 #include "ReactorPool.h"
+#include "WvsPhysicalSpace2D.h"
 
 #include <mutex>
 #include <filesystem>

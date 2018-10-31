@@ -15,6 +15,7 @@ class User;
 class AsyncScheduler;
 class InPacket;
 class OutPacket;
+class WvsPhysicalSpace2D;
 
 class Field
 {
@@ -27,6 +28,7 @@ class Field
 	TownPortalPool *m_pTownPortalPool;
 	ReactorPool *m_pReactorPool;
 	FieldSet* m_pParentFieldSet = nullptr;
+	WvsPhysicalSpace2D* m_pSpace2D;
 
 	std::string m_sStreetName, 
 				m_sMapName, 
@@ -139,6 +141,8 @@ public:
 	ReactorPool* GetReactorPool();
 
 	std::mutex& GetFieldLock();
+
+	WvsPhysicalSpace2D* GetSpace2D();
 
 	void Update();
 };

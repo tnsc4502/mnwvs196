@@ -39,10 +39,10 @@ void PortalMap::RestorePortal(Field * pField, void* pImg)
 			newPortal->SetPortalScriptName(portalNode["portal"]);
 		else if (nType == 6)
 		{
-			pField->GetTownPortalPool()->AddTownPortalPos({
-				newPortal->GetX(),
-				newPortal->GetY()
-			});
+			FieldPoint pt;
+			pt.x = newPortal->GetX();
+			pt.y = newPortal->GetY();
+			pField->GetTownPortalPool()->AddTownPortalPos(pt);
 		}
 
 		if (nType)
