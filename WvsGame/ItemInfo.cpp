@@ -5,6 +5,7 @@
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\WvsLib\Random\Rand32.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 ItemInfo::ItemInfo()
 {
@@ -83,14 +84,14 @@ void ItemInfo::IterateEquipItem(void *dataNode)
 		{
 			clock_t tStart = clock();
 			IterateEquipItem((void*)(&data));
-			printf("%s loading : %.2fs\n", data.Name().c_str(), (double)(clock() - tStart) / CLOCKS_PER_SEC);
+			//printf("%s loading : %.2fs\n", data.Name().c_str(), (double)(clock() - tStart) / CLOCKS_PER_SEC);
 		}
 		else
 		{
 			nItemID = atoi(data.Name().c_str());
 			if (nItemID < 20000)
 				continue;
-			EquipItem* pNewEquip = new EquipItem();
+			EquipItem* pNewEquip = AllocObj(EquipItem);
 			pNewEquip->nItemID = nItemID;
 			pNewEquip->sItemName = m_mItemString[nItemID];
 			RegisterEquipItemInfo(pNewEquip, nItemID, (void*)&(data));
@@ -113,7 +114,7 @@ void ItemInfo::IterateBundleItem()
 			{
 				auto& infoImg = item["info"];
 				int nItemID = atoi(item.Name().c_str());
-				BundleItem* pNewBundle = new BundleItem;
+				BundleItem* pNewBundle = AllocObj( BundleItem );
 				LoadAbilityStat(pNewBundle->abilityStat, (void*)&infoImg);
 				pNewBundle->nItemID = nItemID;
 				pNewBundle->sItemName = m_mItemString[nItemID];
@@ -232,7 +233,7 @@ void ItemInfo::RegisterEquipItemInfo(EquipItem * pEqpItem, int nItemID, void * p
 void ItemInfo::RegisterUpgradeItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	UpgradeItem *pNewUpgradeItem = new UpgradeItem;
+	UpgradeItem *pNewUpgradeItem = AllocObj(UpgradeItem);
 
 	pNewUpgradeItem->nItemID = nItemID;
 	LoadIncrementStat(pNewUpgradeItem->incStat, (void*)&infoImg);
@@ -243,7 +244,7 @@ void ItemInfo::RegisterUpgradeItem(int nItemID, void * pProp)
 
 void ItemInfo::RegisterPortalScrollItem(int nItemID, void * pProp)
 {
-	PortalScrollItem *pNewPortalScrollItem = new PortalScrollItem;
+	PortalScrollItem *pNewPortalScrollItem = AllocObj(PortalScrollItem);
 	pNewPortalScrollItem->nItemID = nItemID;
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
 	for (auto& effect : specImg)
@@ -254,7 +255,7 @@ void ItemInfo::RegisterPortalScrollItem(int nItemID, void * pProp)
 void ItemInfo::RegisterMobSummonItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	MobSummonItem *pNewMobSummonItem = new MobSummonItem;
+	MobSummonItem *pNewMobSummonItem = AllocObj(MobSummonItem);
 	pNewMobSummonItem->nItemID = nItemID;
 	pNewMobSummonItem->nType = infoImg["type"];
 	auto& mobImg = (*((WZ::Node*)pProp))["mob"];
@@ -266,7 +267,7 @@ void ItemInfo::RegisterMobSummonItem(int nItemID, void * pProp)
 void ItemInfo::RegisterPetFoodItem(int nItemID, void * pProp)
 {
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
-	PetFoodItem *pNewFoodItem = new PetFoodItem;
+	PetFoodItem *pNewFoodItem = AllocObj(PetFoodItem);
 	pNewFoodItem->nItemID = nItemID;
 	pNewFoodItem->niRepleteness = specImg["inc"];
 	for (auto& petID : specImg)
@@ -278,7 +279,7 @@ void ItemInfo::RegisterPetFoodItem(int nItemID, void * pProp)
 void ItemInfo::RegisterTamingMobFoodItem(int nItemID, void * pProp)
 {
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
-	TamingMobFoodItem *pNewTamingMobFoodItem = new TamingMobFoodItem;
+	TamingMobFoodItem *pNewTamingMobFoodItem = AllocObj(TamingMobFoodItem);
 	pNewTamingMobFoodItem->nItemID = nItemID;
 	pNewTamingMobFoodItem->niFatigue = specImg["incFatigue"];
 	m_mTamingMobFoodItem[nItemID] = pNewTamingMobFoodItem;
@@ -287,7 +288,7 @@ void ItemInfo::RegisterTamingMobFoodItem(int nItemID, void * pProp)
 void ItemInfo::RegisterBridleItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	BridleItem *pNewBridleItem = new BridleItem;
+	BridleItem *pNewBridleItem = AllocObj(BridleItem);
 	pNewBridleItem->nItemID = nItemID;
 	pNewBridleItem->dwTargetMobID = infoImg["mob"];
 	pNewBridleItem->nCreateItemID = infoImg["create"];
@@ -302,7 +303,7 @@ void ItemInfo::RegisterBridleItem(int nItemID, void * pProp)
 void ItemInfo::RegisterPortableChairItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	PortableChairItem *pNewPortableChairItem = new PortableChairItem;
+	PortableChairItem *pNewPortableChairItem = AllocObj(PortableChairItem);
 	pNewPortableChairItem->nItemID = nItemID;
 	pNewPortableChairItem->nReqLevel = infoImg["reqLevel"];
 	pNewPortableChairItem->nPortableChairRecoveryRateMP = infoImg["recoveryMP"];
@@ -313,7 +314,7 @@ void ItemInfo::RegisterPortableChairItem(int nItemID, void * pProp)
 void ItemInfo::RegisterSkillLearnItem(int nItemID, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp))["info"];
-	SkillLearnItem *pNewSkillLearnItem = new SkillLearnItem;
+	SkillLearnItem *pNewSkillLearnItem = AllocObj(SkillLearnItem);
 	pNewSkillLearnItem->nItemID = nItemID;
 	pNewSkillLearnItem->nMasterLevel = infoImg["masterLevel"];
 	pNewSkillLearnItem->nSuccessRate = infoImg["success"];
@@ -327,7 +328,7 @@ void ItemInfo::RegisterSkillLearnItem(int nItemID, void * pProp)
 
 void ItemInfo::RegisterStateChangeItem(int nItemID, void * pProp)
 {
-	StateChangeItem *pNewStateChangeItem = new StateChangeItem;
+	StateChangeItem *pNewStateChangeItem = AllocObj(StateChangeItem);
 	pNewStateChangeItem->nItemID = nItemID;
 	auto& specImg = (*((WZ::Node*)pProp))["spec"];
 	for(auto& effect : specImg)
@@ -542,6 +543,57 @@ bool ItemInfo::IsQuestItem(int nItemID)
 	return false;
 }
 
+bool ItemInfo::IsWeapon(int nItemID)
+{
+	return (nItemID >= 1210000 && nItemID < 1600000)
+		|| nItemID / 10000 == 135;
+}
+
+bool ItemInfo::IsCoat(int nItemID)
+{
+	return nItemID / 10000 == 104;
+}
+
+bool ItemInfo::IsCape(int nItemID)
+{
+	return nItemID / 10000 == 100;
+}
+
+bool ItemInfo::IsPants(int nItemID)
+{
+	return nItemID / 10000 == 106;
+}
+
+bool ItemInfo::IsHair(int nItemID)
+{
+	return nItemID >= 30000 && nItemID <= 49999;
+}
+
+bool ItemInfo::IsFace(int nItemID)
+{
+	return nItemID >= 20000 && nItemID <= 29999;
+}
+
+bool ItemInfo::IsShield(int nItemID)
+{
+	return nItemID / 10000 == 109;
+}
+
+bool ItemInfo::IsShoes(int nItemID)
+{
+	return nItemID / 10000 == 107;
+}
+
+bool ItemInfo::IsLongcoat(int nItemID)
+{
+	return nItemID / 10000 == 105;
+}
+
+bool ItemInfo::IsCap(int nItemID)
+{
+	return nItemID / 10000 == 110;
+}
+
 void ItemInfo::LoadIncrementStat(BasicIncrementStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));
@@ -600,7 +652,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 		auto pItem = GetEquipItem(nItemID);
 		if (pItem == nullptr)
 			return nullptr;
-		GW_ItemSlotEquip* pEquip = new GW_ItemSlotEquip;
+		GW_ItemSlotEquip* pEquip = AllocObj(GW_ItemSlotEquip);
 		int nValue = 0;
 		if ((nValue = pItem->incStat.niSTR))
 			pEquip->nSTR = GetVariation(nValue, enOption);
@@ -647,7 +699,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 		if (pItem == nullptr)
 			return nullptr;
 
-		ret = new GW_ItemSlotBundle;
+		ret = AllocObj(GW_ItemSlotBundle);
 		((GW_ItemSlotBundle*)ret)->nNumber = 1;
 		ret->nAttribute = pItem->abilityStat.nAttribute;
 	}

@@ -2,6 +2,7 @@
 #include <map>
 #include <mutex>
 #include <functional>
+#include "FieldPoint.h"
 
 class LifePool;
 class Mob;
@@ -29,6 +30,7 @@ class Field
 	ReactorPool *m_pReactorPool;
 	FieldSet* m_pParentFieldSet = nullptr;
 	WvsPhysicalSpace2D* m_pSpace2D;
+	FieldPoint m_ptLeftTop, m_szMap;
 
 	std::string m_sStreetName, 
 				m_sMapName, 
@@ -45,15 +47,13 @@ class Field
 		 m_bSwim, 
 		 m_bFly;
 
-	int m_nReturnMap, 
-		m_nForcedReturn, 
-		m_nMobRate, 
-		m_nFieldType, 
-		m_nFieldLimit, 
-		m_nCreateMobInterval, 
-		m_nFixedMobCapacity, 
-		m_nMapSizeX, 
-		m_nMapSizeY;
+	int m_nReturnMap,
+		m_nForcedReturn,
+		m_nMobRate,
+		m_nFieldType,
+		m_nFieldLimit,
+		m_nCreateMobInterval,
+		m_nFixedMobCapacity;
 
 	std::string m_strFirstUserEnter, 
 				m_strUserEnter;
@@ -111,11 +111,10 @@ public:
 	void SetUserEnter(const std::string& script);
 	const std::string& GetUserEnter() const;
 
-	void SetMapSizeX(int x);
-	int GetMapSizeX();
-
-	void SetMapSizeY(int y);
-	int GetMapSizeY();
+	void SetMapSize(int x, int y);
+	const FieldPoint& GetMapSize() const;
+	void SetLeftTop(int x, int y);
+	const FieldPoint& GetLeftTop() const;
 
 	void SetFieldSet(FieldSet *pFieldSet);
 	FieldSet *GetFieldSet();

@@ -281,25 +281,30 @@ void Mob::DistributeExp(int & refOwnType, int & refOwnParyID, int & refLastDamag
 
 void Mob::GiveReward(unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwnType, int nX, int nY, int tDelay, int nMesoUp, int nMesoUpByItem)
 {
-	const auto pReward = m_pMobTemplate->GetMobReward();
+	auto pReward = m_pMobTemplate->GetMobReward();
+	if(!pReward)
+		pReward = m_pMobTemplate->m_pReward = GW_MobReward::GetInstance()->GetMobReward(m_nTemplateID);
 
 	int nDiff, nRange;
 	bool bMoneyDropped = false;
 	std::pair<int, int> prDropPos;
 
+	const auto& aReward = m_pMobTemplate->GetMobReward()->GetRewardList();
 	Reward* pDrop = nullptr;
 	if (pReward) 
 	{
-		const auto& aReward = m_pMobTemplate->GetMobReward()->GetRewardList();
+		int nDropCount = 0;
 		for (const auto& pInfo : aReward)
 		{
 			long long int liRnd = ((unsigned int)Rand32::GetInstance()->Random()) % pReward->GetTotalWeight();
 			if (liRnd < pInfo->nWeight)
 			{
-				prDropPos = GetDropPos();
+				++nDropCount;
+				prDropPos = { GetPosX(), GetPosY() };
+				prDropPos.first = (prDropPos.first + ((nDropCount % 2 == 0) ? (25 * (nDropCount + 1) / 2) : -(25 * (nDropCount / 2))));
 				nDiff = pInfo->nCountMax - pInfo->nCountMin;
 				nRange = pInfo->nCountMin + (nDiff == 0 ? 0 : ((unsigned int)Rand32::GetInstance()->Random()) % nDiff);
-				pDrop = new Reward;
+				pDrop = AllocObj(Reward);
 				if (pInfo->nItemID == 0)
 					bMoneyDropped = true;
 				pDrop->SetMoney(pInfo->nItemID == 0 ? nRange : 0);
@@ -334,7 +339,7 @@ void Mob::GiveReward(unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwn
 		prDropPos = GetDropPos();
 		int nRange = (int)ceil((double)GetMobTemplate()->m_nLevel / 2.0) + ((unsigned int)(Rand32::GetInstance()->Random())) % (GetMobTemplate()->m_nLevel * 2);
 		//printf("Drop Meso : Monster Level : %d Rnd : %d\n", (int)ceil((double)GetMobTemplate()->m_nLevel / 2.0), ((unsigned int)(Rand32::GetInstance()->Random())) % (GetMobTemplate()->m_nLevel * 2));
-		pDrop = new Reward;
+		pDrop = AllocObj(Reward);
 		pDrop->SetItem(nullptr);
 		pDrop->SetMoney(nRange);
 		pDrop->SetType(0);

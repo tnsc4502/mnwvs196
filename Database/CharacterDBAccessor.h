@@ -9,24 +9,25 @@ private:
 	static WvsUnified mDBUnified;
 
 public:
+
 	enum NewCharacterFlag
 	{
-		EQP_POS_Hat = -1,
-		EQP_POS_Top = -5,
-		EQP_POS_Bottom = -6,
+		EQP_POS_Cap = -1,
+		EQP_POS_Coat = -5,
+		EQP_POS_Pants = -6,
 		EQP_POS_Shoes = -7,
 		EQP_POS_Weapon = -11,
 		EQP_POS_Cape = -9,
 		EQP_POS_Shield = -10,
 
-		EQP_ID_HatEquip = 0,
-		EQP_ID_TopEquip = 1,
-		EQP_ID_ButtomEquip = 2,
+		EQP_ID_CapEquip = 0,
+		EQP_ID_CoatEquip = 1,
+		EQP_ID_PantsEquip = 2,
 		EQP_ID_ShoesEquip = 3,
 		EQP_ID_WeaponEquip = 4,
 		EQP_ID_CapeEquip = 5,
 		EQP_ID_ShieldEquip = 6,
-		EQP_ID_FLAG_END = 7,
+		EQP_ID_FLAG_END ,
 
 		STAT_Str = 0,
 		STAT_Dex = 1,

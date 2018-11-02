@@ -1,7 +1,7 @@
 #include "GW_CharacterStat.h"
 #include "WvsUnified.h"
 #include "..\WvsLib\String\StringUtility.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 

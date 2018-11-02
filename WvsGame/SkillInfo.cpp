@@ -186,7 +186,7 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 
 	//for (int i = 1; i <= 1; ++i)
 	//{
-		SkillLevelData* pLevelData = new SkillLevelData();
+		SkillLevelData* pLevelData = AllocObj(SkillLevelData);
 
 		//找出Level Data的位置基底
 		int* pAttributeBase = (&(pLevelData->m_nLevelDataPtrBase)); //for point ref.
@@ -401,13 +401,13 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 			//party = PARSE_SKILLDATA2(party);
 			pLevelData->m_bConsumeOnPickup = party > 0 ? 2 : pLevelData->m_bConsumeOnPickup;
 		}*/
-		delete pLevelData;
+		FreeObj(pLevelData);
 	//}
 
-	SkillLevelData** apLevelData = new SkillLevelData*[nMaxLevel];
+	SkillLevelData** apLevelData = AllocArray(SkillLevelData*, nMaxLevel);
 	for (int i = 0; i < nMaxLevel; ++i)
 	{
-		apLevelData[i] = new SkillLevelData;
+		apLevelData[i] = AllocObj(SkillLevelData);
 		pEntry->AddLevelData(apLevelData[i]);
 	}
 	for (auto &p : mappingTable)
@@ -420,7 +420,7 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 			*(((int*)&(pLevelData->m_nLevelDataPtrBase)) + p.first) = (int)eval.Eval();
 		}
 	}
-	delete[] apLevelData;
+	FreeArray(apLevelData, nMaxLevel);
 }
 
 void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void * pData)
@@ -434,7 +434,7 @@ void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void
 	{
 		d = atof(skillCommonImg.Name().c_str());
 
-		SkillLevelData* pLevelData = new SkillLevelData;
+		SkillLevelData* pLevelData = AllocObj(SkillLevelData);
 		pLevelData->m_nIndiePad = PARSE_SKILLDATA(indiePad);
 		pLevelData->m_nIndieMad = PARSE_SKILLDATA(indieMad);
 		pLevelData->m_nIndiePdd = PARSE_SKILLDATA(indiePdd);
@@ -798,7 +798,7 @@ GW_SkillRecord * SkillInfo::GetSkillRecord(int nSkillID, int nSLV, long long int
 	auto pSkill = GetSkillByID(nSkillID);
 	if (pSkill == nullptr)
 		return nullptr;
-	GW_SkillRecord* pRecord = new GW_SkillRecord;
+	GW_SkillRecord* pRecord = AllocObj( GW_SkillRecord );
 
 	pRecord->nSkillID = nSkillID;
 	pRecord->nSLV = nSLV;

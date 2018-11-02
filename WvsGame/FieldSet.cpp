@@ -5,7 +5,7 @@
 #include "ScriptMan.h"
 #include <functional>
 #include "..\WvsLib\Logger\WvsLogger.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Net\OutPacket.h"

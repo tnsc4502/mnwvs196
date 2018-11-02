@@ -16,7 +16,7 @@
 #include "ReactorTemplate.h"
 
 #include "..\WvsLib\DateTime\GameDateTime.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Net\InPacket.h"
@@ -90,18 +90,59 @@ void AsyncTimerTest(int i)
 }
 
 #include <chrono>
+#include "..\WvsLib\Wz\WzResMan.hpp"
+
+template<typename T, int N>
+class ThreadSafeMemoryPoolMan2
+{
+private:
+	struct char_pool {};
+	typedef boost::singleton_pool<char_pool, sizeof(T) * N> singleton_char_pool;
+	//boost::pool<boost::fast_pool_allocator<T>> fastPool;
+
+public:
+	static ThreadSafeMemoryPoolMan2* GetInstance()
+	{
+		static ThreadSafeMemoryPoolMan2* pInstance = new ThreadSafeMemoryPoolMan2;
+		return pInstance;
+	}
+
+	ThreadSafeMemoryPoolMan2() /*: fastPool(sizeof(T))*/ {};
+
+	void* AllocateArray(int len)
+	{
+		//return fastPool.ordered_malloc(len);
+		return singleton_char_pool::malloc();
+	}
+
+	//將給定的 ptr (一個陣列) 銷毀，其中陣列的終端位置記錄在給定指標的前四個byte
+	void DestructArray(void* ptr)
+	{
+		//fastPool.ordered_free(ptr);
+		singleton_char_pool::free(ptr);
+	}
+
+	//釋放記憶池，將空間歸還給OS
+	void Release()
+	{
+		singleton_char_pool::release_memory();
+	}
+};
+
+#include "boost\pool\pool.hpp"
+#include "boost\pool\singleton_pool.hpp"
 
 int main(int argc, char **argv)
 {
+	//WvsLogger::LogRaw("Please run this program with command line, and given the config file path.\n");
 	TimerThread::RegisterTimerPool(50, 1000);
-
 	ReactorTemplate::Load();
 	FieldMan::GetInstance()->LoadFieldSet();
 	GW_MobReward::GetInstance()->Load();
-	auto pReward = GW_MobReward::GetInstance()->GetMobReward(100100);
+	auto pReward = GW_MobReward::GetInstance()->GetMobReward(1210102);
 	auto& ref = pReward->GetRewardList();
-	//for (const auto& pInfo : ref)
-	//	printf("R %d\n", pInfo->nItemID);
+	for (const auto& pInfo : ref)
+		printf("R %d\n", pInfo->nItemID);
 	QuestMan::GetInstance()->LoadAct();
 	QuestMan::GetInstance()->LoadDemand();
 	ItemInfo::GetInstance()->Initialize();

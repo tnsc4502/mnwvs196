@@ -2,7 +2,7 @@
 #include <agents.h>
 #include <ppltasks.h>
 #include <functional>
-
+#include "..\Memory\MemoryPoolMan.hpp"
 
 class AsyncScheduler
 {
@@ -83,9 +83,10 @@ public:
 	template<typename FUNC_TYPE>
 	static AsyncScheduler* CreateTask(FUNC_TYPE function, unsigned int timeInMs, bool repeat)
 	{
-		auto __instancePtr = new AsyncScheduler(timeInMs, repeat);
+		auto __instancePtr = AllocObjCtor(AsyncScheduler)(timeInMs, repeat);
+
 		FUNC_TYPE func = function;
-		auto call = new concurrency::call<int>(
+		auto call = AllocObjCtor(concurrency::call<int>)(
 			[&, __instancePtr, func](int)
 		{
 			func();
@@ -93,7 +94,7 @@ public:
 		});
 		__instancePtr->mCall = call;
 
-		__instancePtr->mTimerInstance = new concurrency::timer<int>(
+		__instancePtr->mTimerInstance = AllocObjCtor(concurrency::timer<int>)(
 			__instancePtr->mTimePeriod,
 			0,
 			call,

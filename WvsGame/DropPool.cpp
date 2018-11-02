@@ -5,9 +5,13 @@
 #include "Field.h"
 #include "User.h"
 #include "QWUInventory.h"
+#include "StaticFoothold.h"
+#include "WvsPhysicalSpace2D.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Database\GW_ItemSlotEquip.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 DropPool::DropPool(Field *pField)
 	: m_pField(pField)
@@ -23,7 +27,12 @@ DropPool::~DropPool()
 void DropPool::Create(Reward * reward, unsigned int dwOwnerID, unsigned int dwOwnPartyID, int nOwnType, unsigned int dwSourceID, int x1, int y1, int x2, int y2, int tDelay, int bAdmin, int nPos, bool bByPet)
 {
 	std::lock_guard<std::mutex> dropPoolock(m_mtxDropPoolLock);
-	Drop *pDrop = new Drop();
+	auto pFoothold = m_pField->GetSpace2D()->GetFootholdUnderneath(x2, y1 - 100, &y2);
+	if (!pFoothold || m_pField->GetSpace2D()->IsPointInMBR(x2, y2, true))
+	{
+		pFoothold = m_pField->GetSpace2D()->GetFootholdClosest(m_pField, x2, y1, &x2, &y2, x1);
+	}
+	Drop *pDrop = AllocObj(Drop);
 	pDrop->Init(++m_nDropIdCounter, reward, dwOwnerID, dwOwnPartyID, nOwnType, dwSourceID, x1, y1, x2, y2, bByPet);
 	auto pItem = pDrop->GetItem();
 	if (pItem != nullptr && reward->GetType() == 1 && reward->GetPeriod() != 0)
@@ -44,7 +53,10 @@ void DropPool::Create(Reward * reward, unsigned int dwOwnerID, unsigned int dwOw
 		pDrop->MakeEnterFieldPacket(&oPacket, 3, tDelay);
 		if (!dwOwnerID)
 		{
-			delete pItem;
+			if (pItem->nType == GW_ItemSlotBase::EQUIP)
+				FreeObj((GW_ItemSlotEquip*)(pItem));
+			else
+				FreeObj((GW_ItemSlotBundle*)(pItem));
 			pDrop->m_pItem = nullptr;
 		}
 		m_pField->BroadcastPacket(&oPacket);
@@ -118,7 +130,7 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 			pDrop->MakeLeaveFieldPacket(&oPacket, 2, pUser->GetUserID());
 			m_pField->SplitSendPacket(&oPacket, nullptr);
 			//delete pDrop->m_pItem;
-			delete pDrop;
+			FreeObj(pDrop);
 			m_mDrop.erase(nObjectID);
 		}
 	}

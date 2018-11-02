@@ -17,7 +17,7 @@ void GW_Avatar::Load(int nCharacterID)
 
 	//EQUIP
 	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_EQP Where CharacterID = " << nCharacterID;
+	queryStatement << "SELECT SN FROM ItemSlot_EQP Where POS < 0 AND CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	GW_ItemSlotEquip eqp;

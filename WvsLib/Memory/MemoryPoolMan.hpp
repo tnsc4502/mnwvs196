@@ -1,17 +1,32 @@
 #pragma once
 
 #include "Arena.h"
+#include "boost\pool\pool.hpp"
 #include "boost\pool\singleton_pool.hpp"
+#include "MemoryPool.h"
 /*
 簡單記憶體配置池，用於管理讀取Wz時的記憶體消耗
 @By Wanger.
 */
 
+/*
+[+]
+for object allocation
+*/
+
+//#define AllocObj(instance_type) new instance_type()
+//#define FreeObj(pointer) delete pointer
+#define AllocObj(instance_type) WvsSingleObjectAllocator<instance_type, (sizeof(instance_type) > 512)>::GetInstance()->Allocate(sizeof(instance_type))
+#define AllocObjCtor(instance_type) WvsSingleObjectAllocator<instance_type, (sizeof(instance_type) > 512)>::AllocateWithCtor
+#define FreeObj(pointer) WvsSingleObjectAllocator<std::remove_reference<decltype(*pointer)>::type, (sizeof(*pointer) > 512)>::GetInstance()->Free(pointer, (sizeof(*pointer)))
+#define FreeObj_T(T, pointer) WvsSingleObjectAllocator<T, (sizeof(T) > 512)>::GetInstance()->Free(pointer, sizeof(T))
+
+#define AllocArray(instance_type, nSize) (instance_type*)WvsArrayAllocator::GetInstance()->Allocate<char>(nSize * sizeof(instance_type))
+#define FreeArray(pointer, nSize) WvsArrayAllocator::GetInstance()->Free<char>(pointer, nSize * sizeof(*pointer))
+
 class WzMemoryPoolMan
 {
 private:
-	struct char_pool {};
-	typedef boost::singleton_pool<char_pool, sizeof(char)> singleton_char_pool;
 
 	memt::Arena *pArena = new memt::Arena();
 public:
@@ -71,65 +86,5 @@ public:
 	void Release()
 	{
 		pArena->freeAllAllocsAndBackingMemory();
-	}
-};
-
-class MSMemoryPoolMan
-{
-private:
-	struct char_pool {};
-	typedef boost::singleton_pool<char_pool, sizeof(char)> singleton_char_pool;
-	memt::Arena *pArena = new memt::Arena();
-
-public:
-	static MSMemoryPoolMan* GetInstance()
-	{
-		static MSMemoryPoolMan* pInstance = new MSMemoryPoolMan;
-		return pInstance;
-	}
-
-	MSMemoryPoolMan() {};
-
-#pragma warning(disable:4312)  
-#pragma warning(disable:4311)  
-#pragma warning(disable:4302) 
-	//配置一個陣列，長度為len bytes
-	void* AllocateArray(int len)
-	{
-		return singleton_char_pool::ordered_malloc(len);
-	}
-
-	void* AllocateObject(int size)
-	{
-		return pArena->alloc(size);
-	}
-#pragma warning(default:4302)  
-#pragma warning(disable:4311)  
-#pragma warning(disable:4312)  
-	//將給定的 ptr (一個物件)  銷毀
-	void DestructObject(void* ptr)
-	{
-		pArena->freeTop(ptr);
-	}
-
-	//將給定的 ptr (一個陣列) 銷毀，其中陣列的終端位置記錄在給定指標的前四個byte
-	void DestructArray(void* ptr)
-	{
-		singleton_char_pool::ordered_free(ptr);
-	}
-
-	//釋放記憶池，將空間歸還給OS
-	void Release()
-	{
-		singleton_char_pool::release_memory();
-	}
-};
-
-struct ArenaUniquePtrDeleter
-{
-	void operator()(unsigned char* ptr)
-	{
-		//MSMemoryPoolMan::GetInstance()->DestructArray(ptr);
-		//delete[] ptr;
 	}
 };

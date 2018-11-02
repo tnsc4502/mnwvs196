@@ -7,16 +7,17 @@
 
 #include "SecondaryStat.h"
 #include "ItemInfo.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 BasicStat::BasicStat()
 {
-	m_bOption = new BasicStatRateOption;
+	m_bOption = AllocObj( BasicStatRateOption );
 }
 
 
 BasicStat::~BasicStat()
 {
-	delete m_bOption;
+	FreeObj( m_bOption );
 }
 
 void BasicStat::SetFrom(GA_Character * pChar, int nMaxHPIncRate, int nMaxMPIncRate, int nBasicStatInc)

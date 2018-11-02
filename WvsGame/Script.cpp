@@ -7,13 +7,35 @@
 #include "..\WvsLib\Script\lvm.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
-
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 Script * Script::GetSelf(lua_State * L)
 {
 	long long ptr = luaL_checkinteger(L, 1);
 	return (Script*)(ptr);
+}
+
+void Script::DestroySelf(lua_State * L, Script * p)
+{
+	//FreeObj(p);
+}
+
+void Script::Register(lua_State * L)
+{
+	luaL_Reg SysMetatable[] = {
+		{ NULL, NULL }
+	};
+
+	luaL_Reg SysTable[] = {
+		{ NULL, NULL }
+	};
+
+	luaW_register<Script>(L, "self", 
+		SysTable, 
+		SysMetatable,
+		&(Script::GetSelf),
+		&(Script::DestroySelf));
 }
 
 void Script::Wait()
@@ -32,11 +54,10 @@ Script::Script(const std::string & file, int nNpcID, const std::vector<void(*)(l
 	C = lua_newthread(L);
 	m_fileName = file;
 	m_nID = nNpcID;
+	L->selfPtr = this;
+	Register(L);
 	for (auto& f : aReg)
 		f(L);
-	if (luaL_loadfile(L, m_fileName.c_str()))
-		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "Error, Unable to open the specific script.\n");
-	L->selfPtr = this;
 }
 
 int Script::GetID() const
@@ -47,6 +68,11 @@ int Script::GetID() const
 void Script::SetUser(User * pUser)
 {
 	m_pUser = pUser;
+	if (pUser)
+	{
+		lua_pushinteger(L, pUser->GetUserID());
+		lua_setglobal(L, "userID");
+	}
 }
 
 User * Script::GetUser()
@@ -100,6 +126,16 @@ void Script::Abort()
 bool Script::IsDone()
 {
 	return m_bDone;
+}
+
+bool Script::Init()
+{
+	if (luaL_loadfile(L, m_fileName.c_str())) 
+	{
+		WvsLogger::LogRaw(WvsLogger::LEVEL_ERROR, "Error, Unable to open the specific script.\n");
+		return false;
+	}
+	return true;
 }
 
 void Script::OnPacket(InPacket * iPacket)

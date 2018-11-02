@@ -1,7 +1,7 @@
 #pragma once
 #include "..\WvsLib\Net\SocketBase.h"
 #include "..\WvsLib\Net\WorldInfo.h"
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 #include "..\WvsLib\Net\WvsBase.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 

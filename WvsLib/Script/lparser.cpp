@@ -898,6 +898,16 @@ static void suffixedexp (LexState *ls, expdesc *v) {
   primaryexp(ls, v);
   for (;;) {
     switch (ls->t.token) {
+		case '-':
+			luaX_next(ls);
+			break;
+		case '>':
+			expdesc key;
+			luaX_next(ls);
+			checkname(ls, &key);
+			luaK_self(fs, v, &key);
+			funcargs(ls, v, line);
+			break;
       case '.': {  /* fieldsel */
         fieldsel(ls, v);
         break;

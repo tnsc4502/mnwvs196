@@ -3,7 +3,6 @@
 
 class Script;
 
-
 class ScriptFieldSet
 {
 public:

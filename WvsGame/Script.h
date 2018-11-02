@@ -2,8 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <mutex>
-#include <thread>
-#include <condition_variable>
+#include <map>
 
 // Lua is written in C, so compiler needs to know how to link its libraries
 
@@ -41,9 +40,11 @@ public:
 		int m_nCurPage = 0, m_nUserInput = 0;
 		std::string m_strUserInput;
 		bool m_bResume = false, m_bPaging = false;
+		std::map<std::string, std::string> m_mAttribute;
 	};
 
 	friend class ScriptMan;
+	void *m_pUniqueScriptNpc = nullptr;
 
 private:
 	lua_State* L, *C; //L = Basic Lua State, C = Coroutine State
@@ -52,6 +53,7 @@ private:
 
 	int m_nID;
 	std::string m_fileName;
+
 	User *m_pUser;
 	bool m_bDone = false;
 
@@ -61,12 +63,15 @@ public:
 	Script(const std::string& file, int nNpcIDconst, const std::vector<void(*)(lua_State*)>& aReg);
 	~Script();
 	static Script* GetSelf(lua_State * L);
+	static void DestroySelf(lua_State * L, Script* p);
 
+	static void Register(lua_State* L);
 	void Wait();
 	void Notify();
 	void Run();
 	void Abort();
 	bool IsDone();
+	bool Init();
 	void OnPacket(InPacket *iPacket);
 
 	int GetID() const; 

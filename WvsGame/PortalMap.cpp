@@ -13,7 +13,7 @@ PortalMap::PortalMap()
 PortalMap::~PortalMap()
 {
 	for (auto& p : m_apPortal)
-		delete p;
+		FreeObj( p );
 }
 
 /*
@@ -24,7 +24,7 @@ void PortalMap::RestorePortal(Field * pField, void* pImg)
 	WZ::Node & pPropPortal = *((WZ::Node*)pImg);
 	for (auto& portalNode : pPropPortal)
 	{
-		Portal* newPortal = new Portal(
+		Portal* newPortal = AllocObjCtor(Portal)(
 			atoi(portalNode.Name().c_str()),
 			(int)portalNode["pt"],
 			(int)portalNode["tm"],

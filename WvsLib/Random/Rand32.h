@@ -1,5 +1,6 @@
 #pragma once
 #include <mutex>
+#include <vector>
 
 class Rand32
 {
@@ -12,4 +13,5 @@ class Rand32
 public:
 	static Rand32* GetInstance();
 	int Random();
+	std::vector<int> GetRandomUniqueArray(int nStart, int nRange, int nCount);
 };

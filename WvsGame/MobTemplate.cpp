@@ -27,7 +27,7 @@ MobTemplate* MobTemplate::GetMobTemplate(int dwTemplateID, bool cloneNewOne)
 	}
 	if (!cloneNewOne) 
 	{
-		MobTemplate* clone = new MobTemplate();
+		MobTemplate* clone = AllocObj(MobTemplate);
 		*clone = *(iter->second);
 		return clone;
 	}
@@ -37,7 +37,7 @@ MobTemplate* MobTemplate::GetMobTemplate(int dwTemplateID, bool cloneNewOne)
 void MobTemplate::RegisterMob(int dwTemplateID)
 {
 	m_MobWzProperty = &(stWzResMan->GetWz(Wz::Mob));
-	auto newTemplate = new MobTemplate();
+	auto newTemplate = AllocObj(MobTemplate);
 	std::string templateID = std::to_string(dwTemplateID);
 	while (templateID.length() < 7)
 		templateID = "0" + templateID;

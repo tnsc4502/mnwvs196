@@ -7,8 +7,8 @@
 
 #include "..\WvsLib\Net\PacketFlags\LoginPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
-
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 
 #include "WvsLogin.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
@@ -143,7 +143,7 @@ void Center::OnCharacterListResponse(InPacket *iPacket)
 	oPacket.Encode4(0);
 	oPacket.Encode4(-1);
 	oPacket.Encode1(0);
-	oPacket.EncodeTime(-1);
+	oPacket.Encode8(GameDateTime::TIME_UNLIMITED);
 	oPacket.Encode1(0);
 	oPacket.Encode1(0);
 	oPacket.Encode4(0);

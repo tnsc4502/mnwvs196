@@ -7,10 +7,10 @@
 #include "..\WvsLib\Net\OutPacket.h"
 #include "WvsLogin.h"
 #include "LoginSocket.h"
-#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
+#include "..\WvsLib\Common\WvsLoginConstants.hpp"
 
 #include "..\WvsLib\Task\AsyncScheduler.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 //#include "..\WvsLib\Logger\WvsLogger.h"
 
 void ConnectionAcceptorThread(short nPort)

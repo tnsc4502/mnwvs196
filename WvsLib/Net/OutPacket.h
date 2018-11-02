@@ -10,12 +10,11 @@ public:
 	class SharedPacket {
 	private:
 		friend class OutPacket;
+		const static int DEFAULT_BUFF_SIZE = 256, DEFAULT_START_INDEX = 4 + 8;
 
 		unsigned char* aBuff = nullptr;
-		unsigned int nBuffSize = 0, nPacketSize = 4 + 8;
+		unsigned int nBuffSize = 0, nPacketSize = DEFAULT_START_INDEX;
 		std::atomic<int> nRefCount;
-
-		const static int DEFAULT_BUFF_SIZE = 256;
 
 	public:
 		SharedPacket();
@@ -24,6 +23,8 @@ public:
 		void IncRefCount();
 		void DecRefCount();
 	};
+
+	void ExtendSize(int nExtendRate);
 
 private:
 	SharedPacket* m_pSharedPacket;
@@ -53,6 +54,7 @@ public:
 	void EncodeStr(const std::string &str);
 	void EncodeHexString(const std::string& str);
 	void Release();
+	void Reset();
 
 	void IncRefCount();
 	void DecRefCount();

@@ -3,9 +3,12 @@
 #include <map>
 #include "Reward.h"
 #include "FieldPoint.h"
+#include "..\WvsLib\Common\CommonDef.h"
 
 class ReactorTemplate
 {
+	ALLOW_PRIVATE_ALLOC
+
 	friend class Reactor;
 	struct EventInfo
 	{

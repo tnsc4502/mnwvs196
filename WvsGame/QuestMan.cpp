@@ -1,5 +1,6 @@
 #include "QuestMan.h"
 #include "..\WvsLib\Wz\WzResMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "ActItem.h"
 #include "ActQuest.h"
 #include "ActSP.h"
@@ -51,7 +52,7 @@ void QuestMan::RegisterAct(void * pProp)
 	unsigned short nQuestID = atoi(actImg.Name().c_str());
 	for (auto& actNode : actImg)
 	{
-		QuestAct *pAct = new QuestAct;
+		QuestAct *pAct = AllocObj(QuestAct);
 		pAct->nEXP = actNode["exp"];
 		pAct->nCraftEXP = actNode["craftEXP"];
 		pAct->nCharismaEXP = actNode["charismaEXP"];
@@ -69,7 +70,7 @@ void QuestMan::RegisterAct(void * pProp)
 		auto& itemNode = actNode["item"];
 		for (auto& itemAct : itemNode)
 		{
-			ActItem *pActItem = new ActItem;
+			ActItem *pActItem = AllocObj(ActItem);
 			pActItem->nItemID = itemAct["id"];
 			pActItem->nCount = itemAct["count"];
 			pActItem->nJob = itemAct["job"];
@@ -86,7 +87,7 @@ void QuestMan::RegisterAct(void * pProp)
 		auto& spNode = actNode["sp"];
 		for (auto& spAct : spNode)
 		{
-			ActSP *pActSP = new ActSP;
+			ActSP *pActSP = AllocObj(ActSP);
 			pActSP->nSPValue = spAct["sp_value"];
 			for (auto& applyJob : spAct)
 				pActSP->aJob.push_back((int)applyJob);
@@ -96,7 +97,7 @@ void QuestMan::RegisterAct(void * pProp)
 		auto& skillNode = actNode["skill"];
 		for (auto& skillAct : skillNode)
 		{
-			ActSkill *pActSkill = new ActSkill;
+			ActSkill *pActSkill = AllocObj(ActSkill);
 			pActSkill->nSkillID = skillAct["id"];
 			pActSkill->nMasterLevel = skillAct["masterLevel"];
 			pActSkill->nSkillLevel = skillAct["skillLevel"];
@@ -106,7 +107,7 @@ void QuestMan::RegisterAct(void * pProp)
 		auto& questNode = actNode["quest"];
 		for (auto& questAct : questNode)
 		{
-			ActQuest *pActQuest = new ActQuest;
+			ActQuest *pActQuest = AllocObj(ActQuest);
 			pActQuest->nQuestID = questAct["id"];
 			pActQuest->nState = questAct["state"];
 			pAct->aActQuest.push_back(pActQuest);
@@ -117,7 +118,7 @@ void QuestMan::RegisterAct(void * pProp)
 		else if (actNode.Name() == "1")
 			m_mCompleteAct.insert({ nQuestID, pAct });
 		else if (pAct != nullptr)
-			delete pAct;
+			FreeObj(pAct);
 	}
 }
 
@@ -127,7 +128,7 @@ void QuestMan::RegisterDemand(void * pProp)
 	unsigned short nQuestID = atoi(demandImg.Name().c_str());
 	for (auto& demandNode : demandImg)
 	{
-		QuestDemand *pDemand = new QuestDemand;
+		QuestDemand *pDemand = AllocObj(QuestDemand);
 		pDemand->nPartyQuest_S = demandNode["paryQuest_S"];
 		pDemand->nDayByDay = demandNode["dayByDay"];
 		pDemand->nNormalAutoStart = demandNode["normalAutoStart"];
@@ -176,7 +177,7 @@ void QuestMan::RegisterDemand(void * pProp)
 		else if (demandNode.Name() == "1")
 			m_mCompleteDemand.insert({ nQuestID, pDemand });
 		else if (pDemand != nullptr)
-			delete pDemand;
+			FreeObj(pDemand);
 	}
 }
 

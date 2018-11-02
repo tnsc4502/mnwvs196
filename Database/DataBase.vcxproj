@@ -129,6 +129,8 @@
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>..\Library\poco-1.7.8-all\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

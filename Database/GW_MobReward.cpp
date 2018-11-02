@@ -1,5 +1,6 @@
 #include "GW_MobReward.h"
 #include "WvsUnified.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 std::map<int, std::vector<GW_MobReward::RewardInfo*>> GW_MobReward::m_mReward;
 
@@ -26,7 +27,7 @@ void GW_MobReward::Load()
 	Poco::Data::RecordSet recordSet(queryStatement);
 	for (auto& result : recordSet)
 	{
-		RewardInfo* pInfo = new RewardInfo;
+		RewardInfo* pInfo = AllocObj(RewardInfo);
 		pInfo->nItemID = (int)result["itemid"];
 		pInfo->nCountMin = (int)result["minimum_quantity"];
 		pInfo->nCountMax = (int)result["maximum_quantity"];
@@ -42,7 +43,7 @@ GW_MobReward * GW_MobReward::GetMobReward(int nMobID)
 	if (findIter == m_mReward.end())
 		return nullptr;
 
-	GW_MobReward* pReward = new GW_MobReward;
+	GW_MobReward* pReward = AllocObj(GW_MobReward);
 	pReward->m_aReward = findIter->second;
 	if (pReward->m_nTotalWeight == 0)
 		for (auto& pInfo : pReward->m_aReward)

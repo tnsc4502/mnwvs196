@@ -9,6 +9,7 @@
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\PacketFlags\NPCPacketFlags.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 ScriptNPCConversation::ScriptNPCConversation()
@@ -20,13 +21,22 @@ ScriptNPCConversation::~ScriptNPCConversation()
 {
 }
 
+ScriptNPCConversation * ScriptNPCConversation::GetSelf(lua_State * L)
+{
+	auto pSys =((Script*)L->selfPtr);
+	if (pSys->m_pUniqueScriptNpc == nullptr)
+		pSys->m_pUniqueScriptNpc = AllocObj(ScriptNPCConversation);
+	return (ScriptNPCConversation*)pSys->m_pUniqueScriptNpc;
+}
+
+void ScriptNPCConversation::DestroySelf(lua_State * L, ScriptNPCConversation * p)
+{
+	FreeObj(p);
+}
+
 void ScriptNPCConversation::Register(lua_State * L)
 {
 	luaL_Reg SelfMetatable[] = {
-		{ NULL, NULL }
-	};
-
-	luaL_Reg SelfTable[] = {
 		{ "askAvatar", SelfAskAvatar },
 		{ "askText", SelfAskText },
 		{ "askYesNo", SelfAskYesNo },
@@ -35,6 +45,10 @@ void ScriptNPCConversation::Register(lua_State * L)
 		{ "sayNext", SelfSayNext },
 		{ "say", SelfSay },
 		{ "debug", Debug },
+		{ NULL, NULL }
+	};
+
+	luaL_Reg SelfTable[] = {
 		{ NULL, NULL }
 	};
 	lua_pushinteger(L, ScriptStyle::ePlayerTalk);
@@ -48,7 +62,12 @@ void ScriptNPCConversation::Register(lua_State * L)
 	lua_pushinteger(L, ScriptStyle::eNoESC);
 	lua_setglobal(L, "style_noESC");
 
-	luaW_register<Script>(L, "self", SelfTable, SelfMetatable, &(Script::GetSelf));
+	luaW_register<ScriptNPCConversation>(L,
+		"Npc", 
+		SelfTable, 
+		SelfMetatable, 
+		&(ScriptNPCConversation::GetSelf),
+		&(ScriptNPCConversation::DestroySelf));
 }
 
 void ScriptNPCConversation::OnPacket(InPacket * iPacket, Script * pScript, lua_State* L)
@@ -157,7 +176,7 @@ void ScriptNPCConversation::OnPacket(InPacket * iPacket, Script * pScript, lua_S
 	pScript->GetConverstaionState().m_bPaging = false;
 	if (pScript->IsDone())
 	{
-		delete pScript;
+		FreeObj( pScript );
 		return;
 	}
 	pScript->Notify();
@@ -166,7 +185,7 @@ void ScriptNPCConversation::OnPacket(InPacket * iPacket, Script * pScript, lua_S
 int ScriptNPCConversation::SelfSay(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
+	const char* text = luaL_checkstring(L, 2);
 
 	//====================
 	Script::NPCConverstaionInfo info;
@@ -175,7 +194,7 @@ int ScriptNPCConversation::SelfSay(lua_State * L)
 	info.m_nSpeakerTemplateID = self->GetID();
 	//====================
 
-	CheckMessageParameter(L, 2, &info);
+	CheckMessageParameter(L, 3, &info);
 	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
@@ -184,8 +203,8 @@ int ScriptNPCConversation::SelfSay(lua_State * L)
 int ScriptNPCConversation::SelfAskAvatar(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
-	int nTicket = (int)luaL_checkinteger(L, 2); //ticket
+	const char* text = luaL_checkstring(L, 2);
+	int nTicket = (int)luaL_checkinteger(L, 3); //ticket
 	//int nArgs = lua_gettop(L); 
 
 	//====================
@@ -205,10 +224,10 @@ int ScriptNPCConversation::SelfAskText(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
 
-	const char* text = luaL_checkstring(L, 1);
-	const char * defaultText = luaL_checkstring(L, 2);
-	int nMinValue = (int)luaL_checkinteger(L, 3);
-	int nMaxValue = (int)luaL_checkinteger(L, 4);
+	const char* text = luaL_checkstring(L, 2);
+	const char * defaultText = luaL_checkstring(L, 3);
+	int nMinValue = (int)luaL_checkinteger(L, 4);
+	int nMaxValue = (int)luaL_checkinteger(L, 5);
 
 	//====================
 	Script::NPCConverstaionInfo info;
@@ -228,10 +247,10 @@ int ScriptNPCConversation::SelfAskText(lua_State * L)
 int ScriptNPCConversation::SelfAskNumber(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
-	int nDefaultValue = (int)luaL_checkinteger(L, 2);
-	int nMinValue = (int)luaL_checkinteger(L, 3);
-	int nMaxValue = (int)luaL_checkinteger(L, 4);
+	const char* text = luaL_checkstring(L, 2);
+	int nDefaultValue = (int)luaL_checkinteger(L, 3);
+	int nMinValue = (int)luaL_checkinteger(L, 4);
+	int nMaxValue = (int)luaL_checkinteger(L, 5);
 
 	//====================
 	Script::NPCConverstaionInfo info;
@@ -251,7 +270,7 @@ int ScriptNPCConversation::SelfAskNumber(lua_State * L)
 int ScriptNPCConversation::SelfAskYesNo(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
+	const char* text = luaL_checkstring(L, 2);
 
 	//====================
 	Script::NPCConverstaionInfo info;
@@ -260,7 +279,7 @@ int ScriptNPCConversation::SelfAskYesNo(lua_State * L)
 	info.m_nSpeakerTemplateID = self->GetID();
 	//====================
 
-	CheckMessageParameter(L, 2, &info);
+	CheckMessageParameter(L, 3, &info);
 	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
@@ -269,7 +288,7 @@ int ScriptNPCConversation::SelfAskYesNo(lua_State * L)
 int ScriptNPCConversation::SelfAskMenu(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
+	const char* text = luaL_checkstring(L, 2);
 	//====================
 	Script::NPCConverstaionInfo info;
 	info.m_nMsgType = ScriptType::OnAskMenu;
@@ -277,7 +296,7 @@ int ScriptNPCConversation::SelfAskMenu(lua_State * L)
 	info.m_nSpeakerTemplateID = self->GetID();
 	//====================
 
-	CheckMessageParameter(L, 2, &info);
+	CheckMessageParameter(L, 3, &info);
 	MakeMessagePacket(L, &info);
 	self->Wait();
 	return 1;
@@ -286,7 +305,7 @@ int ScriptNPCConversation::SelfAskMenu(lua_State * L)
 int ScriptNPCConversation::Debug(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
+	const char* text = luaL_checkstring(L, 2);
 	WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "[Script Debug]%s\n", text);
 	return 1;
 }
@@ -442,7 +461,7 @@ void ScriptNPCConversation::MakeMessagePacket(lua_State * L, void * pInfo_)
 int ScriptNPCConversation::SelfSayNext(lua_State * L)
 {
 	Script* self = (Script*)(L->selfPtr);
-	const char* text = luaL_checkstring(L, 1);
+	const char* text = luaL_checkstring(L, 2);
 	
 	//====================
 	Script::NPCConverstaionInfo info;
@@ -467,6 +486,6 @@ void ScriptNPCConversation::SelfSayNextImpl(lua_State * L, int nPage)
 		return;
 	auto& refInfo = refStack[nPage];
 
-	CheckMessageParameter(L, 2, &refInfo);
+	CheckMessageParameter(L, 3, &refInfo);
 	MakeMessagePacket(L, &refInfo);
 }

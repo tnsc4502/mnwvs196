@@ -1,6 +1,6 @@
 #include "WvsWorld.h"
 #include "UserTransferStatus.h"
-
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 WvsWorld::WvsWorld()
 {
@@ -21,7 +21,8 @@ void WvsWorld::InitializeWorld()
 
 void WvsWorld::SetUserTransferStatus(int nUserID, UserTransferStatus* pStatus)
 {
-	m_mUserTransferStatus[nUserID].reset(pStatus);
+	auto deleter = [](UserTransferStatus *p) { FreeObj(p); };
+	m_mUserTransferStatus[nUserID].reset(pStatus, deleter);
 }
 
 const UserTransferStatus* WvsWorld::GetUserTransferStatus(int nUserID) const

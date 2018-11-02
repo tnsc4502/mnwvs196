@@ -8,8 +8,8 @@
 
 #include "aes.h"
 
-#include "..\Constants\CryptoConstants.hpp"
-#include "..\Constants\ServerConstants.hpp"
+#include "..\Common\CryptoConstants.hpp"
+#include "..\Common\ServerConstants.hpp"
 
 namespace WvsCrypto
 {

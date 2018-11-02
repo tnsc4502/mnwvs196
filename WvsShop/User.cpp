@@ -17,7 +17,7 @@
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: m_pSocket(_pSocket),
-	m_pCharacterData(new GA_Character())
+	m_pCharacterData(AllocObj(GA_Character))
 {
 	_pSocket->SetUser(this);
 	m_pCharacterData->DecodeCharacterData(iPacket, true);
@@ -46,7 +46,7 @@ User::~User()
 	m_pUpdateTimer->Abort();
 
 
-	delete m_pCharacterData;
+	FreeObj( m_pCharacterData );
 }
 
 

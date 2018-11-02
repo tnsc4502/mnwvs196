@@ -40,8 +40,8 @@ void CommandManager::Process(User * pUser, const std::string & input)
 	{
 		for (int i = 0; i < token[0].size(); ++i)
 			token[0][i] = tolower(token[0][i]);
-
-		if (token[0] == "#item")
+		auto& sCmd = token[0];
+		if (sCmd == "#item")
 		{
 			int nItemID = atoi(token[1].c_str());
 			if (nItemID / 1000000 >= 1)
@@ -75,7 +75,7 @@ void CommandManager::Process(User * pUser, const std::string & input)
 				}
 			}
 		}
-		else if (token[0] == "#maxskill")
+		else if (sCmd == "#maxskill")
 		{
 			int nJob = pUser->GetCharacterData()->mStat->nJob;
 			int nLevel = nJob % 10;
@@ -109,6 +109,14 @@ void CommandManager::Process(User * pUser, const std::string & input)
 					false,
 					false);
 			}
+		}
+		else if (sCmd == "#transfer")
+		{
+			int nFieldID = atoi(token[1].c_str());
+			pUser->TryTransferField(
+				nFieldID,
+				""
+			);
 		}
 	}
 }

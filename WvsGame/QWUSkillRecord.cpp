@@ -6,7 +6,7 @@
 #include "..\Database\GW_SkillRecord.h"
 #include "User.h"
 #include "SkillInfo.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 QWUSkillRecord::QWUSkillRecord()

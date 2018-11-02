@@ -21,7 +21,7 @@ public:
 	void LoadFieldSet();
 	Field* GetField(int nFieldID);
 	FieldSet* GetFieldSet(const std::string& sFieldSetName);
-
+	void RestoreFoothold(Field* pField, void *pPropFoothold, void *pLadderOrRope, void *pInfo);
 	~FieldMan();
 };
 

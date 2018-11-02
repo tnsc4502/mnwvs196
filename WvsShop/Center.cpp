@@ -10,7 +10,8 @@
 #include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 
 #include "User.h"
 #include "WvsShop.h"
@@ -114,7 +115,8 @@ void Center::OnCenterMigrateInResult(InPacket *iPacket)
 
 	pSocket->SendPacket(&oPacket);
 
-	std::shared_ptr<User> pUser{ new User((ClientSocket*)pSocket, iPacket) };
+	auto deleter = [](User* p) { FreeObj(p); };
+	std::shared_ptr<User> pUser{ AllocObjCtor( User )((ClientSocket*)pSocket, iPacket), deleter };
 	WvsBase::GetInstance<WvsShop>()->OnUserConnected(pUser);
 
 }

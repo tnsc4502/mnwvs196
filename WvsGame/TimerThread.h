@@ -1,12 +1,15 @@
 #pragma once
 #include <vector>
 #include <mutex>
+#include "..\WvsLib\Common\CommonDef.h"
 
 class Field;
 class AsyncScheduler;
 
 class TimerThread
 {
+	ALLOW_PRIVATE_ALLOC 
+
 	static std::vector<TimerThread*> m_aTimerPool;
 
 	AsyncScheduler* m_pTimer;

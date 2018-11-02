@@ -1,9 +1,13 @@
 #pragma once
 #include <mutex>
 #include <condition_variable>
+#include "..\Common\CommonDef.h"
 
 class WvsLogger
 {
+public:
+	ALLOW_PRIVATE_ALLOC
+
 	WvsLogger();
 	~WvsLogger();
 
@@ -15,7 +19,6 @@ class WvsLogger
 
 	void PushLogImpl(int nConsoleColor, const std::string& strLog);
 
-public:
 	enum LOG_TEXT_COLOR 
 	{
 		TXT_BLACK = 0x00,

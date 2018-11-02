@@ -13,33 +13,38 @@
 
 #include <algorithm>
 
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 
 GA_Character::GA_Character()
-	: mAvatarData(new GW_Avatar()),
-	  mStat(new GW_CharacterStat()),
-	  mLevel(new GW_CharacterLevel()),
-	  mMoney(new GW_CharacterMoney()),
-	  mSlotCount(new GW_CharacterSlotCount())
+	: mAvatarData(AllocObj(GW_Avatar)),
+	  mStat(AllocObj(GW_CharacterStat)),
+	  mLevel(AllocObj(GW_CharacterLevel)),
+	  mMoney(AllocObj(GW_CharacterMoney)),
+	  mSlotCount(AllocObj(GW_CharacterSlotCount))
 {
 }
 
 GA_Character::~GA_Character()
 {
-	delete mAvatarData;
-	delete mStat;
-	delete mLevel;
-	delete mMoney;
-	delete mSlotCount;
+	FreeObj(mAvatarData);
+	FreeObj(mStat);
+	FreeObj(mLevel);
+	FreeObj(mMoney);
+	FreeObj(mSlotCount);
+
 	for (auto& slot : mItemSlot)
 	{
 		for (auto& pItem : slot)
-			delete pItem.second;
+			if (pItem.second->nType == GW_ItemSlotBase::EQUIP)
+				FreeObj((GW_ItemSlotEquip*)pItem.second);
+			else
+				FreeObj((GW_ItemSlotBundle*)pItem.second);
 	}
 
 	for (auto& skill : mSkillRecord)
-		delete skill.second;
+		FreeObj(skill.second);
 }
 
 void GA_Character::Load(int nCharacterID)
@@ -113,7 +118,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode4(nFame);
 	oPacket->Encode4(0);
 	oPacket->Encode8(0); //Gach EXP
-	oPacket->Encode8(-2 * 10000L + 116444592000000000L); //
+	oPacket->Encode8(GameDateTime::GetCurrentDate()); //
 	oPacket->Encode4(nFieldID);
 	oPacket->Encode1(0); //Inital Spawn Point
 	oPacket->Encode2(0); //Get Subcategory
@@ -128,7 +133,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	for (int i = 0; i < 6; ++i)
 		oPacket->Encode2(0);
 	oPacket->Encode1(0);
-	oPacket->Encode8(-2 * 10000L + 116444592000000000L);
+	oPacket->Encode8(GameDateTime::TIME_PERMANENT);
 
 	oPacket->Encode4(0); //PVP EXP
 	oPacket->Encode1(0); //PVP RANK
@@ -139,7 +144,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 
 	oPacket->Encode1(0);
 	oPacket->Encode4(0);
-	oPacket->Encode8(-4 * 10000L + 116444592000000000L);
+	oPacket->Encode8(GameDateTime::GetCurrentDate());
 	oPacket->Encode4(0);
 	oPacket->Encode1(0);
 
@@ -150,9 +155,9 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 		oPacket->Encode4(0);
 	}
 
-	oPacket->Encode8(-2 * 10000L + 116444592000000000L);
-	oPacket->Encode8(-2 * 10000L + 116444592000000000L);
-	oPacket->Encode8(-2 * 10000L + 116444592000000000L);
+	oPacket->Encode8(GameDateTime::GetCurrentDate());
+	oPacket->Encode8(GameDateTime::GetCurrentDate());
+	oPacket->Encode8(GameDateTime::GetCurrentDate());
 	oPacket->Encode4(0);
 	oPacket->Encode4(0);
 	oPacket->Encode4(0);
@@ -355,7 +360,10 @@ void GA_Character::RemoveItem(int nTI, int nPOS)
 		mItemSlot[nTI].erase(pItem->nPOS);
 		if (pItem->liItemSN != -1)
 			mItemRemovedRecord[nTI].insert(pItem->liItemSN);
-		delete pItem;
+		if (pItem->nType == GW_ItemSlotBase::EQUIP)
+			FreeObj((GW_ItemSlotEquip*)(pItem));
+		else
+			FreeObj((GW_ItemSlotBundle*)(pItem));
 	}
 }
 
@@ -443,7 +451,7 @@ void GA_Character::SetQuest(int nKey, const std::string & sInfo)
 	auto findIter = mQuestRecord.find(nKey);
 	if (findIter == mQuestRecord.end())
 	{
-		GW_QuestRecord *pNewRecord = new GW_QuestRecord;
+		GW_QuestRecord *pNewRecord = AllocObj(GW_QuestRecord);
 		pNewRecord->nState = 1;
 		pNewRecord->nQuestID = nKey;
 		pNewRecord->sStringRecord = sInfo;
@@ -542,7 +550,7 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket, bool bForInternal)
 		int nStartedQuestSize = iPacket->Decode2();
 		for (int i = 0; i < nStartedQuestSize; ++i)
 		{
-			GW_QuestRecord *pRecord = new GW_QuestRecord;
+			GW_QuestRecord *pRecord = AllocObj(GW_QuestRecord);
 			pRecord->nCharacterID = nCharacterID;
 			pRecord->nState = 1;
 			pRecord->Decode(iPacket, 1);
@@ -557,7 +565,7 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket, bool bForInternal)
 		int nCompletedQuestSize = iPacket->Decode2();
 		for (int i = 0; i < nCompletedQuestSize; ++i)
 		{
-			GW_QuestRecord *pRecord = new GW_QuestRecord;
+			GW_QuestRecord *pRecord = AllocObj(GW_QuestRecord);
 			pRecord->nCharacterID = nCharacterID;
 			pRecord->nState = 2;
 			pRecord->Decode(iPacket, 2);
@@ -875,7 +883,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		GW_ItemSlotEquip* eqp = AllocObj(GW_ItemSlotEquip);
 		eqp->nPOS = wPos * -1;
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 		eqp->Decode(iPacket, bForInternal);
@@ -884,7 +892,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		GW_ItemSlotEquip* eqp = AllocObj(GW_ItemSlotEquip);
 		eqp->nPOS = (wPos + 100) * -1;
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 		eqp->Decode(iPacket, bForInternal);
@@ -893,7 +901,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 
 	while ((wPos = iPacket->Decode2()) != 0)
 	{
-		GW_ItemSlotEquip* eqp = new GW_ItemSlotEquip;
+		GW_ItemSlotEquip* eqp = AllocObj(GW_ItemSlotEquip);
 		eqp->nPOS = wPos;
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 		eqp->Decode(iPacket, bForInternal);
@@ -923,7 +931,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 	unsigned char nPos = 0;
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle* bundle = AllocObj(GW_ItemSlotBundle);
 		bundle->nPOS = nPos;
 		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::CONSUME;
 		bundle->Decode(iPacket, bForInternal);
@@ -932,7 +940,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle* bundle = AllocObj(GW_ItemSlotBundle);
 		bundle->nPOS = nPos;
 		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::INSTALL;
 		bundle->Decode(iPacket, bForInternal);
@@ -941,7 +949,7 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 
 	while ((nPos = iPacket->Decode1()) != 0)
 	{
-		GW_ItemSlotBundle* bundle = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle* bundle = AllocObj(GW_ItemSlotBundle);
 		bundle->nPOS = nPos;
 		bundle->nType = GW_ItemSlotBase::GW_ItemSlotType::ETC;
 		bundle->Decode(iPacket, bForInternal);
@@ -981,7 +989,7 @@ void GA_Character::DecodeSkillRecord(InPacket * iPacket)
 		short nCount = iPacket->Decode2();
 		for (int i = 0; i < nCount; ++i)
 		{
-			GW_SkillRecord* pSkillRecord = new GW_SkillRecord; 
+			GW_SkillRecord* pSkillRecord = AllocObj(GW_SkillRecord);
 			pSkillRecord->nMasterLevel = 0;
 			pSkillRecord->Decode(iPacket);
 			pSkillRecord->nCharacterID = nCharacterID;
@@ -1385,7 +1393,7 @@ void GA_Character::LoadItemSlot()
 	Poco::Data::RecordSet recordSet(queryStatement);
 
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotEquip *eqp = new GW_ItemSlotEquip();
+		GW_ItemSlotEquip *eqp = AllocObj(GW_ItemSlotEquip);
 		eqp->Load(recordSet["SN"]);
 		mItemSlot[1][eqp->nPOS] = eqp;
 	}
@@ -1395,7 +1403,7 @@ void GA_Character::LoadItemSlot()
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
 		mItemSlot[2][eqp->nPOS] = eqp;
 	}
@@ -1405,7 +1413,7 @@ void GA_Character::LoadItemSlot()
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
 		mItemSlot[3][eqp->nPOS] = eqp;
 	}
@@ -1415,7 +1423,7 @@ void GA_Character::LoadItemSlot()
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_ItemSlotBundle *eqp = new GW_ItemSlotBundle();
+		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
 		mItemSlot[4][eqp->nPOS] = eqp;
 	}
@@ -1429,7 +1437,7 @@ void GA_Character::LoadSkillRecord()
 	Poco::Data::RecordSet recordSet(queryStatement);
 
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_SkillRecord* pSkillRecord = new GW_SkillRecord();
+		GW_SkillRecord* pSkillRecord = AllocObj(GW_SkillRecord);
 		pSkillRecord->Load((void*)&recordSet);
 		mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
 	}
@@ -1443,7 +1451,7 @@ void GA_Character::LoadQuestRecord()
 	Poco::Data::RecordSet recordSet(queryStatement);
 
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
-		GW_QuestRecord* pQuestRecord = new GW_QuestRecord;
+		GW_QuestRecord* pQuestRecord = AllocObj(GW_QuestRecord);
 		pQuestRecord->Load((void*)&recordSet);
 		if(pQuestRecord->nState == 1)
 			mQuestRecord.insert({ pQuestRecord->nQuestID, pQuestRecord });

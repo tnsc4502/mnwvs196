@@ -58,6 +58,8 @@ public:
 	ScriptNPCConversation();
 	~ScriptNPCConversation();
 
+	static ScriptNPCConversation* GetSelf(lua_State* L);
+	static void DestroySelf(lua_State* L, ScriptNPCConversation* p);
 	static void Register(lua_State* L);
 	static void OnPacket(InPacket *iPacket, Script* pScript, lua_State* L);
 

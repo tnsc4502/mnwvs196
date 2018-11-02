@@ -9,7 +9,7 @@ class User;
 class Mob : public FieldObj
 {
 private:
-	const MobTemplate* m_pMobTemplate;
+	MobTemplate* m_pMobTemplate;
 
 	std::map<int, long long int> m_mAttackRecord;
 	Controller* m_pController;

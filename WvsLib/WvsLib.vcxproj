@@ -115,11 +115,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Constants\ConfigLoader.hpp" />
-    <ClInclude Include="Constants\CryptoConstants.hpp" />
-    <ClInclude Include="Constants\ServerConstants.hpp" />
-    <ClInclude Include="Constants\WvsGameConstants.hpp" />
-    <ClInclude Include="Constants\WvsLoginConstants.hpp" />
+    <ClInclude Include="Common\CommonDef.h" />
+    <ClInclude Include="Common\ConfigLoader.hpp" />
+    <ClInclude Include="Common\CryptoConstants.hpp" />
+    <ClInclude Include="Common\ServerConstants.hpp" />
+    <ClInclude Include="Common\WvsGameConstants.hpp" />
+    <ClInclude Include="Common\WvsLoginConstants.hpp" />
     <ClInclude Include="Crypto\aes.h" />
     <ClInclude Include="Crypto\aesopt.h" />
     <ClInclude Include="Crypto\aestab.h" />
@@ -196,7 +197,7 @@
     <ClInclude Include="Wz\WzResMan.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Constants\ConfigLoader.cpp" />
+    <ClCompile Include="Common\ConfigLoader.cpp" />
     <ClCompile Include="Crypto\aescrypt.c" />
     <ClCompile Include="Crypto\aeskey.c" />
     <ClCompile Include="Crypto\aestab.c" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Memory\Arena.cpp" />
     <ClCompile Include="Memory\BufferPool.cpp" />
     <ClCompile Include="Memory\MemoryBlocks.cpp" />
+    <ClCompile Include="Memory\MemoryPool.cpp" />
     <ClCompile Include="Memory\MemoryPoolMan.cpp" />
     <ClCompile Include="Net\InPacket.cpp" />
     <ClCompile Include="Net\OutPacket.cpp" />

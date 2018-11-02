@@ -4,6 +4,7 @@
 #include "..\WvsLib\DateTime\GameDateTime.h"
 
 #include "Poco\Data\MySQL\MySQLException.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 #define ADD_EQUIP_FLAG(name, container)\
 if(n##name != 0) {\
@@ -395,7 +396,7 @@ void GW_ItemSlotEquip::DecodeEquipAdvanced(InPacket *iPacket)
 
 GW_ItemSlotBase * GW_ItemSlotEquip::MakeClone()
 {
-	GW_ItemSlotEquip* ret = new GW_ItemSlotEquip();
+	GW_ItemSlotEquip* ret = AllocObj(GW_ItemSlotEquip);
 	*ret = *this;
 	ret->liItemSN = -1;
 	/*OutPacket cloneOut;

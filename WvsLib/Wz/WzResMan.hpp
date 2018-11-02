@@ -2,8 +2,8 @@
 
 #include "wzmain.hpp"
 #include "..\Memory\MemoryPoolMan.hpp"
-#include "..\Constants\ConfigLoader.hpp"
-#include "..\Constants\ServerConstants.hpp"
+#include "..\Common\ConfigLoader.hpp"
+#include "..\Common\ServerConstants.hpp"
 
 #define MAPPING_WZ_NAME(name) mWzNode[(int)Wz::name] = WZ::Base[#name]
 

@@ -4,17 +4,20 @@
 
 #include "Center.h"
 #include <thread>
+#include <string>
 #include <map>
-#include "User.h"
+
+class User;
 
 class WvsGame : public WvsBase
 {
 	std::mutex m_mUserLock;
 	std::map<int, std::shared_ptr<User>> m_mUserMap;
+	std::string m_sCenterIP;
 	std::shared_ptr<Center> m_pCenterInstance;
 	asio::io_service* m_pCenterServerService;
 	std::thread* m_pCenterWorkThread;
-	int m_nChannelID = 0;
+	int m_nChannelID = 0, m_nCenterPort = 0;
 
 	void WvsGame::CenterAliveMonitor();
 

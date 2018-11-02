@@ -14,13 +14,13 @@
 #include "Drop.h"
 #include "AttackInfo.h"
 #include "SecondaryStat.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 
 #include <cmath>
 
 
 LifePool::LifePool()
-	: m_pCtrlNull(new Controller(nullptr))
+	: m_pCtrlNull(AllocObjCtor(Controller)(nullptr))
 {
 }
 
@@ -28,12 +28,12 @@ LifePool::LifePool()
 LifePool::~LifePool()
 {
 	for (auto& p : m_aMobGen)
-		delete p.second;
+		FreeObj( p.second );
 	for (auto& p : m_aNpcGen)
-		delete p.second;
+		FreeObj( p.second );
 	for (auto& p : m_hCtrl)
-		delete p.second;
-	delete m_pCtrlNull;
+		FreeObj( p.second );
+	FreeObj( m_pCtrlNull );
 }
 
 void LifePool::Init(Field* pField, int nFieldID)
@@ -50,7 +50,10 @@ void LifePool::Init(Field* pField, int nFieldID)
 	m_nMobCapacityMin = nGenSize;
 	m_nMobCapacityMax = nGenSize * 2 * pField->GetMobRate();
 
-	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]["Map" + std::to_string(nFieldID / 100000000)][std::to_string(nFieldID)];
+	auto& mapWz = stWzResMan->GetWz(Wz::Map)["Map"]
+		["Map" + std::to_string(nFieldID / 100000000)]
+		[StringUtility::LeftPadding(std::to_string(nFieldID), 9, '0')];
+
 	auto& lifeData = mapWz["life"];
 	for (auto& node : lifeData)
 	{
@@ -106,7 +109,7 @@ void LifePool::LoadMobData(WZ::Node& dataNode)
 void LifePool::CreateNpc(const Npc& npc)
 {
 	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
-	Npc* newNpc = new Npc();
+	Npc* newNpc = AllocObj(Npc);
 	*newNpc = npc; //Should notice pointer data assignment
 	newNpc->SetFieldObjectID(atomicObjectCounter++);
 	m_aNpcGen.insert({ newNpc->GetFieldObjectID(), newNpc });
@@ -139,7 +142,7 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 
 	if (pController && pController != this->m_pCtrlNull)
 	{
-		Mob* newMob = new Mob;
+		Mob* newMob = AllocObj( Mob );
 		*newMob = mob;
 		newMob->SetField(m_pField);
 		newMob->SetFieldObjectID(atomicObjectCounter++);
@@ -179,7 +182,7 @@ void LifePool::RemoveMob(Mob * pMob)
 	pMob->MakeLeaveFieldPacket(&oPacket);
 	m_pField->SplitSendPacket(&oPacket, nullptr);
 	m_aMobGen.erase(pMob->GetFieldObjectID());
-	delete pMob;
+	FreeObj( pMob );
 }
 
 void LifePool::OnEnter(User *pUser)
@@ -206,7 +209,7 @@ void LifePool::OnEnter(User *pUser)
 
 void LifePool::InsertController(User* pUser)
 {
-	Controller* controller = new Controller(pUser);
+	Controller* controller = AllocObjCtor(Controller)(pUser) ;
 	auto& iter = m_hCtrl.insert({ 0, controller });
 	m_mController.insert({ pUser->GetUserID(), iter });
 	RedistributeLife();
@@ -247,7 +250,7 @@ void LifePool::RemoveController(User* pUser)
 	}
 
 	//¾P·´
-	delete pController;
+	FreeObj( pController );
 }
 
 void LifePool::UpdateCtrlHeap(Controller * pController)

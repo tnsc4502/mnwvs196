@@ -3,7 +3,7 @@
 #include <map>
 #include <memory>
 #include "..\WvsLib\Net\WorldInfo.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 
 class UserTransferStatus;
 

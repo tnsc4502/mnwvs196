@@ -55,3 +55,20 @@ int Rand32::Random()
 	v1->m_s2 = v8;
 	return  v7 ^ v8 ^ v9;
 }
+
+std::vector<int> Rand32::GetRandomUniqueArray(int nStart, int nRange, int nCount)
+{
+	std::vector<int> aRet;
+	aRet.resize(nCount);
+	std::vector<int> aSample;
+	for (int i = 0; i < nRange; ++i)
+		aSample.push_back(nStart + i);
+	int nRnd = 0;
+	for (int i = 0; i < nCount; ++i)
+	{
+		nRnd = Random() % aSample.size();
+		aRet[i] = aSample[nRnd];
+		aSample.erase(aSample.begin() + nRnd);
+	}
+	return aRet;
+}

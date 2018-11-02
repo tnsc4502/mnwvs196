@@ -2,7 +2,7 @@
 #include "WvsUnified.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 
 void GW_SkillRecord::Encode(OutPacket * oPacket)
 {

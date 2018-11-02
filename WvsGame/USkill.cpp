@@ -13,7 +13,7 @@
 #include "SkillInfo.h"
 #include "QWUSkillRecord.h"
 
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 
 #include "..\WvsLib\Logger\WvsLogger.h"

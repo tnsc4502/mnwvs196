@@ -1,7 +1,7 @@
 #include "QWUser.h"
 #include "User.h"
 #include "SecondaryStat.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterLevel.h"
 #include "..\Database\GW_CharacterMoney.h"

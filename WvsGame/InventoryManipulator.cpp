@@ -2,6 +2,7 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterSlotCount.h"
 #include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_CharacterMoney.h"
 #include "BackupItem.h"
@@ -11,6 +12,7 @@
 
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 InventoryManipulator::InventoryManipulator()
 {
@@ -136,7 +138,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 
 		//物品完全合併
 		if (nNumber == 0 && bDeleteIfItemCombined)
-			delete pItem;
+			FreeObj((GW_ItemSlotBundle*)pItem);
 
 		//欄位無相同物品，找新的欄位插入
 		while (nNumber > 0)
@@ -344,7 +346,12 @@ int InventoryManipulator::RawExchange(GA_Character * pCharacterData, int nMoney,
 	}
 
 	for (auto& pBackup : aBackupItem)
-		delete pBackup.m_pItem;
+	{
+		if (pBackup.m_pItem->nType == GW_ItemSlotBase::EQUIP)
+			FreeObj((GW_ItemSlotEquip*)(pBackup.m_pItem));
+		else
+			FreeObj((GW_ItemSlotBundle*)(pBackup.m_pItem));
+	}
 	return 0;
 }
 
@@ -361,6 +368,11 @@ void InventoryManipulator::RestoreBackupItem(GA_Character * pCharacterData, std:
 			pCharacterData->mItemRemovedRecord[pItemBackup.m_nTI].erase(pItemBackup.m_pItem->liItemSN);
 		}
 		if (pItem != nullptr)
-			delete pItem;
+		{
+			if (pItem->nType == GW_ItemSlotBase::EQUIP)
+				FreeObj((GW_ItemSlotEquip*)(pItem));
+			else
+				FreeObj((GW_ItemSlotBundle*)(pItem));
+		}
 	}
 }

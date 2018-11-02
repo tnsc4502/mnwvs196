@@ -6,7 +6,7 @@
 
 #include "..\WvsLib\Logger\WvsLogger.h"
 
-#include "..\WvsLib\Constants\WvsLoginConstants.hpp"
+#include "..\WvsLib\Common\WvsLoginConstants.hpp"
 #include "WvsLogin.h"
 
 LoginSocket::LoginSocket(asio::io_service& serverService)

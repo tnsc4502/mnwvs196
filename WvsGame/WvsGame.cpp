@@ -1,9 +1,10 @@
 #include "WvsGame.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "..\WvsLib\Task\AsyncScheduler.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
-#include "ClientSocket.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "ClientSocket.h"
+#include "User.h"
 
 WvsGame::WvsGame()
 {
@@ -25,8 +26,8 @@ void WvsGame::ConnectToCenter(int nCenterIdx)
 	m_pCenterInstance->SetSocketDisconnectedCallBack(std::bind(&Center::OnNotifyCenterDisconnected, m_pCenterInstance.get()));
 	m_pCenterInstance->SetCenterIndex(nCenterIdx);
 	m_pCenterInstance->Connect(
-		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
-		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
+		m_sCenterIP,
+		m_nCenterPort
 	);
 }
 
@@ -46,6 +47,8 @@ void WvsGame::CenterAliveMonitor()
 void WvsGame::InitializeCenter()
 {
 	m_nChannelID = ConfigLoader::GetInstance()->IntValue("ChannelID");
+	m_sCenterIP = ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(m_nChannelID) + "_IP");
+	m_nCenterPort = ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(m_nChannelID) + "_Port");
 	m_pCenterServerService = new asio::io_service();
 	m_pCenterInstance = std::make_shared<Center>(*m_pCenterServerService);
 	m_pCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);

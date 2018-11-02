@@ -14,12 +14,13 @@
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Random\Rand32.h"
 
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 
 #include "WvsGame.h"
 #include "User.h"
 #include "FieldMan.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 Center::Center(asio::io_service& serverService)
 	: SocketBase(serverService, true)
@@ -124,7 +125,11 @@ void Center::OnCenterMigrateInResult(InPacket *iPacket)
 	oPacket.Encode4((unsigned int)Rand32::GetInstance()->Random());
 	oPacket.Encode4((unsigned int)Rand32::GetInstance()->Random());
 
-	std::shared_ptr<User> pUser{ new User((ClientSocket*)pSocket, iPacket) };
+	auto deleter = [](User* p) { FreeObj(p); };
+	std::shared_ptr <User> pUser{ 
+		AllocObjCtor(User)((ClientSocket*)pSocket, iPacket),
+		deleter
+	};
 	pUser->EncodeCharacterData(&oPacket);
 
 	for (int i = 0; i < 5; ++i)

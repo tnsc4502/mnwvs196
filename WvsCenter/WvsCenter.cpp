@@ -4,7 +4,8 @@
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\InPacket.h"
 
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 
 WvsCenter::WvsCenter()
 {
@@ -25,7 +26,7 @@ void WvsCenter::OnNotifySocketDisconnected(SocketBase *pSocket)
 				break;
 		if (iter != m_mChannel.end())
 		{
-			delete iter->second;
+			FreeObj( iter->second );
 			m_mChannel.erase(iter);
 		}
 		//--nConnectedChannel;
@@ -33,7 +34,7 @@ void WvsCenter::OnNotifySocketDisconnected(SocketBase *pSocket)
 	}
 	else if (pSocket->GetServerType() == ServerConstants::SRV_SHOP) 
 	{
-		delete m_pShopEntry;
+		FreeObj( m_pShopEntry );
 		m_pShopEntry = nullptr;
 	}
 }
@@ -84,7 +85,7 @@ void WvsCenter::SetShop(LocalServerEntry * pEntry)
 void WvsCenter::RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *iPacket)
 {
 	int nChannelID = iPacket->Decode1();
-	LocalServerEntry *pEntry = new LocalServerEntry;
+	LocalServerEntry *pEntry = AllocObj( LocalServerEntry );
 
 	pEntry->SetLocalSocket(pServer);
 	pEntry->SetExternalIP(iPacket->Decode4());
@@ -99,7 +100,7 @@ void WvsCenter::RegisterChannel(std::shared_ptr<SocketBase> &pServer, InPacket *
 
 void WvsCenter::RegisterCashShop(std::shared_ptr<SocketBase>& pServer, InPacket * iPacket)
 {
-	LocalServerEntry *pEntry = new LocalServerEntry;
+	LocalServerEntry *pEntry = AllocObj( LocalServerEntry );
 
 	pEntry->SetLocalSocket(pServer);
 	pEntry->SetExternalIP(iPacket->Decode4());

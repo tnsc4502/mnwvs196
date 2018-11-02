@@ -2,6 +2,9 @@
 #include "ScriptNPCConversation.h"
 #include "ScriptInventory.h"
 #include "ScriptFieldSet.h"
+#include "ScriptTarget.h"
+#include "ScriptPacket.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 ScriptMan * ScriptMan::GetInstance()
 {
@@ -11,12 +14,23 @@ ScriptMan * ScriptMan::GetInstance()
 
 Script * ScriptMan::GetScript(const std::string & file, int nNpcID)
 {
-	auto pScript = new Script(file, nNpcID, {
+	auto pScript = AllocObjCtor(Script)(
+		file, 
+		nNpcID, 
+		std::vector<void(*)(lua_State*)>({
 		&ScriptNPCConversation::Register,
 		&ScriptInventory::Register,
-		&ScriptFieldSet::Register
-	});
-	pScript->m_pOnPacketInvoker = &(ScriptNPCConversation::OnPacket);
-	luaL_openlibs(pScript->L);
-	return pScript;
+		&ScriptFieldSet::Register,
+		&ScriptTarget::Register,
+		&ScriptPacket::Register
+	}));
+	if (pScript && pScript->Init())
+	{
+		pScript->m_pOnPacketInvoker = &(ScriptNPCConversation::OnPacket);
+		luaL_openlibs(pScript->L);
+		return pScript;
+	}
+	else if (pScript)
+		FreeObj(pScript);
+	return nullptr;
 }

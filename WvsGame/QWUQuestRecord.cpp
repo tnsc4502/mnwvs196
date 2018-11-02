@@ -3,6 +3,7 @@
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_QuestRecord.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include <mutex>
 
 
@@ -55,7 +56,7 @@ void QWUQuestRecord::SetComplete(User * pUser, int nKey)
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	pCharacter->RemoveQuest(nKey);
-	GW_QuestRecord *pComplete = new GW_QuestRecord;
+	GW_QuestRecord *pComplete = AllocObj(GW_QuestRecord);
 	pComplete->nQuestID = nKey;
 	pComplete->nState = 2;
 	pComplete->tTime = GameDateTime::GetTime();

@@ -1,7 +1,5 @@
 #pragma once
 #include "..\Net\asio.hpp"
-#include "..\Memory\MemoryPoolMan.hpp"
-#include "..\Logger\WvsLogger.h"
 #include <set>
 #include <mutex>
 
@@ -48,7 +46,7 @@ private:
 	//用於釋放封包的Buffer資源 (該資源乃經由Arena配置)
 	void OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer, void *pPacket);
 	void OnReceive(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer);
-	void ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer);
+	void ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer, int nPacketLen);
 	//void(*OnNotifySocketDisconnected)(SocketBase *pSocket);
 	std::function<void(SocketBase *)> m_fSocketDisconnectedCallBack;
 

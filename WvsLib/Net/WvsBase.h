@@ -3,6 +3,7 @@
 #include <map>
 #include "SocketBase.h"
 #include <functional>
+#include "..\Logger\WvsLogger.h"
 
 class WvsBase
 {

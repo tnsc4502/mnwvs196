@@ -1,5 +1,6 @@
 #include "GW_ItemSlotBundle.h"
 #include "WvsUnified.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 GW_ItemSlotBundle::GW_ItemSlotBundle()
 {
@@ -136,7 +137,7 @@ void GW_ItemSlotBundle::RawDecode(InPacket *iPacket)
 
 GW_ItemSlotBase * GW_ItemSlotBundle::MakeClone()
 {
-	GW_ItemSlotBundle* ret = new GW_ItemSlotBundle();
+	GW_ItemSlotBundle* ret = AllocObj(GW_ItemSlotBundle);
 	*ret = *this;
 	ret->liItemSN = -1;
 	/*OutPacket cloneOut;

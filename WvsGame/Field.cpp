@@ -184,24 +184,26 @@ void Field::SetUserEnter(const std::string & script)
 	m_strUserEnter = script;
 }
 
-void Field::SetMapSizeX(int x)
+void Field::SetMapSize(int x, int y)
 {
-	m_nMapSizeX = x;
+	m_szMap.x = x;
+	m_szMap.y = y;
 }
 
-int Field::GetMapSizeX()
+const FieldPoint & Field::GetMapSize() const
 {
-	return m_nMapSizeX;
+	return m_szMap;
 }
 
-void Field::SetMapSizeY(int y)
+void Field::SetLeftTop(int x, int y)
 {
-	m_nMapSizeY = y;
+	m_ptLeftTop.x = x;
+	m_ptLeftTop.y = y;
 }
 
-int Field::GetMapSizeY()
+const FieldPoint & Field::GetLeftTop() const
 {
-	return m_nMapSizeY;
+	return m_ptLeftTop;
 }
 
 void Field::SetFieldSet(FieldSet * pFieldSet)

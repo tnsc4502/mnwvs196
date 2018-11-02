@@ -1,7 +1,6 @@
 #pragma once
 #include "FieldObj.h"
 #include <mutex>
-#include <condition_variable>
 #include <map>
 #include <vector>
 #include "TemporaryStat.h"
@@ -100,15 +99,14 @@ private:
 	SecondaryStat* m_pSecondaryStat;
 	AsyncScheduler *m_pUpdateTimer;
 	Script* m_pScript = nullptr;
-	std::condition_variable m_cvForScript;
 	TransferStatus m_nTransferStatus;
 
 	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
-	AttackInfo* TryParsingMeleeAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingMagicAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingShootAttack(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingAreaDot(int nType, InPacket *iPacket);
-	AttackInfo* TryParsingBodyAttack(int nType, InPacket *iPacket);
+	AttackInfo* TryParsingMeleeAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
+	AttackInfo* TryParsingMagicAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
+	AttackInfo* TryParsingShootAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
+	AttackInfo* TryParsingAreaDot(AttackInfo* pInfo, int nType, InPacket *iPacket);
+	AttackInfo* TryParsingBodyAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
 
 	void OnIssueReloginCookie(InPacket* iPacket);
 
@@ -178,8 +176,6 @@ public:
 	void SetScript(Script* pScript);
 	void OnSelectNpc(InPacket *iPacket);
 	void OnScriptMessageAnswer(InPacket *iPacket);
-	void OnScriptRun();
-	void OnScriptDone();
 
 	//Quest
 	void OnQuestRequest(InPacket *iPacket);
@@ -193,5 +189,7 @@ public:
 	bool AllowToGetQuestItem(const ActItem* pActionItem);
 
 	void SendQuestResult(int nResult, int nQuestID, int dwTemplateID);
+	void SendChatMessage(int nType, const std::string& sMsg);
+	void SendNoticeMessage(int nType, const std::string& sMsg);
 };
 

@@ -58,9 +58,9 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.nFieldID = 100000000;
 	chrEntry.nGuildID = chrEntry.nPartyID = chrEntry.nFame = 0;
 	
-	chrEntry.mAvatarData->nFace = nFace;
-	chrEntry.mAvatarData->nHair = nHair;
-	chrEntry.mAvatarData->nSkin = nSkin;
+	chrEntry.mStat->nFace = nFace;
+	chrEntry.mStat->nHair = nHair;
+	chrEntry.mStat->nSkin = nSkin;
 
 	chrEntry.mStat->nStr = aStat[STAT_Str];
 	chrEntry.mStat->nDex = aStat[STAT_Dex];
@@ -75,42 +75,42 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.mLevel->nLevel = aStat[STAT_Level];
 	chrEntry.mStat->nAP = aStat[STAT_AP];
 
-	GW_ItemSlotEquip hatEquip;
-	hatEquip.nItemID = aBody[EQP_ID_HatEquip];
-	hatEquip.nPOS = EQP_POS_Hat;
+	GW_ItemSlotEquip gwCapEquip;
+	gwCapEquip.nItemID = aBody[EQP_ID_CapEquip];
+	gwCapEquip.nPOS = EQP_POS_Cap;
 
-	GW_ItemSlotEquip topEquip;
-	topEquip.nItemID = aBody[EQP_ID_TopEquip];
-	topEquip.nPOS = EQP_POS_Top;
+	GW_ItemSlotEquip gwCoatEquip;
+	gwCoatEquip.nItemID = aBody[EQP_ID_CoatEquip];
+	gwCoatEquip.nPOS = EQP_POS_Coat;
 
-	GW_ItemSlotEquip bottomEquip;
-	bottomEquip.nItemID = aBody[EQP_ID_ButtomEquip];
-	bottomEquip.nPOS = EQP_POS_Bottom;
+	GW_ItemSlotEquip gwPantsEquip;
+	gwPantsEquip.nItemID = aBody[EQP_ID_PantsEquip];
+	gwPantsEquip.nPOS = EQP_POS_Pants;
 
-	GW_ItemSlotEquip weaponEquip;
-	weaponEquip.nItemID = aBody[EQP_ID_WeaponEquip];
-	weaponEquip.nPOS = EQP_POS_Weapon;
+	GW_ItemSlotEquip gwWeaponEquip;
+	gwWeaponEquip.nItemID = aBody[EQP_ID_WeaponEquip];
+	gwWeaponEquip.nPOS = EQP_POS_Weapon;
 
-	GW_ItemSlotEquip shoesEquip;
-	shoesEquip.nItemID = aBody[EQP_ID_ShoesEquip];
-	shoesEquip.nPOS = EQP_POS_Shoes;
+	GW_ItemSlotEquip gwShoesEquip;
+	gwShoesEquip.nItemID = aBody[EQP_ID_ShoesEquip];
+	gwShoesEquip.nPOS = EQP_POS_Shoes;
 
-	GW_ItemSlotEquip capeEquip;
-	capeEquip.nItemID = aBody[EQP_ID_CapeEquip];
-	capeEquip.nPOS = EQP_POS_Cape;
+	GW_ItemSlotEquip gwCapeEquip;
+	gwCapeEquip.nItemID = aBody[EQP_ID_CapeEquip];
+	gwCapeEquip.nPOS = EQP_POS_Cape;
 
-	GW_ItemSlotEquip shieldEquip;
-	shieldEquip.nItemID = aBody[EQP_ID_ShieldEquip];
-	shieldEquip.nPOS = EQP_POS_Shield;
+	GW_ItemSlotEquip gwShieldEquip;
+	gwShieldEquip.nItemID = aBody[EQP_ID_ShieldEquip];
+	gwShieldEquip.nPOS = EQP_POS_Shield;
 
 	GW_ItemSlotEquip* equips[EQP_ID_FLAG_END] = {
-		&hatEquip,
-		&topEquip,
-		&bottomEquip,
-		&weaponEquip,
-		&shoesEquip,
-		&capeEquip,
-		&shieldEquip
+		&gwCapEquip,
+		&gwCoatEquip,
+		&gwPantsEquip,
+		&gwWeaponEquip,
+		&gwShoesEquip,
+		&gwCapeEquip,
+		&gwShieldEquip
 	};
 	int nEquipCount = sizeof(equips) / sizeof(GW_ItemSlotBase*);
 	for (int i = 0; i < nEquipCount; ++i)

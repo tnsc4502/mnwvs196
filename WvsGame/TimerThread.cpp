@@ -1,5 +1,6 @@
 #include "TimerThread.h"
 #include "..\WvsLib\Task\AsyncScheduler.h"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Random\Rand32.h"
 #include "Field.h"
 
@@ -28,7 +29,8 @@ void TimerThread::RegisterTimerPool(int nTimerCount, int nTick)
 	AsyncScheduler *pTimer = nullptr;
 	for (int i = 0; i < nTimerCount; ++i)
 	{
-		pThreadTimer = new TimerThread;
+		pThreadTimer = AllocObj(TimerThread);
+		pThreadTimer->m_aFieldToUpdate.clear();
 		auto timerBind = std::bind(&(TimerThread::Update), pThreadTimer);
 		pTimer = AsyncScheduler::CreateTask(timerBind, nTick, true);
 		pThreadTimer->m_pTimer = pTimer;

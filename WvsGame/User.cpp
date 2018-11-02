@@ -22,7 +22,7 @@
 #include "BasicStat.h"
 #include "SecondaryStat.h"
 #include "USkill.h"
-#include "..\WvsLib\Constants\WvsGameConstants.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "AttackInfo.h"
 #include "NpcTemplate.h"
 #include "LifePool.h"
@@ -34,6 +34,7 @@
 #include "ActItem.h"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Random\Rand32.h"
 
 #include "QWUQuestRecord.h"
@@ -87,29 +88,28 @@ void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 	pInfo->m_nY = iPacket->Decode2();
 }
 
-AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
+AttackInfo * User::TryParsingMeleeAttack(AttackInfo* pInfo, int nType, InPacket * iPacket)
 {
-	AttackInfo* ret = new AttackInfo;
-	ret->m_nType = nType;
-	ret->m_bFieldKey = iPacket->Decode1();
-	ret->m_bAttackInfoFlag = iPacket->Decode1();
-	int nSkillID = ret->m_nSkillID = iPacket->Decode4();
-	ret->m_nSLV = iPacket->Decode1();
+	pInfo->m_nType = nType;
+	pInfo->m_bFieldKey = iPacket->Decode1();
+	pInfo->m_bAttackInfoFlag = iPacket->Decode1();
+	int nSkillID = pInfo->m_nSkillID = iPacket->Decode4();
+	pInfo->m_nSLV = iPacket->Decode1();
 
 	if (nType != UserRecvPacketFlag::User_OnUserAttack_AreaDot)
 		iPacket->Decode1();
 
-	ret->m_dwCRC = iPacket->Decode4();
+	pInfo->m_dwCRC = iPacket->Decode4();
 
 	iPacket->Decode1();
 	iPacket->Decode2();
 	iPacket->Decode4();
 
 	if (WvsGameConstants::IsKeyDownSkill(nSkillID) || WvsGameConstants::IsSuperNovaSkill(nSkillID))
-		ret->m_tKeyDown = iPacket->Decode4();
+		pInfo->m_tKeyDown = iPacket->Decode4();
 
 	if (WvsGameConstants::IsSpecialMeleeAttack(nSkillID))
-		ret->m_pGrenade = iPacket->Decode4();
+		pInfo->m_pGrenade = iPacket->Decode4();
 
 	if (WvsGameConstants::IsZeroSkill(nSkillID))
 		iPacket->Decode1();
@@ -119,17 +119,17 @@ AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
 
 	iPacket->Decode1();
 
-	ret->m_nDisplay = iPacket->Decode2();
+	pInfo->m_nDisplay = iPacket->Decode2();
 	iPacket->Decode4();
-	ret->m_nAttackActionType = iPacket->Decode1();
-	ret->m_nAttackSpeed = iPacket->Decode1();
+	pInfo->m_nAttackActionType = iPacket->Decode1();
+	pInfo->m_nAttackSpeed = iPacket->Decode1();
 
 	if (nType != UserRecvPacketFlag::User_OnUserAttack_BodyAttack)
-		ret->m_tLastAttackTime = iPacket->Decode4();
+		pInfo->m_tLastAttackTime = iPacket->Decode4();
 
 	iPacket->Decode4();
-	ret->m_nFinalAttack = iPacket->Decode4();
-	if (nSkillID > 0 && ret->m_nFinalAttack > 0)
+	pInfo->m_nFinalAttack = iPacket->Decode4();
+	if (nSkillID > 0 && pInfo->m_nFinalAttack > 0)
 		iPacket->Decode1();
 
 	if (nSkillID == 5111009)
@@ -145,65 +145,63 @@ AttackInfo * User::TryParsingMeleeAttack(int nType, InPacket * iPacket)
 	if (nSkillID == 25111005)
 		iPacket->Decode4();
 
-	TryParsingDamageData(ret, iPacket);
-	return ret;
+	TryParsingDamageData(pInfo, iPacket);
+	return pInfo;
 }
 
-AttackInfo * User::TryParsingMagicAttack(int nType, InPacket * iPacket)
+AttackInfo * User::TryParsingMagicAttack(AttackInfo* pInfo, int nType, InPacket * iPacket)
 {
-	AttackInfo* ret = new AttackInfo;
-	ret->m_nType = nType;
-	ret->m_bFieldKey = iPacket->Decode1();
-	ret->m_bAttackInfoFlag = iPacket->Decode1();
-	int nSkillID = ret->m_nSkillID = iPacket->Decode4();
-	ret->m_nSLV = iPacket->Decode1();
+	pInfo->m_nType = nType;
+	pInfo->m_bFieldKey = iPacket->Decode1();
+	pInfo->m_bAttackInfoFlag = iPacket->Decode1();
+	int nSkillID = pInfo->m_nSkillID = iPacket->Decode4();
+	pInfo->m_nSLV = iPacket->Decode1();
 
-	ret->m_dwCRC = iPacket->Decode4();
+	pInfo->m_dwCRC = iPacket->Decode4();
 
 	iPacket->Decode1();
 	iPacket->Decode2();
 	iPacket->Decode4();
 
 	if (WvsGameConstants::IsKeyDownSkill(nSkillID))
-		ret->m_tKeyDown = iPacket->Decode4();
+		pInfo->m_tKeyDown = iPacket->Decode4();
 
 	iPacket->Decode1();
 	iPacket->Decode1();
 
-	ret->m_nDisplay = iPacket->Decode2();
+	pInfo->m_nDisplay = iPacket->Decode2();
 	iPacket->Decode4();
-	ret->m_nAttackActionType = iPacket->Decode1();
+	pInfo->m_nAttackActionType = iPacket->Decode1();
 	if (WvsGameConstants::IsEvanForceSkill(nSkillID))
-		ret->m_bEvanForceAction = iPacket->Decode1();
+		pInfo->m_bEvanForceAction = iPacket->Decode1();
 
-	ret->m_nAttackSpeed = iPacket->Decode1();
-	ret->m_tLastAttackTime = iPacket->Decode4();
+	pInfo->m_nAttackSpeed = iPacket->Decode1();
+	pInfo->m_tLastAttackTime = iPacket->Decode4();
 	iPacket->Decode4();
 
-	TryParsingDamageData(ret, iPacket);
-	return ret;
+	TryParsingDamageData(pInfo, iPacket);
+	return pInfo;
 }
 
-AttackInfo * User::TryParsingShootAttack(int nType, InPacket * iPacket)
+AttackInfo * User::TryParsingShootAttack(AttackInfo* pInfo, int nType, InPacket * iPacket)
 {
-	AttackInfo* ret = new AttackInfo;
 	iPacket->Decode1();
-	ret->m_nType = nType;
-	ret->m_bFieldKey = iPacket->Decode1();
-	ret->m_bAttackInfoFlag = iPacket->Decode1();
-	int nSkillID = ret->m_nSkillID = iPacket->Decode4();
-	ret->m_nSLV = iPacket->Decode1();
-	ret->m_bAddAttackProc = iPacket->Decode1();
-	ret->m_dwCRC = iPacket->Decode4();
+	pInfo->m_nType = nType;
+	pInfo->m_bFieldKey = iPacket->Decode1();
+	pInfo->m_bAttackInfoFlag = iPacket->Decode1();
+	int nSkillID = pInfo->m_nSkillID = iPacket->Decode4();
+	pInfo->m_nSLV = iPacket->Decode1();
+	pInfo->m_bAddAttackProc = iPacket->Decode1();
+	pInfo->m_dwCRC = iPacket->Decode4();
 
 	iPacket->Decode1();
-	ret->m_nSlot = iPacket->Decode2();
-	ret->m_nCsStar = iPacket->Decode4();
+	pInfo->m_nSlot = iPacket->Decode2();
+	pInfo->m_nCsStar = iPacket->Decode4();
 
 	//int tKeyDown = 0, pGrenade;
 
 	if (WvsGameConstants::IsKeyDownSkill(nSkillID))
-		ret->m_tKeyDown = iPacket->Decode4();
+		pInfo->m_tKeyDown = iPacket->Decode4();
 
 	if (WvsGameConstants::IsZeroSkill(nSkillID))
 		iPacket->Decode1();
@@ -211,8 +209,8 @@ AttackInfo * User::TryParsingShootAttack(int nType, InPacket * iPacket)
 	iPacket->Decode1();
 	iPacket->Decode1();
 
-	ret->m_apMinion = iPacket->Decode4();
-	ret->m_bCheckExJablinResult = iPacket->Decode1();
+	pInfo->m_apMinion = iPacket->Decode4();
+	pInfo->m_bCheckExJablinResult = iPacket->Decode1();
 
 	if (nSkillID == 3111013)
 	{
@@ -221,9 +219,9 @@ AttackInfo * User::TryParsingShootAttack(int nType, InPacket * iPacket)
 		int nY = iPacket->Decode2();
 	}
 
-	ret->m_nDisplay = iPacket->Decode2();
+	pInfo->m_nDisplay = iPacket->Decode2();
 	iPacket->Decode4();
-	ret->m_nAttackActionType = iPacket->Decode1();
+	pInfo->m_nAttackActionType = iPacket->Decode1();
 
 	if (nSkillID == 23111001 || nSkillID == 80001915 || nSkillID == 36111010)
 	{
@@ -232,29 +230,29 @@ AttackInfo * User::TryParsingShootAttack(int nType, InPacket * iPacket)
 		iPacket->Decode4();
 	}
 
-	ret->m_nAttackSpeed = iPacket->Decode1();
-	ret->m_tLastAttackTime = iPacket->Decode4();
-	ret->m_nSoulArrow = iPacket->Decode4();
-	ret->m_nWeaponType = iPacket->Decode2();
-	ret->m_nShootRange = iPacket->Decode1();
+	pInfo->m_nAttackSpeed = iPacket->Decode1();
+	pInfo->m_tLastAttackTime = iPacket->Decode4();
+	pInfo->m_nSoulArrow = iPacket->Decode4();
+	pInfo->m_nWeaponType = iPacket->Decode2();
+	pInfo->m_nShootRange = iPacket->Decode1();
 
 	iPacket->Decode2(); //unk
 	iPacket->Decode2(); //unk
 	iPacket->Decode2(); //unk
 	iPacket->Decode2(); //unk
 
-	TryParsingDamageData(ret, iPacket);
-	return ret;
+	TryParsingDamageData(pInfo, iPacket);
+	return pInfo;
 }
 
-AttackInfo * User::TryParsingAreaDot(int nType, InPacket * iPacket)
+AttackInfo * User::TryParsingAreaDot(AttackInfo* pInfo, int nType, InPacket * iPacket)
 {
-	return TryParsingMeleeAttack(nType, iPacket);
+	return TryParsingMeleeAttack(pInfo, nType, iPacket);
 }
 
-AttackInfo * User::TryParsingBodyAttack(int nType, InPacket * iPacket)
+AttackInfo * User::TryParsingBodyAttack(AttackInfo* pInfo, int nType, InPacket * iPacket)
 {
-	return TryParsingMeleeAttack(nType, iPacket);
+	return TryParsingMeleeAttack(pInfo, nType, iPacket);
 }
 
 void User::OnIssueReloginCookie(InPacket * iPacket)
@@ -264,9 +262,9 @@ void User::OnIssueReloginCookie(InPacket * iPacket)
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: m_pSocket(_pSocket),
-	m_pCharacterData(new GA_Character()),
-	  m_pBasicStat(new BasicStat),
-	  m_pSecondaryStat(new SecondaryStat)
+	m_pCharacterData(AllocObj(GA_Character)),
+	  m_pBasicStat(AllocObj(BasicStat)),
+	  m_pSecondaryStat(AllocObj(SecondaryStat))
 {
 	_pSocket->SetUser(this);
 	m_pCharacterData->DecodeCharacterData(iPacket, true);
@@ -300,9 +298,9 @@ User::~User()
 	}
 	catch (...) {}
 
-	delete m_pCharacterData;
-	delete m_pBasicStat;
-	delete m_pSecondaryStat;
+	FreeObj(m_pCharacterData);
+	FreeObj(m_pBasicStat);
+	FreeObj(m_pSecondaryStat);
 }
 
 int User::GetUserID() const
@@ -727,31 +725,32 @@ void User::SendTemporaryStatSet(TemporaryStat::TS_Flag& flag, int tDelay)
 
 void User::OnAttack(int nType, InPacket * iPacket)
 {
-	std::unique_ptr<AttackInfo> pInfo = nullptr;
+	AttackInfo attackInfo, *pResult = nullptr;
+
 	switch (nType)
 	{
 		case UserRecvPacketFlag::User_OnUserAttack_MeleeAttack:
-			pInfo.reset(TryParsingMeleeAttack(nType, iPacket));
+			pResult = (TryParsingMeleeAttack(&attackInfo, nType, iPacket));
 			break;
 		case UserRecvPacketFlag::User_OnUserAttack_ShootAttack:
-			pInfo.reset(TryParsingShootAttack(nType, iPacket));
+			pResult = (TryParsingShootAttack(&attackInfo, nType, iPacket));
 			break;
 		case UserRecvPacketFlag::User_OnUserAttack_MagicAttack:
-			pInfo.reset(TryParsingMagicAttack(nType, iPacket));
+			pResult = (TryParsingMagicAttack(&attackInfo, nType, iPacket));
 			break;
 		case UserRecvPacketFlag::User_OnUserAttack_BodyAttack:
-			pInfo.reset(TryParsingBodyAttack(nType, iPacket));
+			pResult = (TryParsingBodyAttack(&attackInfo, nType, iPacket));
 			break;
 		case UserRecvPacketFlag::User_OnUserAttack_AreaDot:
-			pInfo.reset(TryParsingAreaDot(nType, iPacket));
+			pResult = (TryParsingAreaDot(&attackInfo, nType, iPacket));
 			break;
 	}
-	if (pInfo) 
+	if (pResult)
 	{
 		m_pField->GetLifePool()->OnUserAttack(
 			this,
-			SkillInfo::GetInstance()->GetSkillByID(pInfo->m_nSkillID),
-			pInfo.get()
+			SkillInfo::GetInstance()->GetSkillByID(pResult->m_nSkillID),
+			pResult
 		);
 	}
 }
@@ -909,7 +908,15 @@ void User::OnSelectNpc(InPacket * iPacket)
 	auto pNpc = m_pField->GetLifePool()->GetNpc(iPacket->Decode4());
 	if (pNpc != nullptr && GetScript() == nullptr)
 	{
-		auto pScript = ScriptMan::GetInstance()->GetScript("test.lua", pNpc->GetTemplateID());
+		auto pScript = ScriptMan::GetInstance()->GetScript(
+			"./DataSrv/Script/Npc/" + std::to_string(pNpc->GetTemplateID()) + ".lua", 
+			pNpc->GetTemplateID()
+		);
+		if (pScript == nullptr) 
+		{
+			SendChatMessage(4, "Npc : " + std::to_string(pNpc->GetTemplateID()) + " has no script.");
+			return;
+		}
 		pScript->SetUser(this);
 		SetScript(pScript);
 		
@@ -924,19 +931,6 @@ void User::OnScriptMessageAnswer(InPacket * iPacket)
 {
 	if (GetScript() != nullptr)
 		m_pScript->OnPacket(iPacket);
-}
-
-void User::OnScriptRun()
-{
-	std::unique_lock<std::mutex> lock(m_scriptLock);
-	m_cvForScript.wait(lock);
-
-	delete m_pScript;
-}
-
-void User::OnScriptDone()
-{
-	m_cvForScript.notify_all();
 }
 
 void User::OnQuestRequest(InPacket * iPacket)
@@ -1236,6 +1230,24 @@ void User::SendQuestResult(int nResult, int nQuestID, int dwTemplateID)
 	oPacket.Encode4(dwTemplateID);
 	oPacket.Encode4(0);
 	oPacket.Encode1(0);
+	SendPacket(&oPacket);
+}
+
+void User::SendChatMessage(int nType, const std::string & sMsg)
+{
+	OutPacket oPacket;
+	oPacket.Encode2((short)UserSendPacketFlag::UserLocal_OnChatMsg);
+	oPacket.Encode2((short)nType);
+	oPacket.EncodeStr(sMsg);
+	SendPacket(&oPacket);
+}
+
+void User::SendNoticeMessage(int nType, const std::string & sMsg)
+{
+	OutPacket oPacket;
+	oPacket.Encode2((short)UserSendPacketFlag::UserLocal_OnNoticeMsg);
+	oPacket.EncodeStr(sMsg);
+	oPacket.Encode1((unsigned char)nType);
 	SendPacket(&oPacket);
 }
 

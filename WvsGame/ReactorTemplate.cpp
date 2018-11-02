@@ -1,5 +1,6 @@
 #include "ReactorTemplate.h"
 #include "..\WvsLib\Wz\WzResMan.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 
 std::map<int, ReactorTemplate*> ReactorTemplate::m_mReactorTemplate;
 
@@ -11,7 +12,7 @@ void ReactorTemplate::RegisterReactor(int nTemplateID, void * pImg)
 {
 	auto& ref = *((WZ::Node*)pImg);
 	auto empty = WZ::Node();
-	ReactorTemplate *pTemplate = new ReactorTemplate;
+	ReactorTemplate *pTemplate = AllocObj(ReactorTemplate);
 	pTemplate->m_nTemplateID = nTemplateID;
 	for (int i = 0; ; ++i)
 	{

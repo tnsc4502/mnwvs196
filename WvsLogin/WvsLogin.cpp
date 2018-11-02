@@ -5,8 +5,8 @@
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 
 WvsLogin::WvsLogin()
 {

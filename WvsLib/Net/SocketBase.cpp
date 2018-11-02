@@ -1,9 +1,12 @@
 #include "SocketBase.h"
-#include "..\Constants\ServerConstants.hpp"
+#include "..\Common\ServerConstants.hpp"
 #include "OutPacket.h"
 #include "InPacket.h"
 #include <functional>
 #include <iostream>
+
+#include "..\Memory\MemoryPoolMan.hpp"
+#include "..\Logger\WvsLogger.h"
 
 #include "..\Crypto\WvsCrypto.hpp"
 #include "..\Logger\WvsLogger.h"
@@ -17,15 +20,15 @@ SocketBase::SocketBase(asio::io_service& serverService, bool isLocalServer)
 	mResolver(serverService),
 	bIsLocalServer(isLocalServer),
 	nSocketID(SocketBase::DesignateSocketID()),
-	aRecvIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16)),
-	aSendIV((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(16))
+	aRecvIV((unsigned char*)AllocObj(char[16])),
+	aSendIV((unsigned char*)AllocObj(char[16]))
 {
 }
 
 SocketBase::~SocketBase()
 {
-	MSMemoryPoolMan::GetInstance()->DestructArray(aRecvIV);
-	MSMemoryPoolMan::GetInstance()->DestructArray(aSendIV);
+	FreeObj_T(char[16], aRecvIV);
+	FreeObj_T(char[16], aSendIV);
 }
 
 void SocketBase::SetSocketDisconnectedCallBack(const std::function<void(SocketBase *)>& fObject)
@@ -207,7 +210,7 @@ void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t byt
 
 void SocketBase::OnWaitingPacket()
 {
-	auto buffer = new unsigned char[4];
+	auto buffer = AllocArray(unsigned char, 4);
 	//aRecivedPacket.reset((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(4));
 	asio::async_read(mSocket,
 		asio::buffer(buffer, 4),
@@ -227,20 +230,22 @@ void SocketBase::OnReceive(const std::error_code &ec, std::size_t bytes_transfer
 			return;
 		}
 
-		delete[] buffer;
-		buffer = new unsigned char[nPacketLen];
+		//delete[] buffer;
+		FreeArray(buffer, 4);
+		buffer = AllocArray(unsigned char, nPacketLen);
+		//buffer = new unsigned char[nPacketLen];
 		//aRecivedPacket.reset((unsigned char*)MSMemoryPoolMan::GetInstance()->AllocateArray(nPacketLen));
 
 		asio::async_read(mSocket,
 			asio::buffer(buffer, nPacketLen),
 			std::bind(&SocketBase::ProcessPacket,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffer));
+				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffer, nPacketLen));
 	}
 	else
 		OnDisconnect();
 }
 
-void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer)
+void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_transferred, unsigned char* buffer, int nPacketLen)
 {
 	if (!ec)
 	{
@@ -257,7 +262,8 @@ void SocketBase::ProcessPacket(const std::error_code &ec, std::size_t bytes_tran
 			WvsLogger::LogFormat("解析封包時發生錯誤，OPCode : %d, 異常訊息 : %s\n", (int)iPacket.Decode2(), ex.what());
 			iPacket.Print();
 		}
-		delete[] buffer;
+		FreeArray(buffer, nPacketLen);
+		//delete[] buffer;
 		OnWaitingPacket();
 	}
 }

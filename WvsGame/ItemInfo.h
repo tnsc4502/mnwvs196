@@ -132,6 +132,16 @@ public:
 	bool IsOnlyItem(int nItemID);
 	bool IsTradeBlockItem(int nItemID);
 	bool IsQuestItem(int nItemID);
+	static bool IsWeapon(int nItemID);
+	static bool IsCoat(int nItemID);
+	static bool IsCape(int nItemID);
+	static bool IsPants(int nItemID);
+	static bool IsHair(int nItemID);
+	static bool IsFace(int nItemID);
+	static bool IsShield(int nItemID);
+	static bool IsShoes(int nItemID);
+	static bool IsLongcoat(int nItemID);
+	static bool IsCap(int nItemID);
 	GW_ItemSlotBase* GetItemSlot(int nItemID, ItemVariationOption enOption);
 
 private:

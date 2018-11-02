@@ -78,7 +78,7 @@ void ReactorPool::CreateReactor(ReactorGen * pPrg)
 	if (pTemplate == nullptr)
 		return;
 
-	auto pReactor = new Reactor(pTemplate, m_pField);
+	auto pReactor = AllocObjCtor(Reactor)(pTemplate, m_pField);
 	pReactor->m_nTemplateID = pPrg->nTemplateID;
 	pReactor->m_ptPos.x = pPrg->nX;
 	pReactor->m_ptPos.y = pPrg->nY;
@@ -143,7 +143,7 @@ void ReactorPool::RemoveReactor(Reactor * pReactor)
 	m_pField->BroadcastPacket(&oPacket);
 	m_mReactorName.erase(((ReactorGen*)pReactor->m_pReactorGen)->sName);
 	m_mReactor.erase(pReactor->m_nFieldObjectID);
-	delete pReactor;
+	FreeObj( pReactor );
 }
 
 void ReactorPool::Update(int tCur)

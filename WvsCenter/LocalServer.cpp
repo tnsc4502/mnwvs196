@@ -8,11 +8,12 @@
 #include "..\WvsLib\Net\PacketFlags\CenterPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\ShopPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
-
-#include "..\WvsLib\Constants\ServerConstants.hpp"
+#include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "..\WvsLib\Common\ServerConstants.hpp"
 #include "WvsCenter.h"
 #include "WvsWorld.h"
 #include "UserTransferStatus.h"
+#include "..\WvsGame\ItemInfo.h"
 
 LocalServer::LocalServer(asio::io_service& serverService)
 	: SocketBase(serverService, true)
@@ -119,23 +120,40 @@ void LocalServer::OnRequestCreateNewCharacter(InPacket *iPacket)
 	int nSubJob = iPacket->Decode2();
 	unsigned char nGender = iPacket->Decode1();
 	unsigned char nSkin = iPacket->Decode1();
-	iPacket->Decode1();
-	int nFace = iPacket->Decode4();
-	int nHair = iPacket->Decode4();
-
-	int nTopID = iPacket->Decode4();
-	int nShoesID = iPacket->Decode4();
-	int nWeaponID = iPacket->Decode4();
+	int nAttr = iPacket->Decode1(), 
+		nAttrRead = 0,
+		nFaceID = 0,
+		nHairID = 0;
 
 	int aEquips[CharacterDBAccessor::EQP_ID_FLAG_END] = { 0 };
 	int aStats[CharacterDBAccessor::STAT_FLAG_END] = { 0 };
 
+	for (int i = 0; i < nAttr; ++i)
+	{
+		nAttrRead = iPacket->Decode4();
+		if (ItemInfo::IsWeapon(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_WeaponEquip] = nAttrRead;
+		else if (ItemInfo::IsPants(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_PantsEquip] = nAttrRead;
+		else if (ItemInfo::IsCoat(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_CoatEquip] = nAttrRead;
+		else if (ItemInfo::IsCap(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_CapEquip] = nAttrRead;
+		else if (ItemInfo::IsCape(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_CapeEquip] = nAttrRead;
+		else if (ItemInfo::IsFace(nAttrRead))
+			nFaceID = nAttrRead;
+		else if (ItemInfo::IsHair(nAttrRead))
+			nHairID = nAttrRead;
+		else if (ItemInfo::IsShield(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_ShieldEquip] = nAttrRead;
+		else if (ItemInfo::IsShoes(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_ShoesEquip] = nAttrRead;
+		else if (ItemInfo::IsLongcoat(nAttrRead))
+			aEquips[CharacterDBAccessor::EQP_ID_CoatEquip] = nAttrRead;
+	}
+
 	CharacterDBAccessor::GetDefaultCharacterStat(aStats);
-
-	aEquips[CharacterDBAccessor::EQP_ID_TopEquip] = nTopID;
-	aEquips[CharacterDBAccessor::EQP_ID_ShoesEquip] = nShoesID;
-	aEquips[CharacterDBAccessor::EQP_ID_WeaponEquip] = nWeaponID;
-
 	CharacterDBAccessor::GetInstance()->PostCreateNewCharacterRequest(
 		this, 
 		nLoginSocketID, 
@@ -143,8 +161,8 @@ void LocalServer::OnRequestCreateNewCharacter(InPacket *iPacket)
 		WvsWorld::GetInstance()->GetWorldInfo().nWorldID, 
 		strName, 
 		nGender, 
-		nFace, 
-		nHair, 
+		nFaceID,
+		nHairID,
 		nSkin, 
 		(const int*)aEquips, 
 		(const int*)aStats);
@@ -212,7 +230,7 @@ void LocalServer::OnRequestMigrateOut(InPacket * iPacket)
 	WvsLogger::LogFormat("OnRequestMigrateOut is game end = %d\n", bGameEnd == true ? 1 : 0);
 	if (!bGameEnd)
 	{
-		UserTransferStatus* pStatus = new UserTransferStatus;
+		UserTransferStatus* pStatus = AllocObj( UserTransferStatus );
 		pStatus->Decode(iPacket);
 		WvsWorld::GetInstance()->SetUserTransferStatus(nCharacterID, pStatus);
 	}

@@ -11,7 +11,7 @@ protected:
 
 	char m_bMoveAction;
 
-	Field* m_pField;
+	Field* m_pField = nullptr;
 
 	FieldPoint m_ptPos;
 

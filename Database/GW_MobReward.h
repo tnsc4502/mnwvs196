@@ -1,9 +1,12 @@
 #pragma once
 #include <vector>
 #include <map>
+#include "..\WvsLib\Common\CommonDef.h"
 
 class GW_MobReward
 {
+	ALLOW_PRIVATE_ALLOC
+
 	GW_MobReward();
 	~GW_MobReward();
 	struct RewardInfo

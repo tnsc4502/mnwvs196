@@ -37,7 +37,7 @@
     <Filter Include="Net\PacketFlags">
       <UniqueIdentifier>{2361a4f5-120d-45f2-a471-6a116fbd94ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Constants">
+    <Filter Include="Common">
       <UniqueIdentifier>{a1af38c5-999e-4c01-84ff-3653c7bd56f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -237,15 +237,6 @@
     <ClInclude Include="Net\PacketFlags\PacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
     </ClInclude>
-    <ClInclude Include="Constants\ConfigLoader.hpp">
-      <Filter>Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants\CryptoConstants.hpp">
-      <Filter>Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants\ServerConstants.hpp">
-      <Filter>Constants</Filter>
-    </ClInclude>
     <ClInclude Include="Random\Rand32.h">
       <Filter>Random</Filter>
     </ClInclude>
@@ -254,12 +245,6 @@
     </ClInclude>
     <ClInclude Include="DateTime\GameDateTime.h">
       <Filter>DateTime</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants\WvsLoginConstants.hpp">
-      <Filter>Constants</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants\WvsGameConstants.hpp">
-      <Filter>Constants</Filter>
     </ClInclude>
     <ClInclude Include="Net\PacketFlags\ShopPacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
@@ -278,6 +263,24 @@
     </ClInclude>
     <ClInclude Include="Net\PacketFlags\ReactorPacketFlags.hpp">
       <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ConfigLoader.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CryptoConstants.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ServerConstants.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\WvsGameConstants.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\WvsLoginConstants.hpp">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CommonDef.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,11 +494,14 @@
     <ClCompile Include="Task\AsyncScheduler.cpp">
       <Filter>Task</Filter>
     </ClCompile>
-    <ClCompile Include="Constants\ConfigLoader.cpp">
-      <Filter>Constants</Filter>
-    </ClCompile>
     <ClCompile Include="Net\PacketFlags\ReactorPacketFlags.cpp">
       <Filter>Net\PacketFlags</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\MemoryPool.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ConfigLoader.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

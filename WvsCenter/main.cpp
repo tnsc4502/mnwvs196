@@ -9,7 +9,7 @@
 
 #include "..\WvsLib\Net\InPacket.h"
 
-#include "..\WvsLib\Constants\ConfigLoader.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "..\Database\WvsUnified.h"
 
 #include "..\Database\GA_Character.hpp"
