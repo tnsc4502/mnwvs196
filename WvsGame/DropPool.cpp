@@ -112,7 +112,7 @@ void DropPool::OnPickUpRequest(User * pUser, InPacket * iPacket)
 		else 
 		{
 			nItemID = pDrop->m_pItem->nItemID;
-			if (!pDrop->m_pItem->IsTreatSingly())
+			if (!ItemInfo::IsTreatSingly(pDrop->m_pItem->nItemID, pDrop->m_pItem->liExpireDate))
 				nCount = ((GW_ItemSlotBundle*)pDrop->m_pItem)->nNumber;
 			bDropRemained = (QWUInventory::PickUpItem(pUser, false, pDrop->m_pItem) == false);
 		}

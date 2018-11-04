@@ -119,7 +119,25 @@ unsigned short InPacket::RemainedCount() const
 	return nPacketSize - nReadPos;
 }
 
+unsigned short InPacket::GetReadCount() const
+{
+	return nReadPos;
+}
+
 void InPacket::RestorePacket()
 {
 	nReadPos = 0;
+}
+
+void InPacket::Seek(int nPos)
+{
+	if(nPos >= 0 && nPos < nPacketSize)
+		nReadPos = nPos;
+}
+
+void InPacket::Offset(int nOffset)
+{
+	nReadPos += nOffset;
+	if (nReadPos < 0 || nReadPos >= nPacketSize)
+		nReadPos -= nOffset;
 }

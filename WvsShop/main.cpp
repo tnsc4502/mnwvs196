@@ -10,6 +10,8 @@
 
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\Common\ConfigLoader.hpp"
+#include "..\WvsGame\ItemInfo.h"
+#include "ShopInfo.h"
 //#include "..\WvsLib\Logger\WvsLogger.h"
 
 void ConnectionAcceptorThread(short nPort)
@@ -22,6 +24,8 @@ void ConnectionAcceptorThread(short nPort)
 int main(int argc, char** argv)
 {
 	WvsShop *pShopServer = WvsBase::GetInstance<WvsShop>();
+	ItemInfo::GetInstance()->Initialize();
+	ShopInfo::GetInstance()->Init();
 
 	if (argc > 1)
 		ConfigLoader::GetInstance()->LoadConfig(argv[1]);

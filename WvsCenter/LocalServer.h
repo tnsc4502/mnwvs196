@@ -22,5 +22,12 @@ public:
 	void OnRequestMigrateOut(InPacket *iPacket);
 	void OnRequestTransferChannel(InPacket *iPacket);
 	void OnRequestMigrateCashShop(InPacket *iPacket);
+	
+	//Cash Shop
+	void OnRequestBuyCashItem(InPacket *iPacket);
+	void OnRequestLoadLocker(InPacket *iPacket);
+	void OnReuqestUpdateCash(InPacket *iPacket);
+	void OnReuqestMoveLockerToSlot(InPacket *iPacket);
+	void OnReuqestMoveSlotToLocker(InPacket *iPacket);
 };
 

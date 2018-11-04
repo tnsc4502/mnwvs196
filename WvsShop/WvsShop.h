@@ -25,6 +25,8 @@ public:
 	std::shared_ptr<Center>& GetCenter();
 	void InitializeCenter(); 
 
+	User* FindUser(int nUserID);
+
 	void OnUserConnected(std::shared_ptr<User> &pUser);
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 };

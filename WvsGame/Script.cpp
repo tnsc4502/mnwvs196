@@ -31,7 +31,7 @@ void Script::Register(lua_State * L)
 		{ NULL, NULL }
 	};
 
-	luaW_register<Script>(L, "self", 
+	luaW_register<Script>(L, "System", 
 		SysTable, 
 		SysMetatable,
 		&(Script::GetSelf),

@@ -267,6 +267,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	  m_pSecondaryStat(AllocObj(SecondaryStat))
 {
 	_pSocket->SetUser(this);
+	m_pCharacterData->nAccountID = iPacket->Decode4();
 	m_pCharacterData->DecodeCharacterData(iPacket, true);
 	m_pSecondaryStat->DecodeInternal(this, iPacket);
 }

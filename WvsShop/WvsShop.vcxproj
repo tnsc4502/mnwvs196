@@ -137,6 +137,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WVSSHOP;NDEBUG;_WIN32_WINNT=0x0601;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Common\;..\Library\boost_1_63_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,15 +152,21 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\WvsGame\ItemInfo.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="CSCommodity.h" />
+    <ClInclude Include="ShopInfo.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WvsShop.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\WvsGame\ItemInfo.cpp" />
     <ClCompile Include="Center.cpp" />
     <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CSCommodity.cpp" />
+    <ClCompile Include="ShopInfo.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="WvsShop.cpp" />
   </ItemGroup>

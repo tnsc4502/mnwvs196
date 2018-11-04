@@ -121,6 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>DBLIB;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Library\poco-1.7.8-all\Foundation\include;..\Library\poco-1.7.8-all\Data\include;..\Library\poco-1.7.8-all\Data\MySQL\include;..\Common\;..\Library\boost_1_63_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +141,9 @@
     <ClInclude Include="CharacterDBAccessor.h" />
     <ClInclude Include="DBConstants.h" />
     <ClInclude Include="GA_Character.hpp" />
+    <ClInclude Include="GW_Account.h" />
     <ClInclude Include="GW_Avatar.hpp" />
+    <ClInclude Include="GW_CashItemInfo.h" />
     <ClInclude Include="GW_CharacterLevel.h" />
     <ClInclude Include="GW_CharacterList.hpp" />
     <ClInclude Include="GW_CharacterMoney.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="GW_ItemSlotBase.h" />
     <ClInclude Include="GW_ItemSlotBundle.h" />
     <ClInclude Include="GW_ItemSlotEquip.h" />
+    <ClInclude Include="GW_ItemSlotPet.h" />
     <ClInclude Include="GW_MobReward.h" />
     <ClInclude Include="GW_QuestRecord.h" />
     <ClInclude Include="GW_SkillRecord.h" />
@@ -157,7 +161,9 @@
   <ItemGroup>
     <ClCompile Include="CharacterDBAccessor.cpp" />
     <ClCompile Include="GA_Character.cpp" />
+    <ClCompile Include="GW_Account.cpp" />
     <ClCompile Include="GW_Avatar.cpp" />
+    <ClCompile Include="GW_CashItemInfo.cpp" />
     <ClCompile Include="GW_CharacterLevel.cpp" />
     <ClCompile Include="GW_CharacterList.cpp" />
     <ClCompile Include="GW_CharacterMoney.cpp" />
@@ -166,6 +172,7 @@
     <ClCompile Include="GW_ItemSlotBase.cpp" />
     <ClCompile Include="GW_ItemSlotBundle.cpp" />
     <ClCompile Include="GW_ItemSlotEquip.cpp" />
+    <ClCompile Include="GW_ItemSlotPet.cpp" />
     <ClCompile Include="GW_MobReward.cpp" />
     <ClCompile Include="GW_QuestRecord.cpp" />
     <ClCompile Include="GW_SkillRecord.cpp" />

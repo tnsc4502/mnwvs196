@@ -63,7 +63,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 	if (nTI < 1 || nTI > 5)
 		return false;
 	auto& itemSlot = pCharacterData->mItemSlot[nTI];
-	if (pItem->IsTreatSingly())
+	if (ItemInfo::IsTreatSingly(pItem->nItemID, pItem->liExpireDate))
 	{
 		short nPOS = pCharacterData->FindEmptySlotPosition(nTI);
 		if (nPOS > 0) 
@@ -262,7 +262,7 @@ bool InventoryManipulator::RawRemoveItem(GA_Character * pCharacterData, int nTI,
 		}
 		int nRemaining = 0;
 		//
-		if (pItem->IsTreatSingly() && nTI == 1)
+		if (ItemInfo::IsTreatSingly(pItem->nItemID, pItem->liExpireDate) && nTI == 1)
 			pCharacterData->RemoveItem(nTI, nPOS);
 		else if (nCount >= 1)
 		{

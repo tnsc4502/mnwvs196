@@ -10,6 +10,7 @@
 #include "BridleItem.h"
 #include "SkillLearnItem.h"
 #include "PortableChairItem.h"
+#include "CashItem.h"
 
 #include <vector>
 
@@ -109,19 +110,21 @@ public:
 	*/
 	void RegisterStateChangeItem(int nItemID, void *pProp);
 
-	ItemInfo::EquipItem* GetEquipItem(int nItemID);
-	ItemInfo::BundleItem* GetBundleItem(int nItemID);
-	ItemInfo::UpgradeItem* GetUpgradeItem(int nItemID);
-	ItemInfo::PortalScrollItem* GetPortalScrollItem(int nItemID);
+	EquipItem* GetEquipItem(int nItemID);
+	BundleItem* GetBundleItem(int nItemID);
+	UpgradeItem* GetUpgradeItem(int nItemID);
+	PortalScrollItem* GetPortalScrollItem(int nItemID);
 
-	ItemInfo::MobSummonItem* GetMobSummonItem(int nItemID);
-	ItemInfo::PetFoodItem* GetPetFoodItem(int nItemID);
-	ItemInfo::TamingMobFoodItem* GetTamingMobFoodItem(int nItemID);
-	ItemInfo::BridleItem* GetBridleItem(int nItemID);
-	ItemInfo::SkillLearnItem* GetSkillLearnItem(int nItemID);
-	ItemInfo::PortableChairItem* GetPortableChairItem(int nItemID);
-	ItemInfo::StateChangeItem* GetStateChangeItem(int nItemID);
+	MobSummonItem* GetMobSummonItem(int nItemID);
+	PetFoodItem* GetPetFoodItem(int nItemID);
+	TamingMobFoodItem* GetTamingMobFoodItem(int nItemID);
+	BridleItem* GetBridleItem(int nItemID);
+	SkillLearnItem* GetSkillLearnItem(int nItemID);
+	PortableChairItem* GetPortableChairItem(int nItemID);
+	StateChangeItem* GetStateChangeItem(int nItemID);
+	CashItem* GetCashItem(int nItemID);
 
+	static bool IsTreatSingly(int nItemID, long long int liExpireDate);
 	bool ConsumeOnPickup(int nItemID);
 	bool ExpireOnLogout(int nItemID);
 	int GetBulletPAD(int nItemID);
@@ -156,6 +159,7 @@ private:
 	std::map<int, BridleItem*> m_mBridleItem;
 	std::map<int, SkillLearnItem*> m_mSkillLearnItem;
 	std::map<int, PortableChairItem*> m_mPortableChairItem;
+	std::map<int, CashItem*> m_mCashItem;
 
 	std::map<int, std::string> m_mItemString, m_mMapString;
 	

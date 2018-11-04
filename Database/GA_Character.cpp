@@ -3,6 +3,7 @@
 #include "..\WvsLib\Net\OutPacket.h"
 #include "GW_ItemSlotEquip.h"
 #include "GW_ItemSlotBundle.h"
+#include "GW_ItemSlotPet.h"
 #include "GW_CharacterStat.h"
 #include "GW_CharacterLevel.h"
 #include "GW_CharacterMoney.h"
@@ -250,8 +251,8 @@ void GA_Character::Save(bool bIsNewCharacter)
 		<< "Gender = '" << nGender << "', "
 		<< "CharacterName = '" << strName << "', "
 		<< "Fame = '" << nFame << "', "
-		<< "GuildID = '" << nGuildID << "', "
-		<< "PartyID = '" << nPartyID << "', "
+		//<< "GuildID = '" << nGuildID << "', "
+		//<< "PartyID = '" << nPartyID << "', "
 		<< "FieldID = '" << nFieldID << "' WHERE CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	mAvatarData->Save(nCharacterID, bIsNewCharacter);
@@ -261,13 +262,20 @@ void GA_Character::Save(bool bIsNewCharacter)
 	mSlotCount->Save(nCharacterID, bIsNewCharacter);
 
 	for (auto& eqp : mItemSlot[1])
-		((GW_ItemSlotEquip*)(eqp.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::EQUIP);
+		((GW_ItemSlotEquip*)(eqp.second))->Save(nCharacterID);
 	for (auto& con : mItemSlot[2])
-		((GW_ItemSlotBundle*)(con.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+		((GW_ItemSlotBundle*)(con.second))->Save(nCharacterID);
 	for (auto& etc : mItemSlot[3])
-		((GW_ItemSlotBundle*)(etc.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::ETC);
+		((GW_ItemSlotBundle*)(etc.second))->Save(nCharacterID);
 	for (auto& ins : mItemSlot[4])
-		((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+		((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID);
+	for (auto& ins : mItemSlot[5])
+	{
+		//if(ins.second->bIsPet)
+		//	((GW_ItemSlotPet*)(ins.second))->Save(nCharacterID);
+		//else
+			((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID);
+	}
 	SaveInventoryRemovedRecord();
 
 	for (auto& skill : mSkillRecord)
@@ -282,20 +290,23 @@ void GA_Character::SaveInventoryRemovedRecord()
 {
 	GW_ItemSlotEquip equipRemovedInstance;
 	GW_ItemSlotBundle bundleRemovedInstance;
+	GW_ItemSlotPet petRemovedInstance;
 	equipRemovedInstance.nCharacterID = nCharacterID;
 	bundleRemovedInstance.nCharacterID = nCharacterID;
-	for (int i = 1; i <= 4; ++i)
+	for (int i = 1; i <= 5; ++i)
 	{
 		for (const auto& liSN : mItemRemovedRecord[i])
 			if (i == 1)
 			{
 				equipRemovedInstance.liItemSN = liSN * -1;
-				equipRemovedInstance.Save(nCharacterID, GW_ItemSlotBase::GW_ItemSlotType::EQUIP);
+				equipRemovedInstance.nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
+				equipRemovedInstance.Save(nCharacterID);
 			}
 			else
 			{
 				bundleRemovedInstance.liItemSN = liSN * -1;
-				bundleRemovedInstance.Save(nCharacterID, (GW_ItemSlotBase::GW_ItemSlotType)(i - 1));
+				equipRemovedInstance.nType = (GW_ItemSlotBase::GW_ItemSlotType)(GW_ItemSlotBase::GW_ItemSlotType::EQUIP + (i - 1));
+				bundleRemovedInstance.Save(nCharacterID);
 			}
 	}
 }
@@ -376,6 +387,7 @@ int GA_Character::FindCashItemSlotPosition(int nTI, long long int liSN)
 	for (auto& slot : itemSlot)
 		if (slot.second->liCashItemSN == liSN)
 			return slot.second->nPOS;
+	return 0;
 }
 
 int GA_Character::FindGeneralItemSlotPosition(int nTI, int nItemID, long long int dateExpire, long long int liSN)
@@ -525,7 +537,7 @@ void GA_Character::DecodeCharacterData(InPacket *iPacket, bool bForInternal)
 		iPacket->Decode1();
 	}
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 1; i <= 5; ++i)
 		mSlotCount->aSlotCount[i] = iPacket->Decode1();
 
 	DecodeInventoryData(iPacket, bForInternal);
@@ -956,7 +968,21 @@ void GA_Character::DecodeInventoryData(InPacket *iPacket, bool bForInternal)
 		mItemSlot[4].insert({ bundle->nPOS, bundle });
 	}
 
-	iPacket->Decode1(); //CASH
+	while ((nPos = iPacket->Decode1()) != 0)
+	{
+		GW_ItemSlotBase* pCash = nullptr;
+		int nType = iPacket->Decode1();
+		iPacket->Offset(-1);
+		if (nType == 3)
+			pCash = AllocObj(GW_ItemSlotPet);
+		else
+			pCash = AllocObj(GW_ItemSlotBundle);
+
+		pCash->nPOS = nPos;
+		pCash->nType = GW_ItemSlotBase::GW_ItemSlotType::CASH;
+		pCash->Decode(iPacket, bForInternal);
+		mItemSlot[5].insert({ pCash->nPOS, pCash });
+	}
 
 	iPacket->Decode4();
 	iPacket->Decode4();
@@ -1054,7 +1080,7 @@ void GA_Character::EncodeCharacterData(OutPacket *oPacket, bool bForInternal)
 		oPacket->Encode1(0);
 	}
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 1; i <= 5; ++i)
 		oPacket->Encode1(mSlotCount->aSlotCount[i]);
 
 	EncodeInventoryData(oPacket, bForInternal);
@@ -1350,7 +1376,8 @@ void GA_Character::EncodeInventoryData(OutPacket *oPacket, bool bForInternal)
 		item.second->Encode(oPacket, bForInternal);
 	oPacket->Encode1(0); //ETC
 
-
+	for (auto &item : mItemSlot[5])
+		item.second->Encode(oPacket, bForInternal);
 	oPacket->Encode1(0); //CASH
 
 	oPacket->Encode4(0);
@@ -1388,44 +1415,68 @@ void GA_Character::LoadItemSlot()
 {
 
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_EQP Where CharacterID = " << nCharacterID;
-	queryStatement.execute();
+	queryStatement << "SELECT ItemSN FROM ItemSlot_EQP Where CharacterID = " << nCharacterID << " AND POS < " << GW_ItemSlotBase::LOCK_POS;
+	queryStatement.execute(); 
 	Poco::Data::RecordSet recordSet(queryStatement);
 
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
 		GW_ItemSlotEquip *eqp = AllocObj(GW_ItemSlotEquip);
-		eqp->Load(recordSet["SN"]);
+		eqp->Load(recordSet["ItemSN"]);
 		mItemSlot[1][eqp->nPOS] = eqp;
 	}
 
 	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_CON Where CharacterID = " << nCharacterID;
+	queryStatement << "SELECT ItemSN FROM ItemSlot_CON Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::CONSUME);
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::CONSUME;
+		eqp->Load(recordSet["ItemSN"]);
 		mItemSlot[2][eqp->nPOS] = eqp;
 	}
 
 	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
+	queryStatement << "SELECT ItemSN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::ETC);
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::INSTALL;
+		eqp->Load(recordSet["ItemSN"]);
 		mItemSlot[3][eqp->nPOS] = eqp;
 	}
 
 	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
+	queryStatement << "SELECT ItemSN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
-		eqp->Load(recordSet["SN"], GW_ItemSlotBase::GW_ItemSlotType::INSTALL);
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::ETC;
+		eqp->Load(recordSet["ItemSN"]);
 		mItemSlot[4][eqp->nPOS] = eqp;
+	}
+
+	queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "SELECT CashItemSN FROM ItemSlot_Cash Where CharacterID = " << nCharacterID << " AND POS < " << GW_ItemSlotBase::LOCK_POS;
+	queryStatement.execute();
+	recordSet.reset(queryStatement);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
+		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::CASH;
+		eqp->Load(recordSet["CashItemSN"]);
+		mItemSlot[5][eqp->nPOS] = eqp;
+	}
+
+	queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "SELECT CashItemSN FROM ItemSlot_Pet Where CharacterID = " << nCharacterID << " AND POS < " << GW_ItemSlotBase::LOCK_POS;
+	queryStatement.execute();
+	recordSet.reset(queryStatement);
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+		GW_ItemSlotPet *pet = AllocObj(GW_ItemSlotPet);
+		pet->Load(recordSet["CashItemSN"]);
+		mItemSlot[5][pet->nPOS] = pet;
 	}
 }
 

@@ -28,6 +28,7 @@ if (nFlag & EQP_##name) {\
 
 GW_ItemSlotEquip::GW_ItemSlotEquip()
 {
+	nInstanceType = GW_ItemSlotInstanceType::GW_ItemSlotEquip_Type;
 }
 
 
@@ -37,13 +38,17 @@ GW_ItemSlotEquip::~GW_ItemSlotEquip()
 
 void GW_ItemSlotEquip::Load(ATOMIC_COUNT_TYPE SN)
 {
+	std::string sColumnName = "ItemSN";
+	if (bIsCash)
+		sColumnName = "CashItemSN";
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	queryStatement << "SELECT * FROM ItemSlot_EQP Where SN = " << SN;
+	queryStatement << "SELECT * FROM ItemSlot_EQP Where " + sColumnName + " = " << SN;
 	queryStatement.execute();
 
 	Poco::Data::RecordSet recordSet(queryStatement);
 	nCharacterID = recordSet["CharacterID"];
 	liItemSN = recordSet["ItemSN"];
+	liCashItemSN = recordSet["CashItemSN"];
 	nItemID = recordSet["ItemID"];
 	liExpireDate = recordSet["ExpireDate"];
 	nAttribute = recordSet["Attribute"];
@@ -67,11 +72,13 @@ void GW_ItemSlotEquip::Load(ATOMIC_COUNT_TYPE SN)
 	nCraft = recordSet["I_Craft"];
 	nJump = recordSet["I_Jump"];
 	nType = GW_ItemSlotType::EQUIP;
+
+	bIsCash = (liCashItemSN != -1);
 }
 
-void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
+void GW_ItemSlotEquip::Save(int nCharacterID)
 {
-	if (type != GW_ItemSlotType::EQUIP)
+	if (nType != GW_ItemSlotType::EQUIP)
 		throw std::runtime_error("Invalid Equip Type.");
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
 	try 
@@ -88,8 +95,11 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 		if (liItemSN == -1)
 		{
 			liItemSN = IncItemSN(GW_ItemSlotType::EQUIP);
-			queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, Cuttable, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
+			if (bIsCash && liCashItemSN == -1)
+				liCashItemSN = IncItemSN(GW_ItemSlotType::CASH);
+			queryStatement << "INSERT INTO ItemSlot_EQP (ItemSN, CashItemSN, ItemID, CharacterID, ExpireDate, Attribute, POS, RUC, CUC, Cuttable, I_STR, I_DEX, I_INT, I_LUK, I_MaxHP, I_MaxMP, I_PAD, I_MAD, I_PDD, I_MDD, I_ACC, I_EVA, I_Speed, I_Craft, I_Jump) VALUES("
 				<< liItemSN << ", "
+				<< liCashItemSN << ", "
 				<< nItemID << ", "
 				<< nCharacterID << ", "
 				<< liExpireDate << ", "
@@ -118,6 +128,7 @@ void GW_ItemSlotEquip::Save(int nCharacterID, GW_ItemSlotType type)
 		else
 		{
 			queryStatement << "UPDATE ItemSlot_EQP Set "
+				<< "CashItemSN = '" << liCashItemSN << "', "
 				<< "ItemID = '" << nItemID << "', "
 				<< "CharacterID = '" << nCharacterID << "', "
 				<< "ExpireDate = '" << liExpireDate << "', "
@@ -392,6 +403,11 @@ void GW_ItemSlotEquip::DecodeEquipAdvanced(InPacket *iPacket)
 
 	iPacket->Decode4();
 	iPacket->Decode8();
+}
+
+void GW_ItemSlotEquip::Release()
+{
+	FreeObj(this);
 }
 
 GW_ItemSlotBase * GW_ItemSlotEquip::MakeClone()

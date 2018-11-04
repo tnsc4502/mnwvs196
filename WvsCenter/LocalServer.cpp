@@ -51,16 +51,31 @@ void LocalServer::OnPacket(InPacket *iPacket)
 		case GameSendPacketFlag::RequestMigrateIn:
 			OnRequestMigrateIn(iPacket);
 			break;
-		case ShopSendPacketFlag::RequestMigrateOut:
+		case ShopInternalPacketFlag::RequestMigrateOut:
 		case GameSendPacketFlag::RequestMigrateOut:
 			OnRequestMigrateOut(iPacket);
 			break;
-		case ShopSendPacketFlag::RequestTransferToGame:
+		case ShopInternalPacketFlag::RequestTransferToGame:
 		case GameSendPacketFlag::RequestTransferChannel:
 			OnRequestTransferChannel(iPacket);
 			break;
 		case GameSendPacketFlag::RequestTransferShop:
 			OnRequestMigrateCashShop(iPacket);
+			break;
+		case ShopInternalPacketFlag::RequestBuyCashItem:
+			OnRequestBuyCashItem(iPacket);
+			break;
+		case ShopInternalPacketFlag::RequestLoadLocker:
+			OnRequestLoadLocker(iPacket);
+			break;
+		case ShopInternalPacketFlag::RequestUpdateCash:
+			OnReuqestUpdateCash(iPacket);
+			break;
+		case ShopInternalPacketFlag::RequestMoveLToS:
+			OnReuqestMoveLockerToSlot(iPacket);
+			break;
+		case ShopInternalPacketFlag::RequestMoveSToL:
+			OnReuqestMoveSlotToLocker(iPacket);
 			break;
 	}
 }
@@ -278,4 +293,39 @@ void LocalServer::OnRequestMigrateCashShop(InPacket * iPacket)
 		oPacket.Encode4(0);
 	}
 	this->SendPacket(&oPacket);
+}
+
+void LocalServer::OnRequestBuyCashItem(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostBuyCashItemRequest(this, nClientSocketID, nCharacterID, iPacket);
+}
+
+void LocalServer::OnRequestLoadLocker(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostLoadLockerRequest(this, nClientSocketID, nCharacterID, iPacket);
+}
+
+void LocalServer::OnReuqestUpdateCash(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostUpdateCashRequest(this, nClientSocketID, nCharacterID, iPacket);
+}
+
+void LocalServer::OnReuqestMoveLockerToSlot(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostMoveLockerToSlotRequest(this, nClientSocketID, nCharacterID, iPacket);
+}
+
+void LocalServer::OnReuqestMoveSlotToLocker(InPacket * iPacket)
+{
+	int nClientSocketID = iPacket->Decode4();
+	int nCharacterID = iPacket->Decode4();
+	CharacterDBAccessor::GetInstance()->PostMoveSlotToLockerRequest(this, nClientSocketID, nCharacterID, iPacket);
 }

@@ -68,6 +68,13 @@ void WvsShop::InitializeCenter()
 	tCenterWorkThread.detach();
 }
 
+User * WvsShop::FindUser(int nUserID)
+{
+	std::lock_guard<std::mutex> lockGuard(m_mUserLock);
+	auto findIter = m_mUserMap.find(nUserID);
+	return (findIter == m_mUserMap.end() ? nullptr : findIter->second.get());
+}
+
 void WvsShop::OnUserConnected(std::shared_ptr<User>& pUser)
 {
 	std::lock_guard<std::mutex> lockGuard(m_mUserLock);

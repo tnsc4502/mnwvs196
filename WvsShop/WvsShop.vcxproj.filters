@@ -17,10 +17,25 @@
     <ClCompile Include="User.cpp">
       <Filter>Shop</Filter>
     </ClCompile>
+    <ClCompile Include="CSCommodity.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="ShopInfo.cpp">
+      <Filter>Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WvsGame\ItemInfo.cpp">
+      <Filter>InGame\Item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shop">
       <UniqueIdentifier>{28b753a8-a855-4210-8544-5c7bb108af97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InGame">
+      <UniqueIdentifier>{0c66a3f2-9e07-4e90-b34e-46ee42ee5d72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="InGame\Item">
+      <UniqueIdentifier>{a7785c68-f5b4-4634-9767-49c75daeab55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +50,15 @@
     </ClInclude>
     <ClInclude Include="User.h">
       <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="ShopInfo.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="CSCommodity.h">
+      <Filter>Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WvsGame\ItemInfo.h">
+      <Filter>InGame\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

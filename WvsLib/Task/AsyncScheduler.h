@@ -25,8 +25,8 @@ public:
 
 	~AsyncScheduler()
 	{
-		delete mTimerInstance;
-		delete mCall;
+		FreeObj( mTimerInstance );
+		FreeObj( mCall );
 	}
 
 	void Start()
@@ -76,7 +76,7 @@ public:
 		if (!mIsRepeat)
 		{
 			mTimerInstance->stop();
-			delete mTimerInstance;
+			FreeObj( mTimerInstance );
 		}
 	}
 

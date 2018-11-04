@@ -3,6 +3,7 @@
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Database\GW_ItemSlotPet.h"
 #include "..\WvsLib\Random\Rand32.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
@@ -37,7 +38,8 @@ void ItemInfo::Initialize()
 	WvsLogger::LogRaw("[ItemInfo::Initialize]開始載入所有物品[IterateBundleItem Start]....\n");
 	IterateBundleItem();
 	WvsLogger::LogRaw("[ItemInfo::Initialize]物品載入完成[IterateBundleItem Done]....\n");
-	IterateCashItem();
+	//IterateCashItem();
+	IteratePetItem();
 	RegisterSpecificItems();
 	RegisterNoRollbackItem();
 	RegisterSetHalloweenItem();
@@ -116,6 +118,9 @@ void ItemInfo::IterateBundleItem()
 				int nItemID = atoi(item.Name().c_str());
 				BundleItem* pNewBundle = AllocObj( BundleItem );
 				LoadAbilityStat(pNewBundle->abilityStat, (void*)&infoImg);
+				if (pNewBundle->abilityStat.bCash)
+					m_mCashItem.insert({ nItemID, AllocObj(CashItem) });
+
 				pNewBundle->nItemID = nItemID;
 				pNewBundle->sItemName = m_mItemString[nItemID];
 				pNewBundle->nMaxPerSlot = infoImg["slotMax"];
@@ -168,10 +173,29 @@ void ItemInfo::IterateBundleItem()
 
 void ItemInfo::IteratePetItem()
 {
+	auto& img = stWzResMan->GetWz(Wz::Item)["Pet"];
+	for (auto& item : img)
+	{
+		int nItemID = atoi(item.Name().c_str());
+		CashItem *pItem = AllocObj(CashItem);
+		pItem->bIsPet = true;
+		m_mCashItem.insert({ nItemID, pItem });
+	}
+	
 }
 
 void ItemInfo::IterateCashItem()
 {
+	auto& img = stWzResMan->GetWz(Wz::Item)["Cash"];
+	for (auto& subImg : img)
+	{
+		for (auto& item : subImg)
+		{
+			int nItemID = atoi(item.Name().c_str());
+			CashItem *pItem = AllocObj(CashItem);
+			m_mCashItem.insert({ nItemID, pItem });
+		}
+	}
 }
 
 void ItemInfo::RegisterSpecificItems()
@@ -192,6 +216,9 @@ void ItemInfo::RegisterEquipItemInfo(EquipItem * pEqpItem, int nItemID, void * p
 
 	LoadIncrementStat(pEqpItem->incStat, (void*)&infoImg);
 	LoadAbilityStat(pEqpItem->abilityStat, (void*)&infoImg);
+
+	if (pEqpItem->abilityStat.bCash)
+		m_mCashItem.insert({ nItemID, AllocObj(CashItem) });
 
 	pEqpItem->nItemID = nItemID;
 	pEqpItem->nrSTR = infoImg["reqSTR"];
@@ -348,6 +375,12 @@ StateChangeItem * ItemInfo::GetStateChangeItem(int nItemID)
 	return (findIter != m_mStateChangeItem.end() ? findIter->second : nullptr);
 }
 
+CashItem * ItemInfo::GetCashItem(int nItemID)
+{
+	auto findIter = m_mCashItem.find(nItemID);
+	return (findIter != m_mCashItem.end() ? findIter->second : nullptr);
+}
+
 BundleItem * ItemInfo::GetBundleItem(int nItemID)
 {
 	auto findIter = m_mBundleItem.find(nItemID);
@@ -400,6 +433,14 @@ PortableChairItem * ItemInfo::GetPortableChairItem(int nItemID)
 {
 	auto findIter = m_mPortableChairItem.find(nItemID);
 	return (findIter != m_mPortableChairItem.end() ? findIter->second : nullptr);
+}
+
+bool ItemInfo::IsTreatSingly(int nItemID, long long int liExpireDate)
+{
+	int nItemHeader = nItemID / 1000000;
+	return (nItemHeader != 2 && nItemHeader != 3 && nItemHeader != 4
+		|| nItemID / 10000 == 207
+		/*|| liExpireDate != 0*/);
 }
 
 bool ItemInfo::ConsumeOnPickup(int nItemID)
@@ -640,6 +681,7 @@ void ItemInfo::LoadAbilityStat(BasicAbilityStat & refStat, void * pProp)
 	if (((int)infoImg["mobHP"] == 1) && (int)infoImg["mobHP"] < 100)
 		refStat.nAttribute |= ItemAttribute::eMobHP;
 
+	refStat.bCash = ((int)infoImg["cash"]) == 1;
 	refStat.bTimeLimited = ((int)infoImg["timeLimited"]) == 1;
 }
 
@@ -692,16 +734,28 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 
 		ret = pEquip;
 		ret->nAttribute = pItem->abilityStat.nAttribute;
+		ret->bIsCash = pItem->abilityStat.bCash;
 	}
-	else if (nType > 1 && nType <= 4)
+	else if (nType > 1 && nType <= 5)
 	{
 		auto pItem = GetBundleItem(nItemID);
 		if (pItem == nullptr)
-			return nullptr;
-
-		ret = AllocObj(GW_ItemSlotBundle);
-		((GW_ItemSlotBundle*)ret)->nNumber = 1;
-		ret->nAttribute = pItem->abilityStat.nAttribute;
+		{
+			auto pCash = GetCashItem(nItemID);
+			if (pCash && pCash->bIsPet)
+			{
+				ret = AllocObj(GW_ItemSlotPet);
+				((GW_ItemSlotPet*)ret)->nLevel = 1;
+				ret->bIsCash = ret->bIsPet = true;
+			}
+		}
+		else
+		{
+			ret = AllocObj(GW_ItemSlotBundle);
+			((GW_ItemSlotBundle*)ret)->nNumber = 1;
+			ret->nAttribute = pItem->abilityStat.nAttribute;
+			ret->bIsCash = pItem->abilityStat.bCash;
+		}
 	}
 	if (ret)
 	{

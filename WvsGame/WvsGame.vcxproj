@@ -167,6 +167,7 @@
     <ClInclude Include="BasicStat.h" />
     <ClInclude Include="BridleItem.h" />
     <ClInclude Include="BundleItem.h" />
+    <ClInclude Include="CashItem.h" />
     <ClInclude Include="Center.h" />
     <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="CommandManager.h" />

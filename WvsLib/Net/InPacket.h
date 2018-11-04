@@ -23,12 +23,15 @@ public:
 	unsigned char* GetPacket() const;
 	unsigned short GetPacketSize() const;
 	unsigned short RemainedCount() const;
+	unsigned short GetReadCount() const;
 
 	void SetProcessed() { bIsProcessed = true; }
 	bool IsProcessed() const { return bIsProcessed; }
 
 	/*Used for transfer packet to new OnPacket entry.*/
 	void RestorePacket();
+	void Seek(int nPos);
+	void Offset(int nOffset);
 
 	void Print();
 };

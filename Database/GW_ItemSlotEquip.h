@@ -97,7 +97,7 @@ public:
 	~GW_ItemSlotEquip();
 
 	void Load(ATOMIC_COUNT_TYPE SN);
-	void Save(int nCharacterID, GW_ItemSlotType type);
+	void Save(int nCharacterID);
 
 	void Encode(OutPacket *oPacket, bool bForInternal) const;
 	void RawEncode(OutPacket *oPacket) const;
@@ -110,6 +110,8 @@ public:
 
 	void DecodeEquipBase(InPacket *iPacket);
 	void DecodeEquipAdvanced(InPacket *iPacket); 
+
+	void Release();
 	GW_ItemSlotBase* MakeClone();
 };
 

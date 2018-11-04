@@ -17,13 +17,13 @@ void GW_Avatar::Load(int nCharacterID)
 
 	//EQUIP
 	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "SELECT SN FROM ItemSlot_EQP Where POS < 0 AND CharacterID = " << nCharacterID;
+	queryStatement << "SELECT ItemSN FROM ItemSlot_EQP Where POS < 0 AND CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
 	GW_ItemSlotEquip eqp;
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
 	{
-		eqp.Load(recordSet["SN"]);
+		eqp.Load(recordSet["ItemSN"]);
 		short nPos = eqp.nPOS * -1;
 		if (nPos < 100)
 			aHairEquip.push_back(eqp);

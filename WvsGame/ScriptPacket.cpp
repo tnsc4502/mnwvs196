@@ -121,7 +121,7 @@ void ScriptPacket::Register(lua_State * L)
 		{ NULL, NULL }
 	};
 
-	luaW_register<ScriptPacket>(L, "packet", 
+	luaW_register<ScriptPacket>(L, "Packet", 
 		PacketTable, 
 		PacketMetatable, 
 		&(ScriptPacket::PacketNew),

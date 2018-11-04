@@ -79,6 +79,16 @@ void Center::OnPacket(InPacket *iPacket)
 		case CenterSendPacketFlag::TransferChannelResult:
 			OnCenterMigrateOutResult(iPacket);
 			break;
+		case CenterSendPacketFlag::CashItemResult:
+		{
+			int nClientSocketID = iPacket->Decode4();
+			int nUserID = iPacket->Decode4();
+			auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocket(nClientSocketID);
+			auto pUser = User::FindUser(nUserID);
+			if (pSocket && pUser)
+				pUser->OnCenterCashItemResult((unsigned short)iPacket->Decode2(), iPacket);
+		}
+		break;
 	}
 }
 
@@ -104,7 +114,6 @@ void Center::OnNotifyCenterDisconnected(SocketBase * pSocket)
 
 void Center::OnCenterMigrateInResult(InPacket *iPacket)
 {
-
 	unsigned int nClientSocketID = iPacket->Decode4();
 	auto pSocket = WvsBase::GetInstance<WvsShop>()->GetSocket(nClientSocketID);
 	OutPacket oPacket;

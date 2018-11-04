@@ -285,6 +285,9 @@
     <ClInclude Include="FieldSet.h">
       <Filter>WvsGame\InGame\Field</Filter>
     </ClInclude>
+    <ClInclude Include="CashItem.h">
+      <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WvsGame.cpp">
