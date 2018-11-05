@@ -5,6 +5,7 @@
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_CharacterLevel.h"
 #include "..\Database\GW_CharacterMoney.h"
+#include "..\Database\GW_FuncKeyMapped.h"
 #include "..\Database\GW_Avatar.hpp"
 
 #include "..\WvsLib\Net\OutPacket.h"
@@ -42,6 +43,90 @@
 #include "ScriptMan.h"
 #include "Script.h"
 
+User::User(ClientSocket *_pSocket, InPacket *iPacket)
+	: m_pSocket(_pSocket),
+	m_pCharacterData(AllocObj(GA_Character)),
+	  m_pBasicStat(AllocObj(BasicStat)),
+	  m_pSecondaryStat(AllocObj(SecondaryStat))
+{
+	_pSocket->SetUser(this);
+	m_pCharacterData->nAccountID = iPacket->Decode4();
+	m_pCharacterData->DecodeCharacterData(iPacket, true);
+	m_pFuncKeyMapped = AllocObjCtor(GW_FuncKeyMapped)(m_pCharacterData->nCharacterID);
+	m_pFuncKeyMapped->Decode(iPacket);
+
+	//Internal Stats Are Encoded Outside PostCharacterDataRequest
+	m_pSecondaryStat->DecodeInternal(this, iPacket);
+}
+
+User::~User()
+{
+	OutPacket oPacket;
+	oPacket.Encode2(GameSendPacketFlag::RequestMigrateOut);
+	oPacket.Encode4(m_pSocket->GetSocketID());
+	oPacket.Encode4(GetUserID());
+	m_pCharacterData->EncodeCharacterData(&oPacket, true);
+	m_pFuncKeyMapped->Encode(&oPacket, true);
+	if (m_nTransferStatus == TransferStatus::eOnTransferShop || m_nTransferStatus == TransferStatus::eOnTransferChannel) 
+	{
+		oPacket.Encode1(0); //bGameEnd
+		m_pSecondaryStat->EncodeInternal(this, &oPacket);
+	}
+	else
+		oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
+	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
+
+	auto bindT = std::bind(&User::Update, this);
+	m_pUpdateTimer->Abort();
+	//m_pField->OnLeave(this);
+	LeaveField();
+	
+	try {
+		if (GetScript())
+			GetScript()->Abort();
+	}
+	catch (...) {}
+
+	FreeObj(m_pCharacterData);
+	FreeObj(m_pBasicStat);
+	FreeObj(m_pSecondaryStat);
+	FreeObj(m_pFuncKeyMapped);
+}
+
+int User::GetUserID() const
+{
+	return m_pCharacterData->nCharacterID;
+}
+
+int User::GetChannelID() const
+{
+	return WvsBase::GetInstance<WvsGame>()->GetChannelID();
+}
+
+void User::SendPacket(OutPacket *oPacket)
+{
+	m_pSocket->SendPacket(oPacket);
+}
+
+GA_Character * User::GetCharacterData()
+{
+	return m_pCharacterData;
+}
+
+Field * User::GetField()
+{
+	return m_pField;
+}
+
+void User::MakeEnterFieldPacket(OutPacket *oPacket)
+{
+
+}
+
+void User::MakeLeaveFieldPacket(OutPacket * oPacket)
+{
+}
+
 void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 {
 	int nDamageMobCount = pInfo->GetDamagedMobCount();
@@ -62,18 +147,18 @@ void User::TryParsingDamageData(AttackInfo * pInfo, InPacket * iPacket)
 		iPacket->Decode2();
 		iPacket->Decode2();
 
-		if (pInfo->m_nType == UserRecvPacketFlag::User_OnUserAttack_MagicAttack) 
+		if (pInfo->m_nType == UserRecvPacketFlag::User_OnUserAttack_MagicAttack)
 		{
 			iPacket->Decode1();
 			if (pInfo->m_nSkillID == 80001835)
 				iPacket->Decode1();
 			else
 				iPacket->Decode2();
-		} 
+		}
 		else
 			iPacket->Decode2();
 
-		for (int j = 0; j < nDamagedCountPerMob; ++j) 
+		for (int j = 0; j < nDamagedCountPerMob; ++j)
 		{
 			long long int nDmg = iPacket->Decode8();
 			//printf("Monster %d Damage : %d\n", nObjectID, (int)nDmg);
@@ -260,84 +345,6 @@ void User::OnIssueReloginCookie(InPacket * iPacket)
 	OnMigrateOut();
 }
 
-User::User(ClientSocket *_pSocket, InPacket *iPacket)
-	: m_pSocket(_pSocket),
-	m_pCharacterData(AllocObj(GA_Character)),
-	  m_pBasicStat(AllocObj(BasicStat)),
-	  m_pSecondaryStat(AllocObj(SecondaryStat))
-{
-	_pSocket->SetUser(this);
-	m_pCharacterData->nAccountID = iPacket->Decode4();
-	m_pCharacterData->DecodeCharacterData(iPacket, true);
-	m_pSecondaryStat->DecodeInternal(this, iPacket);
-}
-
-User::~User()
-{
-	OutPacket oPacket;
-	oPacket.Encode2(GameSendPacketFlag::RequestMigrateOut);
-	oPacket.Encode4(m_pSocket->GetSocketID());
-	oPacket.Encode4(GetUserID());
-	m_pCharacterData->EncodeCharacterData(&oPacket, true);
-	if (m_nTransferStatus == TransferStatus::eOnTransferShop || m_nTransferStatus == TransferStatus::eOnTransferChannel) 
-	{
-		oPacket.Encode1(0); //bGameEnd
-		m_pSecondaryStat->EncodeInternal(this, &oPacket);
-	}
-	else
-		oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
-	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
-
-	auto bindT = std::bind(&User::Update, this);
-	m_pUpdateTimer->Abort();
-	//m_pField->OnLeave(this);
-	LeaveField();
-	
-	try {
-		if (GetScript())
-			GetScript()->Abort();
-	}
-	catch (...) {}
-
-	FreeObj(m_pCharacterData);
-	FreeObj(m_pBasicStat);
-	FreeObj(m_pSecondaryStat);
-}
-
-int User::GetUserID() const
-{
-	return m_pCharacterData->nCharacterID;
-}
-
-int User::GetChannelID() const
-{
-	return WvsBase::GetInstance<WvsGame>()->GetChannelID();
-}
-
-void User::SendPacket(OutPacket *oPacket)
-{
-	m_pSocket->SendPacket(oPacket);
-}
-
-GA_Character * User::GetCharacterData()
-{
-	return m_pCharacterData;
-}
-
-Field * User::GetField()
-{
-	return m_pField;
-}
-
-void User::MakeEnterFieldPacket(OutPacket *oPacket)
-{
-
-}
-
-void User::MakeLeaveFieldPacket(OutPacket * oPacket)
-{
-}
-
 void User::OnPacket(InPacket *iPacket)
 {
 	int nType = (unsigned short)iPacket->Decode2();
@@ -409,6 +416,9 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case UserRecvPacketFlag::User_OnQuestRequest:
 		OnQuestRequest(iPacket);
+		break;
+	case UserRecvPacketFlag::User_OnFuncKeyMappedModified:
+		OnFuncKeyMappedModified(iPacket);
 		break;
 	default:
 		if (m_pField)
@@ -943,6 +953,7 @@ void User::OnQuestRequest(InPacket * iPacket)
 	if (nAction != 0 && nAction != 3)
 	{
 		nNpcID = iPacket->Decode4();
+		pNpc = m_pField->GetLifePool()->GetNpc(nNpcID);
 		pNpcTemplate = NpcTemplate::GetNpcTemplate(nNpcID);
 		
 		//if (pNpcTemplate == nullptr) // Invalid NPC Template
@@ -1252,6 +1263,43 @@ void User::SendNoticeMessage(int nType, const std::string & sMsg)
 	SendPacket(&oPacket);
 }
 
+void User::SendFuncKeyMapped()
+{
+	OutPacket oPacket;
+	oPacket.Encode2((short)UserSendPacketFlag::User_OnFuncKeyMapped);
+	m_pFuncKeyMapped->Encode(&oPacket, false);
+	SendPacket(&oPacket);
+}
+
+void User::OnFuncKeyMappedModified(InPacket * iPacket)
+{
+	int bSetPetItem = iPacket->Decode4();
+	if (bSetPetItem)
+	{
+		if (!bSetPetItem)
+			return;
+		int nPetConsumeItemID_HP = iPacket->Decode4();
+		int nPetConsumeItemID_MP = iPacket->Decode4();
+	}
+	else
+	{
+		int nToModify = iPacket->Decode4(), nKey = 0;
+		for (int i = 0; i < nToModify; ++i)
+		{
+			nKey = iPacket->Decode4();
+			if (nKey != -1 && nKey < GW_FuncKeyMapped::TOTAL_KEY_NUM) 
+			{
+				auto& ref = m_pFuncKeyMapped->m_mKeyMapped[nKey];
+				ref.nType = iPacket->Decode1();
+				ref.nValue = iPacket->Decode4();
+				ref.bModified = true;
+				WvsLogger::LogFormat("Key = %d Type = %d Value = %d\n", nKey, ref.nType, ref.nValue);
+			}
+		}
+	}
+	//SendFuncKeyMapped();
+}
+
 void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
 {
 	OutPacket oPacket;
@@ -1290,6 +1338,7 @@ void User::OnMigrateIn()
 	}
 	SendPacket(&oPacket);
 	SendCharacterStat(true, 0);
+	SendFuncKeyMapped();
 
 	m_pField = (FieldMan::GetInstance()->GetField(m_pCharacterData->nFieldID));
 	m_pField->OnEnter(this);

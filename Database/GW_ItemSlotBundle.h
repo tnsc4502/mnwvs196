@@ -10,8 +10,10 @@ public:
 	GW_ItemSlotBundle();
 	~GW_ItemSlotBundle();
 
+#ifdef DBLIB
 	void Load(ATOMIC_COUNT_TYPE SN);
 	void Save(int nCharacterID);
+#endif
 
 	void Encode(OutPacket *oPacket, bool bForInternal) const;
 	void RawEncode(OutPacket *oPacket) const;

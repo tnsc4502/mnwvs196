@@ -282,6 +282,8 @@ void SkillInfo::LoadLevelData(int nSkillID, SkillEntry * pEntry, void * pData)
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLuk2dex, luk2dex);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLukFX, lukFX);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLukX, lukX);
+		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLv2mhp, lv2mhp);
+		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLv2mmp, lv2mmp);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLv2damX, lv2damX);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLv2mad, lv2mad);
 		CHECK_SKILL_ATTRIBUTE(pLevelData->m_nLv2mdX, lv2mdX);
@@ -638,6 +640,13 @@ void SkillInfo::LoadLevelDataByLevelNode(int nSkillID, SkillEntry * pEntry, void
 		pLevelData->m_nImMp = PARSE_SKILLDATA(immp);
 		pLevelData->m_nIllusion = PARSE_SKILLDATA(illusion);
 		pLevelData->m_bConsumeOnPickup = PARSE_SKILLDATA(consumeOnPickup);
+		pLevelData->m_nLv2mhp = PARSE_SKILLDATA(lv2mhp);
+		pLevelData->m_nLv2mmp = PARSE_SKILLDATA(lv2mmp);
+		pLevelData->m_nLv2damX = PARSE_SKILLDATA(lv2damX);
+		pLevelData->m_nLv2mad = PARSE_SKILLDATA(lv2mad);
+		pLevelData->m_nLv2mdX = PARSE_SKILLDATA(lv2mdX);
+		pLevelData->m_nLv2pad = PARSE_SKILLDATA(lv2pad);
+		pLevelData->m_nLv2pdX = PARSE_SKILLDATA(lv2pdX);
 		if (pLevelData->m_bConsumeOnPickup)
 		{
 			int party = 0;

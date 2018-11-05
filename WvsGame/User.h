@@ -13,6 +13,7 @@ class InPacket;
 class Npc;
 class AsyncScheduler;
 struct GA_Character;
+struct GW_FuncKeyMapped;
 
 class BasicStat;
 class SecondaryStat;
@@ -95,6 +96,7 @@ private:
 	int m_nCharacterID;
 	ClientSocket *m_pSocket;
 	GA_Character *m_pCharacterData;
+	GW_FuncKeyMapped *m_pFuncKeyMapped;
 	BasicStat* m_pBasicStat;
 	SecondaryStat* m_pSecondaryStat;
 	AsyncScheduler *m_pUpdateTimer;
@@ -189,7 +191,13 @@ public:
 	bool AllowToGetQuestItem(const ActItem* pActionItem);
 
 	void SendQuestResult(int nResult, int nQuestID, int dwTemplateID);
+
+	//Message
 	void SendChatMessage(int nType, const std::string& sMsg);
 	void SendNoticeMessage(int nType, const std::string& sMsg);
+
+	//Func Key Mapped
+	void SendFuncKeyMapped();
+	void OnFuncKeyMappedModified(InPacket *iPacket);
 };
 

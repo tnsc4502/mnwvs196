@@ -11,6 +11,7 @@
 #include "..\Database\GW_ItemSlotBundle.h"
 #include "..\Database\GW_Avatar.hpp"
 #include "..\Database\GW_CashItemInfo.h"
+#include "..\Database\GW_FuncKeyMapped.h"
 
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\InPacket.h"
@@ -27,6 +28,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	m_pCharacterData(AllocObj(GA_Character))
 {
 	_pSocket->SetUser(this);
+	m_pFuncKeyMapped = AllocObjCtor(GW_FuncKeyMapped)(m_pCharacterData->nCharacterID);
 	m_pCharacterData->nAccountID = iPacket->Decode4();
 	m_pCharacterData->DecodeCharacterData(iPacket, true);
 	if (!iPacket->Decode1())
@@ -52,14 +54,17 @@ User::~User()
 	oPacket.Encode4(m_pSocket->GetSocketID());
 	oPacket.Encode4(GetUserID());
 	m_pCharacterData->EncodeCharacterData(&oPacket, true);
+	m_pFuncKeyMapped->Encode(&oPacket, true);
+
 	oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
 	WvsBase::GetInstance<WvsShop>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
 	m_pUpdateTimer->Abort();
 
-	FreeObj( m_pUpdateTimer );
-	FreeObj( m_pCharacterData );
+	FreeObj(m_pUpdateTimer);
+	FreeObj(m_pCharacterData);
+	FreeObj(m_pFuncKeyMapped);
 }
 
 User * User::FindUser(int nUserID)
@@ -86,7 +91,7 @@ void User::OnMigrateOutCashShop()
 	OutPacket oPacket;
 	oPacket.Encode2((short)ShopInternalPacketFlag::RequestTransferToGame);
 	oPacket.Encode4(m_pSocket->GetSocketID());
-	oPacket.Encode4(m_nCharacterID);
+	oPacket.Encode4(m_pCharacterData->nCharacterID);
 	oPacket.Encode1(m_nChannelID);
 	WvsBase::GetInstance<WvsShop>()->GetCenter()->SendPacket(&oPacket);
 }

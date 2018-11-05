@@ -18,10 +18,10 @@ void GW_CharacterLevel::Load(int nCharacterID)
 	nLevel = recordSet["Level"];
 }
 
-void GW_CharacterLevel::Save(int nCharacterID, bool isNewCharacter)
+void GW_CharacterLevel::Save(int nCharacterID, bool bNewCharacter)
 {
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	if (isNewCharacter)
+	if (bNewCharacter)
 		queryStatement << "INSERT INTO CharacterLevel(CharacterID, Level) VALUES("
 		<< nCharacterID << ","
 		<< (short)nLevel << ")";

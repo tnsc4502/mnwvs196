@@ -149,6 +149,7 @@
     <ClInclude Include="GW_CharacterMoney.h" />
     <ClInclude Include="GW_CharacterSlotCount.h" />
     <ClInclude Include="GW_CharacterStat.h" />
+    <ClInclude Include="GW_FuncKeyMapped.h" />
     <ClInclude Include="GW_ItemSlotBase.h" />
     <ClInclude Include="GW_ItemSlotBundle.h" />
     <ClInclude Include="GW_ItemSlotEquip.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="GW_CharacterMoney.cpp" />
     <ClCompile Include="GW_CharacterSlotCount.cpp" />
     <ClCompile Include="GW_CharacterStat.cpp" />
+    <ClCompile Include="GW_FuncKeyMapped.cpp" />
     <ClCompile Include="GW_ItemSlotBase.cpp" />
     <ClCompile Include="GW_ItemSlotBundle.cpp" />
     <ClCompile Include="GW_ItemSlotEquip.cpp" />

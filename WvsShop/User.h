@@ -5,6 +5,7 @@ class OutPacket;
 class InPacket;
 class AsyncScheduler;
 struct GA_Character;
+struct GW_FuncKeyMapped;
 
 class User
 {
@@ -75,9 +76,10 @@ class User
 		Send_OnCashItemResPurchaseRecordFailed =         0x69,
 	};
 
-	int m_nCharacterID, m_nChannelID, nNexonCash = 0, nMaplePoint = 0;
+	int m_nChannelID, nNexonCash = 0, nMaplePoint = 0;
 	ClientSocket *m_pSocket;
 	GA_Character *m_pCharacterData;
+	GW_FuncKeyMapped *m_pFuncKeyMapped;
 	AsyncScheduler *m_pUpdateTimer;
 
 public:

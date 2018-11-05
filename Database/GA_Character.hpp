@@ -32,9 +32,11 @@ private:
 
 	std::mutex mCharacterLock;
 
+#ifdef DBLIB
 	void LoadItemSlot();
 	void LoadSkillRecord();
 	void LoadQuestRecord();
+#endif
 
 public:
 
@@ -58,10 +60,12 @@ public:
 	//For recording the liItemSN of the item which was dropped or removed.
 	std::set<long long int> mItemRemovedRecord[6];
 
+#ifdef DBLIB
 	void Load(int nCharacterID);
 	void LoadAvatar(int nCharacterID);
 	void Save(bool isNewCharacter = false);
 	void SaveInventoryRemovedRecord();
+#endif
 
 	void DecodeStat(InPacket *iPacket);
 	void DecodeCharacterData(InPacket *iPacket, bool bForInternal);

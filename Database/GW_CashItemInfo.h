@@ -49,8 +49,11 @@ struct GW_CashItemInfo
 	void Encode(OutPacket *oPacket);
 	void Decode(InPacket *iPacket);
 
+#ifdef DBLIB
 	void Load(long long int liCashItemSN);
 	void Save(bool bNewInstance = false);
+#endif
+
 	static std::vector<GW_CashItemInfo> LoadAll(int nAccountID, bool bLockedOnly = true);
 };
 

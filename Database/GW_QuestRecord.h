@@ -17,8 +17,10 @@ struct GW_QuestRecord
 
 	std::string sStringRecord;
 
+#ifdef DBLIB
 	void Load(void* pRecordSet);
 	void Save();
+#endif
 
 	void Encode(OutPacket *oPacket);
 	void Decode(InPacket *iPacket, int nState);

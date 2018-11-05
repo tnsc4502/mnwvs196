@@ -11,7 +11,9 @@ struct GW_SkillRecord
 	void Encode(OutPacket* oPacket);
 	void Decode(InPacket* iPacket);
 
+#ifdef DBLIB
 	void Load(void *pRecordSet);
 	void Save();
+#endif
 };
 

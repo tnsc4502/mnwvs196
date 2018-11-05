@@ -103,7 +103,7 @@ void GW_ItemSlotPet::Save(int nCharacterID)
 				<< "PetHue = " << (int)nPetHue << ", "
 				<< "GiantRate = " << (int)nGiantRate << " WHERE CashItemSN = " << liCashItemSN;
 		}
-		std::cout << "Qeury : " << queryStatement.toString() << std::endl;
+		//std::cout << "Qeury : " << queryStatement.toString() << std::endl;
 		queryStatement.execute();
 	}
 	catch (Poco::Data::MySQL::StatementException &e) 

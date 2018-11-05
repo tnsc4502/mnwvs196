@@ -8,7 +8,10 @@ public:
 	GW_CharacterLevel();
 	~GW_CharacterLevel();
 
+#ifdef DBLIB
 	void Load(int nCharacterID);
-	void Save(int nCharacterID, bool isNewCharacter = false);
+	void Save(int nCharacterID, bool bNewCharacter = false);
+#endif
+
 };
 

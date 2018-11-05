@@ -5,7 +5,9 @@ struct GW_Account
 		nNexonCash = 0,
 		nMaplePoint = 0;
 
+#ifdef DBLIB
 	void Load(int nAccount);
+#endif
 
 	int QueryCash(int nChargeType);
 	void UpdateCash(int nChargeType, int nCharge);

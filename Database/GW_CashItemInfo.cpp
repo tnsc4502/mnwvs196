@@ -119,7 +119,7 @@ void GW_CashItemInfo::Save(bool bNewInstance)
 			<< cashItemOption.aOption[i - 1];
 
 		queryStatement << ")";
-		std::cout << "Query Statement : " << queryStatement.toString() << std::endl;
+		//std::cout << "Query Statement : " << queryStatement.toString() << std::endl;
 		queryStatement.execute();
 		queryStatement.reset(GET_DB_SESSION);
 

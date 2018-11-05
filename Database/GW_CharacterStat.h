@@ -40,7 +40,10 @@ public:
 	void EncodeExtendSP(OutPacket *oPacket);
 	void DecodeExtendSP(InPacket *iPacket);
 
+#ifdef DBLIB
 	void Load(int nCharacterID);
 	void Save(int nCharacterID, bool isNewCharacter);
+#endif
+
 };
 

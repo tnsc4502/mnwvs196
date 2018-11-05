@@ -96,6 +96,7 @@ public:
 	BasicStat();
 	~BasicStat();
 
+	void SetPermanentSkillStat(GA_Character* pChar);
 	void SetFrom(GA_Character* pChar, int nMaxHPIncRate, int nMaxMPIncRate, int nBasicStatInc);
 };
 

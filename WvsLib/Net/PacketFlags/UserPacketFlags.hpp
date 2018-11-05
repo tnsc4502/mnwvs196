@@ -593,6 +593,8 @@ MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnResWarriorLiftMobInfo, 0x39E);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnUserRenameResult, 0x39F);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnDamageSkinSaveResult, 0x3A0);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnStigmaRemainTime, 0x3A1);
+
+MAKE_USER_SEND_PACKET_FLAG(User_OnFuncKeyMapped, 0x614);
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END
 
@@ -627,6 +629,7 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateLapidification, 0x179); //UserLocal::Sen
 MAKE_USER_RECV_PACKET_FLAG(User_OnTempAct, 0x1A9); //UserLocal::SetTempAct
 MAKE_USER_RECV_PACKET_FLAG(User_OnKeyDownAreaMovePathFlush, 0x181); //UserLocal::KeyDownAreaMovePathFlush
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateZeroTagCoolTimeOut, 0x18D); //UserLocal::UpdateZeroTagCoolTimeOut
+MAKE_USER_RECV_PACKET_FLAG(User_OnFuncKeyMappedModified, 0x1B6);
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestIncCombo, 0x1CE); //UserLocal::RequestIncCombo
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestDecCombo, 0x1CF); //UserLocal::RequestDecCombo
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestSetBlessOfDarkness, 0x1D0); //UserLocal::RequestSetBlessOfDarkness

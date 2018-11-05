@@ -61,8 +61,11 @@ public:
 	void EncodeTradingPosition(OutPacket *oPacket) const;
 
 	virtual GW_ItemSlotBase* MakeClone() = 0;
+
+#ifdef DBLIB
 	virtual void Load(ATOMIC_COUNT_TYPE SN) = 0;
 	virtual void Save(int nCharacterID) = 0;
+#endif
 
 	static GW_ItemSlotBase* CreateItem(int nIntanceType);
 	virtual void Release() = 0;

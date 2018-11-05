@@ -17,6 +17,7 @@
 #include "GW_CharacterList.hpp"
 #include "GA_Character.hpp"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
+#include "GW_FuncKeyMapped.h"
 
 //WvsUnified CharacterDBAccessor::mDBUnified;
 
@@ -119,9 +120,20 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	};
 	int nEquipCount = sizeof(equips) / sizeof(GW_ItemSlotBase*);
 	for (int i = 0; i < nEquipCount; ++i)
-		if (equips[i]->nItemID > 0)
+		if (equips[i]->nItemID > 0) 
+		{
+			equips[i]->nType = GW_ItemSlotBase::GW_ItemSlotType::EQUIP;
 			chrEntry.mItemSlot[1].insert({ equips[i]->nPOS, equips[i] });
+		}
 	chrEntry.Save(true);
+
+	//Since items here are auto-var, they will destruct automatically
+	//Prevent GA_Character from deleting those items.
+	for (int i = 0; i < nEquipCount; ++i)
+		if (equips[i]->nItemID > 0)
+			chrEntry.mItemSlot[1].erase(equips[i]->nPOS);
+	GW_FuncKeyMapped funcKeyMapped(chrEntry.nCharacterID);
+	funcKeyMapped.Save(true);
 }
 
 void CharacterDBAccessor::GetDefaultCharacterStat(int *aStat)
@@ -147,6 +159,9 @@ void CharacterDBAccessor::PostCharacterDataRequest(SocketBase *pSrv, int nClient
 	OutPacket *oPacket = (OutPacket*)oPacket_;
 	oPacket->Encode4(chrEntry.nAccountID);
 	chrEntry.EncodeCharacterData(oPacket, true);
+	GW_FuncKeyMapped funcKeyMapped(chrEntry.nCharacterID);
+	funcKeyMapped.Load();
+	funcKeyMapped.Encode(oPacket);
 }
 
 void CharacterDBAccessor::PostBuyCashItemRequest(SocketBase * pSrv, int uClientSocketSN, int nCharacterID, void * iPacket_)
@@ -367,4 +382,7 @@ void CharacterDBAccessor::OnCharacterSaveRequest(void *iPacket)
 	GA_Character chr;
 	chr.DecodeCharacterData(iPacket_, true);
 	chr.Save(false);
+	GW_FuncKeyMapped keyMapped(chr.nCharacterID);
+	keyMapped.Decode(iPacket_, false);
+	keyMapped.Save(false);
 }

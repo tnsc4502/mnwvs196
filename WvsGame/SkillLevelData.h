@@ -107,6 +107,8 @@ struct SkillLevelData
 		m_nLuk2dex = 0,
 		m_nLukFX = 0,
 		m_nLukX = 0,
+		m_nLv2mhp = 0,
+		m_nLv2mmp = 0,
 		m_nLv2damX = 0,
 		m_nLv2mad = 0,
 		m_nLv2mdX = 0,
