@@ -55,14 +55,14 @@ void OutPacket::Encode8(long long int value)
 	m_pSharedPacket->nPacketSize += sizeof(value);
 }
 
-void OutPacket::EncodeBuffer(unsigned char *buff, int size)
+void OutPacket::EncodeBuffer(unsigned char *buff, int nSize, int nZero)
 {
-	if (m_pSharedPacket->nPacketSize + size >= m_pSharedPacket->nBuffSize)
-		ExtendSize((int)std::ceil((m_pSharedPacket->nPacketSize + size) / m_pSharedPacket->nBuffSize) + 1);
+	if (m_pSharedPacket->nPacketSize + nSize + nZero >= m_pSharedPacket->nBuffSize)
+		ExtendSize((int)std::ceil((m_pSharedPacket->nPacketSize + nSize + nZero) / m_pSharedPacket->nBuffSize) + 1);
 	if (buff == nullptr) 
 	{
-		int nEncode4Count = size / 4;
-		int remain = size % 4;
+		int nEncode4Count = nSize / 4;
+		int remain = nSize % 4;
 		for (int i = 0; i < nEncode4Count; ++i)
 			Encode4(0);
 		for (int i = 0; i < remain; ++i)
@@ -70,8 +70,11 @@ void OutPacket::EncodeBuffer(unsigned char *buff, int size)
 	}
 	else 
 	{
-		memcpy(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize, buff, size);
-		m_pSharedPacket->nPacketSize += size;
+		memcpy(m_pSharedPacket->aBuff + m_pSharedPacket->nPacketSize, buff, nSize);
+		m_pSharedPacket->nPacketSize += nSize;
+		if (nZero > 0)
+			for (int i = 0; i < nZero; ++i)
+				Encode1(0);
 	}
 }
 

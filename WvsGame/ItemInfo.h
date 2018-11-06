@@ -53,7 +53,8 @@ public:
 
 	static ItemInfo* GetInstance();
 	void Initialize();
-	void IterateMapString();
+	void LoadItemSellPriceByLv();
+	void IterateMapString(void *dataNode);
 	void IterateItemString(void *dataNode);
 	void IterateEquipItem(void *dataNode);
 	void IterateBundleItem();
@@ -124,7 +125,9 @@ public:
 	StateChangeItem* GetStateChangeItem(int nItemID);
 	CashItem* GetCashItem(int nItemID);
 
+	static int GetItemSlotType(int nItemID);
 	static bool IsTreatSingly(int nItemID, long long int liExpireDate);
+	static bool IsRechargable(int nItemID);
 	bool ConsumeOnPickup(int nItemID);
 	bool ExpireOnLogout(int nItemID);
 	int GetBulletPAD(int nItemID);
@@ -145,6 +148,7 @@ public:
 	static bool IsShoes(int nItemID);
 	static bool IsLongcoat(int nItemID);
 	static bool IsCap(int nItemID);
+	static bool IsPet(int nItemID);
 	GW_ItemSlotBase* GetItemSlot(int nItemID, ItemVariationOption enOption);
 
 private:
@@ -162,6 +166,7 @@ private:
 	std::map<int, CashItem*> m_mCashItem;
 
 	std::map<int, std::string> m_mItemString, m_mMapString;
+	std::map<int, int> m_mItemSellPriceByLv;
 	
 	void LoadIncrementStat(BasicIncrementStat& refStat, void *pProp);
 	void LoadAbilityStat(BasicAbilityStat& refStat, void *pProp);

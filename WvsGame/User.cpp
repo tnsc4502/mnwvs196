@@ -12,6 +12,7 @@
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\ShopPacketFlags.hpp"
 
 #include "FieldMan.h"
 #include "Portal.h"
@@ -33,6 +34,7 @@
 #include "QuestMan.h"
 #include "QuestAct.h"
 #include "ActItem.h"
+#include "ExchangeElement.h"
 #include "..\WvsLib\Task\AsyncScheduler.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
@@ -419,6 +421,10 @@ void User::OnPacket(InPacket *iPacket)
 		break;
 	case UserRecvPacketFlag::User_OnFuncKeyMappedModified:
 		OnFuncKeyMappedModified(iPacket);
+		break;
+	case UserRecvPacketFlag::User_OnShopRequest:
+		if (m_pTradingNpc)
+			m_pTradingNpc->OnShopRequest(this, iPacket);
 		break;
 	default:
 		if (m_pField)
@@ -916,7 +922,19 @@ void User::SetScript(Script * pScript)
 
 void User::OnSelectNpc(InPacket * iPacket)
 {
-	auto pNpc = m_pField->GetLifePool()->GetNpc(iPacket->Decode4());
+	int nLifeNpcID = iPacket->Decode4();
+	auto pNpc = m_pField->GetLifePool()->GetNpc(nLifeNpcID);
+	auto pTemplate = NpcTemplate::GetInstance()->GetNpcTemplate(pNpc->GetTemplateID());
+	if (pTemplate && pTemplate->HasShop())
+	{
+		OutPacket oPacket;
+		oPacket.Encode2((int)UserSendPacketFlag::User_OnNpcShopItemList);
+		oPacket.Encode1(0);
+		pTemplate->EncodeShop(this, &oPacket);
+		m_pTradingNpc = pNpc;
+		SendPacket(&oPacket);
+		return;
+	}
 	if (pNpc != nullptr && GetScript() == nullptr)
 	{
 		auto pScript = ScriptMan::GetInstance()->GetScript(
@@ -944,17 +962,27 @@ void User::OnScriptMessageAnswer(InPacket * iPacket)
 		m_pScript->OnPacket(iPacket);
 }
 
+void User::SetTradingNpc(Npc * pNpc)
+{
+	m_pTradingNpc = pNpc;
+}
+
+Npc * User::GetTradingNpc()
+{
+	return m_pTradingNpc;
+}
+
 void User::OnQuestRequest(InPacket * iPacket)
 {
 	char nAction = iPacket->Decode1();
-	int nQuestID = iPacket->Decode4(), tTick, nItemID, nNpcID;
+	int nQuestID = iPacket->Decode4(), nNpcID; 
 	NpcTemplate* pNpcTemplate = nullptr;
 	Npc* pNpc = nullptr;
 	if (nAction != 0 && nAction != 3)
 	{
 		nNpcID = iPacket->Decode4();
 		pNpc = m_pField->GetLifePool()->GetNpc(nNpcID);
-		pNpcTemplate = NpcTemplate::GetNpcTemplate(nNpcID);
+		pNpcTemplate = NpcTemplate::GetInstance()->GetNpcTemplate(nNpcID);
 		
 		//if (pNpcTemplate == nullptr) // Invalid NPC Template
 		//	return;
@@ -982,8 +1010,6 @@ void User::OnQuestRequest(InPacket * iPacket)
 	switch (nAction)
 	{
 	case 0:
-		tTick = iPacket->Decode4();
-		nItemID = iPacket->Decode4();
 		OnLostQuestItem(iPacket, nQuestID);
 		break;
 	case 1:
@@ -1037,6 +1063,33 @@ void User::OnResignQuest(InPacket * iPacket, int nQuestID)
 
 void User::OnLostQuestItem(InPacket * iPacket, int nQuestID)
 {
+	int tTick = iPacket->Decode4();
+	int nItemID = iPacket->Decode4();
+
+	auto pStartAct = QuestMan::GetInstance()->GetStartAct(nQuestID);
+	auto& aActItem = pStartAct->aActItem;
+	if (nItemID <= 0)
+		return;
+	for (auto& actItem : aActItem)
+	{
+		int nCount = actItem->nCount - GetCharacterData()->GetItemCount(
+			actItem->nItemID / 1000000, actItem->nItemID);
+		if (nCount > 0)
+		{
+			std::vector<InventoryManipulator::ChangeLog> aChangeLog;
+			std::vector<ExchangeElement> aExchange;
+			ExchangeElement exchange;
+			exchange.m_nItemID = actItem->nItemID;
+			exchange.m_nCount = nCount;
+			QWUInventory::Exchange(
+				this,
+				0,
+				aExchange,
+				aChangeLog,
+				aChangeLog
+			);
+		}
+	}
 }
 
 void User::TryQuestStartAct(int nQuestID, Npc * pNpc)

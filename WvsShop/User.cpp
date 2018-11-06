@@ -238,8 +238,8 @@ void User::OnCenterMoveItemToSlotDone(InPacket * iPacket)
 		pItem->Decode(iPacket, false);
 		pItem->nCharacterID = m_pCharacterData->nCharacterID;
 		pItem->nPOS = nPOS;
-		pItem->nType = (GW_ItemSlotBase::GW_ItemSlotType)((pItem->nItemID / 1000000) - 1);
-		m_pCharacterData->mItemSlot[pItem->nType + 1][nPOS] = pItem;
+		pItem->nType = (GW_ItemSlotBase::GW_ItemSlotType)((pItem->nItemID / 1000000));
+		m_pCharacterData->mItemSlot[pItem->nType][nPOS] = pItem;
 	}
 
 	SendPacket(&oPacket);

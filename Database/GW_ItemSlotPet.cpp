@@ -121,7 +121,11 @@ void GW_ItemSlotPet::Encode(OutPacket * oPacket, bool bForInternal) const
 void GW_ItemSlotPet::RawEncode(OutPacket * oPacket) const
 {
 	GW_ItemSlotBase::RawEncode(oPacket);	
-	oPacket->EncodeBuffer((unsigned char*)strPetName.data(), 13);
+	oPacket->EncodeBuffer(
+		(unsigned char*)strPetName.data(),
+		(int)strPetName.size(),
+		13 - (int)strPetName.size());
+
 	oPacket->Encode1(nLevel);
 	oPacket->Encode2(nTameness);
 	oPacket->Encode1(nRepleteness);

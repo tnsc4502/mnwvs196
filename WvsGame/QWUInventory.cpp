@@ -147,7 +147,7 @@ bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 	if(pItem != nullptr)
 		result = InventoryManipulator::RawAddItem(
 			pUser->GetCharacterData(),
-			pItem->nType + 1,
+			pItem->nType,
 			pItem,
 			aChangeLog,
 			&totalInc,

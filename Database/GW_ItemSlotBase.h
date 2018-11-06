@@ -15,7 +15,7 @@ struct GW_ItemSlotBase
 
 	enum GW_ItemSlotType
 	{
-		EQUIP,
+		EQUIP = 1,
 		CONSUME,
 		INSTALL,
 		ETC,
@@ -62,10 +62,8 @@ public:
 
 	virtual GW_ItemSlotBase* MakeClone() = 0;
 
-#ifdef DBLIB
 	virtual void Load(ATOMIC_COUNT_TYPE SN) = 0;
 	virtual void Save(int nCharacterID) = 0;
-#endif
 
 	static GW_ItemSlotBase* CreateItem(int nIntanceType);
 	virtual void Release() = 0;

@@ -22,7 +22,11 @@ void GW_CashItemInfo::Encode(OutPacket * oPacket)
 	oPacket->Encode4(nItemID);
 	oPacket->Encode4(nCommodityID);
 	oPacket->Encode2(nNumber);
-	oPacket->EncodeBuffer((unsigned char*)sBuyCharacterID.data(), 15);
+	oPacket->EncodeBuffer(
+		(unsigned char*)sBuyCharacterID.data(), 
+		(int)sBuyCharacterID.size(),
+		15 - (int)sBuyCharacterID.size()
+	);
 	oPacket->Encode8(liDateExpire);
 	oPacket->Encode4(nPaybackRate);
 	long long int* pD = (long long int*)(&dDiscountRate);

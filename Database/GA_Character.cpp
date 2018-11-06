@@ -90,7 +90,11 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode4(nCharacterID);
 	oPacket->Encode4(nCharacterID);
 	oPacket->Encode4(nWorldID);
-	oPacket->EncodeBuffer((unsigned char*)strName.c_str(), 15);
+	oPacket->EncodeBuffer(
+		(unsigned char*)strName.c_str(), 
+		(int)strName.size(),
+		15 - (int)strName.size());
+
 	oPacket->Encode1(nGender);
 	oPacket->Encode1(0);
 	oPacket->Encode1(mStat->nSkin);
@@ -271,9 +275,9 @@ void GA_Character::Save(bool bIsNewCharacter)
 		((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID);
 	for (auto& ins : mItemSlot[5])
 	{
-		//if(ins.second->bIsPet)
-		//	((GW_ItemSlotPet*)(ins.second))->Save(nCharacterID);
-		//else
+		if(ins.second->bIsPet)
+			((GW_ItemSlotPet*)(ins.second))->Save(nCharacterID);
+		else
 			((GW_ItemSlotBundle*)(ins.second))->Save(nCharacterID);
 	}
 	SaveInventoryRemovedRecord();
@@ -305,7 +309,7 @@ void GA_Character::SaveInventoryRemovedRecord()
 			else
 			{
 				bundleRemovedInstance.liItemSN = liSN * -1;
-				equipRemovedInstance.nType = (GW_ItemSlotBase::GW_ItemSlotType)(GW_ItemSlotBase::GW_ItemSlotType::EQUIP + (i - 1));
+				equipRemovedInstance.nType = (GW_ItemSlotBase::GW_ItemSlotType)(GW_ItemSlotBase::GW_ItemSlotType::EQUIP + (i));
 				bundleRemovedInstance.Save(nCharacterID);
 			}
 	}
@@ -438,6 +442,20 @@ void GA_Character::SetItem(int nTI, int nPOS, GW_ItemSlotBase * pItem)
 	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	if (nTI >= 1 && nTI <= 5)
 		mItemSlot[nTI][nPOS] = pItem;
+}
+
+bool GA_Character::IsWearing(int nEquipItemID)
+{
+	std::lock_guard<std::mutex> dataLock(mCharacterLock);
+	auto& itemSlot = mItemSlot[1];
+	for (auto& slot : itemSlot)
+		if (slot.second != nullptr
+			&& slot.second->nItemID == nEquipItemID
+			&& slot.second->nPOS < 0)
+			return true;
+		else if (slot.second->nPOS >= 0)
+			return false;
+	return false;
 }
 
 decltype(GA_Character::mSkillRecord)& GA_Character::GetCharacterSkillRecord()

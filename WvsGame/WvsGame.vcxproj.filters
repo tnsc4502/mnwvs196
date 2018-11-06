@@ -84,9 +84,6 @@
     <ClInclude Include="User.h">
       <Filter>WvsGame\InGame\User</Filter>
     </ClInclude>
-    <ClInclude Include="MovePath.h">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
-    </ClInclude>
     <ClInclude Include="Controller.h">
       <Filter>WvsGame\InGame\Field\Life\Controller</Filter>
     </ClInclude>
@@ -231,9 +228,6 @@
     <ClInclude Include="UpgradeItem.h">
       <Filter>WvsGame\InGame\Item</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptNPCConversation.h">
-      <Filter>WvsGame\InGame\Script</Filter>
-    </ClInclude>
     <ClInclude Include="BackupItem.h">
       <Filter>WvsGame\InGame\Inventory</Filter>
     </ClInclude>
@@ -276,9 +270,6 @@
     <ClInclude Include="FieldPoint.h">
       <Filter>WvsGame\InGame\Field\Physical</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptTarget.h">
-      <Filter>WvsGame\InGame\Script</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptPacket.h">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClInclude>
@@ -287,6 +278,18 @@
     </ClInclude>
     <ClInclude Include="CashItem.h">
       <Filter>WvsGame\InGame\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptQuestRecord.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="MovePath.h">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptNPC.h">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptUser.h">
+      <Filter>WvsGame\InGame\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -313,9 +316,6 @@
     </ClCompile>
     <ClCompile Include="User.cpp">
       <Filter>WvsGame\InGame\User</Filter>
-    </ClCompile>
-    <ClCompile Include="MovePath.cpp">
-      <Filter>WvsGame\InGame\Field\Life</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
       <Filter>WvsGame\InGame\Field\Life\Controller</Filter>
@@ -440,9 +440,6 @@
     <ClCompile Include="UpgradeItem.cpp">
       <Filter>WvsGame\InGame\Item</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptNPCConversation.cpp">
-      <Filter>WvsGame\InGame\Script</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptInventory.cpp">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
@@ -474,11 +471,20 @@
     <ClCompile Include="ScriptPacket.cpp">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptTarget.cpp">
-      <Filter>WvsGame\InGame\Script</Filter>
-    </ClCompile>
     <ClCompile Include="FieldSet.cpp">
       <Filter>WvsGame\InGame\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptQuestRecord.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="MovePath.cpp">
+      <Filter>WvsGame\InGame\Field\Life</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptNPC.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptUser.cpp">
+      <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

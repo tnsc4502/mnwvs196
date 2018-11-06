@@ -11,6 +11,7 @@ struct BundleItem
 		nMAD,
 		nRequiredLEV,
 		nSellPrice,
+		nLevel,
 		nMaxPerSlot;
 
 	BasicAbilityStat abilityStat;

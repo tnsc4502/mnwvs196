@@ -25,7 +25,8 @@ ItemInfo * ItemInfo::GetInstance()
 
 void ItemInfo::Initialize()
 {
-	IterateMapString();
+	IterateMapString(nullptr);
+	LoadItemSellPriceByLv();
 	WvsLogger::LogRaw("[ItemInfo::Initialize]開始載入所有物品名稱[IterateItemString Start]....\n");
 	IterateItemString(nullptr);
 	WvsLogger::LogRaw("[ItemInfo::Initialize]物品名稱載入完成[IterateItemString Done]....\n");
@@ -47,16 +48,44 @@ void ItemInfo::Initialize()
 	WvsLogger::LogRaw("[ItemInfo::Initialize]釋放ItemInfo所有Wz記憶體[ReleaseMemory Done]....\n");
 }
 
-void ItemInfo::IterateMapString()
+void ItemInfo::LoadItemSellPriceByLv()
 {
+	auto& info = stWzResMan->GetWz(Wz::Item)["ItemSellPriceStandard"]["400"];
+	for (auto& lvl : info)
+		m_mItemSellPriceByLv[atoi(lvl.Name().c_str())] = (int)lvl;
+}
+
+void ItemInfo::IterateMapString(void *dataNode)
+{
+	static WZ::Node Img[] = {
+		stWzResMan->GetWz(Wz::String)["Map"]
+	};
+	if (dataNode == nullptr)
+		for (auto& img : Img)
+			IterateMapString((void*)&img);
+	else
+	{
+		auto& dataImg = (*((WZ::Node*)dataNode));
+		for (auto& img : dataImg)
+		{
+			if (!isdigit(img.Name()[0]) || atoi(img.Name().c_str()) < 1000)
+				IterateMapString((void*)&img);
+			else
+				m_mMapString[atoi(img.Name().c_str())] = img["mapName"];
+		}
+	}
 }
 
 void ItemInfo::IterateItemString(void *dataNode)
 {
-	static WZ::Node Img[] = { stWzResMan->GetWz(Wz::String)["Eqp"]
-		, stWzResMan->GetWz(Wz::String)["Etc"]
-		, stWzResMan->GetWz(Wz::String)["Consume"]
-		, stWzResMan->GetWz(Wz::String)["Ins"] };
+	static WZ::Node Img[] = { 
+		stWzResMan->GetWz(Wz::String)["Eqp"], 
+		stWzResMan->GetWz(Wz::String)["Etc"], 
+		stWzResMan->GetWz(Wz::String)["Consume"], 
+		stWzResMan->GetWz(Wz::String)["Ins"],
+		stWzResMan->GetWz(Wz::String)["Cash"],
+		stWzResMan->GetWz(Wz::String)["Pet"]
+	};
 	if (dataNode == nullptr)
 		for (auto& img : Img)
 			IterateItemString((void*)&img);
@@ -127,6 +156,10 @@ void ItemInfo::IterateBundleItem()
 				pNewBundle->dSellUnitPrice = (double)infoImg["unitPrice"];
 				pNewBundle->nSellPrice = infoImg["price"];
 				pNewBundle->nRequiredLEV = infoImg["reqLevel"];
+				pNewBundle->nLevel = infoImg["lv"];
+				if (pNewBundle->nSellPrice == 0)
+					pNewBundle->nSellPrice = m_mItemSellPriceByLv[pNewBundle->nLevel];
+
 				pNewBundle->nPAD = infoImg["incPAD"]; //飛鏢
 				m_mBundleItem[nItemID] = pNewBundle;
 				int nItemCategory = nItemID / 10000;
@@ -435,12 +468,22 @@ PortableChairItem * ItemInfo::GetPortableChairItem(int nItemID)
 	return (findIter != m_mPortableChairItem.end() ? findIter->second : nullptr);
 }
 
+int ItemInfo::GetItemSlotType(int nItemID)
+{
+	return nItemID / 1000000;
+}
+
 bool ItemInfo::IsTreatSingly(int nItemID, long long int liExpireDate)
 {
-	int nItemHeader = nItemID / 1000000;
-	return (nItemHeader != 2 && nItemHeader != 3 && nItemHeader != 4
-		|| nItemID / 10000 == 207
+	int nItemHeader = GetItemSlotType(nItemID);
+	return ((nItemHeader != 2 && nItemHeader != 3 && nItemHeader != 4)
+		|| IsRechargable(nItemID)
 		/*|| liExpireDate != 0*/);
+}
+
+bool ItemInfo::IsRechargable(int nItemID)
+{
+	return nItemID / 10000 == 207 || nItemID / 10000 == 233;
 }
 
 bool ItemInfo::ConsumeOnPickup(int nItemID)
@@ -504,7 +547,7 @@ long long int ItemInfo::GetItemDateExpire(const std::string & sDate)
 const std::string & ItemInfo::GetItemName(int nItemID)
 {
 	auto findResult = m_mItemString.find(nItemID);
-	return (findResult == m_mItemString.end() ? "" : findResult->second);
+	return (findResult == m_mItemString.end() ? std::string{ "" } : findResult->second);
 }
 
 bool ItemInfo::IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nDEX, int nINT, int nLUK, int nPOP, GW_ItemSlotBase * pPetItem, int nItemID)
@@ -514,8 +557,9 @@ bool ItemInfo::IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nD
 
 bool ItemInfo::IsNotSaleItem(int nItemID)
 {
-	if (nItemID / 1000000 != 5)
-		if (nItemID / 1000000 == 1)
+	int nTI = GetItemSlotType(nItemID);
+	if (nTI != 5)
+		if (nTI == 1)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
@@ -532,8 +576,9 @@ bool ItemInfo::IsNotSaleItem(int nItemID)
 
 bool ItemInfo::IsOnlyItem(int nItemID)
 {
-	if (nItemID / 1000000 != 5)
-		if (nItemID / 1000000 == 1)
+	int nTI = GetItemSlotType(nItemID);
+	if (nTI != 5)
+		if (nTI == 1)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
@@ -550,8 +595,9 @@ bool ItemInfo::IsOnlyItem(int nItemID)
 
 bool ItemInfo::IsTradeBlockItem(int nItemID)
 {
-	if (nItemID / 1000000 != 5)
-		if (nItemID / 1000000 == 1)
+	int nTI = GetItemSlotType(nItemID);
+	if (nTI != 5)
+		if (nTI == 1)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
@@ -568,8 +614,9 @@ bool ItemInfo::IsTradeBlockItem(int nItemID)
 
 bool ItemInfo::IsQuestItem(int nItemID)
 {
-	if (nItemID / 1000000 != 5)
-		if (nItemID / 1000000 == 1)
+	int nTI = GetItemSlotType(nItemID);
+	if (nTI != 5)
+		if (nTI == 1)
 		{
 			auto pItem = GetEquipItem(nItemID);
 			if (pItem != nullptr)
@@ -635,6 +682,13 @@ bool ItemInfo::IsCap(int nItemID)
 	return nItemID / 10000 == 110;
 }
 
+bool ItemInfo::IsPet(int nItemID)
+{
+	int nTI = GetItemSlotType(nItemID);
+	int nPrefix = nItemID / 1000;
+	return nTI == GW_ItemSlotBase::CASH && (nPrefix % 10 == 0);
+}
+
 void ItemInfo::LoadIncrementStat(BasicIncrementStat & refStat, void * pProp)
 {
 	auto& infoImg = (*((WZ::Node*)pProp));
@@ -687,7 +741,7 @@ void ItemInfo::LoadAbilityStat(BasicAbilityStat & refStat, void * pProp)
 
 GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOption)
 {
-	int nType = nItemID / 1000000;
+	int nType = GetItemSlotType(nItemID);
 	GW_ItemSlotBase *ret = nullptr;
 	if (nType == 1)
 	{
@@ -746,6 +800,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 			{
 				ret = AllocObj(GW_ItemSlotPet);
 				((GW_ItemSlotPet*)ret)->nLevel = 1;
+				((GW_ItemSlotPet*)ret)->strPetName = GetItemName(nItemID);
 				ret->bIsCash = ret->bIsPet = true;
 			}
 		}
@@ -760,7 +815,7 @@ GW_ItemSlotBase * ItemInfo::GetItemSlot(int nItemID, ItemVariationOption enOptio
 	if (ret)
 	{
 		ret->nItemID = nItemID;
-		ret->nType = (GW_ItemSlotBundle::GW_ItemSlotType)(GW_ItemSlotBundle::EQUIP + (nType - 1));
+		ret->nType = (GW_ItemSlotBundle::GW_ItemSlotType)((nType));
 	}
 	return ret;
 }

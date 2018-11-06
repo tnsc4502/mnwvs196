@@ -186,6 +186,7 @@
     <ClInclude Include="Script\lzio.h" />
     <ClInclude Include="String\StringUtility.h" />
     <ClInclude Include="Task\AsyncScheduler.h" />
+    <ClInclude Include="Wz\ImgAccessor.h" />
     <ClInclude Include="Wz\mapfile.hpp" />
     <ClInclude Include="Wz\sprite.hpp" />
     <ClInclude Include="Wz\spritedata.hpp" />
@@ -263,6 +264,7 @@
     <ClCompile Include="Script\lzio.cpp" />
     <ClCompile Include="String\StringUtility.cpp" />
     <ClCompile Include="Task\AsyncScheduler.cpp" />
+    <ClCompile Include="Wz\ImgAccessor.cpp" />
     <ClCompile Include="Wz\mapfile.cpp" />
     <ClCompile Include="Wz\WzAES.cpp" />
     <ClCompile Include="Wz\wzcrypto.cpp" />

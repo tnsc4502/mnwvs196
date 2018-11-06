@@ -90,6 +90,9 @@ public:
 
 	template<>
 	void RetrieveArray<std::string>(std::vector<std::string>& out, int nLuaObjIndex);
+
+	template<typename T>
+	void PushClassObject(T *pObj);
 };
 
 template<typename T>
@@ -116,4 +119,14 @@ inline void Script::RetrieveArray<std::string>(std::vector<std::string>& out, in
 		out.push_back(lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
+}
+
+template<typename T>
+inline void Script::PushClassObject(T *pObj)
+{
+	int numargs = lua_gettop(L);
+	luaW_push<T>(L, pObj); // ... args... ud
+	luaW_hold<T>(L, pObj);
+	lua_insert(L, -1 - numargs); // ... ud args...
+	luaW_postconstructor<T>(L, numargs); // ... ud
 }

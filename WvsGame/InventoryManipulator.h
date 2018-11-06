@@ -11,6 +11,14 @@ class OutPacket;
 class InventoryManipulator
 {
 public:
+	enum ExchangeResult
+	{
+		Exchange_Success = 0,
+		Exchange_InsufficientMeso = 1,
+		Exchange_InsufficientSlotCount = 2,
+		Exchange_InsufficientItemCount = 3
+	};
+
 	struct ChangeLog
 	{
 		GW_ItemSlotBase *pItem;

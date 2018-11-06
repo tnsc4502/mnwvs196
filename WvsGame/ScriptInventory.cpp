@@ -1,5 +1,6 @@
 #include "ScriptInventory.h"
 #include "QWUInventory.h"
+#include "..\Database\GA_Character.hpp"
 #include "Script.h"
 #include "User.h"
 
@@ -41,6 +42,7 @@ void ScriptInventory::Register(lua_State * L)
 {
 	luaL_Reg InvMetatable[] = {
 		{ "exchange", InventoryExchange },
+		{ "itemCount", InventoryItemCount },
 		{ NULL, NULL }
 	};
 
@@ -84,4 +86,13 @@ int ScriptInventory::InventoryExchange(lua_State * L)
 
 	lua_pushinteger(L, nResult);
 	return 1;
+}
+
+int ScriptInventory::InventoryItemCount(lua_State * L)
+{
+	ScriptInventory* self = luaW_check<ScriptInventory>(L, 1);
+	int nItemID = luaL_checkinteger(L, 2);
+	int nCount = self->m_pUser->GetCharacterData()->GetItemCount(nItemID / 1000000, nItemID);
+	lua_pushinteger(L, nCount);
+	return 0;
 }

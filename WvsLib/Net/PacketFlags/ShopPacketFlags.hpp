@@ -14,6 +14,7 @@ MAKE_SHOP_SEND_PACKET_FLAG(Client_ValidateState, 0x14); //Stage::OnSetCashShop
 MAKE_SHOP_SEND_PACKET_FLAG(Client_SetCashShop, 0x1C4); //Stage::OnSetCashShop
 MAKE_SHOP_SEND_PACKET_FLAG(User_QueryCashResult, 0x5B6);
 MAKE_SHOP_SEND_PACKET_FLAG(User_CashItemResult, 0x5B7);
+
 FLAG_COLLECTION_BODY_END
 
 

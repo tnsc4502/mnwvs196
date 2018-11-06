@@ -60,12 +60,10 @@ public:
 	//For recording the liItemSN of the item which was dropped or removed.
 	std::set<long long int> mItemRemovedRecord[6];
 
-#ifdef DBLIB
 	void Load(int nCharacterID);
 	void LoadAvatar(int nCharacterID);
 	void Save(bool isNewCharacter = false);
 	void SaveInventoryRemovedRecord();
-#endif
 
 	void DecodeStat(InPacket *iPacket);
 	void DecodeCharacterData(InPacket *iPacket, bool bForInternal);
@@ -97,6 +95,7 @@ public:
 	int GetEmptySlotCount(int nTI);
 	int GetItemCount(int nTI, int nItemID);
 	void SetItem(int nTI, int nPOS, GW_ItemSlotBase* pItem);
+	bool IsWearing(int nEquipItemID);
 
 	//GW_SkillRecord
 	decltype(mSkillRecord)& GetCharacterSkillRecord();

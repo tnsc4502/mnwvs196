@@ -594,6 +594,9 @@ MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnUserRenameResult, 0x39F);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnDamageSkinSaveResult, 0x3A0);
 MAKE_USER_SEND_PACKET_FLAG(UserLocal_OnStigmaRemainTime, 0x3A1);
 
+MAKE_USER_SEND_PACKET_FLAG(User_OnNpcShopItemList, 0x56F);
+MAKE_USER_SEND_PACKET_FLAG(User_OnNpcShopRequest, 0x570);
+
 MAKE_USER_SEND_PACKET_FLAG(User_OnFuncKeyMapped, 0x614);
 //µ²§ôOpcode Flagµù¥U
 FLAG_COLLECTION_BODY_END
@@ -613,6 +616,7 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnFullTrueDamaged, 0xCF); //UserLocal::SetFullTr
 MAKE_USER_RECV_PACKET_FLAG(User_OnBanMapByMobRequest, 0xE1); //UserLocal::SendBanMapByMobRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnSelectNpc, 0xE3);
 MAKE_USER_RECV_PACKET_FLAG(User_OnScriptMessageAnswer, 0xE5);
+MAKE_USER_RECV_PACKET_FLAG(User_OnShopRequest, 0xE6);
 //MAKE_USER_RECV_PACKET_FLAG(User_OnRetOnVideoByScript, 0xE5); //UserLocal::RetOnVideoByScript
 MAKE_USER_RECV_PACKET_FLAG(User_OnFinalAttackRequestPacket, 0xED); //UserLocal::SendFinalAttackRequestPacket
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChat, 0xD1);

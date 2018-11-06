@@ -282,6 +282,9 @@
     <ClInclude Include="Common\CommonDef.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Wz\ImgAccessor.h">
+      <Filter>Wz</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Memory\Arena.cpp">
@@ -502,6 +505,9 @@
     </ClCompile>
     <ClCompile Include="Common\ConfigLoader.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Wz\ImgAccessor.cpp">
+      <Filter>Wz</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

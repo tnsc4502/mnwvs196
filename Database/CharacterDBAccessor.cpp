@@ -186,14 +186,14 @@ void CharacterDBAccessor::PostBuyCashItemRequest(SocketBase * pSrv, int uClientS
 		account.UpdateCash(nChargeType, -nPrice);
 
 		GW_ItemSlotBase* pItem = nullptr;
-		if (nType == GW_ItemSlotBase::GW_ItemSlotType::EQUIP + 1)
+		if (nType == GW_ItemSlotBase::GW_ItemSlotType::EQUIP)
 			pItem = AllocObj(GW_ItemSlotEquip);
 		else if (bIsPet)
 			pItem = AllocObj(GW_ItemSlotPet);
 		else
 			pItem = AllocObj(GW_ItemSlotBundle);
 
-		pItem->nType = (nType == GW_ItemSlotBase::GW_ItemSlotType::EQUIP + 1 ?
+		pItem->nType = (nType == GW_ItemSlotBase::GW_ItemSlotType::EQUIP ?
 			  GW_ItemSlotBase::GW_ItemSlotType::EQUIP
 			: GW_ItemSlotBase::GW_ItemSlotType::CASH);
 		pItem->bIsCash = true;
@@ -354,7 +354,7 @@ void CharacterDBAccessor::PostMoveLockerToSlotRequest(SocketBase * pSrv, int uCl
 
 	pItem->bIsCash = true;
 	pItem->Load(liCashItemSN);
-	auto nPOS = characterData.FindEmptySlotPosition((int)pItem->nType + 1);
+	auto nPOS = characterData.FindEmptySlotPosition((int)pItem->nType);
 	if (!nPOS)
 	{
 		oPacket.Encode2(ShopInternalPacketFlag::OnCenterMoveToSlotFailed);

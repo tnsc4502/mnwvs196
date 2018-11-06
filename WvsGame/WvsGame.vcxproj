@@ -213,9 +213,10 @@
     <ClInclude Include="ScriptFieldSet.h" />
     <ClInclude Include="ScriptInventory.h" />
     <ClInclude Include="ScriptMan.h" />
-    <ClInclude Include="ScriptNPCConversation.h" />
+    <ClInclude Include="ScriptNPC.h" />
     <ClInclude Include="ScriptPacket.h" />
-    <ClInclude Include="ScriptTarget.h" />
+    <ClInclude Include="ScriptQuestRecord.h" />
+    <ClInclude Include="ScriptUser.h" />
     <ClInclude Include="SecondaryStat.h" />
     <ClInclude Include="SkillEntry.h" />
     <ClInclude Include="SkillInfo.h" />
@@ -279,9 +280,10 @@
     <ClCompile Include="ScriptFieldSet.cpp" />
     <ClCompile Include="ScriptInventory.cpp" />
     <ClCompile Include="ScriptMan.cpp" />
-    <ClCompile Include="ScriptNPCConversation.cpp" />
+    <ClCompile Include="ScriptNPC.cpp" />
     <ClCompile Include="ScriptPacket.cpp" />
-    <ClCompile Include="ScriptTarget.cpp" />
+    <ClCompile Include="ScriptQuestRecord.cpp" />
+    <ClCompile Include="ScriptUser.cpp" />
     <ClCompile Include="SecondaryStat.cpp" />
     <ClCompile Include="SkillEntry.cpp" />
     <ClCompile Include="SkillInfo.cpp" />

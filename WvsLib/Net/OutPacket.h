@@ -50,7 +50,7 @@ public:
 	void Encode2(short value);
 	void Encode4(int value);
 	void Encode8(long long int value);
-	void EncodeBuffer(unsigned char *buff, int size);
+	void EncodeBuffer(unsigned char *buff, int nSize, int nZero = 0);
 	void EncodeStr(const std::string &str);
 	void EncodeHexString(const std::string& str);
 	void Release();

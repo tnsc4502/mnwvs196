@@ -102,6 +102,7 @@ private:
 	AsyncScheduler *m_pUpdateTimer;
 	Script* m_pScript = nullptr;
 	TransferStatus m_nTransferStatus;
+	Npc *m_pTradingNpc = nullptr;
 
 	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
 	AttackInfo* TryParsingMeleeAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
@@ -173,11 +174,13 @@ public:
 	void SendDropPickUpFailPacket(bool bOnExcelRequest);
 	void SendQuestRecordMessage(int nKey, int nState, const std::string& sStringRecord);
 
-	//Script
+	//Npc & Script
 	Script* GetScript();
 	void SetScript(Script* pScript);
 	void OnSelectNpc(InPacket *iPacket);
 	void OnScriptMessageAnswer(InPacket *iPacket);
+	void SetTradingNpc(Npc *pNpc);
+	Npc* GetTradingNpc();
 
 	//Quest
 	void OnQuestRequest(InPacket *iPacket);

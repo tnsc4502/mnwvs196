@@ -4,7 +4,7 @@
 class Script;
 class InPacket;
 
-class ScriptNPCConversation
+class ScriptNPC
 {
 	enum ScriptStyle
 	{
@@ -55,11 +55,11 @@ class ScriptNPCConversation
 		OnGhostParkEnter = 0x38,
 	};
 public:
-	ScriptNPCConversation();
-	~ScriptNPCConversation();
+	ScriptNPC();
+	~ScriptNPC();
 
-	static ScriptNPCConversation* GetSelf(lua_State* L);
-	static void DestroySelf(lua_State* L, ScriptNPCConversation* p);
+	static ScriptNPC* GetSelf(lua_State* L);
+	static void DestroySelf(lua_State* L, ScriptNPC* p);
 	static void Register(lua_State* L);
 	static void OnPacket(InPacket *iPacket, Script* pScript, lua_State* L);
 
@@ -71,6 +71,7 @@ public:
 	static int SelfAskText(lua_State* L);
 	static int SelfAskNumber(lua_State* L);
 	static int SelfAskYesNo(lua_State* L);
+	static int SelfAskAcceptDecline(lua_State* L);
 	static int SelfAskMenu(lua_State* L);
 	static int Debug(lua_State* L);
 

@@ -4,7 +4,7 @@
 #include "..\WvsLib\Logger\WvsLogger.h"
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\Net\OutPacket.h"
-#include "ScriptTarget.h"
+#include "ScriptUser.h"
 
 ScriptPacket::ScriptPacket()
 {
@@ -96,7 +96,7 @@ int ScriptPacket::PacketSend(lua_State * L)
 
 	//int nUserID = luaL_checkinteger(L, 2);
 	//auto pUser = User::FindUser(nUserID);
-	auto pUser = luaW_check<ScriptTarget>(L, 2);
+	auto pUser = luaW_check<ScriptUser>(L, 2);
 	if (pUser && pUser->GetUser())
 		pUser->GetUser()->SendPacket(self->m_pOutPacket);
 	return 1;

@@ -14,6 +14,7 @@
 #include "Drop.h"
 #include "AttackInfo.h"
 #include "SecondaryStat.h"
+#include "NpcTemplate.h"
 #include "..\WvsLib\Common\WvsGameConstants.hpp"
 
 #include <cmath>
@@ -94,6 +95,7 @@ void LifePool::LoadNpcData(WZ::Node& dataNode)
 {
 	Npc npc;
 	SetFieldObjAttribute(&npc, dataNode);
+	npc.SetTemplate(NpcTemplate::GetInstance()->GetNpcTemplate(npc.GetTemplateID()));
 	m_lNpc.push_back(npc);
 }
 

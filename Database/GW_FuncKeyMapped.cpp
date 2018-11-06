@@ -131,7 +131,7 @@ void GW_FuncKeyMapped::Encode(OutPacket * oPacket, bool bModifiedOnly)
 	for (int i = 0; i < TOTAL_KEY_NUM; ++i)
 	{
 		auto findIter = m_mKeyMapped.find(i);
-		if (findIter != end && (!bModifiedOnly || (bModifiedOnly && findIter->second.bModified)))
+		if (findIter != end && (!bModifiedOnly || (findIter->second.bModified)))
 		{
 			oPacket->Encode1(findIter->second.nType);
 			oPacket->Encode4(findIter->second.nValue);

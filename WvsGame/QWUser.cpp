@@ -215,6 +215,95 @@ long long int QWUser::IncEXP(User * pUser, int nInc, bool bOnlyFull)
 	return nRet;
 }
 
+long long int QWUser::GetSTR(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nSTR;
+}
+
+long long int QWUser::GetDEX(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nDEX;
+}
+
+long long int QWUser::GetLUK(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nLUK;
+}
+
+long long int QWUser::GetINT(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nINT;
+}
+
+long long int QWUser::GetMP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->mStat->nMP;
+}
+
+long long int QWUser::GetHP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->mStat->nHP;
+}
+
+long long int QWUser::GetMMP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nMMP;
+}
+
+long long int QWUser::GetMHP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nMHP;
+}
+
+long long int QWUser::GetPOP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->nFame;
+}
+
+long long int QWUser::GetSP(User * pUser, int nJobLevel)
+{
+	return pUser->GetCharacterData()->mStat->aSP[nJobLevel];
+}
+
+long long int QWUser::GetMoney(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->mMoney->nMoney;
+}
+
+long long int QWUser::GetAP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->mStat->nAP;
+}
+
+long long int QWUser::GetMaxHPVal(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nMHP;
+}
+
+long long int QWUser::GetMaxMPVal(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetBasicStat()->nMMP;
+}
+
+long long int QWUser::GetEXP(User * pUser)
+{
+	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	return pUser->GetCharacterData()->mStat->nExp;
+}
+
 long long int QWUser::SetFace(User * pUser, int nFace)
 {
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
