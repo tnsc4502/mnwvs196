@@ -6,8 +6,10 @@
 #include "ItemInfo.h"
 #include "SkillInfo.h"
 #include "..\WvsLib\Net\InPacket.h"
+#include "..\WvsLib\Random\Rand32.h"
 #include "..\Database\GW_ItemSlotBase.h"
 #include "..\Database\GW_ItemSlotBundle.h"
+#include "..\Database\GW_ItemSlotEquip.h"
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_CharacterStat.h"
 #include "..\Database\GW_CharacterMoney.h"
@@ -75,14 +77,14 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 					{
 						InventoryManipulator::RawRemoveItem(pCharacterData, nTI, nPOS1, nSlotSrcCount, aChangeLog, &nMovedCount, nullptr);
 						((GW_ItemSlotBundle*)pItemDst)->nNumber += nSlotSrcCount;
-						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
+						InventoryManipulator::InsertChangeLog(aChangeLog, InventoryManipulator::Change_AddToSlot, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
 					}
 					else
 					{
 						((GW_ItemSlotBundle*)pItemDst)->nNumber = nMaxPerSlot;
 						((GW_ItemSlotBundle*)pItemSrc)->nNumber = nMaxPerSlot = nSlotSrcCount + nSlotDstCount - nMaxPerSlot;
-						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS1, nullptr, 0, ((GW_ItemSlotBundle*)pItemSrc)->nNumber);
-						InventoryManipulator::InsertChangeLog(aChangeLog, 1, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
+						InventoryManipulator::InsertChangeLog(aChangeLog, InventoryManipulator::Change_AddToSlot, nTI, nPOS1, nullptr, 0, ((GW_ItemSlotBundle*)pItemSrc)->nNumber);
+						InventoryManipulator::InsertChangeLog(aChangeLog, InventoryManipulator::Change_AddToSlot, nTI, nPOS2, nullptr, 0, ((GW_ItemSlotBundle*)pItemDst)->nNumber);
 					}
 				}
 				else
@@ -99,8 +101,8 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 				{
 					pItemSrc->nAttribute &= (~ItemInfo::ItemAttribute::eTradeBlockAfterEquip);
 					pItemSrc->nAttribute |= (ItemInfo::ItemAttribute::eUntradable);
-					InventoryManipulator::InsertChangeLog(aChangeLog, 3, nTI, nPOS1, nullptr, nPOS2, 1);
-					InventoryManipulator::InsertChangeLog(aChangeLog, 0, nTI, nPOS1, pItemSrc, nPOS2, 1);
+					InventoryManipulator::InsertChangeLog(aChangeLog, InventoryManipulator::Change_RemoveFromSlot, nTI, nPOS1, nullptr, nPOS2, 1);
+					InventoryManipulator::InsertChangeLog(aChangeLog, InventoryManipulator::Change_AddToSlot, nTI, nPOS1, pItemSrc, nPOS2, 1);
 				}
 				auto slotPos = pCharacterData->FindEmptySlotPosition(nTI);
 				InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
@@ -139,7 +141,6 @@ bool QWUInventory::PickUpMoney(User* pUser, bool byPet, int nAmount)
 
 bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 {
-	//printf("Pick Up Item Requert\n");
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int totalInc = 0;
@@ -251,6 +252,112 @@ void QWUInventory::SendInventoryOperation(User* pUser, int bOnExclResult, std::v
 	OutPacket oPacket;
 	InventoryManipulator::MakeInventoryOperation(&oPacket, bOnExclResult, aChangeLog);
 	pUser->SendPacket(&oPacket);
+}
+
+void QWUInventory::OnUpgradeItemRequest(User * pUser, InPacket * iPacket)
+{
+	int tRequestTime = iPacket->Decode4();
+	int nUPOS = iPacket->Decode2();
+	int nEPOS = iPacket->Decode2();
+	int nWhiteScroll = iPacket->Decode2();
+	bool bEnchantSkill = iPacket->Decode1() == 1;
+	UpgradeEquip(
+		pUser,
+		nUPOS,
+		nEPOS,
+		nWhiteScroll,
+		bEnchantSkill,
+		tRequestTime
+	);
+}
+
+void QWUInventory::UpgradeEquip(User * pUser, int nUPOS, int nEPOS, int nWhiteScroll, bool bEnchantSkill, int tReqTime)
+{
+	SkillEntry *ppEntry = nullptr;
+	if (!bEnchantSkill ||
+		(SkillInfo::GetInstance()->GetSkillLevel(
+			pUser->GetCharacterData(),
+			1003,
+			&ppEntry, 0, 0, 0, 0), ppEntry))
+	{
+		auto pUItem = pUser->GetCharacterData()->GetItem(GW_ItemSlotBase::CONSUME, nUPOS);
+		GW_ItemSlotEquip* pEItem = (GW_ItemSlotEquip*)(pUser->GetCharacterData()->GetItem(GW_ItemSlotBase::EQUIP, nEPOS));
+		if (!pUItem || !pEItem)
+			return;
+
+		std::vector<InventoryManipulator::ChangeLog> aChangeLog;
+		auto pScroll = ItemInfo::GetInstance()->GetUpgradeItem(pUItem->nItemID);
+		if (pScroll)
+		{
+			bool bCheckScroll = false, bSuccess = true, bCursed = false;
+			int nDecScroll = 0;
+			
+			if ((pEItem->nRUC > 0) 
+				&& (RawRemoveItem(pUser, GW_ItemSlotBase::CONSUME, nUPOS, 1, aChangeLog, nDecScroll, nullptr), nDecScroll == 1)
+			   )
+			{
+				--pEItem->nRUC;
+				bCheckScroll = true;
+				if ((Rand32::GetInstance()->Random() % 100) > (unsigned int)pScroll->nSuccessRate)
+				{
+					bSuccess = false;
+					if (pScroll->nCursedRate 
+						&& (Rand32::GetInstance()->Random() % 100) >= (unsigned int)pScroll->nCursedRate)
+						bCursed = true;
+				}
+				else
+				{
+					++pEItem->nCUC;
+					pEItem->nSTR += pScroll->incStat.niSTR;
+					pEItem->nDEX += pScroll->incStat.niDEX;
+					pEItem->nINT += pScroll->incStat.niINT;
+					pEItem->nLUK += pScroll->incStat.niLUK;
+					pEItem->nMaxHP += pScroll->incStat.niMaxHP;
+					pEItem->nMaxMP += pScroll->incStat.niMaxMP;
+
+					pEItem->nPAD += pScroll->incStat.niPAD;
+					pEItem->nMAD += pScroll->incStat.niMAD;
+					pEItem->nPDD += pScroll->incStat.niPDD;
+					pEItem->nMDD += pScroll->incStat.niMDD;
+
+					pEItem->nACC += pScroll->incStat.niACC;
+					pEItem->nEVA += pScroll->incStat.niEVA;
+					pEItem->nCraft += pScroll->incStat.niCraft;
+					pEItem->nSpeed += pScroll->incStat.niSpeed;
+					pEItem->nJump += pScroll->incStat.niJump;
+				}
+			}
+			if (RawRemoveItemByID(pUser, 2340000, 1) && !bSuccess)
+				++pEItem->nRUC;
+
+			nDecScroll = 0;
+			if (bCursed)
+				RawRemoveItem(pUser, GW_ItemSlotBase::EQUIP, pEItem->nPOS, 1, aChangeLog, nDecScroll, nullptr);
+			else
+				InventoryManipulator::InsertChangeLog(
+					aChangeLog, 
+					InventoryManipulator::Change_AddToSlot, 
+					GW_ItemSlotBase::EQUIP, 
+					nEPOS, pEItem, 0, 0);
+	
+			pUser->ValidateStat();
+			SendInventoryOperation(pUser, true, aChangeLog);
+			if (bCheckScroll || bEnchantSkill) 
+			{
+				OutPacket oPacket;
+				InventoryManipulator::MakeItemUpgradeEffect(
+					&oPacket,
+					pUser->GetUserID(),
+					pEItem->nItemID,
+					pUItem->nItemID,
+					bSuccess,
+					bCursed,
+					bEnchantSkill
+				);
+				pUser->GetField()->BroadcastPacket(&oPacket);
+			}
+		}
+	}
 }
 
 int QWUInventory::GetSlotCount(User * pUser, int nTI)

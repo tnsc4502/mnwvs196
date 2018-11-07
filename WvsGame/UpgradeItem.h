@@ -6,8 +6,8 @@ struct UpgradeItem
 {
 	std::string sItemName;
 	BasicIncrementStat incStat;
-	int nItemID,
-		nSuccessRate,
-		nCursedRate;
+	int nItemID = 0,
+		nSuccessRate = 0,
+		nCursedRate = 0;
 };
 

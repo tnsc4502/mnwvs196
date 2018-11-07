@@ -57,7 +57,7 @@ void ScriptQuestRecord::Register(lua_State * L)
 int ScriptQuestRecord::QuestRecordGetState(lua_State * L)
 {
 	ScriptQuestRecord* self = luaW_check<ScriptQuestRecord>(L, 1);
-	int nQuestID = luaL_checkinteger(L, 2);
+	int nQuestID = (int)luaL_checkinteger(L, 2);
 	int nResult = QWUQuestRecord::GetState(self->m_pUser, nQuestID);
 	lua_pushinteger(L, nResult);
 	return 1;
@@ -66,8 +66,8 @@ int ScriptQuestRecord::QuestRecordGetState(lua_State * L)
 int ScriptQuestRecord::QuestRecordSetState(lua_State * L)
 {
 	ScriptQuestRecord* self = luaW_check<ScriptQuestRecord>(L, 1);
-	int nQuestID = luaL_checkinteger(L, 2);
-	int nState = luaL_checkinteger(L, 3);
+	int nQuestID = (int)luaL_checkinteger(L, 2);
+	int nState = (int)luaL_checkinteger(L, 3);
 	if (nState == 0)
 		QWUQuestRecord::Remove(self->m_pUser, nQuestID, false);
 	else if (nState == 1)

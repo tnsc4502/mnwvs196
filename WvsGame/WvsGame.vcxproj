@@ -193,6 +193,7 @@
     <ClInclude Include="MovePath.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="NpcTemplate.h" />
+    <ClInclude Include="Pet.h" />
     <ClInclude Include="PetFoodItem.h" />
     <ClInclude Include="PortableChairItem.h" />
     <ClInclude Include="Portal.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="MovePath.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="NpcTemplate.cpp" />
+    <ClCompile Include="Pet.cpp" />
     <ClCompile Include="PetFoodItem.cpp" />
     <ClCompile Include="PortableChairItem.cpp" />
     <ClCompile Include="Portal.cpp" />

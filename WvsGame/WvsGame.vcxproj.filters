@@ -55,6 +55,9 @@
     <Filter Include="WvsGame\InGame\Field\Physical">
       <UniqueIdentifier>{bd41fbb6-bd8f-47b8-ae7e-d6aadd500d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life\Pet">
+      <UniqueIdentifier>{ef05dad3-300e-4748-9e33-833af294c5ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -291,6 +294,7 @@
     <ClInclude Include="ScriptUser.h">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClInclude>
+    <ClInclude Include="Pet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WvsGame.cpp">
@@ -486,5 +490,6 @@
     <ClCompile Include="ScriptUser.cpp">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
+    <ClCompile Include="Pet.cpp" />
   </ItemGroup>
 </Project>

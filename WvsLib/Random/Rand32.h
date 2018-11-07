@@ -12,6 +12,6 @@ class Rand32
 
 public:
 	static Rand32* GetInstance();
-	int Random();
+	unsigned int Random();
 	std::vector<int> GetRandomUniqueArray(int nStart, int nRange, int nCount);
 };

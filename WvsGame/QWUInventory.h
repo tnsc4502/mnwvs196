@@ -21,6 +21,8 @@ public:
 	static bool RawAddItemByID(User* pUser, int nItemID, int nCount);
 	static int Exchange(User* pUser, int nMoney, std::vector<ExchangeElement>& aExchange, std::vector<InventoryManipulator::ChangeLog>& aLogAdd, std::vector<InventoryManipulator::ChangeLog>& aLogRemove);
 	static void SendInventoryOperation(User* pUser, int bOnExclResult, std::vector<InventoryManipulator::ChangeLog>& aChangeLog);
+	static void OnUpgradeItemRequest(User* pUser, InPacket *iPacket);
+	static void UpgradeEquip(User* pUser, int nUPOS, int nEPOS, int nWhiteScroll, bool bEnchantSkill, int tReqTime);
 
 	static int GetSlotCount(User *pUser, int nTI);
 	static int GetHoldCount(User *pUser, int nTI);

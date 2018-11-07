@@ -20,5 +20,6 @@ public:
 
 	
 	void ValidateVectorInfo();
+	int GetSN();
 };
 

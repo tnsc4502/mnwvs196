@@ -29,7 +29,7 @@ Rand32 * Rand32::GetInstance()
 	return pInstance;
 }
 
-int Rand32::Random()
+unsigned int Rand32::Random()
 {
 	std::lock_guard<std::mutex> lock(m_lock);
 	unsigned int v3; // eax@1

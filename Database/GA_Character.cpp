@@ -38,14 +38,17 @@ GA_Character::~GA_Character()
 	for (auto& slot : mItemSlot)
 	{
 		for (auto& pItem : slot)
-			if (pItem.second->nType == GW_ItemSlotBase::EQUIP)
-				FreeObj((GW_ItemSlotEquip*)pItem.second);
-			else
-				FreeObj((GW_ItemSlotBundle*)pItem.second);
+			pItem.second->Release();
 	}
 
 	for (auto& skill : mSkillRecord)
 		FreeObj(skill.second);
+
+	for (auto& qr : mQuestComplete)
+		FreeObj(qr.second);
+
+	for (auto& qr : mQuestRecord)
+		FreeObj(qr.second);
 }
 
 void GA_Character::Load(int nCharacterID)

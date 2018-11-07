@@ -19,3 +19,8 @@ void StaticFoothold::ValidateVectorInfo()
 	m_dVx = dXOffset / dRange;
 	m_dVy = dYOffset / dRange;
 }
+
+int StaticFoothold::GetSN()
+{
+	return m_nSN;
+}

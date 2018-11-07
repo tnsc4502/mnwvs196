@@ -44,6 +44,8 @@
 #include "InventoryManipulator.h"
 #include "ScriptMan.h"
 #include "Script.h"
+#include "Pet.h"
+#include "..\Database\GW_ItemSlotPet.h"
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: m_pSocket(_pSocket),
@@ -93,6 +95,14 @@ User::~User()
 	FreeObj(m_pBasicStat);
 	FreeObj(m_pSecondaryStat);
 	FreeObj(m_pFuncKeyMapped);
+
+	m_pUpdateTimer->Pause();
+	FreeObj(m_pUpdateTimer);
+
+	int nMaxPetIndex = GetMaxPetIndex();
+	for (int i = 0; i < nMaxPetIndex; ++i)
+		if (m_apPet[i])
+			FreeObj(m_apPet[i]);
 }
 
 int User::GetUserID() const
@@ -426,6 +436,15 @@ void User::OnPacket(InPacket *iPacket)
 		if (m_pTradingNpc)
 			m_pTradingNpc->OnShopRequest(this, iPacket);
 		break;
+	case UserRecvPacketFlag::User_OnItemUpgradeRequest:
+		QWUInventory::OnUpgradeItemRequest(this, iPacket);
+		break;
+	case UserRecvPacketFlag::UserOnPetMove:
+		OnMovePetRequest(iPacket);
+		break;
+	case UserRecvPacketFlag::User_OnActivatePetRequest:
+		OnActivatePetRequest(iPacket);
+		break;
 	default:
 		if (m_pField)
 		{
@@ -479,6 +498,11 @@ bool User::TryTransferField(int nFieldID, const std::string& sPortalName)
 		m_pField->OnEnter(this);
 		m_pCharacterData->nFieldID = m_pField->GetFieldID();
 		SetTransferStatus(TransferStatus::eOnTransferNone);
+
+		int nMaxPetIndex = GetMaxPetIndex();
+		for (int i = 0; i < nMaxPetIndex; ++i)
+			if (m_apPet[i] != nullptr)
+				m_apPet[i]->OnEnterField(m_pField);
 		return true;
 	}
 	return false;
@@ -1353,6 +1377,83 @@ void User::OnFuncKeyMappedModified(InPacket * iPacket)
 	//SendFuncKeyMapped();
 }
 
+void User::ActivatePet(int nPos, int nRemoveReaseon, bool bOnInitialize)
+{
+	int nAvailableIdx = -1;
+	int nMaxIndex = GetMaxPetIndex();
+	GW_ItemSlotPet *pPetSlot = nullptr;
+	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
+	for (int i = 0; i < nMaxIndex; ++i)
+		if (m_apPet[i] && m_apPet[i]->m_pPetSlot->nPOS == nPos)
+		{
+			pPetSlot = m_apPet[i]->m_pPetSlot;
+			pPetSlot->nActiveState = 0;
+			m_apPet[i]->OnLeaveField();
+			FreeObj(m_apPet[i]);
+			m_apPet[i] = nullptr;
+			nAvailableIdx = -1;
+			break;
+		}
+		else if (nAvailableIdx == -1 && m_apPet[i] == nullptr)
+			nAvailableIdx = i;
+	if (nAvailableIdx >= 0 && nPos > 0)
+	{
+		auto pItem = GetCharacterData()->GetItem(GW_ItemSlotBase::CASH, nPos);
+		if (!pItem || pItem->bIsPet == false)
+			return;
+		pPetSlot = (GW_ItemSlotPet*)pItem;
+		if (nAvailableIdx != -1)
+		{
+			m_apPet[nAvailableIdx] = AllocObjCtor(Pet)(pPetSlot);
+			pPetSlot->nActiveState = 1;
+			m_apPet[nAvailableIdx]->SetIndex(nAvailableIdx);
+			m_apPet[nAvailableIdx]->Init(this);
+			m_apPet[nAvailableIdx]->OnEnterField(m_pField);
+		}
+		else
+			pPetSlot->nActiveState = 0;
+	}
+	if (pPetSlot)
+	{
+		InventoryManipulator::InsertChangeLog(
+			aChangeLog,
+			InventoryManipulator::Change_RemoveFromSlot,
+			GW_ItemSlotBase::CASH, nPos, pPetSlot, 0, 0
+		);
+		InventoryManipulator::InsertChangeLog(
+			aChangeLog,
+			InventoryManipulator::Change_AddToSlot,
+			GW_ItemSlotBase::CASH, nPos, pPetSlot, 0, 0
+		);
+		QWUInventory::SendInventoryOperation(this, true, aChangeLog);
+	}
+	SendCharacterStat(true, 0);
+}
+
+int User::GetMaxPetIndex()
+{
+	//Should check how many pets the user can spawn
+	return MAX_PET_INDEX;
+}
+
+void User::OnActivatePetRequest(InPacket * iPacket)
+{
+	iPacket->Decode4();
+	int nPos = iPacket->Decode1();
+	bool bLead = iPacket->Decode1() == 1;
+	ActivatePet(nPos, 0, 0);
+}
+
+void User::OnMovePetRequest(InPacket * iPacket)
+{
+	int nIdx = iPacket->Decode4();
+	if (nIdx < 0 || nIdx >= GetMaxPetIndex())
+		return;
+	auto pPet = m_apPet[nIdx];
+	if (pPet != nullptr)
+		pPet->OnMove(iPacket);
+}
+
 void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
 {
 	OutPacket oPacket;
@@ -1377,6 +1478,11 @@ void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStr
 
 void User::LeaveField()
 {
+	int nMaxPetIndex = GetMaxPetIndex();
+	for (int i = 0; i < nMaxPetIndex; ++i)
+		if (m_apPet[i])
+			m_apPet[i]->OnLeaveField();
+
 	m_pField->OnLeave(this);
 }
 
@@ -1400,4 +1506,11 @@ void User::OnMigrateIn()
 	m_pUpdateTimer = pUpdateTimer;
 	pUpdateTimer->Start();
 	SetTransferStatus(TransferStatus::eOnTransferNone);
+
+	for (auto& pCashItem : m_pCharacterData->mItemSlot[GW_ItemSlotBase::CASH])
+	{
+		if (pCashItem.second->bIsPet &&
+			((GW_ItemSlotPet*)(pCashItem.second))->nActiveState == 1)
+				ActivatePet(pCashItem.second->nPOS, 0, true);
+	}
 }

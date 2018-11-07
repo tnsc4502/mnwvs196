@@ -19,6 +19,14 @@ public:
 		Exchange_InsufficientItemCount = 3
 	};
 
+	enum ChangeType
+	{
+		Change_AddToSlot = 0,
+		Change_QuantityChanged = 1,
+		Change_SlotPOSChanged = 2,
+		Change_RemoveFromSlot = 3,
+	};
+
 	struct ChangeLog
 	{
 		GW_ItemSlotBase *pItem;
@@ -46,5 +54,6 @@ public:
 
 	static void InsertChangeLog(std::vector<ChangeLog>& aChangeLog, int nChange, int nTI, int nPOS, GW_ItemSlotBase* pi, int nPOS2, int nNumber);
 	static void MakeInventoryOperation(OutPacket *oPacket, int bOnExclResult, std::vector<InventoryManipulator::ChangeLog> &aChangeLog);
+	static void MakeItemUpgradeEffect(OutPacket *oPacket, int nCharacterID, int nEItemID, int nUItemID, bool bSuccess, bool bCursed, bool bEnchant);
 };
 

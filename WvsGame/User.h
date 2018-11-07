@@ -11,6 +11,7 @@ class Field;
 class Portal;
 class InPacket;
 class Npc;
+class Pet;
 class AsyncScheduler;
 struct GA_Character;
 struct GW_FuncKeyMapped;
@@ -88,10 +89,92 @@ public:
 
 	enum Effect : unsigned char
 	{
+		eEffect_LevelUp = 0x00, //Flag only
 
+		/*
+		Encode4(nSkillID)
+		Encode1(nSLV)
+		Encode4(nSelectRoot) = "affect%d"
+		Encode4(nSelect) = "affect0\%d"
+		*/
+		eEffect_ShowSkillAffected = 0x05,
+
+		/*
+		Encode1(nType)
+		Encode4(nPetPOS)
+		*/
+		eEffect_PetEffect = 0x09,
+		eEffect_ResistPVP = 0x0A, //Flag only
+
+		//nItemType 1 = 護身符 2 = 復仇女神的紡車 4 = 戰鬥機器人的力量 
+		//nItemType > 4 : 使用了 ... 未喪失經驗值
+		eEffect_ShowItemUsedMessage = 0x0C,
+
+		eEffect_PlayChangeFieldSound = 0x0E, //Flag only
+		eEffect_ChangeJobEffect = 0x0F,//Flag only
+		eEffect_QuestCompleteEffect = 0x010, //Flag only
+
+		//Encode4(nVal)
+		eEffect_IncDecHpEffect = 0x11,
+
+		//Encode4(nVal)
+		//Enocde1(bGuard)
+		eEffect_IncDecHpEffectGuard = 0x25,
+
+		//Encode4(nItemID)
+		eEffect_BuffItemUsed = 0x12,
+
+		//nItemID : 4
+		//bEffect : 1
+		//if(bEffect) sEffect : str  //"Effect/BasicEff/Event1/Success"
+		eEffect_ShowEffectOnItemUsed = 0x15,
+
+		eEffect_SpecialLevelUpEffect = 0x16, //Flag only
+		
+		//nGain : 4
+		eEffect_GainMesoEffect = 0x18,
+
+		//nGain : 4
+		eEffect_GainEXPEffect = 0x1A,
+		eEffect_SoulStoneReviveMessage = 0x24, //Flag only
+
+		//nRemain : 1
+		eEffect_ReviveItemRemainMessage = 0x1C,
+		eEffect_OnChargingEffect = 0x29, //Flag only
+		eEffect_OnMissEffect = 0x2A, //Flag only
+		eEffect_OnCoolEffect = 0x2B, //Flag only
+		eEffect_OnGoodEffect = 0x2C,  //Flag only
+
+		//sEffect : str //"Effect/Direction4.img/effect/cannonshooter/balloon/0"
+		//Encode1(1)
+		//nPeriodInMS : 4
+		//nRangeType : 4 (1~4)
+		eEffect_OnParametrizeEffect = 0x2F,
+		eEffect_OnGradeUpEffect = 0x32, //Flag only
+
+		//持續閃爍
+		eEffect_HitPeriodRemainRevive = 0x33, //Flag only
+
+		//nMobSkillID : 4
+		//nMobSkillSLV : 4
+		eEffect_MobSkillEffect = 0x36,
+		eEffect_AswanDefenceFail = 0x37,
+
+		//nItemID : 4
+		//nCount : 4
+		eEffect_HitBossShieldEffect = 0x39,
+
+		//nResult : 1
+		eEffect_JewelryCraftingResult = 0x3B,
+
+		//nVal : 4
+		//tDelay : 4
+		eEffect_DelayIncDecHpEffect = 0x4F
 	};
 
 private:
+	static const int MAX_PET_INDEX = 3;
+
 	std::mutex m_mtxUserlock, m_scriptLock;
 	int m_nCharacterID;
 	ClientSocket *m_pSocket;
@@ -103,6 +186,7 @@ private:
 	Script* m_pScript = nullptr;
 	TransferStatus m_nTransferStatus;
 	Npc *m_pTradingNpc = nullptr;
+	Pet* m_apPet[MAX_PET_INDEX] = { nullptr };
 
 	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
 	AttackInfo* TryParsingMeleeAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
@@ -202,5 +286,11 @@ public:
 	//Func Key Mapped
 	void SendFuncKeyMapped();
 	void OnFuncKeyMappedModified(InPacket *iPacket);
+
+	//Pet
+	void ActivatePet(int nPos, int nRemoveReaseon, bool bOnInitialize);
+	int GetMaxPetIndex();
+	void OnActivatePetRequest(InPacket *iPacket);
+	void OnMovePetRequest(InPacket *iPacket);
 };
 

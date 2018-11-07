@@ -624,9 +624,11 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnRequestUpgradeTombEffect, 0xDE); //UserLocal::
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7); 
 MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemUseRequest, 0xFC);
 MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemCancelRequest, 0xFD);
+MAKE_USER_RECV_PACKET_FLAG(User_OnItemUpgradeRequest, 0x11D);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUpRequest, 0x13E);
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillUseRequest, 0x13F); //UserLocal::SendSkillUseRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserSkillCancelRequest, 0x140);
+MAKE_USER_RECV_PACKET_FLAG(User_OnActivatePetRequest, 0x148);
 MAKE_USER_RECV_PACKET_FLAG(User_OnQuestRequest, 0x154);
 MAKE_USER_RECV_PACKET_FLAG(User_OnSendClientResolution, 0x165); //UserLocal::SendClientResolution
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateLapidification, 0x179); //UserLocal::SendUpdateLapidification
@@ -643,6 +645,11 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnSetOffPacketForTrinity, 0x1ED); //UserLocal::S
 MAKE_USER_RECV_PACKET_FLAG(User_OnMobZoneStateChangeRequest, 0x1FA); //UserLocal::SendMobZoneStateChangeRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnChangeCharacterRequest, 0x204);
 MAKE_USER_RECV_PACKET_FLAG(User_OnCheckNpcSpeechQuest, 0x219); //UserLocal::CheckNpcSpeechQuest
+
+MAKE_USER_RECV_PACKET_FLAG(UserOnPetMove, 0x252);
+MAKE_USER_RECV_PACKET_FLAG(UserOnPetAction, 0x253);
+MAKE_USER_RECV_PACKET_FLAG(UserOnPetActionSpeak, 0x254);
+
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateGoToStarPlanet, 0x2AE); //UserLocal::UpdateGoToStarPlanet
 MAKE_USER_RECV_PACKET_FLAG(User_OnDamaged_BattlePvP, 0x31D); //UserLocal::SetDamaged_BattlePvP
 MAKE_USER_RECV_PACKET_FLAG(User_OnLand, 0x337); //UserLocal::OnLand

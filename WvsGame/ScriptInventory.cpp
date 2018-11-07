@@ -91,7 +91,7 @@ int ScriptInventory::InventoryExchange(lua_State * L)
 int ScriptInventory::InventoryItemCount(lua_State * L)
 {
 	ScriptInventory* self = luaW_check<ScriptInventory>(L, 1);
-	int nItemID = luaL_checkinteger(L, 2);
+	int nItemID = (int)luaL_checkinteger(L, 2);
 	int nCount = self->m_pUser->GetCharacterData()->GetItemCount(nItemID / 1000000, nItemID);
 	lua_pushinteger(L, nCount);
 	return 0;

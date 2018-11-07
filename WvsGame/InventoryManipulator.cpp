@@ -36,7 +36,7 @@ void InventoryManipulator::SwapSlot(GA_Character* pCharacterData, std::vector<Ch
 	else
 		pCharacterData->mItemSlot[nTI].erase(nPOS1);
 	pCharacterData->mItemSlot[nTI][nPOS2] = pItemSrc;
-	InventoryManipulator::InsertChangeLog(aChangeLog, 2, nTI, nPOS1, nullptr, nPOS2, 1);
+	InventoryManipulator::InsertChangeLog(aChangeLog, ChangeType::Change_SlotPOSChanged, nTI, nPOS1, nullptr, nPOS2, 1);
 }
 
 bool InventoryManipulator::IsItemExist(GA_Character* pCharacterData, int nTI, int nItemID)
@@ -60,7 +60,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 	/*
 	此處檢查是不CashItem
 	*/
-	if (nTI < 1 || nTI > 5)
+	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return false;
 	auto& itemSlot = pCharacterData->mItemSlot[nTI];
 	if (ItemInfo::IsTreatSingly(pItem->nItemID, pItem->liExpireDate))
@@ -72,7 +72,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 				pCharacterData->mItemRemovedRecord[nTI].erase(pItem->liItemSN);
 			itemSlot[nPOS] = pItem;
 			pItem->nPOS = nPOS;
-			InsertChangeLog(aChangeLog, 0, nTI, nPOS, pItem, 0, 0);
+			InsertChangeLog(aChangeLog, ChangeType::Change_AddToSlot, nTI, nPOS, pItem, 0, 0);
 			*nIncRet = 1;
 			return true;
 		}
@@ -125,7 +125,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 						(*paBackupItem).push_back({ nTI, nPOS,  pBackup });
 					}
 					pItemInSlot->nNumber += (nSlotInc - nOnTrading);
-					InsertChangeLog(aChangeLog, 1, nTI, nPOS, pItemInSlot, 0, pItemInSlot->nNumber);
+					InsertChangeLog(aChangeLog, ChangeType::Change_QuantityChanged, nTI, nPOS, pItemInSlot, 0, pItemInSlot->nNumber);
 				}
 				else
 				{
@@ -170,7 +170,7 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, GW
 			itemSlot[nPOS] = pClone;
 			pClone->nPOS = nPOS;
 
-			InsertChangeLog(aChangeLog, 0, nTI, nPOS, pClone, 0, 0);
+			InsertChangeLog(aChangeLog, ChangeType::Change_AddToSlot, nTI, nPOS, pClone, 0, 0);
 			nNumber -= nSlotInc;
 			nTotalInc += nSlotInc;
 		}
@@ -187,12 +187,12 @@ bool InventoryManipulator::RawAddItem(GA_Character * pCharacterData, int nTI, in
 	/*
 	此處檢查是不CashItem
 	*/
-	if (nTI < 1 || nTI > 5)
+	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return false;
 	auto pItem = ItemInfo::GetInstance()->GetItemSlot(nItemID, ItemInfo::ITEMVARIATION_NORMAL);
 	if (pItem == nullptr)
 		return false;
-	if (nTI != 1)
+	if (nTI != GW_ItemSlotBase::EQUIP)
 		((GW_ItemSlotBundle*)pItem)->nNumber = nCount;
 	return RawAddItem(pCharacterData, nTI, pItem, aChangeLog, nIncRet, true, paBackupItem);
 }
@@ -223,12 +223,12 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 		oPacket->Encode2((short)change.nPOS);
 		if (change.nChange)
 		{
-			if (change.nChange == 1)
+			if (change.nChange == ChangeType::Change_QuantityChanged)
 				oPacket->Encode2((short)change.nNumber);
-			if (change.nChange == 2)
+			if (change.nChange == ChangeType::Change_SlotPOSChanged)
 				oPacket->Encode2((short)change.nPOS2);
-			if (change.nChange == 3 && change.nPOS < 0)
-				oPacket->Encode1(1);
+			//if (change.nChange == 3 && change.nPOS < 0);
+				//oPacket->Encode1(0);
 			oPacket->Encode1(0);
 		}
 		else 
@@ -239,6 +239,19 @@ void InventoryManipulator::MakeInventoryOperation(OutPacket * oPacket, int bOnEx
 	}
 	//printf("Encoding Inventory Operation Done\n");
 	oPacket->Encode4(0); // what's this?
+}
+
+void InventoryManipulator::MakeItemUpgradeEffect(OutPacket *oPacket, int nCharacterID, int nEItemID, int nUItemID, bool bSuccess, bool bCursed, bool bEnchant)
+{
+	oPacket->Encode2((short)UserSendPacketFlag::UserCommon_ShowItemUpgradeEffect);
+	oPacket->Encode4(nCharacterID);
+	oPacket->Encode1(bSuccess ? 1 : (bCursed ? 2 : 0));
+	oPacket->Encode1(bEnchant);
+	oPacket->Encode4(nUItemID);
+	oPacket->Encode4(nEItemID);
+	oPacket->Encode4(0);
+	oPacket->Encode1(0);
+	oPacket->Encode1(0);
 }
 
 /*
@@ -296,14 +309,14 @@ bool InventoryManipulator::RawRemoveItem(GA_Character * pCharacterData, int nTI,
 			}
 		}
 
-		if (ppItemRemoved && nCount >= 1 && nTI != 1) 
+		if (ppItemRemoved && nCount >= 1 && nTI != GW_ItemSlotBase::EQUIP) 
 			((GW_ItemSlotBundle*)*ppItemRemoved)->nNumber = nCount;
 
 		*nDecRet = nCount;
 		if (nRemaining > 0)
-			InsertChangeLog(aChangeLog, 1, nTI, nPOS, pItem, 0, nRemaining);
+			InsertChangeLog(aChangeLog, ChangeType::Change_QuantityChanged, nTI, nPOS, pItem, 0, nRemaining);
 		else
-			InsertChangeLog(aChangeLog, 3, nTI, nPOS, pItem, 0, *nDecRet);
+			InsertChangeLog(aChangeLog, ChangeType::Change_RemoveFromSlot, nTI, nPOS, pItem, 0, *nDecRet);
 	}
 	else
 		return false;

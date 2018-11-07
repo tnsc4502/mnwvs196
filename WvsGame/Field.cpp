@@ -413,10 +413,10 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	for (const auto& elem : movePath.m_lElem)
 	{
 		pMob->SetPosX(elem.x);
-		pMob->SetPosY(elem.y - 1);
+		pMob->SetPosY(elem.y);
 		pMob->SetMoveAction(elem.bMoveAction);
-		if(elem.fh != 0)
-			pMob->SetFh(elem.fh);
+		//if(elem.fh != 0)
+		pMob->SetFh(elem.fh);
 	}
 
 	SplitSendPacket(&movePacket, nullptr);
