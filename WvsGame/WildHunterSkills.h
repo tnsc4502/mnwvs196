@@ -1,0 +1,125 @@
+//狂豹獵人的基朼
+struct WildHunterSkills {
+
+		//----------------Wild Hunter Basic<狂豹獵人的基朼>----------------
+		static const int NaturesBalance_3300 = 33000004; //自然吸血術
+		static const int ResistanceAutoCrank_3300 = 33000005; //自動射擊設備
+		static const int NaturesWrath_3300 = 33000034; //自然的憤怒
+		static const int SummonJaguar_3300 = 33000035; //召喚美洲豹
+		static const int AnotherBite_3300 = 33000036; //另一個咬擊
+		static const int Swipe_3300 = 33000037; //爪攻擊
+		static const int SummonJaguar_3300_2 = 33000038; //召喚美洲豹
+		static const int GoddessGuard_3300 = 33000223; //
+		static const int TripleShot_3300 = 33001000; //三重射
+		static const int JaguarRider_3300 = 33001001; //美洲豹騎乘
+		static const int Graviboots_3300 = 33001002; //三連跳
+		static const int CrossbowBooster_3300 = 33001003; //快速之弩
+		static const int JaguarManagement_3300 = 33001006; //管理美洲豹
+		static const int SummonJaguar_3300_3 = 33001007; //召喚美洲豹
+		static const int SummonJaguar_3300_4 = 33001008; //召喚美洲豹
+		static const int SummonJaguar_3300_5 = 33001009; //召喚美洲豹
+		static const int SummonJaguar_3300_6 = 33001010; //召喚美洲豹
+		static const int SummonJaguar_3300_7 = 33001011; //召喚美洲豹
+		static const int SummonJaguar_3300_8 = 33001012; //召喚美洲豹
+		static const int SummonJaguar_3300_9 = 33001013; //召喚美洲豹
+		static const int SummonJaguar_3300_10 = 33001014; //召喚美洲豹
+		static const int SummonJaguar_3300_11 = 33001015; //召喚美洲豹
+		static const int Swipe_3300_2 = 33001016; //爪攻擊
+		static const int WildLure_3300 = 33001025; //挑釁
+		static const int DoubleJump_3300 = 33001102; //連續跳躍
+		static const int DoubleShot_3300 = 33001105; //雙重射擊
+		static const int Graviboots_3300_2 = 33001202; //三連跳
+		static const int DoubleShot_3300_2 = 33001205; //雙重射擊
+		static const int GoddessGuard_3300_2 = 33001224; //
+
+		//----------------Wild Hunter Techniques<狂豹獵人的技衃>----------------
+		static const int CrossbowMastery_3310 = 33100000; //精準之弩
+		static const int FinalAttack_3310 = 33100009; //終極攻擊
+		static const int PhysicalTraining_3310 = 33100010; //體能訓練
+		static const int JaguarMastery_3310 = 33100014; //美洲豹精通
+		static const int DashnSlash_3310 = 33100016; //歧路
+		static const int Ricochet_3310 = 33101001; //炸彈之箭
+		static const int JaguarRawr_3310 = 33101002; //美洲豹咆哮
+		static const int SoulArrowCrossbow_3310 = 33101003; //無形之箭
+		static const int ItsRainingMines_3310 = 33101004; //地雷
+		static const int CalloftheWild_3310 = 33101005; //咆哮
+		static const int Jagua_shi_3310 = 33101006; //吞食
+		static const int Jagua_shi_3310_2 = 33101007; //吞食
+		static const int ItsRainingMines_3310_2 = 33101008; //地雷
+		static const int SilverHawk_3310 = 33101011; //銀鷹召喚
+		static const int CrossbowBooster_3310_2 = 33101012; //快速之弩
+		static const int TripleShot_3310_2 = 33101113; //三重射擊
+		static const int DashnSlash_3310_2 = 33101115; //歧路
+		static const int TripleShot_3310_3 = 33101213; //三重射擊
+		static const int DashnSlash_3310_3 = 33101215; //歧路
+
+		//----------------Path of the Wild Hunter<狂豹獵人之路>----------------
+		static const int JaguarBoost_3311 = 33110000; //騎乘精通
+		static const int Flurry_3311 = 33110008; //迴避
+		static const int JaguarLink_3311 = 33110014; //美洲豹連接
+		static const int SonicRoar_3311 = 33110016; //音爆
+		static const int EnduringFire_3311 = 33111001; //瘋狂射擊
+		static const int DashnSlash_3311_4 = 33111002; //歧路
+		static const int WildTrap_3311 = 33111003; //瘋狂陷阱
+		static const int Blind_3311 = 33111004; //黑暗狙擊
+		static const int SilverHawk_3311_2 = 33111005; //銀鷹召喚
+		static const int Swipe_3311_3 = 33111006; //爪攻擊
+		static const int FelineBerserk_3311 = 33111007; //狂獸附體
+		static const int Concentrate_3311 = 33111009; //集中
+		static const int WhiteHeatRush_3311 = 33111010; //攻擊衝刺
+		static const int Backstep_3311 = 33111011; //障礙
+		static const int HuntingAssistantUnit_3311 = 33111013; //連弩陷阱
+		static const int SonicRoar_3311_2 = 33111015; //音暴
+		static const int EnduringFire_3311_2 = 33111112; //瘋狂射擊
+		static const int EnduringFire_3311_3 = 33111212; //瘋狂射擊
+
+		//----------------Wild Hunter Completion<狂豹獵人的完戀>----------------
+		static const int CrossbowExpert_3312 = 33120000; //弩術精通
+		static const int WildInstinct_3312 = 33120010; //狂暴天性
+		static const int AdvancedFinalAttack_3312 = 33120011; //進階終極攻擊
+		static const int ExtendedMagazine_3312 = 33120013; //延伸彈匣
+		static const int NaturalForce_3312 = 33120015; //自然之力
+		static const int ShockingCry_3312 = 33120018; //美洲豹靈魂
+		static const int HyperStrength_3312 = 33120030; //神聖力量
+		static const int HyperDexterity_3312 = 33120031; //神聖敏捷
+		static const int HyperIntelligence_3312 = 33120032; //神聖智能
+		static const int HyperLuck_3312 = 33120033; //神聖幸運
+		static const int HyperCritical_3312 = 33120034; //神聖會心一擊毄玗
+		static const int HyperAccuracy_3312 = 33120035; //神聖命中率
+		static const int HyperHealth_3312 = 33120036; //神聖最大心率黎敨
+		static const int HyperMana_3312 = 33120037; //神聖最大魔力黎敨
+		static const int HyperFury_3312 = 33120038; //神聖最大惡魔
+		static const int HyperDefense_3312 = 33120039; //神聖防禦力
+		static const int HyperMagicDefense_3312 = 33120040; //神聖魔法防禦劋
+		static const int HyperSpeed_3312 = 33120041; //神聖移動
+		static const int HyperJump_3312 = 33120042; //神聖跳躍
+		static const int FelineBerser_einforce_3312 = 33120043; //狂獸附體-強匆?害
+		static const int FelineBerser_itality_3312 = 33120044; //狂獸附體-最夷0HP增加
+		static const int FelineBerser_apidAttack_3312 = 33120045; //狂獸附體-快透攫擊
+		static const int SummonJagua_nhance_3312 = 33120046; //召喚美洲豹-弧匆效果
+		static const int SummonJagua_einforce_3312 = 33120047; //召喚美洲豹-?宣強化
+		static const int SummonJagua_ooldownCutter_3312 = 33120048; //召喚美洲豹-??減免
+		static const int WildArrowBlas_einforce_3312 = 33120049; //狂野機關砲-弧匆傷害
+		static const int WildArrowBlas_uardbreak_3312 = 33120050; //狂野機關砲-焱覆防禦
+		static const int WildArrowBlas_ossRush_3312 = 33120051; //狂野機關砲-魄?剋星
+		static const int JaguarRampage_3312 = 33120056; //狂豹之怒
+		static const int ExplodingArrows_3312 = 33121001; //
+		static const int SonicRoar_3312_3 = 33121002; //音爆
+		static const int SharpEyes_3312 = 33121004; //銳利之眼
+		static const int StinkBombShot_3312 = 33121005; //化學彈丸
+		static const int FelineBerserk_3312_2 = 33121006; //
+		static const int MapleWarrior_3312 = 33121007; //楓葉祝福
+		static const int HerosWill_3312 = 33121008; //楓葉淨化
+		static const int WildArrowBlast_3312 = 33121009; //狂野帕爾坎
+		static const int HuntingAssistantUnit_3312_2 = 33121012; //連弩陷阱
+		static const int ExtendedMagazine_3312_2 = 33121013; //延伸彈匣
+		static const int DrillSalvo_3312 = 33121016; //鑽孔集裝箱
+		static const int JaguarSoul_3312 = 33121017; //美洲豹靈魂
+		static const int JaguarRampage_3312_2 = 33121052; //狂豹之怒
+		static const int ForLiberty_3312 = 33121053; //自由意志
+		static const int SilentRampage_3312 = 33121054; //寧靜狂暴
+		static const int WildArrowBlast_3312_2 = 33121114; //狂野機關砲
+		static const int ExplodingArrows_3312_2 = 33121155; //閃光雨
+		static const int WildArrowBlast_3312_3 = 33121214; //狂野機關砲
+		static const int JaguarRampage_3312_3 = 33121255; //狂豹之怒
+};

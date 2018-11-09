@@ -1,4 +1,5 @@
 #include "FieldObj.h"
+#include "MovePath.h"
 
 FieldObj::FieldObj()
 {
@@ -7,6 +8,18 @@ FieldObj::FieldObj()
 
 FieldObj::~FieldObj()
 {
+}
+
+void FieldObj::ValidateMovePath(MovePath * pMovePath)
+{
+	auto& movePath = *pMovePath;
+	for (auto& elem : movePath.m_lElem)
+	{
+		m_ptPos.x = elem.x;
+		m_ptPos.y = elem.y;
+		SetMoveAction(elem.bMoveAction);
+		SetFh(elem.fh);
+	}
 }
 
 /*

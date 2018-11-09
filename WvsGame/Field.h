@@ -17,6 +17,7 @@ class AsyncScheduler;
 class InPacket;
 class OutPacket;
 class WvsPhysicalSpace2D;
+class SummonedPool;
 
 class Field
 {
@@ -28,6 +29,7 @@ class Field
 	DropPool *m_pDropPool;
 	TownPortalPool *m_pTownPortalPool;
 	ReactorPool *m_pReactorPool;
+	SummonedPool* m_pSummonedPool;
 	FieldSet* m_pParentFieldSet = nullptr;
 	WvsPhysicalSpace2D* m_pSpace2D;
 	FieldPoint m_ptLeftTop, m_szMap;
@@ -138,6 +140,7 @@ public:
 	PortalMap* GetPortalMap();
 	TownPortalPool* GetTownPortalPool();
 	ReactorPool* GetReactorPool();
+	SummonedPool* GetSummonedPool();
 
 	std::mutex& GetFieldLock();
 

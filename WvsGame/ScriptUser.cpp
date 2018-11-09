@@ -71,6 +71,8 @@ void ScriptUser::Register(lua_State * L)
 		{ "getEXP", TargetGetEXP },
 		{ "getMoney", TargetGetMoney },
 		{ "isWearing", TargetIsWearing },
+		{ "getPosX", TargetGetPosX },
+		{ "getPosY", TargetGetPosY },
 		{ NULL, NULL }
 	};
 
@@ -135,6 +137,20 @@ int ScriptUser::TargetRegisterTransferField(lua_State * L)
 	const char *sPortal = luaL_checkstring(L, 3);
 	self->GetUser()->TryTransferField(nFieldID, sPortal);
 	self->m_pUser->ValidateStat();
+	return 1;
+}
+
+int ScriptUser::TargetGetPosX(lua_State * L)
+{
+	ScriptUser* self = luaW_check<ScriptUser>(L, 1);
+	lua_pushinteger(L, self->m_pUser->GetPosX());
+	return 1;
+}
+
+int ScriptUser::TargetGetPosY(lua_State * L)
+{
+	ScriptUser* self = luaW_check<ScriptUser>(L, 1);
+	lua_pushinteger(L, self->m_pUser->GetPosY());
 	return 1;
 }
 

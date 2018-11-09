@@ -11,6 +11,7 @@
 #include "USkill.h"
 #include "Field.h"
 #include "Reward.h"
+#include "Summoned.h"
 #include "DropPool.h"
 #include <vector>
 #include "..\WvsLib\String\StringUtility.h"
@@ -41,7 +42,11 @@ void CommandManager::Process(User * pUser, const std::string & input)
 		for (int i = 0; i < token[0].size(); ++i)
 			token[0][i] = tolower(token[0][i]);
 		auto& sCmd = token[0];
-		if (sCmd == "#item")
+		if (sCmd == "#mov")
+			Summoned::SUMMONED_MOV = atoi(token[1].c_str());
+		else if(sCmd == "#att")
+			Summoned::SUMMONED_ATT = atoi(token[1].c_str());
+		else if (sCmd == "#item")
 		{
 			int nItemID = atoi(token[1].c_str());
 			if (nItemID / 1000000 >= 1)

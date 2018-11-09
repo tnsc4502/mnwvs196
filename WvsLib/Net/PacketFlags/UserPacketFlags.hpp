@@ -621,7 +621,8 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnShopRequest, 0xE6);
 MAKE_USER_RECV_PACKET_FLAG(User_OnFinalAttackRequestPacket, 0xED); //UserLocal::SendFinalAttackRequestPacket
 MAKE_USER_RECV_PACKET_FLAG(User_OnUserChat, 0xD1);
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestUpgradeTombEffect, 0xDE); //UserLocal::RequestUpgradeTombEffect
-MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7); 
+MAKE_USER_RECV_PACKET_FLAG(Auction_RegisterItem, 0xF3); //Auction::RegisterItem
+MAKE_USER_RECV_PACKET_FLAG(User_OnUserChangeSlotRequest, 0xF7);
 MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemUseRequest, 0xFC);
 MAKE_USER_RECV_PACKET_FLAG(User_OnStatChangeItemCancelRequest, 0xFD);
 MAKE_USER_RECV_PACKET_FLAG(User_OnItemUpgradeRequest, 0x11D);
@@ -632,6 +633,12 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnActivatePetRequest, 0x148);
 MAKE_USER_RECV_PACKET_FLAG(User_OnQuestRequest, 0x154);
 MAKE_USER_RECV_PACKET_FLAG(User_OnSendClientResolution, 0x165); //UserLocal::SendClientResolution
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateLapidification, 0x179); //UserLocal::SendUpdateLapidification
+
+MAKE_USER_RECV_PACKET_FLAG(AffectedArea_OnAffectedAreaCreated, 0x184); //AffectedAreaPool::OnAffectedAreaCreated
+MAKE_USER_RECV_PACKET_FLAG(AffectedArea_RemoveAffectedArea, 0x185); //AffectedAreaPool::RemoveAffectedArea
+MAKE_USER_RECV_PACKET_FLAG(BattleRpsGame_OnEnter, 0x19A); //BattleRpsGameDlg::OnEnter
+MAKE_USER_RECV_PACKET_FLAG(AffectedArea_SendRemoveAffectedAreaSkill, 0x229); //AffectedAreaPool::SendRemoveAffectedAreaSkill
+
 MAKE_USER_RECV_PACKET_FLAG(User_OnTempAct, 0x1A9); //UserLocal::SetTempAct
 MAKE_USER_RECV_PACKET_FLAG(User_OnKeyDownAreaMovePathFlush, 0x181); //UserLocal::KeyDownAreaMovePathFlush
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateZeroTagCoolTimeOut, 0x18D); //UserLocal::UpdateZeroTagCoolTimeOut
@@ -644,17 +651,25 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnBroadcastAffectedEffectToSplit, 0x1D9); //User
 MAKE_USER_RECV_PACKET_FLAG(User_OnSetOffPacketForTrinity, 0x1ED); //UserLocal::SendSetOffPacketForTrinity
 MAKE_USER_RECV_PACKET_FLAG(User_OnMobZoneStateChangeRequest, 0x1FA); //UserLocal::SendMobZoneStateChangeRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnChangeCharacterRequest, 0x204);
+
+MAKE_USER_RECV_PACKET_FLAG(Android_OnOpenShop, 0x218); //Android::OnOpenShop
+MAKE_USER_RECV_PACKET_FLAG(Android_DoActionSe, 0x272); //Android::DoActionSe
+
 MAKE_USER_RECV_PACKET_FLAG(User_OnCheckNpcSpeechQuest, 0x219); //UserLocal::CheckNpcSpeechQuest
+MAKE_USER_RECV_PACKET_FLAG(User_OnResetAddSkill, 0x227); //AddAttackAfterSkill::ResetAddSkill
 
-MAKE_USER_RECV_PACKET_FLAG(UserOnPetMove, 0x252);
-MAKE_USER_RECV_PACKET_FLAG(UserOnPetAction, 0x253);
-MAKE_USER_RECV_PACKET_FLAG(UserOnPetActionSpeak, 0x254);
+MAKE_USER_RECV_PACKET_FLAG(User_OnPetMove, 0x252);
+MAKE_USER_RECV_PACKET_FLAG(User_OnPetAction, 0x253);
+MAKE_USER_RECV_PACKET_FLAG(User_OnPetActionSpeak, 0x254);
 
+MAKE_USER_RECV_PACKET_FLAG(AttendanceUI_OpenAttendanceUI, 0x29E); //AttendanceUIMan::OpenAttendanceUI
 MAKE_USER_RECV_PACKET_FLAG(User_OnUpdateGoToStarPlanet, 0x2AE); //UserLocal::UpdateGoToStarPlanet
 MAKE_USER_RECV_PACKET_FLAG(User_OnDamaged_BattlePvP, 0x31D); //UserLocal::SetDamaged_BattlePvP
 MAKE_USER_RECV_PACKET_FLAG(User_OnLand, 0x337); //UserLocal::OnLand
 MAKE_USER_RECV_PACKET_FLAG(User_OnStartGatherRequest, 0x3B8); //UserLocal::GatherRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnEndGatherRequest, 0x3B9); //UserLocal::GatherRequest
+
+MAKE_USER_RECV_PACKET_FLAG(BattleRecord_RequestOnCalc, 0x483);//BattleRecordMan::RequestOnCalc
 
 /*MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::
 MAKE_USER_RECV_PACKET_FLAG(User_, ); //UserLocal::

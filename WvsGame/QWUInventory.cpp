@@ -64,7 +64,7 @@ bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI,
 			auto pItemSrc = pCharacterData->GetItem(nTI, nPOS1);
 			auto pItemDst = pCharacterData->GetItem(nTI, nPOS2);
 			//Equip
-			if (nTI == 1)
+			if (nTI == GW_ItemSlotBase::EQUIP)
 				InventoryManipulator::SwapSlot(pCharacterData, aChangeLog, nTI, nPOS1, nPOS2);
 			else
 			{
@@ -143,7 +143,7 @@ bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 {
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
-	int totalInc = 0;
+	int nTotalInc = 0;
 	bool result = false;
 	if(pItem != nullptr)
 		result = InventoryManipulator::RawAddItem(
@@ -151,7 +151,7 @@ bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 			pItem->nType,
 			pItem,
 			aChangeLog,
-			&totalInc,
+			&nTotalInc,
 			true
 		);	
 	OutPacket oPacket;
@@ -329,19 +329,8 @@ void QWUInventory::UpgradeEquip(User * pUser, int nUPOS, int nEPOS, int nWhiteSc
 			}
 			if (RawRemoveItemByID(pUser, 2340000, 1) && !bSuccess)
 				++pEItem->nRUC;
-
-			nDecScroll = 0;
-			if (bCursed)
-				RawRemoveItem(pUser, GW_ItemSlotBase::EQUIP, pEItem->nPOS, 1, aChangeLog, nDecScroll, nullptr);
-			else
-				InventoryManipulator::InsertChangeLog(
-					aChangeLog, 
-					InventoryManipulator::Change_AddToSlot, 
-					GW_ItemSlotBase::EQUIP, 
-					nEPOS, pEItem, 0, 0);
 	
 			pUser->ValidateStat();
-			SendInventoryOperation(pUser, true, aChangeLog);
 			if (bCheckScroll || bEnchantSkill) 
 			{
 				OutPacket oPacket;
@@ -356,13 +345,23 @@ void QWUInventory::UpgradeEquip(User * pUser, int nUPOS, int nEPOS, int nWhiteSc
 				);
 				pUser->GetField()->BroadcastPacket(&oPacket);
 			}
+
+			if (bCursed)
+				RawRemoveItem(pUser, GW_ItemSlotBase::EQUIP, pEItem->nPOS, 1, aChangeLog, nDecScroll, nullptr);
+			else
+				InventoryManipulator::InsertChangeLog(
+					aChangeLog,
+					InventoryManipulator::Change_AddToSlot,
+					GW_ItemSlotBase::EQUIP,
+					nEPOS, pEItem, 0, 0);
+			SendInventoryOperation(pUser, true, aChangeLog);
 		}
 	}
 }
 
 int QWUInventory::GetSlotCount(User * pUser, int nTI)
 {
-	if (nTI < 1 || nTI > 5)
+	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return 0;
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
 	return pUser->GetCharacterData()->mSlotCount->aSlotCount[nTI];
@@ -370,7 +369,7 @@ int QWUInventory::GetSlotCount(User * pUser, int nTI)
 
 int QWUInventory::GetHoldCount(User * pUser, int nTI)
 {
-	if (nTI < 1 || nTI > 5)
+	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return 0;
 	int nMaxSlotCount = GetSlotCount(pUser, nTI);
 	std::lock_guard<std::mutex> lock(pUser->GetLock());
@@ -384,7 +383,7 @@ int QWUInventory::GetHoldCount(User * pUser, int nTI)
 
 int QWUInventory::GetFreeCount(User * pUser, int nTI)
 {
-	if (nTI < 1 || nTI > 5)
+	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return 0;
 	int nMaxSlotCount = GetSlotCount(pUser, nTI);
 	int nHoldCount = GetHoldCount(pUser, nTI);

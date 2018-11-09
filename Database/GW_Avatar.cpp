@@ -23,6 +23,7 @@ void GW_Avatar::Load(int nCharacterID)
 	GW_ItemSlotEquip eqp;
 	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext())
 	{
+		eqp.bIsCash = false;
 		eqp.Load(recordSet["ItemSN"]);
 		short nPos = eqp.nPOS * -1;
 		if (nPos < 100)

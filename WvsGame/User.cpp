@@ -6,13 +6,21 @@
 #include "..\Database\GW_CharacterLevel.h"
 #include "..\Database\GW_CharacterMoney.h"
 #include "..\Database\GW_FuncKeyMapped.h"
+#include "..\Database\GW_SkillRecord.h"
 #include "..\Database\GW_Avatar.hpp"
+#include "..\Database\GW_ItemSlotPet.h"
 
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\PacketFlags\GamePacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\ShopPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\SummonedPacketFlags.hpp"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
+#include "..\WvsLib\Task\AsyncScheduler.h"
+#include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Random\Rand32.h"
 
 #include "FieldMan.h"
 #include "Portal.h"
@@ -21,31 +29,28 @@
 #include "Field.h"
 #include "QWUser.h"
 #include "QWUInventory.h"
+#include "InventoryManipulator.h"
 #include "BasicStat.h"
 #include "SecondaryStat.h"
-#include "USkill.h"
-#include "..\WvsLib\Common\WvsGameConstants.hpp"
 #include "AttackInfo.h"
 #include "NpcTemplate.h"
 #include "LifePool.h"
 #include "ItemInfo.h"
 #include "SkillInfo.h"
+#include "SkillEntry.h"
+#include "USkill.h"
 #include "CommandManager.h"
 #include "QuestMan.h"
 #include "QuestAct.h"
 #include "ActItem.h"
 #include "ExchangeElement.h"
-#include "..\WvsLib\Task\AsyncScheduler.h"
-#include "..\WvsLib\DateTime\GameDateTime.h"
-#include "..\WvsLib\Logger\WvsLogger.h"
-#include "..\WvsLib\Random\Rand32.h"
-
 #include "QWUQuestRecord.h"
-#include "InventoryManipulator.h"
 #include "ScriptMan.h"
 #include "Script.h"
 #include "Pet.h"
-#include "..\Database\GW_ItemSlotPet.h"
+#include "Summoned.h"
+#include "SummonedPool.h"
+
 
 User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	: m_pSocket(_pSocket),
@@ -73,16 +78,17 @@ User::~User()
 	m_pFuncKeyMapped->Encode(&oPacket, true);
 	if (m_nTransferStatus == TransferStatus::eOnTransferShop || m_nTransferStatus == TransferStatus::eOnTransferChannel) 
 	{
-		oPacket.Encode1(0); //bGameEnd
+		oPacket.Encode1(1); //bGameEnd
 		m_pSecondaryStat->EncodeInternal(this, &oPacket);
 	}
 	else
-		oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
+		oPacket.Encode1(0); //bGameEnd, Dont decode and save the secondarystat info.
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
 	m_pUpdateTimer->Abort();
 	//m_pField->OnLeave(this);
+	RemoveSummoned(0, 0, -1);
 	LeaveField();
 	
 	try {
@@ -439,18 +445,23 @@ void User::OnPacket(InPacket *iPacket)
 	case UserRecvPacketFlag::User_OnItemUpgradeRequest:
 		QWUInventory::OnUpgradeItemRequest(this, iPacket);
 		break;
-	case UserRecvPacketFlag::UserOnPetMove:
-		OnMovePetRequest(iPacket);
-		break;
 	case UserRecvPacketFlag::User_OnActivatePetRequest:
 		OnActivatePetRequest(iPacket);
 		break;
 	default:
-		if (m_pField)
-		{
-			iPacket->RestorePacket();
+		iPacket->RestorePacket();
+
+		//Pet Packet
+		if (nType >= UserRecvPacketFlag::User_OnPetMove
+			&& nType <= UserRecvPacketFlag::User_OnPetActionSpeak)
+			OnPetPacket(iPacket);
+		//Summoned Packet
+		else if (nType >= FlagMin(SummonedRecvPacketFlag)
+			&& nType <= FlagMax(SummonedRecvPacketFlag))
+			OnSummonedPacket(iPacket);
+		//Field Packet
+		else if (m_pField)
 			m_pField->OnPacket(this, iPacket);
-		}
 	}
 	ValidateStat();
 	SendCharacterStat(false, 0);
@@ -503,6 +514,8 @@ bool User::TryTransferField(int nFieldID, const std::string& sPortalName)
 		for (int i = 0; i < nMaxPetIndex; ++i)
 			if (m_apPet[i] != nullptr)
 				m_apPet[i]->OnEnterField(m_pField);
+
+		ReregisterSummoned();
 		return true;
 	}
 	return false;
@@ -1377,6 +1390,16 @@ void User::OnFuncKeyMappedModified(InPacket * iPacket)
 	//SendFuncKeyMapped();
 }
 
+void User::OnPetPacket(InPacket * iPacket)
+{
+	int nIndex = iPacket->Decode4();
+	if (nIndex < 0 || nIndex >= GetMaxPetIndex())
+		return;
+	auto pPet = m_apPet[nIndex];
+	if (pPet != nullptr)
+		pPet->OnPacket(iPacket);
+}
+
 void User::ActivatePet(int nPos, int nRemoveReaseon, bool bOnInitialize)
 {
 	int nAvailableIdx = -1;
@@ -1444,14 +1467,57 @@ void User::OnActivatePetRequest(InPacket * iPacket)
 	ActivatePet(nPos, 0, 0);
 }
 
-void User::OnMovePetRequest(InPacket * iPacket)
+void User::OnSummonedPacket(InPacket * iPacket)
 {
-	int nIdx = iPacket->Decode4();
-	if (nIdx < 0 || nIdx >= GetMaxPetIndex())
+	int nFieldObjID = iPacket->Decode4();
+	auto pSummoned = m_pField->GetSummonedPool()->GetSummoned(nFieldObjID);
+	if (pSummoned)
+		pSummoned->OnPacket(iPacket);
+}
+
+void User::ReregisterSummoned()
+{
+	for (auto& pSummoned : m_lSummoned)
+		m_pField->GetSummonedPool()->CreateSummoned(this, pSummoned, m_ptPos);
+}
+
+void User::CreateSummoned(const SkillEntry * pSkill, int nSLV, const FieldPoint & pt, bool bMigrate)
+{
+	if (!m_pField)
+	{
+		m_aMigrateSummoned.push_back(pSkill->GetSkillID());
 		return;
-	auto pPet = m_apPet[nIdx];
-	if (pPet != nullptr)
-		pPet->OnMove(iPacket);
+	}
+	auto pSummoned = m_pField->GetSummonedPool()->CreateSummoned(
+		this, pSkill->GetSkillID(), nSLV, m_ptPos
+	);
+	if (pSummoned)
+		m_lSummoned.push_back(pSummoned);
+}
+
+//nForceRemoveSkillID = -1 means that remove all summoneds.
+void User::RemoveSummoned(int nSkillID, int nLeaveType, int nForceRemoveSkillID)
+{
+	if (nForceRemoveSkillID == -1 || nForceRemoveSkillID != 0)
+	{
+		int nSummoned = (int)m_lSummoned.size();
+		for (int i = 0; i < nSummoned; ++i)
+		{
+			if (nForceRemoveSkillID == -1 || 
+				m_lSummoned[i]->GetSkillID() == nForceRemoveSkillID)
+			{
+				m_lSummoned.erase(m_lSummoned.begin() + i);
+				m_pField->GetSummonedPool()->RemoveSummoned(
+					GetUserID(),
+					nForceRemoveSkillID,
+					0
+				);
+				break;
+			}
+		}
+	}
+	if (m_pField)
+		m_pField->GetSummonedPool()->RemoveSummoned(GetUserID(), nSkillID, nLeaveType);
 }
 
 void User::SendQuestRecordMessage(int nKey, int nState, const std::string & sStringRecord)
@@ -1483,6 +1549,9 @@ void User::LeaveField()
 		if (m_apPet[i])
 			m_apPet[i]->OnLeaveField();
 
+	for (auto& pSummoned : m_lSummoned)
+		RemoveSummoned(pSummoned->GetSkillID(), Summoned::eLeave_TransferField, 0);
+
 	m_pField->OnLeave(this);
 }
 
@@ -1513,4 +1582,15 @@ void User::OnMigrateIn()
 			((GW_ItemSlotPet*)(pCashItem.second))->nActiveState == 1)
 				ActivatePet(pCashItem.second->nPOS, 0, true);
 	}
+
+	for (auto& nSummonedSkill : m_aMigrateSummoned)
+	{
+		auto pSkillRecord = m_pCharacterData->GetSkill(nSummonedSkill);
+		CreateSummoned(
+			SkillInfo::GetInstance()->GetSkillByID(nSummonedSkill),
+			pSkillRecord->nSLV,
+			m_ptPos,
+			true);
+	}
+	m_aMigrateSummoned.clear();
 }

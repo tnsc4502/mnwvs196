@@ -98,6 +98,7 @@ struct TemporaryStat
 	ADD_TS_FLAG(Poison, 71);
 	ADD_TS_FLAG(Seal, 72);
 	ADD_TS_FLAG(Darkness, 73);
+	ADD_TS_FLAG(Summon, 74);
 	ADD_TS_FLAG(ComboCounter, 74);
 	ADD_TS_FLAG(WeaponCharge, 75);
 	ADD_TS_FLAG(HolySymbol, 76);

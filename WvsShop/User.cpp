@@ -31,6 +31,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 	m_pFuncKeyMapped = AllocObjCtor(GW_FuncKeyMapped)(m_pCharacterData->nCharacterID);
 	m_pCharacterData->nAccountID = iPacket->Decode4();
 	m_pCharacterData->DecodeCharacterData(iPacket, true);
+	m_pFuncKeyMapped->Decode(iPacket);
 	if (!iPacket->Decode1())
 		m_nChannelID = 0;
 	else
@@ -56,7 +57,7 @@ User::~User()
 	m_pCharacterData->EncodeCharacterData(&oPacket, true);
 	m_pFuncKeyMapped->Encode(&oPacket, true);
 
-	oPacket.Encode1(1); //bGameEnd, Dont decode and save the secondarystat info.
+	oPacket.Encode1(2); //bGameEnd, Dont decode and save the secondarystat info.
 	WvsBase::GetInstance<WvsShop>()->GetCenter()->SendPacket(&oPacket);
 
 	auto bindT = std::bind(&User::Update, this);
@@ -224,6 +225,7 @@ void User::OnCenterMoveItemToSlotDone(InPacket * iPacket)
 	OutPacket oPacket;
 	oPacket.Encode2((short)ShopSendPacketFlag::User_CashItemResult);
 	oPacket.Encode1(CashItemRequest::Send_OnCashItemResMoveLtoSDone);
+	long long int liItemSN = iPacket->Decode8();
 	oPacket.EncodeBuffer(
 		iPacket->GetPacket() + iPacket->GetReadCount(),
 		iPacket->GetPacketSize() - iPacket->GetReadCount()
@@ -236,6 +238,7 @@ void User::OnCenterMoveItemToSlotDone(InPacket * iPacket)
 	if (pItem)
 	{
 		pItem->Decode(iPacket, false);
+		pItem->liItemSN = liItemSN;
 		pItem->nCharacterID = m_pCharacterData->nCharacterID;
 		pItem->nPOS = nPOS;
 		pItem->nType = (GW_ItemSlotBase::GW_ItemSlotType)((pItem->nItemID / 1000000));

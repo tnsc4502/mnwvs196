@@ -21,6 +21,8 @@ class SecondaryStat;
 struct TemporaryStat;
 struct AttackInfo;
 struct ActItem;
+class SkillEntry;
+class Summoned;
 
 class Script;
 
@@ -187,6 +189,8 @@ private:
 	TransferStatus m_nTransferStatus;
 	Npc *m_pTradingNpc = nullptr;
 	Pet* m_apPet[MAX_PET_INDEX] = { nullptr };
+	std::vector<Summoned*> m_lSummoned;
+	std::vector<int> m_aMigrateSummoned;
 
 	void TryParsingDamageData(AttackInfo *pInfo, InPacket *iPacket);
 	AttackInfo* TryParsingMeleeAttack(AttackInfo* pInfo, int nType, InPacket *iPacket);
@@ -288,9 +292,15 @@ public:
 	void OnFuncKeyMappedModified(InPacket *iPacket);
 
 	//Pet
+	void OnPetPacket(InPacket *iPacket);
 	void ActivatePet(int nPos, int nRemoveReaseon, bool bOnInitialize);
 	int GetMaxPetIndex();
 	void OnActivatePetRequest(InPacket *iPacket);
-	void OnMovePetRequest(InPacket *iPacket);
+
+	//Summoned
+	void OnSummonedPacket(InPacket *iPacket);
+	void ReregisterSummoned();
+	void CreateSummoned(const SkillEntry* pSkill, int nSLV, const FieldPoint& pt, bool bMigrate);
+	void RemoveSummoned(int nSkillID, int nLeaveType, int nForceRemoveSkillID); //nForceRemoveSkillID = -1 means that remove all summoneds.
 };
 

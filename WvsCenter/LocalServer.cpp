@@ -241,16 +241,19 @@ void LocalServer::OnRequestMigrateOut(InPacket * iPacket)
 	int nClientSocketID = iPacket->Decode4();
 	int nCharacterID = iPacket->Decode4();
 	CharacterDBAccessor::GetInstance()->OnCharacterSaveRequest(iPacket);
-	bool bGameEnd = iPacket->Decode1() == 1 ? true : false;
-	WvsLogger::LogFormat("OnRequestMigrateOut is game end = %d\n", bGameEnd == true ? 1 : 0);
-	if (!bGameEnd)
+	char nGameEndType = iPacket->Decode1();
+	WvsLogger::LogFormat("OnRequestMigrateOut code = %d\n", (int)nGameEndType);
+
+	if (nGameEndType == 1) //Transfer to another game server or to the shop.
 	{
 		UserTransferStatus* pStatus = AllocObj( UserTransferStatus );
 		pStatus->Decode(iPacket);
 		WvsWorld::GetInstance()->SetUserTransferStatus(nCharacterID, pStatus);
 	}
-	else
+	else if(nGameEndType == 0) //Migrate out from the game server.
 		WvsWorld::GetInstance()->ClearUserTransferStatus(nCharacterID);
+
+	// nGameEndType = 2 : From shop to game server
 }
 
 void LocalServer::OnRequestTransferChannel(InPacket * iPacket)

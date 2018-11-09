@@ -40,6 +40,16 @@ void Pet::Init(User * pUser)
 
 void Pet::OnPacket(InPacket * iPacket)
 {
+	int nType = iPacket->Decode2();
+	switch (nType)
+	{
+		case UserRecvPacketFlag::User_OnPetMove:
+			OnMove(iPacket);
+			break;
+		case UserRecvPacketFlag::User_OnPetActionSpeak:
+		case UserRecvPacketFlag::User_OnPetAction:
+			break;
+	}
 }
 
 void Pet::OnEnterField(Field * pField)
@@ -72,13 +82,7 @@ void Pet::OnMove(InPacket * iPacket)
 	iPacket->Offset(13);
 	MovePath movePath;
 	movePath.Decode(iPacket);
-	for (auto& elem : movePath.m_lElem)
-	{
-		m_ptPos.x = elem.x;
-		m_ptPos.y = elem.y;
-		SetMoveAction(elem.bMoveAction);
-		SetFh(elem.fh);
-	}
+	ValidateMovePath(&movePath);
 	OutPacket oPacket;
 	oPacket.Encode2((short)UserSendPacketFlag::UserCommon_Pet_OnMove);
 	oPacket.Encode4(m_pPetSlot->nCharacterID);

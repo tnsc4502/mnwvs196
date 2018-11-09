@@ -10,6 +10,7 @@
 #include "PortalMap.h"
 #include "TownPortalPool.h"
 #include "ReactorPool.h"
+#include "SummonedPool.h"
 #include "DropPool.h"
 #include "FieldSet.h"
 #include "User.h"
@@ -20,13 +21,14 @@
 #include <functional>
 
 Field::Field()
-	: m_pLifePool(new LifePool), 
-	  m_pPortalMap(new PortalMap),
-	  m_pTownPortalPool(new TownPortalPool),
-	  m_pReactorPool(new ReactorPool),
-	  m_pSpace2D(new WvsPhysicalSpace2D)
+	: m_pLifePool(AllocObj(LifePool)),
+	  m_pPortalMap(AllocObj(PortalMap)),
+	  m_pTownPortalPool(AllocObj(TownPortalPool)),
+	  m_pReactorPool(AllocObj(ReactorPool)),
+	  m_pSpace2D(AllocObj(WvsPhysicalSpace2D))
 {
-	m_pDropPool = new DropPool(this);
+	m_pDropPool = AllocObjCtor(DropPool)(this);
+	m_pSummonedPool = AllocObjCtor(SummonedPool)(this);
 	//m_asyncUpdateTimer = AsyncScheduler::CreateTask(std::bind(&Field::UpdateTrigger, this), 5000, true);
 	//this->m_asyncUpdateTimer = (void*)timer;
 	InitLifePool();
@@ -34,8 +36,13 @@ Field::Field()
 
 Field::~Field()
 {
-	delete m_pLifePool;
-	delete m_pPortalMap;
+	FreeObj(m_pLifePool);
+	FreeObj(m_pPortalMap);
+	FreeObj(m_pDropPool);
+	FreeObj(m_pSummonedPool);
+	FreeObj(m_pSpace2D);
+	FreeObj(m_pReactorPool);
+	FreeObj(m_pTownPortalPool);
 	//m_asyncUpdateTimer->Abort();
 	//delete m_asyncUpdateTimer;
 }
@@ -311,6 +318,11 @@ TownPortalPool * Field::GetTownPortalPool()
 ReactorPool * Field::GetReactorPool()
 {
 	return m_pReactorPool;
+}
+
+SummonedPool * Field::GetSummonedPool()
+{
+	return m_pSummonedPool;
 }
 
 std::mutex & Field::GetFieldLock()

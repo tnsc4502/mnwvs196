@@ -10,6 +10,8 @@ class SkillEntry;
 
 class SkillInfo
 {
+	//How many root img should be processed parallelly
+	int m_nRootCount = 0;
 	std::atomic<int> m_nOnLoadingSkills;
 	std::mutex m_mtxSkillResLock;
 	std::map<int, std::map<int, SkillEntry*> *> m_mSkillByRootID;
@@ -18,14 +20,12 @@ public:
 	SkillInfo();
 	~SkillInfo();
 
-	int GetLoadingSkillCount() const;
-
-
 	const std::map<int, std::map<int, SkillEntry*> *>& GetSkills() const;
 	const std::map<int, SkillEntry*> * GetSkillsByRootID(int nRootID) const;
 	const SkillEntry* GetSkillByID(int nSkillID) const;
 
 	static SkillInfo* GetInstance();
+	static bool IsValidRootName(const std::string& sName);
 	int GetBundleItemMaxPerSlot(int nItemID, GA_Character* pCharacterData);
 	void IterateSkillInfo();
 	void LoadSkillRoot(int nSkillRootID, void* pData);
@@ -36,5 +36,6 @@ public:
 	int GetSkillLevel(GA_Character* pCharacter, int nSkillID, SkillEntry** pEntry, int bNoPvPLevelCheck, int bPureStealSLV, int bNotApplySteal, int bCheckSkillRoot);
 
 	GW_SkillRecord* GetSkillRecord(int nSkillID, int nSLV, long long int tExpired);
+	static bool IsSummonSkill(int nSkillID);
 };
 

@@ -834,15 +834,14 @@ void SecondaryStat::DecodeInternal(User* pUser, InPacket * iPacket)
 				pItem->Apply(pUser, 0, false, false, true, tDurationRemained);
 		}
 		else
-			USkill::DoActiveSkill_SelfStatChange(
+			USkill::OnSkillUseRequest(
 				pUser,
+				nullptr,
 				SkillInfo::GetInstance()->GetSkillByID(nSkillID),
 				nSLV,
-				nullptr,
-				0,
 				false,
-				tDurationRemained,
-				true
+				true,
+				tDurationRemained
 			);
 	}
 }

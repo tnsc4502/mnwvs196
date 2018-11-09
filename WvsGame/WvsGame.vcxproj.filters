@@ -55,6 +55,9 @@
     <Filter Include="WvsGame\InGame\Field\Physical">
       <UniqueIdentifier>{bd41fbb6-bd8f-47b8-ae7e-d6aadd500d91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WvsGame\InGame\Field\Life\Summoned">
+      <UniqueIdentifier>{f846c40a-e877-4e54-8adf-5e15ceadbee5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="WvsGame\InGame\Field\Life\Pet">
       <UniqueIdentifier>{ef05dad3-300e-4748-9e33-833af294c5ee}</UniqueIdentifier>
     </Filter>
@@ -294,7 +297,129 @@
     <ClInclude Include="ScriptUser.h">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClInclude>
-    <ClInclude Include="Pet.h" />
+    <ClInclude Include="Pet.h">
+      <Filter>WvsGame\InGame\Field\Life\Pet</Filter>
+    </ClInclude>
+    <ClInclude Include="AngelicBusterSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="AranSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleMageSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BeastTamerSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BeginnersSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BlasterSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BlazeWizardSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="BowmanSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="DawnWarriorSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="DemonSlayerSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="EvanSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="HayatoSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="KaiserSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="KannaSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="KinesisSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="LegendarySkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="LuminousSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="MechanicSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="MercedesSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="MihileSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="NamelessWardenSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="NightWalkerSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="NoblesseSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="PhantomSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="PinkBeanSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="PirateSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="ResistanceSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="RogueSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadeSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="ThunderBreakerSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="WarriorSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="WildHunterSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="WindArcherSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="XenonSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="ZeroSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="AdminSkills.h">
+      <Filter>WvsGame\InGame\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="Summoned.h">
+      <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonedPool.h">
+      <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WvsGame.cpp">
@@ -490,6 +615,14 @@
     <ClCompile Include="ScriptUser.cpp">
       <Filter>WvsGame\InGame\Script</Filter>
     </ClCompile>
-    <ClCompile Include="Pet.cpp" />
+    <ClCompile Include="Pet.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Pet</Filter>
+    </ClCompile>
+    <ClCompile Include="Summoned.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
+    </ClCompile>
+    <ClCompile Include="SummonedPool.cpp">
+      <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

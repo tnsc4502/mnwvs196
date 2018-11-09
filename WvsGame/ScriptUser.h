@@ -20,6 +20,8 @@ public:
 	static int TargetInventory(lua_State* L);
 	static int TargetQuestRecord(lua_State* L);
 	static int TargetRegisterTransferField(lua_State* L);
+	static int TargetGetPosX(lua_State* L);
+	static int TargetGetPosY(lua_State* L);
 	static int TargetIncHP(lua_State* L);
 	static int TargetIncMP(lua_State* L);
 	static int TargetIncSTR(lua_State* L);

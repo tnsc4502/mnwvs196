@@ -8,6 +8,44 @@
 #include "SkillEntry.h"
 #include "SkillLevelData.h"
 #include "SkillInfo.h"
+#include "AdminSkills.h"
+#include "AngelicBusterSkills.h"
+#include "AranSkills.h"
+#include "BattleMageSkills.h"
+#include "BeastTamerSkills.h"
+#include "BeginnersSkills.h"
+#include "BlasterSkills.h"
+#include "BlazeWizardSkills.h"
+#include "BowmanSkills.h"
+#include "DawnWarriorSkills.h"
+#include "DemonSlayerSkills.h"
+#include "EvanSkills.h"
+#include "HayatoSkills.h"
+#include "KaiserSkills.h"
+#include "KannaSkills.h"
+#include "KinesisSkills.h"
+#include "LegendarySkills.h"
+#include "LuminousSkills.h"
+#include "MagicSkills.h"
+#include "ManagerSkills.h"
+#include "MechanicSkills.h"
+#include "MercedesSkills.h"
+#include "MihileSkills.h"
+#include "NamelessWardenSkills.h"
+#include "NightWalkerSkills.h"
+#include "NoblesseSkills.h"
+#include "PhantomSkills.h"
+#include "PinkBeanSkills.h"
+#include "PirateSkills.h"
+#include "ResistanceSkills.h"
+#include "RogueSkills.h"
+#include "ShadeSkills.h"
+#include "ThunderBreakerSkills.h"
+#include "WarriorSkills.h"
+#include "WildHunterSkills.h"
+#include "WindArcherSkills.h"
+#include "XenonSkills.h"
+#include "ZeroSkills.h"
 
 #include <thread>
 #include <unordered_map>
@@ -26,10 +64,10 @@ SkillInfo::~SkillInfo()
 {
 }
 
-int SkillInfo::GetLoadingSkillCount() const
+/*int SkillInfo::GetLoadingSkillCount() const
 {
 	return m_nOnLoadingSkills;
-}
+}*/
 
 const std::map<int, std::map<int, SkillEntry*>*>& SkillInfo::GetSkills() const
 {
@@ -55,6 +93,14 @@ SkillInfo * SkillInfo::GetInstance()
 	return pInstance;
 }
 
+bool SkillInfo::IsValidRootName(const std::string & sName)
+{
+	for (char c : sName)
+		if (!isdigit(c))
+			return false;
+	return true;
+}
+
 int SkillInfo::GetBundleItemMaxPerSlot(int nItemID, GA_Character * pCharacterData)
 {
 	auto pItem = ItemInfo::GetInstance()->GetBundleItem(nItemID);
@@ -76,24 +122,21 @@ void SkillInfo::IterateSkillInfo()
 	static auto& skillWz = stWzResMan->GetWz(Wz::Skill);
 	bool continued = false;
 	int nRootID;
+	std::vector<WZ::Node> aRoot;
 	for (auto& node : skillWz)
 	{
-		continued = false;
-		auto& str = node.Name();
-		for(char c : str)
-			if (!isdigit(c))
-			{
-				continued = true;
-				break;
-			}
-		if (continued)
+		if (!IsValidRootName(node.Name()))
 			continue;
-		nRootID = atoi(str.c_str());
+		aRoot.push_back(node);
+	}
+	m_nRootCount = aRoot.size();
+	for (auto& node : aRoot)
+	{
+		nRootID = atoi(node.Name().c_str());
 		//LoadSkillRoot(nRootID, (void*)(&node["skill"]));
 		std::thread t(&SkillInfo::LoadSkillRoot, this, nRootID, (void*)(&node["skill"]));
 		t.detach();
 	}
-	//printf("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
 }
 
 void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
@@ -112,7 +155,7 @@ void SkillInfo::LoadSkillRoot(int nSkillRootID, void * pData)
 		//t.detach();
 		--m_nOnLoadingSkills;
 	}
-	if (m_nOnLoadingSkills == 0 && m_mSkillByRootID.size() >= 221)
+	if (m_nOnLoadingSkills == 0 && m_mSkillByRootID.size() >= m_nRootCount)
 	{
 		WvsLogger::LogRaw("[SkillInfo::IterateSkillInfo]技能資訊載入完畢 IterateSkillInfo End.\n");
 		stWzResMan->ReleaseMemory();
@@ -814,4 +857,61 @@ GW_SkillRecord * SkillInfo::GetSkillRecord(int nSkillID, int nSLV, long long int
 	pRecord->nMasterLevel = pSkill->GetMasterLevel();
 	pRecord->tExpired = tExpired;
 	return pRecord;
+}
+
+bool SkillInfo::IsSummonSkill(int nSkillID)
+{
+	switch (nSkillID)
+	{
+		case PirateSkills::AllAboard_521:
+		case PirateSkills::AllAboard_521_2:
+		case PirateSkills::AllAboard_521_3:
+		case PirateSkills::AllAboard_521_4:
+		case PirateSkills::AllAboard_521_5:
+		case PirateSkills::AllAboard_521_6:
+		case PirateSkills::AllAboard_521_7: //召喚船員
+		case PirateSkills::Gaviota_521: //海鷗突擊隊
+		case PirateSkills::TurretDeployment_571: //破城砲
+		case PirateSkills::MonkeyMilitia_532_2: //雙胞胎猴子
+		case MagicSkills::Ifrit_212: //召喚火魔
+		case MagicSkills::Elquines_222: //召喚冰魔
+		case MagicSkills::Bahamut_232: //聖龍精通
+		case BowmanSkills::GoldenEagle_320: //金鷹召喚
+		case BowmanSkills::Freezer_321: //召喚銀隼
+		case BowmanSkills::SilverHawk_310: //銀鷹召喚
+		case BowmanSkills::Phoenix_311: //召喚鳳凰
+		case WildHunterSkills::SilverHawk_3310: //銀鷹召喚
+		case WildHunterSkills::SilverHawk_3311_2: //銀鷹召喚
+		case WildHunterSkills::ItsRainingMines_3310_2: //地雷
+		case MechanicSkills::RocknShock_3511: //磁場
+		case MechanicSkills::AccelerationBotE__3511: //加速器
+		case MechanicSkills::HealingRobot_X_3511: //治療機器人
+		case MechanicSkills::BotsnTots_3512: //機器人工廠
+		case MechanicSkills::BotsnTots_3512_2: //機器人工廠
+		case MechanicSkills::GiantRobotS_8_3512: //戰鬥機器
+		case MercedesSkills::ElementalKnights_2311: //元素騎士
+		case MercedesSkills::ElementalKnights_2311_2: //元素騎士
+		case MercedesSkills::ElementalKnights_2311_3: //元素騎士
+		case DawnWarriorSkills::Soul_1100: //靈魂
+		case DawnWarriorSkills::SoulElement_1100: //元素： 靈魂
+		case BlazeWizardSkills::Ifrit_1211: //召喚冰魔
+		case WindArcherSkills::Storm_1300: //暴風
+		case NightWalkerSkills::Darkness_1400: //黑暗雷鳥
+		case NightWalkerSkills::DarkFlare_1411: //黑暗殺
+		case ThunderBreakerSkills::Lightning_1500: //閃電
+		case RogueSkills::DarkFlare_411: //絕殺領域
+		case RogueSkills::DarkFlare_421_2: //絕殺領域
+		case XenonSkills::HypogramFieldPenetrate_3612: //能量領域：
+		case XenonSkills::HypogramFieldForceField_3612: //能量領域：
+		case XenonSkills::HypogramFieldSupport_3612: //能量領域：
+		case KaiserSkills::StoneDragon_6111: //地龍襲擊
+		case KannaSkills::ShikigamiCharm_4210: //式神炎舞
+		case KannaSkills::ShikigamiCharm_4210_2: //式神炎舞
+		case KannaSkills::KishinShoukan_4211: //鬼神召喚
+		case KannaSkills::Foxfire_4210: //花炎結界
+		case KannaSkills::Foxfire_4212_2: //花炎結界
+		case EvanSkills::SummonOnyxDragon_2217: //聖歐尼斯龍
+			return true;
+	}
+	return false;
 }

@@ -322,7 +322,7 @@ int GA_Character::FindEmptySlotPosition(int nTI)
 {
 	if (nTI <= 0 || nTI > 5)
 		return 0;
-	int lastIndex = 1;
+	int nLastIndex = 1;
 	std::lock_guard<std::mutex> dataLock(mCharacterLock);
 	auto itemSlot = mItemSlot[nTI];
 	for (auto& slot : itemSlot)
@@ -331,11 +331,11 @@ int GA_Character::FindEmptySlotPosition(int nTI)
 			continue;
 		if (slot.first > mSlotCount->aSlotCount[nTI])
 			return 0;
-		if (slot.first > lastIndex || (slot.first == lastIndex && slot.second == nullptr))
-			return lastIndex;
-		lastIndex = slot.first + 1;
+		if (slot.first > nLastIndex || (slot.first == nLastIndex && slot.second == nullptr))
+			return nLastIndex;
+		nLastIndex = slot.first + 1;
 	}
-	return lastIndex;
+	return nLastIndex > mSlotCount->aSlotCount[nTI] ? 0 : nLastIndex;
 }
 
 GW_ItemSlotBase* GA_Character::GetItem(int nTI, int nPOS)

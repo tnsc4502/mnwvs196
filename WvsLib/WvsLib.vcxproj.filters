@@ -285,6 +285,9 @@
     <ClInclude Include="Wz\ImgAccessor.h">
       <Filter>Wz</Filter>
     </ClInclude>
+    <ClInclude Include="Net\PacketFlags\SummonedPacketFlags.hpp">
+      <Filter>Net\PacketFlags</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Memory\Arena.cpp">
@@ -508,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="Wz\ImgAccessor.cpp">
       <Filter>Wz</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketFlags\SummonedPacketFlags.cpp">
+      <Filter>Net\PacketFlags</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

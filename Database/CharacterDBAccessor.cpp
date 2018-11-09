@@ -7,6 +7,7 @@
 #include "GW_Avatar.hpp"
 #include "GW_Account.h"
 #include "GW_CashItemInfo.h"
+#include "GW_CharacterSlotCount.h"
 
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
@@ -80,6 +81,12 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.mStat->nSubJob = aStat[STAT_SubJob];
 	chrEntry.mLevel->nLevel = aStat[STAT_Level];
 	chrEntry.mStat->nAP = aStat[STAT_AP];
+
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
 
 	GW_ItemSlotEquip gwCapEquip;
 	gwCapEquip.nItemID = aBody[EQP_ID_CapEquip];
@@ -367,6 +374,7 @@ void CharacterDBAccessor::PostMoveLockerToSlotRequest(SocketBase * pSrv, int uCl
 	cashItemInfo.Save();
 
 	oPacket.Encode2(ShopInternalPacketFlag::OnCenterMoveToSlotDone);
+	oPacket.Encode8(pItem->liItemSN);
 	oPacket.Encode1(1);
 	oPacket.Encode2(nPOS);
 	pItem->RawEncode(&oPacket);

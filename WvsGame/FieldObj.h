@@ -1,6 +1,7 @@
 #pragma once
 #include "FieldPoint.h"
 
+struct MovePath;
 class OutPacket;
 class Field;
 
@@ -21,6 +22,8 @@ public:
 
 	virtual void MakeEnterFieldPacket(OutPacket *oPacket) = 0;
 	virtual void MakeLeaveFieldPacket(OutPacket *oPacket) = 0;
+
+	void ValidateMovePath(MovePath *pMovePath);
 
 	/*
 	Basic Attributes

@@ -1,0 +1,157 @@
+//´cÅ]±þ¤â
+struct DemonSlayerSkills {
+
+		//----------------Demon Slayer<´cÅ]±þ¤â>----------------
+		static const int ShadowSwiftness_3100 = 31000002; //¶Â·t±Ó±¶
+		static const int HPBoost_3100 = 31000003; //HP¼W¥[
+		static const int DemonLash_3100 = 31000004; //´cÅ]¨g±Ù
+		static const int GuardianArmor_3100 = 31000005; //¦uÅ@®±®M¨¾¨ã
+		static const int GrimScythe_3100 = 31001000; //´cÅ]ÅI¤M
+		static const int BattlePact_3100 = 31001001; //´cÅ]±À¶i¾¹
+		static const int DemonLash_3100_2 = 31001006; //´cÅ]¨g±Ù
+		static const int DemonLash_3100_3 = 31001007; //´cÅ]¨g±Ù
+		static const int DemonLash_3100_4 = 31001008; //´cÅ]¨g±Ù
+
+		//----------------Demon Avenger<´cÅ]´_¤³ªÌ>----------------
+		static const int LifeSap_3101 = 31010002; //¥Í©R§l¦¬
+		static const int DemonicVeracity_3101 = 31010003; //´cÅ]±Ó±¶
+		static const int ExceedDoubleSlash_3101 = 31011000; //¶W¶V : ¤Q¤æõÈ±Ù
+		static const int OverloadRelease_3101 = 31011001; //¶W¸ü¸Ñ©ñ
+		static const int ExceedDoubleSlash_3101_2 = 31011004; //¶W¶V : ¤Q¤æõÈ±Ù
+		static const int ExceedDoubleSlash_3101_3 = 31011005; //¶W¶V : ¤Q¤æõÈ±Ù
+		static const int ExceedDoubleSlash_3101_4 = 31011006; //¶W¶V : ¤Q¤æõÈ±Ù
+		static const int ExceedDoubleSlash_3101_5 = 31011007; //¶W¶V : ¤Q¤æõÈ±Ù
+
+		//----------------Demon Slayer<´cÅ]±þ¤â>----------------
+		static const int WeaponMastery_3110 = 31100004; //ªZ¾¹ºë³q
+		static const int PhysicalTraining_3110 = 31100005; //Åé¯à°V½m
+		static const int Outrage_3110 = 31100006; //¼««ã
+		static const int BarbedLash_3110 = 31100007; //´cÅ]¨g±Ù 1Ñø©·¤Æ
+		static const int SoulEater_3110 = 31101000; //ÆF»î§l¦¬
+		static const int DarkThrust_3110 = 31101001; //¶Â·t¯e­·¨B
+		static const int ChaosLock_3110 = 31101002; //´cÅ]°lÀ»
+		static const int Vengeance_3110 = 31101003; //¶Â·t´_¤³
+
+		//----------------Demon Slayer<´cÅ]±þ¤â>----------------
+		static const int Blac_eartedStrength_3111 = 31110004; //¶Â·t­@¤O
+		static const int InsulttoInjury_3111 = 31110006; //¨¸´c»Å¦D
+		static const int FocusedFury_3111 = 31110007; //ºë¯«¶°¤¤
+		static const int PossessedAegis_3111 = 31110008; //¤O¶q¨¾¿m
+		static const int MaxFury_3111 = 31110009; //±j¤Æ´cÅ]¤§¤O
+		static const int DemonLashArch_3111 = 31110010; //´cÅ]¨g±Ù 2Ñø©·¤Æ
+		static const int Judgment_3111 = 31111000; //¶Â·t¼f§P
+		static const int VortexofDoom_3111 = 31111001; //¦º¤`¤§´¤
+		static const int RavenStorm_3111 = 31111003; //¦å¸{¯Q¾~
+		static const int Blac_eartedStrength_3111_2 = 31111004; //¶Â·t­@¤O
+		static const int CarrionBreath_3111 = 31111005; //´cÅ]§G¹p´µ
+
+		//----------------Demon Slayer<´cÅ]±þ¤â>----------------
+		static const int BarricadeMastery_3112 = 31120008; //¶i¶¥ªZ¾¹ºë³q
+		static const int ObsidianSkin_3112 = 31120009; //°íµw¦Ù½§
+		static const int DemonThrash_3112 = 31120011; //´cÅ]¨g±Ù³Ì²×©·¥^
+		static const int HyperStrength_3112 = 31120030; //¯«¸t¤O¶q
+		static const int HyperDexterity_3112 = 31120031; //¯«¸t±Ó±¶
+		static const int HyperIntelligence_3112 = 31120032; //¯«¸t´¼¯à
+		static const int HyperLuck_3112 = 31120033; //¯«¸t©¯¹B
+		static const int HyperCritical_3112 = 31120034; //¯«¸t·|¤ß¤@À»âjËi
+		static const int HyperAccuracy_3112 = 31120035; //¯«¸t©R¤¤²v
+		static const int HyperHealth_3112 = 31120036; //¯«¸t³Ì¤j¤ß²v¾¤Ùw
+		static const int HyperMana_3112 = 31120037; //¯«¸t³Ì¤jÅ]¤O¾¤Ùw
+		static const int HyperFury_3112 = 31120038; //¯«¸t³Ì¤j´cÅ]
+		static const int HyperDefense_3112 = 31120039; //¯«¸t¨¾¿m¤O
+		static const int HyperMagicDefense_3112 = 31120040; //¯«¸tÅ]ªk¨¾¿mäò
+		static const int HyperSpeed_3112 = 31120041; //¯«¸t²¾°Ê
+		static const int HyperJump_3112 = 31120042; //¯«¸t¸õÅD
+		static const int CarrionBreat_einforce_3112 = 31120043; //´cÅ]¨g±Ù-ÃBÊ°äò¶q
+		static const int CarrionBreat_xtraStrike_3112 = 31120044; //´cÅ]¨g±Ù-±j¥^?®`
+		static const int CarrionBreat_educeFury_3112 = 31120045; //´cÅ]¨g±Ù«á-¬DÆl®É¶¡±j¤Æ¶Ë®`
+		static const int DarkMetamorphosi_nhance_3112 = 31120046; //ÅÜ§Î-µLµø¤Ï?
+		static const int DarkMetamorphosi_einforce_3112 = 31120047; //ÅÜ§Î-±j¤Æ¶Ë«Å
+		static const int DarkMetamorphosi_educedFury_3112 = 31120048; //ÅÜ§Î-¤O¶q±`?
+		static const int DemonImpac_einforce_3112 = 31120049; //´cÅ]½ÄÀ»-±j¥^?®`
+		static const int DemonImpac_xtraStrike_3112 = 31120050; //´cÅ]½ÄÀ»-§ð¾Ú?¦¨
+		static const int DemonImpac_educeFury_3112 = 31120051; //´cÅ]½ÄÀ»-¤O?Ñt¾n
+		static const int InfernalConcussion_3112 = 31121000; //´cÅ]¥½¤é¯PµK
+		static const int DemonImpact_3112 = 31121001; //´cÅ]½ÄÀ»
+		static const int LeechAura_3112 = 31121002; //§l¦å°­¤§Ä²
+		static const int DemonCry_3112 = 31121003; //Å]¤O§o³Û
+		static const int MapleWarrior_3112 = 31121004; //·¬¸­¯¬ºÖ
+		static const int DarkMetamorphosis_3112 = 31121005; //ÅÜ§Î
+		static const int BindingDarkness_3112 = 31121006; //¶Â·t©ë§ô
+		static const int BoundlessRage_3112 = 31121007; //µL­­¤O¶q
+		static const int InfernalConcussion_3112_2 = 31121010; // 
+		static const int CerberusChomp_3112 = 31121052; //¦aº»¤ü
+		static const int DemonicFortitude_3112 = 31121053; //´cÅ]¶´©Ê
+		static const int BlueBlood_3112 = 31121054; //°ª¶Q¦å²Î
+
+		//----------------Demon Avenger<´cÅ]´_¤³ªÌ>----------------
+		static const int AbyssalConnection_3120 = 31200003; //²`²W¤§«ã
+		static const int UnbreakableSteel_3120 = 31200004; //¿ûÅK·N§Ó
+		static const int DesperadoMastery_3120 = 31200005; //Å]¼Cºë³q
+		static const int RageWithin_3120 = 31200006; //¼ç¦b¤O¶q
+		static const int ExceedDemonStrike_3120 = 31201000; //¶W¶V¡G´cÅ]­·?
+		static const int BatSwarm_3120 = 31201001; //½¿½»¸s
+		static const int BattlePact_3120_2 = 31201002; //«æ³t´cÅ]
+		static const int AbyssalConnection_3120_2 = 31201003; //²`²W¤§«ã
+		static const int ExceedDemonStrike_3120_2 = 31201007; //¶W¶V¡G´cÅ]­·?
+		static const int ExceedDemonStrike_3120_3 = 31201008; //¶W¶V¡G´cÅ]­·?
+		static const int ExceedDemonStrike_3120_4 = 31201009; //¶W¶V¡G´cÅ]­·?
+		static const int ExceedDemonStrike_3120_5 = 31201010; //¶W¶V¡G´cÅ]­·?
+
+		//----------------Demon Avenger<´cÅ]´_¤³ªÌ>----------------
+		static const int PainDampener_3121 = 31210005; //¶W¶V­Wµh
+		static const int AdvancedLifeSap_3121 = 31210006; //¶i¶¥¥Í©R§l¦¬
+		static const int ExceedLunarSlash_3121 = 31211000; //¶W¶V¡G¤ë¥ú±Ù
+		static const int VitalityVeil_3121 = 31211001; //¾½»îÃzµo
+		static const int ShieldCharge_3121 = 31211002; //¬ÞµP½Ä¾W
+		static const int WardEvil_3121 = 31211003; //¨¸´c±j¤Æ
+		static const int DiabolicRecovery_3121 = 31211004; //«æ³tÀøÂ¡
+		static const int ExceedLunarSlash_3121_2 = 31211007; //¶W¶V¡G¤ë¥ú±Ù
+		static const int ExceedLunarSlash_3121_3 = 31211008; //¶W¶V¡G¤ë¥ú±Ù
+		static const int ExceedLunarSlash_3121_4 = 31211009; //¶W¶V¡G¤ë¥ú±Ù
+		static const int ExceedLunarSlash_3121_5 = 31211010; //¶W¶V¡G¤ë¥ú±Ù
+		static const int ShieldCharge_3121_2 = 31211011; //¬ÞµP½Ä¾W
+
+		//----------------Demon Avenger<´cÅ]´_¤³ªÌ>----------------
+		static const int OverwhelmingPower_3122 = 31220004; //¦aº»¤§¤O
+		static const int DefenseExpertise_3122 = 31220005; //¨¾½Ã§Þ³N
+		static const int AdvancedDesperadoMastery_3122 = 31220006; //¶i¶¥Å]¼Cºë³q
+		static const int InfernalExceed_3122 = 31220007; //±j¤Æ¶W¶V
+		static const int NetherShield_3122 = 31220013; //¬ÞµP°lÀ»
+		static const int HyperStrength_3122_2 = 31220030; //¯«¸t¤O¶q
+		static const int HyperDexterity_3122_2 = 31220031; //¯«¸t±Ó±¶
+		static const int HyperIntelligence_3122_2 = 31220032; //¯«¸t´¼¯à
+		static const int HyperLuck_3122_2 = 31220033; //¯«¸t©¯¹B
+		static const int HyperCritical_3122_2 = 31220034; //¯«¸t·|¤ß¤@À»âjËi
+		static const int HyperAccuracy_3122_2 = 31220035; //¯«¸t©R¤¤²v
+		static const int HyperHealth_3122_2 = 31220036; //¯«¸t³Ì¤j¤ß²v¾¤Ùw
+		static const int HyperMana_3122_2 = 31220037; //¯«¸t³Ì¤jÅ]¤O¾¤Ùw
+		static const int HyperFury_3122_2 = 31220038; //¯«¸t³Ì¤j´cÅ]
+		static const int HyperDefense_3122_2 = 31220039; //¯«¸t¨¾¿m¤O
+		static const int HyperMagicDefense_3122_2 = 31220040; //¯«¸tÅ]ªk¨¾¿mäò
+		static const int HyperSpeed_3122_2 = 31220041; //¯«¸t²¾°Ê
+		static const int HyperJump_3122_2 = 31220042; //¯«¸t¸õÅD
+		static const int Excee_einforce_3122 = 31220043; //¶W¶V¡X±j¤Æ«Âäò
+		static const int Excee_educeOverload_3122 = 31220044; //¶W¶V¡X¶W¸ü¸Ñøï
+		static const int Excee_pportunity_3122 = 31220045; //¶W¶V¡V¾÷²v´£«n
+		static const int WardEvi_arden_3122 = 31220046; //¨¸´c±j¤Æ¡X´î«Ê?®`
+		static const int WardEvi_mmunityEnhance1_3122 = 31220047; //¨¸´c±j¤Æ¡X®Ä¯Ú´z¤ÉI
+		static const int WardEvi_mmunityEnhance2_3122 = 31220048; //¨¸´c±j¤Æ¡X®Ä¯Ú´z¤ÉII
+		static const int NetherShiel_einforce_3122 = 31220049; //¬ÞµP°lÀ»¡Ð±j¥^
+		static const int NetherShiel_pread_3122 = 31220050; //¬ÞµP°lÀ»¡Ð°l?¬Þ¼Ð
+		static const int NetherShiel_ange_3122 = 31220051; //¬ÞµP°lÀ»
+		static const int ExceedExecution_3122 = 31221000; //¶W¶V : °f¨õ¤æ¦r±Ù
+		static const int NetherShield_3122_2 = 31221001; //¬ÞµP°lÀ»
+		static const int NetherSlice_3122 = 31221002; //¨¾¿m¯»¸H
+		static const int BloodPrison_3122 = 31221003; //¦åº»
+		static const int OverwhelmingPower_3122_2 = 31221004; //¦aº»¤§¤O
+		static const int MapleWarrior_3122_2 = 31221008; //·¬¸­¯¬ºÖ
+		static const int ExceedExecution_3122_2 = 31221009; //¶W¶V : °f¨õ¤æ¦r±Ù
+		static const int ExceedExecution_3122_3 = 31221010; //¶W¶V : °f¨õ¤æ¦r±Ù
+		static const int ExceedExecution_3122_4 = 31221011; //¶W¶V : °f¨õ¤æ¦r±Ù
+		static const int ExceedExecution_3122_5 = 31221012; //¶W¶V : °f¨õ¤æ¦r±Ù
+		static const int NetherShield_3122_3 = 31221014; //¬ÞµP°lÀ»
+		static const int ThousandSwords_3122 = 31221052; //Àþ¤d¤b
+		static const int DemonicFortitude_3122_2 = 31221053; //´cÅ]¶´©Ê
+		static const int ForbiddenContract_3122 = 31221054; //¸T§Ò«´¬ù
+};
