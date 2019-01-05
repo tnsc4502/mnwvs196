@@ -1,13 +1,20 @@
 #include "SecondaryStat.h"
 #include "BasicStat.h"
 #include "ItemInfo.h"
+#include "KaiserSkills.h"
 #include "SkillInfo.h"
 #include "SkillEntry.h"
 #include "SkillLevelData.h"
 #include "USkill.h"
 #include "User.h"
+#include "Field.h"
+#include "LifePool.h"
+#include "ForceAtom.h"
+
 #include "..\Database\GA_Character.hpp"
 #include "..\Database\GW_ItemSlotEquip.h"
+#include "..\Database\GW_CharacterLevel.h"
+
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Net\InPacket.h"
 
@@ -569,12 +576,7 @@ void SecondaryStat::EncodeForLocal(OutPacket * oPacket, TemporaryStat::TS_Flag &
 		oPacket->Encode1((int)bIgnoreTargetDEF);
 
 	if (flag & GET_TS_FLAG(StopForceAtomInfo))
-	{
-		oPacket->Encode4(0); //nIdx
-		oPacket->Encode4(0); //nCount
-		oPacket->Encode4(0); //nWeaponID
-		oPacket->Encode4(0); //
-	}
+		sStopForceAtomInfo.Encode(oPacket);
 
 	if (flag & GET_TS_FLAG(SmashStack))
 		oPacket->Encode4(xSmashStack);
@@ -863,5 +865,130 @@ void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 		oPacket->Encode4(nSkillID);
 		oPacket->Encode4(tDurationRemained);
 		oPacket->Encode4(nSLV);
+	}
+}
+
+//³Ç¿Õ¯à¶q¸É¥R
+void SecondaryStat::ChargeSurplusSupply(User * pUser, int nCount, int tUpdateTime)
+{
+	if (tUpdateTime - tSurplusSupply < 4000)
+		return;
+	int nLevel = pUser->GetCharacterData()->mLevel->nLevel;
+	int nMaxAmount = (nLevel >= 100 ? 20 : nLevel >= 60 ? 15 : nLevel >= 30 ? 10 : 5);
+	if (nCount > nMaxAmount)
+		nCount = nMaxAmount;
+	nSurplusSupply += nCount;
+	if (nSurplusSupply >= nMaxAmount)
+		nSurplusSupply = nMaxAmount;
+	auto tsFlag = GET_TS_FLAG(SurplusSupply);
+
+	pUser->SendTemporaryStatReset(tsFlag);
+	pUser->SendTemporaryStatSet(tsFlag, -1);
+	tSurplusSupply = tUpdateTime;
+}
+
+//³Í¼»Às³D²y¸É¥R
+void SecondaryStat::ChargeSmashStack(User * pUser, int tUpdateTime)
+{
+	const int nToCharge = 33, nMaxChargeValue = 1000;
+	if (xSmashStack + nToCharge > nMaxChargeValue)
+		return;
+
+	nSmashStack += nToCharge;
+	xSmashStack += nToCharge;
+
+	auto tsFlag = GET_TS_FLAG(SmashStack);
+	pUser->SendTemporaryStatReset(tsFlag);
+	pUser->SendTemporaryStatSet(tsFlag, -1);
+}
+
+void SecondaryStat::StopForceAtom::CreateStopForceAtom(User * pUser, int nSkillID)
+{
+	aAngelInfo.clear();
+
+	switch (nSkillID)
+	{
+		case KaiserSkills::TempestBlades_6110:
+			nIdx = 1;
+			nCount = 3;
+			break;
+		case KaiserSkills::TempestBlades_6111_2:
+			nIdx = 3;
+			nCount = 3;
+			break;
+		case KaiserSkills::AdvancedTempestBlades_6112:
+			nIdx = 2;
+			nCount = 5;
+			break;
+		case KaiserSkills::AdvancedTempestBlades_6112_2:
+			nIdx = 4;
+			nCount = 5;
+			break;
+	}
+	auto pWeapon = pUser->GetCharacterData()->GetItem(
+		GW_ItemSlotBase::EQUIP, -11
+	);
+	if (pWeapon)
+		nWeaponID = pWeapon->nItemID;
+}
+
+void SecondaryStat::StopForceAtom::Encode(OutPacket * oPacket)
+{
+	oPacket->Encode4(nIdx);
+	oPacket->Encode4(nCount);
+	oPacket->Encode4(nWeaponID);
+	for (int i = 0; i < nCount; ++i)
+		aAngelInfo.push_back(0);
+	//WvsLogger::LogFormat("StopForceAtom nIdx = %d nCount = %d nWeaponID = %d\n", nIdx, nCount, nWeaponID);
+	oPacket->Encode4((int)aAngelInfo.size());
+	for (const auto& value : aAngelInfo)
+		oPacket->Encode4(value);
+}
+
+void SecondaryStat::StopForceAtom::OnTempestBladesAttack(User *pUser, InPacket * iPacket)
+{
+	/*
+	¡G0xE9 0x01 
+	0x01 0x00 0x00 0x00 
+	0x09 0x10 0x00 0x00
+	*/
+	if (nCount > 0)
+	{
+		int nMobCount = iPacket->Decode4(), nMobObjID = 0;
+		std::vector<int> aMob;
+		for (int i = 0; i < nMobCount; ++i)
+		{
+			nMobObjID = iPacket->Decode4();
+			if (pUser->GetField()->GetLifePool()->GetMob(nMobObjID))
+				aMob.push_back(nMobObjID);
+		}
+
+		WvsLogger::LogFormat("aMob size() = %d xStopForceAtomInfo = %d nCount =%d\n", (int)aMob.size(), pUser->GetSecondaryStat()->xStopForceAtomInfo, nCount);
+		if (aMob.size() > 0)
+		{
+			ForceAtom atom;
+			++(pUser->GetSecondaryStat()->xStopForceAtomInfo);
+			atom.CreateForceAtom(
+				pUser->GetUserID(),
+				pUser->GetSecondaryStat()->rStopForceAtomInfo,
+				false,
+				true,
+				pUser->GetUserID(),
+				ForceAtom::ForceAtomType::e_TempestBlade,
+				pUser->GetSecondaryStat()->xStopForceAtomInfo,
+				nCount,
+				pUser->GetField(),
+				{ 0, 0 }
+			);
+			pUser->GetSecondaryStat()->xStopForceAtomInfo += (nCount - 1);
+
+			atom.m_adwTargetMob = aMob;
+			atom.OnForceAtomCreated(pUser->GetField());
+		}
+
+		USkill::ResetTemporaryByTime(
+			pUser,
+			{ pUser->GetSecondaryStat()->rStopForceAtomInfo }
+		);
 	}
 }

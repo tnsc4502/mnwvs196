@@ -3,12 +3,14 @@
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\Common\WvsGameConstants.hpp"
+#include "..\WvsLib\Logger\WvsLogger.h"
 
 void GW_SkillRecord::Encode(OutPacket * oPacket)
 {
 	oPacket->Encode4(nSkillID);
 	oPacket->Encode4(nSLV);
 	oPacket->Encode8(tExpired);
+	//WvsLogger::LogFormat(WvsLogger::LEVEL_ERROR, "SkillID = %d, Need Master Level = %d Master Level = %d\n", nSkillID, (int)WvsGameConstants::IsSkillNeedMasterLevel(nSkillID), nMasterLevel);
 	if (WvsGameConstants::IsSkillNeedMasterLevel(nSkillID))
 		oPacket->Encode4(nMasterLevel);
 	if (nSkillID == 0x262A822 || nSkillID == 80000004)
@@ -39,16 +41,20 @@ void GW_SkillRecord::Load(void * pRecordSet)
 void GW_SkillRecord::Save()
 {
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
-	queryStatement << "DELETE FROM SkillRecord Where SkillID = " << nSkillID << " and CharacterID = " << nCharacterID;
-	queryStatement.execute();
+	//queryStatement << "DELETE FROM SkillRecord Where SkillID = " << nSkillID << " and CharacterID = " << nCharacterID;
+	//queryStatement.execute();
 	
-	queryStatement.reset(GET_DB_SESSION);
-	queryStatement << "INSERT INTO SkillRecord VALUES(null, "
+	//queryStatement.reset(GET_DB_SESSION);
+	queryStatement << "INSERT INTO SkillRecord VALUES("
 		<< nCharacterID << ", "
 		<< nSkillID << ", "
 		<< nSLV << ", "
 		<< nMasterLevel << ", "
-		<< tExpired << ")";
+		<< tExpired << ") ON DUPLICATE KEY UPDATE "
+		<< "SLV = " << nSLV << ", "
+		<< "MasterLevel = " << nMasterLevel << ", "
+		<< "Expired = " << tExpired
+		;
 	queryStatement.execute();
 }
 

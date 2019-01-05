@@ -48,7 +48,7 @@ namespace WvsGameConstants
 	}
 
 
-	static bool IsVSkill(int nSkillID)
+	static bool IsVSkillRootID(int nSkillID)
 	{
 		return nSkillID >= 40000 && nSkillID <= 40005;
 	}
@@ -108,7 +108,8 @@ namespace WvsGameConstants
 		bool result; // eax@2
 
 		v1 = GetSkillRootFromSkill(a1);
-		if (IsVSkill(v1))
+		a1 = v1;
+		if (IsVSkillRootID(v1))
 			result = 0;
 		else //sub_489B8B
 		{
@@ -121,7 +122,7 @@ namespace WvsGameConstants
 			{
 				return true;
 			}
-			if (IsVSkill(a1)
+			if (IsVSkillRootID(a1)
 				|| a1 % 1000
 				&& a1 / 100 != 8000
 				&& a1 != 8001
@@ -239,9 +240,9 @@ namespace WvsGameConstants
 		int a1 = nSkillID;
 		bool v1; // zf@11
 
-		if (a1 <= (0x512D44 + 3))
+		if (a1 <= (5320004 + 3))
 		{
-			if (a1 == (0x512D44 + 3))
+			if (a1 == (5320004 + 3))
 				return 1;
 			if (a1 <= 4210012)
 			{
@@ -256,40 +257,46 @@ namespace WvsGameConstants
 				v1 = a1 == 4110012;
 				goto LABEL_36;
 			}
-			if (a1 == 4340010 || a1 == 0x42392C)
+			if (a1 == 4340010 || a1 == 4340012)
 				return 1;
-			if (a1 > 0x4E200A)
+			if (a1 > 5120010)
 			{
-				if (a1 <= 5120012 || a1 == 0x4FA6AC || a1 == 5220014)
+				if (a1 <= 5120012 || a1 == 5220012 || a1 == 5220014)
 					return 1;
 				v1 = a1 == 5221022;
 				goto LABEL_36;
 			}
 			return 0;
 		}
-		if (a1 > (0x160C88A + 1))
+		if (a1 > (23120010 + 1))
 		{
-			if (a1 == (0x160C88A + 3) || a1 == 0x160CC70 || a1 == 0x1F95F0A || a1 == 0x217E38E || a1 == 51120000)
+			if (a1 == (23120010 + 3) 
+				|| a1 == 23121008 
+				|| a1 == 33120010
+				|| a1 == 35120014
+				|| a1 == 51120000)
 				return 1;
-			v1 = a1 == 80001913;
+			v1 = (a1 == 80001913);
 		}
 		else
 		{
-			if (a1 == (0x160C88A + 1))
+			if (a1 == (23120010 + 1))
 				return 1;
-			if (a1 > (0x14243E1 + 4 * 11 + 1))
+			if (a1 > (21119969 + 4 * 11 + 1))
 			{
-				if (a1 < (0x14243E1 + 4 * 12 + 3))
+				if (a1 < (21119969 + 4 * 12 + 3))
 					return 0;
-				if (a1 <= 0x14243E1 + 4 * 13 || a1 == (0x14247EC + 4))
+				if (a1 <= 21119969 + 4 * 13 || a1 == (21121004 + 4))
 					return 1;
-				v1 = a1 == 0x1524DBD;
+				v1 = a1 == 22171069;
 			}
 			else
 			{
-				if (a1 == (0x14243E1 + 4 * 11 + 1) || a1 == (0x513129 + 3) || a1 - (0x513129 + 3) == 2)
+				if (a1 == (21119969 + 4 * 11 + 1) 
+					|| a1 == (5321001 + 3) 
+					|| a1 - (5321001 + 3) == 2)
 					return 1;
-				v1 = a1 - (0x513129 + 3) - 2 == (0xF112D8 + 5);
+				v1 = (a1 - (5321001 + 3) - 2 == (15799000 + 5));
 			}
 		}
 	LABEL_36:
@@ -339,8 +346,8 @@ namespace WvsGameConstants
 			&& !IsFieldAttackObjSkill(a1))
 		{
 			v1 = GetSkillRootFromSkill(a1);
-			if (!IsVSkill(v1)
-				&& a1 != 0x282B358
+			if (!IsVSkillRootID(v1)
+				&& a1 != 42120024
 				&& !(v1 / 100 == 112 || v1 == 11000)
 				&& (IsAddedSPDualAndZeroSkill(a1) || GetJobLevel(v1) == 4 && !IsZeroJob(v1)))
 				result = 1;
@@ -635,6 +642,11 @@ namespace WvsGameConstants
 		return nJob / 1000 == 3;
 	}
 
+	static bool IsXenonJob(int nJob)
+	{
+		return nJob / 100 == 36 || nJob == 3002;
+	}
+
 	static bool IsMercedesJob(int nJob)
 	{
 		return nJob / 100 == 23 || nJob == 2002;
@@ -680,6 +692,16 @@ namespace WvsGameConstants
 		return nJob / 1000 == 4;
 	}
 
+	static bool IsKaiserJob(int nJob)
+	{
+		return nJob == 6000 || (nJob >= 6100 && nJob <= 6112);
+	}
+
+	static bool IsAngelicBusterJob(int nJob)
+	{
+		return nJob == 6001 || (nJob >= 6500 && nJob <= 6512);
+	}
+
 	static bool IsJettJob(int nJob)
 	{
 		return nJob / 10 == 57 || nJob == 508;
@@ -693,6 +715,11 @@ namespace WvsGameConstants
 	static bool IsPinkBeanJob(int nJob)
 	{
 		return nJob / 1000 == 13;
+	}
+
+	static bool IsDemonSlayerJob(int nJob)
+	{
+		return nJob / 100 == 31 || nJob ==  3001;
 	}
 
 	static bool IsExtendSPJob(int nJob)

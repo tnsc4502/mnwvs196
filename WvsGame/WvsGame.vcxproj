@@ -196,6 +196,7 @@
     <ClInclude Include="FieldRect.h" />
     <ClInclude Include="FieldSet.h" />
     <ClInclude Include="FootholdTree.h" />
+    <ClInclude Include="ForceAtom.h" />
     <ClInclude Include="HayatoSkills.h" />
     <ClInclude Include="InventoryManipulator.h" />
     <ClInclude Include="ItemInfo.h" />
@@ -293,6 +294,7 @@
     <ClCompile Include="FieldObj.cpp" />
     <ClCompile Include="FieldSet.cpp" />
     <ClCompile Include="FootholdTree.cpp" />
+    <ClCompile Include="ForceAtom.cpp" />
     <ClCompile Include="InventoryManipulator.cpp" />
     <ClCompile Include="ItemInfo.cpp" />
     <ClCompile Include="LifePool.cpp" />

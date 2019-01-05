@@ -11,6 +11,7 @@
 #include "SkillEntry.h"
 #include "SkillLevelData.h"
 #include "SkillInfo.h"
+#include "KaiserSkills.h"
 #include "QWUSkillRecord.h"
 
 #include "..\WvsLib\Common\WvsGameConstants.hpp"
@@ -229,6 +230,15 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 	auto iter = pSS->m_mSetByTS.begin();
 	switch (nSkillID)
 	{
+		case KaiserSkills::TempestBlades_6110:
+		case KaiserSkills::TempestBlades_6111_2:
+		case KaiserSkills::AdvancedTempestBlades_6112:
+		case KaiserSkills::AdvancedTempestBlades_6112_2:
+		{
+			pSS->sStopForceAtomInfo.CreateStopForceAtom(pUser, nSkillID);
+			REGISTER_TS(StopForceAtomInfo, nSLV);
+			break;
+		}
 		case 2111008:
 		{
 			REGISTER_TS(ElementalReset, pSkillLVLData->m_nX);
@@ -1315,7 +1325,7 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 		case 61120008: // final form
 		case 61121053: // final trance
 			REGISTER_TS(Speed, -pSkillLVLData->m_nSpeed);
-			REGISTER_TS(Morph, -pSkillLVLData->m_nMorph);
+			REGISTER_TS(Morph, pSkillLVLData->m_nMorph);
 			REGISTER_TS(CriticalBuff, -pSkillLVLData->m_nCr);
 			REGISTER_TS(IndieDamR, pSkillLVLData->m_nIndieDamR);
 			REGISTER_TS(IndieBooster, pSkillLVLData->m_nIndieBooster);
@@ -1494,9 +1504,9 @@ void USkill::DoActiveSkill_Summon(User* pUser, const SkillEntry * pSkill, int nS
 	REGISTER_TS(ComboCounter, 1);
 	REGISTER_TS(EVAR, 10);
 	REGISTER_TS(FireBomb, 10);
+	pUser->RemoveSummoned(nSkillID, 0, nSkillID);
 	if (bResetBySkill)
 	{
-		pUser->RemoveSummoned(nSkillID, 0, nSkillID);
 		pUser->SendTemporaryStatReset(tsFlag);
 		ValidateSecondaryStat(pUser);
 	}

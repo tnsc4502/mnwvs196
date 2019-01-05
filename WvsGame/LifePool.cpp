@@ -91,6 +91,16 @@ void LifePool::SetFieldObjAttribute(FieldObj* pFieldObj, WZ::Node& dataNode)
 	}
 }
 
+void LifePool::SetMaxMobCapacity(int max)
+{
+	m_nMobCapacityMax = max;
+}
+
+int LifePool::GetMaxMobCapacity() const
+{
+	return m_nMobCapacityMax;
+}
+
 void LifePool::LoadNpcData(WZ::Node& dataNode)
 {
 	Npc npc;
@@ -543,4 +553,9 @@ void LifePool::OnNpcPacket(User * pUser, int nType, InPacket * iPacket)
 			iterNpc->second->OnUpdateLimitedInfo(pUser, iPacket);
 		}
 	}
+}
+
+int LifePool::GetForceAtomObjectID()
+{
+	return ++atomicForceAtomCounter;
 }

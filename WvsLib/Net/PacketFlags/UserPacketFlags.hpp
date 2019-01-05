@@ -648,6 +648,7 @@ MAKE_USER_RECV_PACKET_FLAG(User_OnRequestDecCombo, 0x1CF); //UserLocal::RequestD
 MAKE_USER_RECV_PACKET_FLAG(User_OnRequestSetBlessOfDarkness, 0x1D0); //UserLocal::RequestSetBlessOfDarkness
 MAKE_USER_RECV_PACKET_FLAG(User_OnBroadcastOneTimeActionToSplit, 0x1D8); //UserLocal::BroadcastOneTimeActionToSplit
 MAKE_USER_RECV_PACKET_FLAG(User_OnBroadcastAffectedEffectToSplit, 0x1D9); //UserLocal::BroadcastAffectedEffectToSplit
+MAKE_USER_RECV_PACKET_FLAG(User_OnTempestBladesAttack, 0x1E9); //
 MAKE_USER_RECV_PACKET_FLAG(User_OnSetOffPacketForTrinity, 0x1ED); //UserLocal::SendSetOffPacketForTrinity
 MAKE_USER_RECV_PACKET_FLAG(User_OnMobZoneStateChangeRequest, 0x1FA); //UserLocal::SendMobZoneStateChangeRequest
 MAKE_USER_RECV_PACKET_FLAG(User_OnChangeCharacterRequest, 0x204);

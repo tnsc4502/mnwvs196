@@ -20,7 +20,7 @@ class LifePool
 
 	std::mutex m_lifePoolMutex;
 
-	std::atomic<int> atomicObjectCounter = 0x1000;
+	std::atomic<int> atomicObjectCounter = 0x1000, atomicForceAtomCounter = 0x1000;
 
 	//在這個地圖中所有可能的NPC物件
 	std::vector<Npc> m_lNpc;
@@ -64,15 +64,8 @@ public:
 	LifePool();
 	~LifePool();
 
-	void SetMaxMobCapacity(int max)
-	{
-		m_nMobCapacityMax = max;
-	}
-
-	int GetMaxMobCapacity() const
-	{
-		return m_nMobCapacityMax;
-	}
+	void SetMaxMobCapacity(int max);
+	int GetMaxMobCapacity() const;
 
 	//從Wz中讀取此地圖中Npc資訊，存到m_lNpc中
 	void LoadNpcData(WZ::Node& dataNode);
@@ -135,5 +128,7 @@ public:
 
 	Npc* GetNpc(int nFieldObjID);
 	Mob* GetMob(int nFieldObjID);
+
+	int GetForceAtomObjectID();
 };
 

@@ -73,6 +73,7 @@ void GW_CharacterStat::Load(int nCharacterID)
 	nSkin = recordSet["Skin"];
 	nFace = recordSet["Face"];
 	nHair = recordSet["Hair"];
+	nFaceMark = recordSet["FaceMark"];
 
 	auto strSP = (std::string)recordSet["SP"].toString();
 	std::vector<std::string> split;
@@ -105,26 +106,27 @@ void GW_CharacterStat::Save(int nCharacterID, bool isNewCharacter)
 
 	queryStatement << "UPDATE CharacterStat Set "
 		<< "Exp = '" << nExp << "', "
-		<< "HP = '" << nHP << "', "
-		<< "MP = '" << nMP << "', "
-		<< "MaxHP = '" << nMaxHP << "', "
-		<< "MaxMP = '" << nMaxMP << "', "
+		<< "HP = " << nHP << ", "
+		<< "MP = " << nMP << ", "
+		<< "MaxHP = " << nMaxHP << ", "
+		<< "MaxMP = " << nMaxMP << ", "
 		<< "Job = '" << nJob << "', "
 		<< "SubJob = '" << nSubJob << "', "
-		<< "Str = '" << nStr << "', "
-		<< "Dex = '" << nDex << "', "
-		<< "Int_ = '" << nInt << "', "
-		<< "Luk = '" << nLuk << "', "
+		<< "Str = " << nStr << ", "
+		<< "Dex = " << nDex << ", "
+		<< "Int_ = " << nInt << ", "
+		<< "Luk = " << nLuk << ", "
 		<< "SP = '" << strSP << "', "
-		<< "POP = '" << nPOP << "', "
-		<< "CharismaEXP = '" << nCharismaEXP << "', "
-		<< "InsightEXP = '" << nInsightEXP << "', "
-		<< "WillEXP = '" << nWillEXP << "', "
-		<< "SenseEXP = '" << nSenseEXP << "', "
-		<< "CharmEXP = '" << nCharmEXP << "', "
-		<< "Hair = '" << nHair << "',"
-		<< "Face = '" << nFace << "',"
-		<< "Skin = '" << nSkin << "',"
+		<< "POP = " << nPOP << ", "
+		<< "CharismaEXP = " << nCharismaEXP << ", "
+		<< "InsightEXP = " << nInsightEXP << ", "
+		<< "WillEXP = " << nWillEXP << ", "
+		<< "SenseEXP = " << nSenseEXP << ", "
+		<< "CharmEXP = " << nCharmEXP << ", "
+		<< "Hair = " << nHair << ","
+		<< "Face = " << nFace << ","
+		<< "Skin = " << nSkin << ","
+		<< "FaceMark = " << nFaceMark << ", "
 		<< "AP = '" << nAP << "' WHERE CharacterID = " << nCharacterID;
 	queryStatement.execute();
 }

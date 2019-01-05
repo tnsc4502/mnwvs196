@@ -5,7 +5,7 @@
 #include "BasicStat.h"
 #include "TemporaryStat.h"
 
-#define ADD_TEMPORARY(stat) int nLv##stat, n##stat, t##stat, r##stat, b##stat, x##stat, c##stat, y##stat;
+#define ADD_TEMPORARY(stat) int nLv##stat = 0, n##stat = 0, t##stat = 0, r##stat = 0, b##stat = 0, x##stat = 0, c##stat = 0, y##stat = 0;
 
 class User;
 struct GA_Character;
@@ -16,6 +16,18 @@ class SecondaryStat : public BasicStat
 {
 public:
 	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS, m_mSetByItem;
+
+	struct StopForceAtom
+	{
+		int nIdx = 0, nCount = 0, nWeaponID = 0;
+		std::vector<int> aAngelInfo;
+
+		void CreateStopForceAtom(User *pUser, int nSkillID);
+		void Encode(OutPacket *oPacket);
+		void OnTempestBladesAttack(User *pUser, InPacket *iPacket);
+	};
+
+	StopForceAtom sStopForceAtomInfo;
 
 	ADD_TEMPORARY(IndiePAD);
 	ADD_TEMPORARY(IndieMAD);
@@ -530,5 +542,8 @@ public:
 
 	void DecodeInternal(User* pUser, InPacket *iPacket);
 	void EncodeInternal(User* pUser, OutPacket *oPacket);
+
+	void ChargeSurplusSupply(User* pUser, int nCount, int tUpdateTime);
+	void ChargeSmashStack(User* pUser, int tUpdateTime);
 };
 

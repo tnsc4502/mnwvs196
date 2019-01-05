@@ -17,6 +17,7 @@
 #include "..\WvsLib\Memory\MemoryPoolMan.hpp"
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Logger\WvsLogger.h"
+#include "..\WvsLib\Common\WvsGameConstants.hpp"
 
 GA_Character::GA_Character()
 	: mAvatarData(AllocObj(GW_Avatar)),
@@ -131,6 +132,8 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	oPacket->Encode1(0); //Inital Spawn Point
 	oPacket->Encode2(0); //Get Subcategory
 
+	if (WvsGameConstants::IsDemonSlayerJob(mStat->nJob) || WvsGameConstants::IsXenonJob(mStat->nJob))
+		oPacket->Encode4(mStat->nFaceMark);
 	//isDemonSlayer || isXenon || isDemonAvenger Encode4
 
 	oPacket->Encode1(0); //Fatigue
@@ -232,6 +235,18 @@ void GA_Character::EncodeAvatarLook(OutPacket *oPacket)
 	oPacket->Encode4(0);
 	oPacket->Encode4(0);
 
+
+	if (WvsGameConstants::IsDemonSlayerJob(mStat->nJob) || WvsGameConstants::IsXenonJob(mStat->nJob))
+		oPacket->Encode4(mStat->nFaceMark);
+	else if (WvsGameConstants::IsZeroJob(mStat->nJob))
+		oPacket->Encode1(1);
+	else if (WvsGameConstants::IsBeastTamerJob(mStat->nJob))
+	{
+		oPacket->Encode1(1);
+		oPacket->Encode4(0);
+		oPacket->Encode1(1);
+		oPacket->Encode4(0);
+	}
 	//isDemonSlayer || isXenon || isDemonAvenger oPacket->Encode4(0);
 	//isZero oPacket->Encode1(0)
 
@@ -853,6 +868,8 @@ void GA_Character::DecodeStat(InPacket *iPacket)
 	iPacket->Decode1(); //Inital Spawn Point
 	iPacket->Decode2(); //Get Subcategory
 
+	if (WvsGameConstants::IsDemonSlayerJob(mStat->nJob) || WvsGameConstants::IsXenonJob(mStat->nJob))
+		mStat->nFaceMark = iPacket->Decode4();
 						 //isDemonSlayer || isXenon || isDemonAvenger Decode4
 
 	iPacket->Decode1(); //Fatigue
@@ -1440,7 +1457,8 @@ void GA_Character::LoadItemSlot()
 	queryStatement.execute(); 
 	Poco::Data::RecordSet recordSet(queryStatement);
 
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_ItemSlotEquip *eqp = AllocObj(GW_ItemSlotEquip);
 		eqp->Load(recordSet["ItemSN"]);
 		mItemSlot[1][eqp->nPOS] = eqp;
@@ -1461,7 +1479,8 @@ void GA_Character::LoadItemSlot()
 	queryStatement << "SELECT ItemSN FROM ItemSlot_INS Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::INSTALL;
 		eqp->Load(recordSet["ItemSN"]);
@@ -1472,7 +1491,8 @@ void GA_Character::LoadItemSlot()
 	queryStatement << "SELECT ItemSN FROM ItemSlot_ETC Where CharacterID = " << nCharacterID;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::ETC;
 		eqp->Load(recordSet["ItemSN"]);
@@ -1483,7 +1503,8 @@ void GA_Character::LoadItemSlot()
 	queryStatement << "SELECT CashItemSN FROM ItemSlot_Cash Where CharacterID = " << nCharacterID << " AND POS < " << GW_ItemSlotBase::LOCK_POS;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_ItemSlotBundle *eqp = AllocObj(GW_ItemSlotBundle);
 		eqp->nType = GW_ItemSlotBase::GW_ItemSlotType::CASH;
 		eqp->Load(recordSet["CashItemSN"]);
@@ -1494,7 +1515,8 @@ void GA_Character::LoadItemSlot()
 	queryStatement << "SELECT CashItemSN FROM ItemSlot_Pet Where CharacterID = " << nCharacterID << " AND POS < " << GW_ItemSlotBase::LOCK_POS;
 	queryStatement.execute();
 	recordSet.reset(queryStatement);
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_ItemSlotPet *pet = AllocObj(GW_ItemSlotPet);
 		pet->Load(recordSet["CashItemSN"]);
 		mItemSlot[5][pet->nPOS] = pet;
@@ -1508,7 +1530,8 @@ void GA_Character::LoadSkillRecord()
 	queryStatement.execute();
 	Poco::Data::RecordSet recordSet(queryStatement);
 
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_SkillRecord* pSkillRecord = AllocObj(GW_SkillRecord);
 		pSkillRecord->Load((void*)&recordSet);
 		mSkillRecord.insert({ pSkillRecord->nSkillID, pSkillRecord });
@@ -1522,7 +1545,8 @@ void GA_Character::LoadQuestRecord()
 	queryStatement.execute();
 	Poco::Data::RecordSet recordSet(queryStatement);
 
-	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) {
+	for (int i = 0; i < recordSet.rowCount(); ++i, recordSet.moveNext()) 
+	{
 		GW_QuestRecord* pQuestRecord = AllocObj(GW_QuestRecord);
 		pQuestRecord->Load((void*)&recordSet);
 		if(pQuestRecord->nState == 1)

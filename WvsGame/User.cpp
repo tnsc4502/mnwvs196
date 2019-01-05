@@ -37,6 +37,7 @@
 #include "LifePool.h"
 #include "ItemInfo.h"
 #include "SkillInfo.h"
+#include "SkillLevelData.h"
 #include "SkillEntry.h"
 #include "USkill.h"
 #include "CommandManager.h"
@@ -448,6 +449,10 @@ void User::OnPacket(InPacket *iPacket)
 	case UserRecvPacketFlag::User_OnActivatePetRequest:
 		OnActivatePetRequest(iPacket);
 		break;
+	case UserRecvPacketFlag::User_OnTempestBladesAttack:
+		if (m_pSecondaryStat->nStopForceAtomInfo)
+			m_pSecondaryStat->sStopForceAtomInfo.OnTempestBladesAttack(this, iPacket);
+		break;
 	default:
 		iPacket->RestorePacket();
 
@@ -806,6 +811,40 @@ void User::OnAttack(int nType, InPacket * iPacket)
 			SkillInfo::GetInstance()->GetSkillByID(pResult->m_nSkillID),
 			pResult
 		);
+
+		if (WvsGameConstants::IsAngelicBusterJob(m_pCharacterData->mStat->nJob))
+			ResetOnStateForOnOffSkill(pResult);
+	}
+
+	if (WvsGameConstants::IsKaiserJob(m_pCharacterData->mStat->nJob))
+		m_pSecondaryStat->ChargeSmashStack(this, GameDateTime::GetTime());
+
+}
+
+void User::ResetOnStateForOnOffSkill(AttackInfo * pAttackInfo)
+{
+	auto pSkillData = SkillInfo::GetInstance()->GetSkillByID(pAttackInfo->m_nSkillID);
+	if (!pSkillData)
+		return;
+
+	auto pLevelData = pSkillData->GetLevelData(pAttackInfo->m_nSLV);
+	if (pLevelData)
+	{
+		OutPacket oPacket;
+		int nProb = pLevelData->m_nOnActive;
+
+		if (nProb == -1 || Rand32::GetInstance()->Random() % 100 >= nProb)
+		{
+			oPacket.Encode2(UserSendPacketFlag::UserLocal_OnResetOnStateForOnOffSkill);
+			oPacket.Encode4(pAttackInfo->m_nSkillID);
+		}
+		else
+		{
+			//UnLock
+			oPacket.Encode2(UserSendPacketFlag::UserLocal_OnResetOnStateForOnOffSkill + 1);
+			oPacket.Encode4(0);
+		}
+		SendPacket(&oPacket);
 	}
 }
 
@@ -830,7 +869,11 @@ std::mutex & User::GetLock()
 
 void User::Update()
 {
+	int tCur = GameDateTime::GetTime();
 	m_pSecondaryStat->ResetByTime(this, GameDateTime::GetTime());
+	if (WvsGameConstants::IsXenonJob(m_pCharacterData->mStat->nJob))
+		m_pSecondaryStat->ChargeSurplusSupply(this, 1, tCur);
+
 }
 
 void User::ResetTemporaryStat(int tCur, int nReasonID)

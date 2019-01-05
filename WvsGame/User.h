@@ -178,7 +178,7 @@ private:
 	static const int MAX_PET_INDEX = 3;
 
 	std::mutex m_mtxUserlock, m_scriptLock;
-	int m_nCharacterID;
+	int m_nCharacterID, m_tLastUpdateTime = 0;
 	ClientSocket *m_pSocket;
 	GA_Character *m_pCharacterData;
 	GW_FuncKeyMapped *m_pFuncKeyMapped;
@@ -234,6 +234,7 @@ public:
 	void OnMigrateToCashShopRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
 	void OnAttack(int nType, InPacket *iPacket);
+	void ResetOnStateForOnOffSkill(AttackInfo *pAttackInfo);
 	void OnLevelUp();
 	void PostTransferField(int dwFieldID, Portal* pPortal, int bForce);
 	void SetMovePosition(int x, int y, char bMoveAction, short nFSN);

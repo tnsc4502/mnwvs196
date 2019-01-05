@@ -28,7 +28,8 @@ struct GW_CharacterStat
 		aSP[EXTEND_SP_SIZE],
 		nFace = 0,
 		nHair = 0,
-		nSkin = 0;
+		nSkin = 0,
+		nFaceMark = 0;
 
 	long long int nExp = 0;
 

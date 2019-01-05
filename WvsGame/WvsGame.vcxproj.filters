@@ -420,6 +420,9 @@
     <ClInclude Include="SummonedPool.h">
       <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
     </ClInclude>
+    <ClInclude Include="ForceAtom.h">
+      <Filter>WvsGame\InGame\Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WvsGame.cpp">
@@ -623,6 +626,9 @@
     </ClCompile>
     <ClCompile Include="SummonedPool.cpp">
       <Filter>WvsGame\InGame\Field\Life\Summoned</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceAtom.cpp">
+      <Filter>WvsGame\InGame\Field</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

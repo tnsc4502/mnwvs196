@@ -83,10 +83,10 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.mStat->nAP = aStat[STAT_AP];
 
 	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
-	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
-	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
-	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
-	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::EQUIP] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::CONSUME] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::ETC] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::INSTALL] = 40;
+	chrEntry.mSlotCount->aSlotCount[GW_ItemSlotBase::CASH] = 40;
 
 	GW_ItemSlotEquip gwCapEquip;
 	gwCapEquip.nItemID = aBody[EQP_ID_CapEquip];

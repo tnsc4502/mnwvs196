@@ -56,6 +56,14 @@ unsigned int Rand32::Random()
 	return  v7 ^ v8 ^ v9;
 }
 
+unsigned int Rand32::Random(unsigned int nMin, unsigned int nMax)
+{
+	unsigned int nRndRange = (nMax - nMin);
+	if (nRndRange == 0)
+		return 0;
+	return nMin + GetInstance()->Random() % (nMax - nMin);
+}
+
 std::vector<int> Rand32::GetRandomUniqueArray(int nStart, int nRange, int nCount)
 {
 	std::vector<int> aRet;
