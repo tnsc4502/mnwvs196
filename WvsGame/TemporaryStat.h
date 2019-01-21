@@ -11,7 +11,7 @@ struct TemporaryStat
 	private:
 		bool bEmpty = true;
 		static const int FLAG_COUNT = 17;
-		int m_aData[FLAG_COUNT], m_nFlagPos;
+		int m_aData[FLAG_COUNT], m_nFlagPos, m_nTSValue;
 
 	public:
 		TS_Flag();
@@ -20,6 +20,7 @@ struct TemporaryStat
 		TS_Flag& operator |= (const TS_Flag& rhs);
 		bool operator & (const TS_Flag& rhs);
 		bool IsEmpty() const;
+		bool IsIndieTS() const;
 
 		static TS_Flag GetDefault();
 	};

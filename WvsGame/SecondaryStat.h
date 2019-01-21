@@ -15,7 +15,11 @@ class InPacket;
 class SecondaryStat : public BasicStat
 {
 public:
-	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS, m_mSetByItem;
+	//m[TS Flag, [tDuration, a[nValue, rValue, tValue, nSLV]]]
+	std::map<int, std::pair<long long int, std::vector<int*>>> m_mSetByTS;
+
+	//m[TS Flag, m[rValue, [tDuration, [nValue, rValue, tValue, nSLV]]]]
+	std::map<int, std::map<int,	std::pair<long long int, std::vector<int>>>> m_mSetByIndieTS;
 
 	struct StopForceAtom
 	{

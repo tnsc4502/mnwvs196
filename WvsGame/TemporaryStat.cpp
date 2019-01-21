@@ -13,6 +13,7 @@ TemporaryStat::TS_Flag::TS_Flag(int dwFlagValue)
 	for (int i = 0; i < FLAG_COUNT; ++i)
 		m_aData[i] = 0;
 	m_aData[m_nFlagPos] |= nValue;
+	m_nTSValue = dwFlagValue;
 }
 
 void TemporaryStat::TS_Flag::Encode(OutPacket * oPacket)
@@ -21,6 +22,11 @@ void TemporaryStat::TS_Flag::Encode(OutPacket * oPacket)
 		//printf("Encode TS Flag : [%d] = %d\n", i, m_aData[i]);
 		oPacket->Encode4(m_aData[i]);
 	}
+}
+
+bool TemporaryStat::TS_Flag::IsIndieTS() const
+{
+	return m_nTSValue <= TS_INDIE_STAT_COUNT;
 }
 
 TemporaryStat::TS_Flag & TemporaryStat::TS_Flag::operator|=(const TS_Flag & rhs)

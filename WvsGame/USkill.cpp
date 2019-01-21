@@ -29,12 +29,13 @@ nSLV = (nSLV > pSkill->GetMaxLevel() ? pSkill->GetMaxLevel() : nSLV);\
 auto pSkillLVLData = pSkill->GetLevelData(nSLV);\
 auto tsFlag = TemporaryStat::TS_Flag::GetDefault();\
 std::pair<long long int, std::vector<int*>>* pRef = nullptr;\
+std::pair<long long int, std::vector<int>>* pRefIndie = nullptr;\
 auto pSS = pUser->GetSecondaryStat();\
 int nSkillID = pSkill->GetSkillID();\
 int tDelay = 0;\
 int nDuration = pSkillLVLData->m_nTime * 1000;\
 	if (nDuration == 0)\
-		nDuration = 2147483647;
+		nDuration = INT_MAX;
 
 
 /*
@@ -61,11 +62,26 @@ if(!bResetBySkill)\
 	pRef->second.push_back(&pSS->nLv##name);\
 }\
 
+#define REGISTER_INDIE_TS(name, value)\
+tsFlag |= GET_TS_FLAG(##name);\
+pRefIndie = &pSS->m_mSetByIndieTS[TemporaryStat::TS_##name][nSkillID]; pRefIndie->second.clear();\
+pSS->n##name += bResetBySkill ? -value : value;\
+if(!bResetBySkill)\
+{\
+	pRefIndie->first = bForcedSetTime ? nForcedSetTime : GameDateTime::GetTime();\
+	pRefIndie->second.push_back(value);\
+	pRefIndie->second.push_back(nSkillID);\
+	pRefIndie->second.push_back(nDuration);\
+	pRefIndie->second.push_back(nSLV);\
+}\
+
 void USkill::ValidateSecondaryStat(User * pUser)
 {
 	auto pSS = pUser->GetSecondaryStat();
-	auto iter = pSS->m_mSetByTS.begin();
-	while (iter != pSS->m_mSetByTS.end())
+	auto iter = pSS->m_mSetByTS.begin(),
+		 iterEnd = pSS->m_mSetByTS.end();
+
+	while (iter != iterEnd)
 		if (iter->second.second.size() == 0)
 		{
 			pSS->m_mSetByTS.erase(iter);
@@ -73,6 +89,35 @@ void USkill::ValidateSecondaryStat(User * pUser)
 		}
 		else
 			++iter;
+
+	//Indie TS
+	auto indieMapIter = pSS->m_mSetByIndieTS.begin(),
+		 indieMapEnd = pSS->m_mSetByIndieTS.end();
+
+	while (indieMapIter != indieMapEnd)
+	{
+		auto indieTS = indieMapIter->second.begin();
+		while (indieTS != indieMapIter->second.end())
+		{
+			//技能對應的Indie TS已經被取消，清除
+			if(indieTS->second.second.size() == 0)
+			{
+				indieMapIter->second.erase(indieTS);
+				indieTS = indieMapIter->second.begin();
+			}
+			else
+				++indieTS;
+		}
+
+		//整個Indie TS為空，清除
+		if (indieMapIter->second.size() == 0)
+		{
+			pSS->m_mSetByIndieTS.erase(indieMapIter);
+			indieMapIter = pSS->m_mSetByIndieTS.begin();
+		}
+		else
+			++indieMapIter;
+	}
 }
 
 void USkill::OnSkillUseRequest(User * pUser, InPacket * iPacket)
@@ -602,7 +647,8 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 		case 24121008: // phantom
 		case 100001268: // Zero
 						// case 51121005: //Mihile's Maple Warrior
-			REGISTER_TS(BasicStatUp, pSkillLVLData->m_nX);
+			REGISTER_INDIE_TS(IndiePAD, pSkillLVLData->m_nX);
+			//REGISTER_TS(BasicStatUp, pSkillLVLData->m_nX);
 			break;
 		case 15111006: //spark
 			//REGISTER_TS(SPARK, pSkillLVLData->m_nX);
@@ -1045,7 +1091,7 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 			break;
 
 		case 9101003: //customs for infinite dmg :D
-			REGISTER_TS(IndiePAD, INT_MAX);
+			REGISTER_INDIE_TS(IndiePAD, INT_MAX);
 			REGISTER_TS(IndieMAD, INT_MAX);
 			REGISTER_TS(IndieMaxDamageOver, 500000);
 		case 2301004:
@@ -1283,8 +1329,8 @@ void USkill::DoActiveSkill_SelfStatChange(User* pUser, const SkillEntry * pSkill
 		case 1321053:
 		case 1221053:
 		case 1121053: //Epic Adventure
-			REGISTER_TS(IndieMaxDamageOver, pSkillLVLData->m_nIndieMaxDamageOver);
-			REGISTER_TS(IndieDamR, pSkillLVLData->m_nIndieDamR);
+			REGISTER_INDIE_TS(IndieMaxDamageOver, pSkillLVLData->m_nIndieMaxDamageOver);
+			REGISTER_INDIE_TS(IndiePAD, pSkillLVLData->m_nIndieDamR);
 			break;
 		case 31221053:
 		case 31121053:

@@ -749,20 +749,26 @@ void SecondaryStat::EncodeForRemote(OutPacket * oPacket, TemporaryStat::TS_Flag 
 void SecondaryStat::EncodeIndieTempStat(OutPacket * oPacket, TemporaryStat::TS_Flag & flag)
 {
 	int nValue, rValue, tValue = 0;
+	bool bValid = false;
 	for (int i = 0; i <= TemporaryStat::TS_INDIE_STAT_COUNT; ++i)
 	{
 		if (flag & TemporaryStat::TS_Flag(i))
 		{
-			nValue = m_mSetByTS[i].second.size() != 0 ? *(m_mSetByTS[i].second[0]) : 0;
-			rValue = m_mSetByTS[i].second.size() != 0 ? *(m_mSetByTS[i].second[1]) : 0;
-			tValue = m_mSetByTS[i].second.size() != 0 ? *(m_mSetByTS[i].second[2]) : 0;
-			oPacket->Encode4(1);
-			oPacket->Encode4(rValue);
-			oPacket->Encode4(nValue);
-			oPacket->Encode4(INT_MAX);
-			oPacket->Encode4(1);
-			oPacket->Encode4(tValue);
-			oPacket->Encode4(0);
+			auto& mIndieTS = m_mSetByIndieTS[i];
+			oPacket->Encode4((int)mIndieTS.size());
+			for (auto& indieTS : mIndieTS)
+			{
+				bValid = indieTS.second.second.size() != 0;
+				nValue = bValid ? (indieTS.second.second[0]) : 0;
+				rValue = bValid ? (indieTS.second.second[1]) : 0;
+				tValue = bValid ? (indieTS.second.second[2]) : 0;
+				oPacket->Encode4(rValue);
+				oPacket->Encode4(nValue);
+				oPacket->Encode4(INT_MAX);
+				oPacket->Encode4(1);
+				oPacket->Encode4(tValue);
+				oPacket->Encode4(0);
+			}
 		}
 	}
 }
@@ -798,8 +804,6 @@ void SecondaryStat::ResetByTime(User* pUser, int tCur)
 	{
 		int nID = *(setFlag.second.second[1]);
 		int tValue = *(setFlag.second.second[2]);
-		//printf("Skill ID %d, T Val = %d, Set Time = %d, Now = %d Diff = %d\n", nSkillID, tValue, setFlag.second.first, tCur, (tCur - setFlag.second.first));
-		//expired
 		if (!((tCur - setFlag.second.first) > tValue))
 			continue;
 		if (nID < 0)
@@ -810,6 +814,26 @@ void SecondaryStat::ResetByTime(User* pUser, int tCur)
 		}
 		else 
 			aSkillResetReason.push_back(nID);
+	}
+
+	//IndieTS
+	for (auto& mIndieTS : pSS->m_mSetByIndieTS)
+	{
+		for (auto& indieTS : mIndieTS.second)
+		{
+			int nID = (indieTS.second.second[1]);
+			int tValue = (indieTS.second.second[2]);
+			if (!((tCur - indieTS.second.first) > tValue))
+				continue;
+			if (nID < 0)
+			{
+				auto pItemInfo = ItemInfo::GetInstance()->GetStateChangeItem(-nID);
+				if (pItemInfo)
+					pUser->SendTemporaryStatReset(pItemInfo->Apply(pUser, 0, false, true));
+			}
+			else
+				aSkillResetReason.push_back(nID);
+		}
 	}
 	USkill::ResetTemporaryByTime(pUser, aSkillResetReason);
 }
@@ -856,7 +880,7 @@ void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 
 	//Encode Temporary Internal
 	auto pSS = pUser->GetSecondaryStat();
-	oPacket->Encode4((int)pSS->m_mSetByTS.size());
+	oPacket->Encode4((int)pSS->m_mSetByTS.size() + (int)pSS->m_mSetByIndieTS.size());
 	for (auto& setFlag : pSS->m_mSetByTS)
 	{
 		int nSkillID = *(setFlag.second.second[1]);
@@ -865,6 +889,19 @@ void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 		oPacket->Encode4(nSkillID);
 		oPacket->Encode4(tDurationRemained);
 		oPacket->Encode4(nSLV);
+	}
+
+	for (auto& mIndieTS : pSS->m_mSetByIndieTS)
+	{
+		for (auto& setFlag : mIndieTS.second)
+		{
+			int nSkillID = (setFlag.second.second[1]);
+			int tDurationRemained = (int)setFlag.second.first;
+			int nSLV = (setFlag.second.second[3]);
+			oPacket->Encode4(nSkillID);
+			oPacket->Encode4(tDurationRemained);
+			oPacket->Encode4(nSLV);
+		}
 	}
 }
 
