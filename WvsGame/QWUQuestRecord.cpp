@@ -9,7 +9,7 @@
 
 int QWUQuestRecord::GetState(User * pUser, int nKey)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	auto findIter = pCharacter->mQuestRecord.find(nKey);
 	if (findIter != pCharacter->mQuestRecord.end())
@@ -24,7 +24,7 @@ int QWUQuestRecord::GetState(User * pUser, int nKey)
 
 void QWUQuestRecord::Remove(User * pUser, int nKey, bool bComplete)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	if (bComplete)
 		pCharacter->mQuestComplete.erase(nKey);
@@ -35,7 +35,7 @@ void QWUQuestRecord::Remove(User * pUser, int nKey, bool bComplete)
 
 std::string QWUQuestRecord::Get(User * pUser, int nKey)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	auto findIter = pCharacter->mQuestRecord.find(nKey);
 	if (findIter != pCharacter->mQuestRecord.end())
@@ -45,7 +45,7 @@ std::string QWUQuestRecord::Get(User * pUser, int nKey)
 
 void QWUQuestRecord::Set(User * pUser, int nKey, const std::string & sInfo)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	pCharacter->SetQuest(nKey, sInfo);
 	pUser->SendQuestRecordMessage(nKey, 1, sInfo);
@@ -53,7 +53,7 @@ void QWUQuestRecord::Set(User * pUser, int nKey, const std::string & sInfo)
 
 void QWUQuestRecord::SetComplete(User * pUser, int nKey)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacter = pUser->GetCharacterData();
 	pCharacter->RemoveQuest(nKey);
 	GW_QuestRecord *pComplete = AllocObj(GW_QuestRecord);

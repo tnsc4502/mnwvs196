@@ -744,6 +744,17 @@ void SecondaryStat::EncodeForLocal(OutPacket * oPacket, TemporaryStat::TS_Flag &
 
 void SecondaryStat::EncodeForRemote(OutPacket * oPacket, TemporaryStat::TS_Flag & flag)
 {
+	flag.Encode(oPacket);
+
+	oPacket->Encode1((char)nDefenseAtt);
+	oPacket->Encode1((char)nDefenseState);
+	oPacket->Encode1((char)nPVPDamage);
+
+	sStopForceAtomInfo.Encode(oPacket);
+
+	oPacket->Encode4(0); //nViperCharge
+
+	//RideVechicle
 }
 
 void SecondaryStat::EncodeIndieTempStat(OutPacket * oPacket, TemporaryStat::TS_Flag & flag)
@@ -874,7 +885,7 @@ void SecondaryStat::DecodeInternal(User* pUser, InPacket * iPacket)
 
 void SecondaryStat::EncodeInternal(User* pUser, OutPacket * oPacket)
 {
-	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> userGuard(pUser->GetLock());
 
 	oPacket->Encode4(pUser->GetChannelID());
 

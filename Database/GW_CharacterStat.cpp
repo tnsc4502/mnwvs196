@@ -63,7 +63,9 @@ void GW_CharacterStat::Load(int nCharacterID)
 	nHP = recordSet["HP"];
 	nMP = recordSet["MP"];
 	nMaxHP = recordSet["MaxHP"];
-	nMaxMP = recordSet["MaxMP"];
+	nMaxMP = recordSet["MaxMP"]; 
+	nGender = recordSet["Gender"];
+	nFame = recordSet["Fame"];
 	nJob = recordSet["Job"];
 	nSubJob = recordSet["SubJob"];
 	nStr = recordSet["Str"];
@@ -110,6 +112,8 @@ void GW_CharacterStat::Save(int nCharacterID, bool isNewCharacter)
 		<< "MP = " << nMP << ", "
 		<< "MaxHP = " << nMaxHP << ", "
 		<< "MaxMP = " << nMaxMP << ", "
+		<< "Gender = '" << nGender << "', "
+		<< "Fame = '" << nFame << "', "
 		<< "Job = '" << nJob << "', "
 		<< "SubJob = '" << nSubJob << "', "
 		<< "Str = " << nStr << ", "

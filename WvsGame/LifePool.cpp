@@ -174,6 +174,8 @@ void LifePool::CreateMob(const Mob& mob, int x, int y, int fh, int bNoDropPriori
 		newMob->SendChangeControllerPacket(pController->GetUser(), 1);
 		pController->AddCtrlMob(newMob);
 
+		//19/05/07 +
+		UpdateCtrlHeap(pController);
 		m_aMobGen.insert({ newMob->GetFieldObjectID(), newMob });
 	}
 }
@@ -323,10 +325,12 @@ void LifePool::RedistributeLife()
 				nMaxMobCtrl = maxCtrl->GetMobCtrlCount();
 				nMinNpcCtrl = minCtrl->GetNpcCtrlCount();
 				nMinMobCtrl = minCtrl->GetMobCtrlCount();
+				WvsLogger::LogFormat("Min Ctrl User = %d(%d), Max Ctrl User = %d(%d)\n", minCtrl->GetUser()->GetUserID(), nMinMobCtrl, maxCtrl->GetUser()->GetUserID(), nMaxMobCtrl);
 				//已經足夠平衡不需要再重新配給
 				if ((nMaxNpcCtrl + nMaxMobCtrl - (nMaxMobCtrl != 0) <= (nMinNpcCtrl - (nMinMobCtrl != 0) + nMinMobCtrl + 1))
-					|| ((nMaxNpcCtrl + nMaxMobCtrl - (nMaxMobCtrl != 0)) <= 20))
+					|| ((nMaxNpcCtrl + nMaxMobCtrl - (nMaxMobCtrl != 0)) <= 10))
 					break;
+				WvsLogger::LogFormat("Unbalanced.\n", minCtrl->GetUser()->GetUserID(), nMinMobCtrl, maxCtrl->GetUser()->GetUserID(), nMaxMobCtrl);
 				Mob* pMob = *(maxCtrl->GetMobCtrlList().rbegin());
 				maxCtrl->GetMobCtrlList().pop_back();
 				pMob->SendChangeControllerPacket(maxCtrl->GetUser(), 0);
@@ -348,7 +352,7 @@ void LifePool::Update()
 
 void LifePool::OnPacket(User * pUser, int nType, InPacket * iPacket)
 {
-	if (nType >= MobRecvPacketFlag::MobRecvPacketFlag::nMinFlag && nType <= MobRecvPacketFlag::MobRecvPacketFlag::nMaxFlag)
+	if (nType >= FlagMin(MobRecvPacketFlag) && nType <= FlagMax(MobRecvPacketFlag))
 	{
 		OnMobPacket(pUser, nType, iPacket);
 	}
@@ -526,7 +530,7 @@ Mob * LifePool::GetMob(int nFieldObjID)
 void LifePool::OnMobPacket(User * pUser, int nType, InPacket * iPacket)
 {
 	int dwMobID = iPacket->Decode4();
-	//std::lock_guard<std::mutex> lock(m_lifePoolMutex);
+	std::lock_guard<std::mutex> lock(m_lifePoolMutex);
 
 	auto mobIter = m_aMobGen.find(dwMobID);
 	if (mobIter != m_aMobGen.end()) {

@@ -36,7 +36,7 @@ TemporaryStat::TS_Flag StateChangeItem::Apply(User * pUser, int tCur, bool bAppl
 
 	for (auto& info : spec)
 	{
-		std::lock_guard<std::mutex> lock(pUser->GetLock());
+		std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 		if (info.first == "hp")
 		{
 			pS->nHP += info.second;

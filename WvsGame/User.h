@@ -14,6 +14,7 @@ class Npc;
 class Pet;
 class AsyncScheduler;
 struct GA_Character;
+struct GW_Avatar;
 struct GW_FuncKeyMapped;
 
 class BasicStat;
@@ -177,8 +178,8 @@ public:
 private:
 	static const int MAX_PET_INDEX = 3;
 
-	std::mutex m_mtxUserlock, m_scriptLock;
-	int m_nCharacterID, m_tLastUpdateTime = 0;
+	std::recursive_mutex m_mtxUserlock, m_scriptLock;
+	int m_tLastUpdateTime = 0;
 	ClientSocket *m_pSocket;
 	GA_Character *m_pCharacterData;
 	GW_FuncKeyMapped *m_pFuncKeyMapped;
@@ -211,7 +212,7 @@ public:
 	//Basic Routine
 	int GetUserID() const;
 	int GetChannelID() const;
-	std::mutex& GetLock();
+	std::recursive_mutex& GetLock();
 	void Update();
 
 	GA_Character* GetCharacterData();
@@ -233,6 +234,7 @@ public:
 	void OnTransferChannelRequest(InPacket* iPacket);
 	void OnMigrateToCashShopRequest(InPacket* iPacket);
 	void OnChat(InPacket *iPacket);
+	void EncodeChatMessage(OutPacket *oPacket, const std::string strMsg, bool bAdmin, bool bBallon);
 	void OnAttack(int nType, InPacket *iPacket);
 	void ResetOnStateForOnOffSkill(AttackInfo *pAttackInfo);
 	void OnLevelUp();
@@ -240,6 +242,11 @@ public:
 	void SetMovePosition(int x, int y, char bMoveAction, short nFSN);
 
 	//Avatar
+private:
+	void UpdateAvatar();
+
+public:
+	GW_Avatar* GetAvatar();
 	void OnAvatarModified();
 	void EncodeCharacterData(OutPacket *oPacket);
 	void EncodeCoupleInfo(OutPacket *oPacket);

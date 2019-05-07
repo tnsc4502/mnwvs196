@@ -8,10 +8,13 @@ struct GW_CharacterStat
 {
 	static const int EXTEND_SP_SIZE = 10;
 
+	unsigned char nGender = 0;
+
 	int nHP = 0,
 		nMP = 0,
 		nMaxHP = 0,
 		nMaxMP = 0,
+		nFame = 0,
 		nJob = 0,
 		nSubJob = 0,
 		nStr = 0,

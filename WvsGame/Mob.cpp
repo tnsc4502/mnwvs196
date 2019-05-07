@@ -12,6 +12,7 @@
 #include "..\WvsLib\DateTime\GameDateTime.h"
 #include "..\WvsLib\Random\Rand32.h"
 #include "..\WvsLib\Net\OutPacket.h"
+#include "..\WvsLib\Net\PacketFlags\MobPacketFlags.hpp"
 
 Mob::Mob()
 {
@@ -23,14 +24,14 @@ Mob::~Mob()
 
 void Mob::MakeEnterFieldPacket(OutPacket *oPacket)
 {
-	oPacket->Encode2(0x3C1); //MobPool::SpawnMonster
+	oPacket->Encode2(MobSendPacketFlag::Mob_OnMakeEnterFieldPacket); //MobPool::SpawnMonster
 	oPacket->Encode1(0);
 	EncodeInitData(oPacket);
 }
 
 void Mob::MakeLeaveFieldPacket(OutPacket * oPacket)
 {
-	oPacket->Encode2(0x3C2); //MobPool::SpawnMonster
+	oPacket->Encode2(MobSendPacketFlag::Mob_OnMakeLeaveFieldPacket); //MobPool::SpawnMonster
 	oPacket->Encode4(GetFieldObjectID());
 	oPacket->Encode1(1);
 }
@@ -168,21 +169,19 @@ void Mob::SendChangeControllerPacket(User* pUser, int nLevel)
 	if (nLevel)
 	{
 		OutPacket oPacket;
-		oPacket.Encode2(0x3C3);
+		oPacket.Encode2(MobSendPacketFlag::Mob_OnMobChangeController);
 		oPacket.Encode1(nLevel);
 		EncodeInitData(&oPacket, true);
 		pUser->SendPacket(&oPacket);
 	}
 	else
-	{
 		SendReleaseControllPacket(pUser, GetFieldObjectID());
-	}
 }
 
 void Mob::SendReleaseControllPacket(User* pUser, int dwMobID)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(0x3C3);
+	oPacket.Encode2(MobSendPacketFlag::Mob_OnMobChangeController);
 	oPacket.Encode1(0);
 	oPacket.Encode4(dwMobID);
 	//EncodeInitData(&oPacket);
@@ -238,7 +237,7 @@ void Mob::OnMobHit(User * pUser, long long int nDamage, int nAttackType)
 	if (GetHP() > 0)
 	{
 		OutPacket oPacket;
-		oPacket.Encode2(0x3D5);
+		oPacket.Encode2(MobSendPacketFlag::Mob_OnHPIndicator);
 		oPacket.Encode4(GetFieldObjectID());
 		oPacket.Encode1((char)((GetHP() / GetMobTemplate()->m_lnMaxHP) * 100));
 		pUser->SendPacket(&oPacket);

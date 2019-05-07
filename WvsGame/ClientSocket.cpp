@@ -35,7 +35,7 @@ void ClientSocket::OnPacket(InPacket *iPacket)
 		if (pUser)
 		{
 			iPacket->RestorePacket();
-			if (nType != 0x369) {
+			if (nType == 0x96) {
 				WvsLogger::LogRaw("[WvsGame][ClientSocket::OnPacket]«Ê¥]±µ¦¬¡G");
 				iPacket->Print();
 			}

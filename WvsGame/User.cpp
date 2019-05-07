@@ -67,6 +67,7 @@ User::User(ClientSocket *_pSocket, InPacket *iPacket)
 
 	//Internal Stats Are Encoded Outside PostCharacterDataRequest
 	m_pSecondaryStat->DecodeInternal(this, iPacket);
+	UpdateAvatar();
 }
 
 User::~User()
@@ -139,7 +140,151 @@ Field * User::GetField()
 
 void User::MakeEnterFieldPacket(OutPacket *oPacket)
 {
+	oPacket->Encode2((short)UserSendPacketFlag::UserRemote_OnMakeEnterFieldPacket);
+	oPacket->Encode4(m_pCharacterData->nCharacterID);
+	oPacket->Encode1((char)(m_pCharacterData->mLevel->nLevel));
+	oPacket->EncodeStr(m_pCharacterData->strName);
 
+	oPacket->EncodeStr(QWUQuestRecord::Get(this, 111111));
+	
+	//==========Guild Info=========
+	oPacket->Encode8(0);
+
+	oPacket->Encode1((char)m_pCharacterData->mStat->nGender);
+	oPacket->Encode4(m_pCharacterData->mStat->nFame);
+	oPacket->Encode4(0); //nFarmLevel
+
+	//SecondaryStat::EncodeForRemote
+	m_pSecondaryStat->EncodeForRemote(oPacket, TemporaryStat::TS_Flag::GetDefault());
+
+	oPacket->Encode2((short)m_pCharacterData->mStat->nJob);
+	oPacket->Encode2((short)m_pCharacterData->mStat->nSubJob);
+	oPacket->Encode4(0); //nTotalCHUC
+	oPacket->Encode4(0); //
+
+	m_pCharacterData->EncodeAvatarLook(oPacket);
+
+	//Unknown func
+	oPacket->Encode4(0);
+	oPacket->Encode1((char)0xFF);
+	oPacket->Encode4(0);
+	oPacket->Encode1((char)0xFF);
+
+	oPacket->Encode4(0); //dwDriverID
+	oPacket->Encode4(0); //dwPassengerID
+
+	//Unknown func
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+
+	oPacket->Encode4(0); //0
+	oPacket->Encode4(0); //1
+	oPacket->Encode4(0); //2
+	oPacket->Encode4(0); //3
+	oPacket->Encode4(0); //4
+	oPacket->Encode4(0); //5
+	oPacket->Encode4(0); //6
+	oPacket->Encode4(0); //7
+	oPacket->Encode4(0); //8
+	oPacket->Encode4(0); //9
+	
+	oPacket->Encode2(-1);
+	oPacket->Encode2(0);
+	oPacket->Encode2(0);
+
+	oPacket->Encode2(-1);
+	oPacket->Encode2(-1);
+	oPacket->Encode1(0);
+	oPacket->Encode4(0);
+
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+	oPacket->Encode1(0);
+
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+
+	oPacket->Encode2(GetPosX());
+	oPacket->Encode2(GetPosY());
+	oPacket->Encode1(GetMoveAction());
+	oPacket->Encode2(GetFh());
+
+	oPacket->Encode1(0);
+	oPacket->Encode1(0);
+	oPacket->Encode1(0);
+
+	//Mount Info
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+
+	//MiniRoom Data
+	oPacket->Encode1(0);
+
+	//ChatBalloon
+	oPacket->Encode1(0);
+
+	EncodeCoupleInfo(oPacket);
+	EncodeFriendshipInfo(oPacket);
+	EncodeMarriageInfo(oPacket);
+
+	oPacket->Encode1(0);
+	oPacket->Encode1(0);
+	oPacket->Encode4(0);
+
+	//Kaiser Data
+	//if(WvsGameConstants::IsKaiser(
+
+	oPacket->Encode4(0);
+	for (int i = 0; i < 5; ++i)
+		oPacket->Encode1(-1);
+
+	oPacket->Encode4(0);
+	oPacket->EncodeHexString("01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+	oPacket->Encode1(0); //bSoulEffect
+	oPacket->Encode1(0);
+
+	oPacket->Encode1(0); //StarPlaneRank::Decode
+	oPacket->Encode4(0); //DecodeStarPlaneTrendShopLook
+
+	//DecodeFreezeHotEventInfo
+	oPacket->Encode1(0); //nAccountType
+	oPacket->Encode4(0); //dwAccountID
+
+	//DecodeEventBastFriendInfo
+	oPacket->Encode4(0); //dwEventBestFriendAID
+
+	oPacket->Encode1(0);
+	oPacket->Encode1(0);
+	oPacket->Encode4(0);
+
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+
+	//Unknown func
+	oPacket->Encode4(0);
+
+	//Unknown func
+	oPacket->Encode4(0);
+
+	//Unknown func
+	oPacket->Encode1(0);
+
+	oPacket->Encode4(0);
+
+	oPacket->Encode1(0);
+	oPacket->Encode1(1);
+	oPacket->Encode4(0);
+
+	oPacket->Encode4(1);
+	oPacket->Encode4(0);
+	oPacket->EncodeStr("");
+	oPacket->Encode4(0);
+	oPacket->Encode1(0);
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
+	oPacket->Encode4(0);
 }
 
 void User::MakeLeaveFieldPacket(OutPacket * oPacket)
@@ -497,7 +642,7 @@ void User::OnTransferFieldRequest(InPacket * iPacket)
 
 bool User::TryTransferField(int nFieldID, const std::string& sPortalName)
 {
-	std::lock_guard<std::mutex> user_lock(m_mtxUserlock);
+	std::lock_guard<std::recursive_mutex> user_lock(m_mtxUserlock);
 	SetTransferStatus(TransferStatus::eOnTransferField);
 	Portal* pPortal = m_pField->GetPortalMap()->FindPortal(sPortalName);
 	Field *pTargetField = FieldMan::GetInstance()->GetField(
@@ -541,7 +686,7 @@ void User::OnTransferChannelRequest(InPacket * iPacket)
 	OutPacket oPacket;
 	oPacket.Encode2(GameSendPacketFlag::RequestTransferChannel);
 	oPacket.Encode4(m_pSocket->GetSocketID());
-	oPacket.Encode4(m_nCharacterID);
+	oPacket.Encode4(GetUserID());
 	oPacket.Encode1(nChannelID);
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 }
@@ -554,7 +699,7 @@ void User::OnMigrateToCashShopRequest(InPacket * iPacket)
 	OutPacket oPacket;
 	oPacket.Encode2(GameSendPacketFlag::RequestTransferShop);
 	oPacket.Encode4(m_pSocket->GetSocketID());
-	oPacket.Encode4(m_nCharacterID);
+	oPacket.Encode4(GetUserID());
 	WvsGame::GetInstance<WvsGame>()->GetCenter()->SendPacket(&oPacket);
 }
 
@@ -564,24 +709,32 @@ void User::OnChat(InPacket *iPacket)
 	std::string strMsg = iPacket->DecodeStr();
 	CommandManager::GetInstance()->Process(this, strMsg);
 
-	unsigned char balloon = iPacket->Decode1();
+	bool bBalloon = iPacket->Decode1() != 0;
 
-	OutPacket oPacket;
-	oPacket.Encode2(UserSendPacketFlag::UserCommon_OnChat);
-	oPacket.Encode4(GetUserID());
-	oPacket.Encode1(0);
-	oPacket.EncodeStr(strMsg);
-	oPacket.Encode1(balloon);
-	oPacket.Encode1(0);
-	oPacket.Encode1(-1);
+	OutPacket oPacketForBroadcasting, oPacketForSelf;
 
-	m_pField->SplitSendPacket(&oPacket, nullptr);
+	EncodeChatMessage(&oPacketForBroadcasting, strMsg, false, bBalloon);
+	EncodeChatMessage(&oPacketForSelf		 , strMsg, false, true);
+
+	m_pField->SplitSendPacket(&oPacketForBroadcasting, nullptr);
+	SendPacket(&oPacketForSelf);
+}
+
+void User::EncodeChatMessage(OutPacket *oPacket, const std::string strMsg, bool bAdmin, bool bBallon)
+{
+	oPacket->Encode2(UserSendPacketFlag::UserCommon_OnChat);
+	oPacket->Encode4(GetUserID());
+	oPacket->Encode1((char)bAdmin);
+	oPacket->EncodeStr(strMsg);
+	oPacket->Encode1(bBallon);
+	oPacket->Encode1(0);
+	oPacket->Encode1(-1);
 }
 
 void User::PostTransferField(int dwFieldID, Portal * pPortal, int bForce)
 {
 	OutPacket oPacket;
-	oPacket.Encode2(0x1BF); //Set Stage
+	oPacket.Encode2((short)GameSendPacketFlag::Client_SetFieldStage); //Set Stage
 	oPacket.Encode4(0); //nChannel
 	oPacket.Encode1(0);
 	oPacket.Encode4(0);
@@ -616,11 +769,50 @@ void User::SetMovePosition(int x, int y, char bMoveAction, short nFSN)
 	SetFh(nFSN);
 }
 
+void User::UpdateAvatar()
+{
+	m_pCharacterData->mAvatarData->nHair = m_pCharacterData->mStat->nHair;
+	m_pCharacterData->mAvatarData->nFace = m_pCharacterData->mStat->nFace;
+	m_pCharacterData->mAvatarData->nSkin = m_pCharacterData->mStat->nSkin;
+
+	m_pCharacterData->mAvatarData->mEquip.clear();
+	m_pCharacterData->mAvatarData->mUnseenEquip.clear();
+
+	GW_ItemSlotEquip* pEquip = nullptr;
+	short nPOS = 0;
+	for(auto pItemSlot : m_pCharacterData->mItemSlot[GW_ItemSlotBase::EQUIP])
+		if (pItemSlot.second->nPOS < 0)
+		{
+			pEquip = (GW_ItemSlotEquip*)pItemSlot.second;
+			nPOS = pEquip->nPOS * -1;
+			if (nPOS < 100 || nPOS == 111)
+				GetAvatar()->mEquip.insert({ pEquip->nPOS, pEquip->nItemID });
+			else if (nPOS > 100)
+			{
+				auto iter = 
+					GetAvatar()->mEquip.find(nPOS);
+
+				if (iter != GetAvatar()->mEquip.end())
+					GetAvatar()->mUnseenEquip.insert({ pEquip->nPOS, iter->second });
+
+				GetAvatar()->mEquip.insert({ pEquip->nPOS + 100, pEquip->nItemID });
+			}
+			else
+				GetAvatar()->mUnseenEquip.insert({ pEquip->nPOS, pEquip->nItemID });
+		}
+}
+
+GW_Avatar * User::GetAvatar()
+{
+	return m_pCharacterData->mAvatarData;
+}
+
 void User::OnAvatarModified()
 {
+	UpdateAvatar();
 	OutPacket oPacket;
 	oPacket.Encode2(UserSendPacketFlag::UserRemote_OnAvatarModified);
-	oPacket.Encode4(m_nCharacterID);
+	oPacket.Encode4(GetUserID());
 	int dwAvatarModFlag = 1;
 	oPacket.Encode1(dwAvatarModFlag); //m_dwAvatarModFlag
 	if (dwAvatarModFlag & 1)
@@ -629,6 +821,12 @@ void User::OnAvatarModified()
 		oPacket.Encode1(0); //secondayStat.nSpeed
 	if (dwAvatarModFlag & 4)
 		oPacket.Encode1(0); //nChoco
+
+	for (int i = 0; i < 2; ++i)
+	{
+		oPacket.Encode4(0);
+		oPacket.Encode1((char)0xFF);
+	}
 
 	EncodeCoupleInfo(&oPacket);
 	EncodeFriendshipInfo(&oPacket);
@@ -675,7 +873,7 @@ void User::EncodeMarriageInfo(OutPacket * oPacket)
 	oPacket->Encode1(0);
 	for (int i = 0; i < 0; ++i)
 	{
-		oPacket->Encode4(m_nCharacterID); //
+		oPacket->Encode4(GetUserID()); //
 		oPacket->Encode4(0); //nPairID
 		oPacket->Encode4(0); //nItemID
 	}
@@ -833,7 +1031,7 @@ void User::ResetOnStateForOnOffSkill(AttackInfo * pAttackInfo)
 		OutPacket oPacket;
 		int nProb = pLevelData->m_nOnActive;
 
-		if (nProb == -1 || Rand32::GetInstance()->Random() % 100 >= nProb)
+		if (nProb == -1 || (int)(Rand32::GetInstance()->Random() % 100) >= nProb)
 		{
 			oPacket.Encode2(UserSendPacketFlag::UserLocal_OnResetOnStateForOnOffSkill);
 			oPacket.Encode4(pAttackInfo->m_nSkillID);
@@ -862,7 +1060,7 @@ BasicStat * User::GetBasicStat()
 	return this->m_pBasicStat;
 }
 
-std::mutex & User::GetLock()
+std::recursive_mutex & User::GetLock()
 {
 	return m_mtxUserlock;
 }
@@ -931,7 +1129,7 @@ void User::OnStatChangeItemCancelRequest(InPacket * iPacket)
 
 void User::OnMigrateOut()
 {
-	LeaveField();
+	//LeaveField();
 	m_pSocket->GetSocket().close();
 }
 

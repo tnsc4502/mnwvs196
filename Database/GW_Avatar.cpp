@@ -25,11 +25,19 @@ void GW_Avatar::Load(int nCharacterID)
 	{
 		eqp.bIsCash = false;
 		eqp.Load(recordSet["ItemSN"]);
-		short nPos = eqp.nPOS * -1;
-		if (nPos < 100)
-			aHairEquip.push_back(eqp);
-		else if (nPos > 100 && nPos != 111)
-			aUnseenEquip.push_back(eqp);
+		short nPOS = eqp.nPOS * -1;
+		if (nPOS < 100 || nPOS == 111)
+			mEquip.insert({ eqp.nPOS, eqp.nItemID });
+		else if (nPOS > 100) 
+		{
+			auto iter = mEquip.find(nPOS);
+			if (iter != mEquip.end())
+				mUnseenEquip.insert({ eqp.nPOS, iter->second });
+
+			mEquip[eqp.nPOS + 100] = eqp.nItemID;
+		}
+		else
+			mUnseenEquip.insert({ eqp.nPOS, eqp.nItemID });
 		//There should insert totem items.
 	}
 }

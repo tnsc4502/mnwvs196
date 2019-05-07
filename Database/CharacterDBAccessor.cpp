@@ -60,10 +60,10 @@ void CharacterDBAccessor::PostCreateNewCharacterRequest(SocketBase *pSrv, int uL
 	chrEntry.nAccountID = nAccountID;
 	chrEntry.nWorldID = nWorldID;
 	chrEntry.strName = strName;
-	chrEntry.nGender = nGender;
+	chrEntry.mStat->nGender = nGender;
 
 	chrEntry.nFieldID = 100000000;
-	chrEntry.nGuildID = chrEntry.nPartyID = chrEntry.nFame = 0;
+	chrEntry.nGuildID = chrEntry.nPartyID = chrEntry.mStat->nFame = 0;
 	
 	chrEntry.mStat->nFace = nFace;
 	chrEntry.mStat->nHair = nHair;

@@ -2,9 +2,12 @@
 #include "LifePool.h"
 #include "..\WvsLib\Net\PacketFlags\UserPacketFlags.hpp"
 #include "..\WvsLib\Net\PacketFlags\ReactorPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\MobPacketFlags.hpp"
+#include "..\WvsLib\Net\PacketFlags\NpcPacketFlags.hpp"
 #include "..\WvsLib\Net\InPacket.h"
 #include "..\WvsLib\Net\OutPacket.h"
 #include "..\WvsLib\DateTime\GameDateTime.h"
+#include "..\WvsLib\Logger\WvsLogger.h"
 #include "Mob.h"
 #include "MovePath.h"
 #include "PortalMap.h"
@@ -50,6 +53,8 @@ Field::~Field()
 void Field::BroadcastPacket(OutPacket * oPacket)
 {
 	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
+	oPacket->GetSharedPacket()->ToggleBroadcasting();
+
 	if (m_mUser.size() == 0)
 		return;
 	for (auto& user : m_mUser)
@@ -244,12 +249,26 @@ void Field::OnEnter(User *pUser)
 	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
 	//if (!m_asyncUpdateTimer->IsStarted())
 	//	m_asyncUpdateTimer->Start();
-	m_mUser[pUser->GetUserID()] = pUser;
+	m_mUser.insert({ pUser->GetUserID(), pUser });
 	m_pLifePool->OnEnter(pUser);
 	m_pDropPool->OnEnter(pUser);
 	m_pReactorPool->OnEnter(pUser);
 	if (m_pParentFieldSet != nullptr)
 		m_pParentFieldSet->OnUserEnterField(pUser);
+
+	OutPacket oPacketForBroadcasting;
+	pUser->MakeEnterFieldPacket(&oPacketForBroadcasting);
+	for (auto pFieldUser : m_mUser) 
+	{
+		if (pFieldUser.second != pUser)
+		{
+			pFieldUser.second->SendPacket(&oPacketForBroadcasting);
+
+			OutPacket oPacketToTarget;
+			pFieldUser.second->MakeEnterFieldPacket(&oPacketToTarget);
+			pUser->SendPacket(&oPacketToTarget);
+		}
+	}
 }
 
 void Field::OnLeave(User * pUser)
@@ -265,6 +284,8 @@ void Field::OnLeave(User * pUser)
 void Field::SplitSendPacket(OutPacket *oPacket, User *pExcept)
 {
 	std::lock_guard<std::mutex> userGuard(m_mtxFieldUserMutex);
+	oPacket->GetSharedPacket()->ToggleBroadcasting();
+
 	for (auto& user : m_mUser)
 	{
 		if ((pExcept == nullptr) || user.second->GetUserID() != pExcept->GetUserID())
@@ -275,18 +296,12 @@ void Field::SplitSendPacket(OutPacket *oPacket, User *pExcept)
 void Field::OnPacket(User* pUser, InPacket *iPacket)
 {
 	int nType = iPacket->Decode2();
-	if (nType >= 0x369 && nType <= 0x384)
+	if (nType >= FlagMin(MobRecvPacketFlag) && nType <= 0x384)
 		m_pLifePool->OnPacket(pUser, nType, iPacket);
 	else if (nType == 0x38B)
 		m_pDropPool->OnPacket(pUser, nType, iPacket);
 	else if (nType >= FlagMin(ReactorRecvPacketFlag) && nType <= FlagMax(ReactorRecvPacketFlag))
 		m_pReactorPool->OnPacket(pUser, nType, iPacket);
-	//if(nHeader >= )
-	/*if (nHeader >= MobRecvPacketFlag::MobRecvPacketFlag::minFlag && nHeader <= MobRecvPacketFlag::MobRecvPacketFlag::maxFlag)
-	{
-		printf("Mob Packet Received %d.\n", (int)nHeader);
-	}*/
-
 }
 
 void Field::OnUserMove(User * pUser, InPacket * iPacket)
@@ -299,10 +314,10 @@ void Field::OnUserMove(User * pUser, InPacket * iPacket)
 	auto& lastElem = movePath.m_lElem.rbegin();
 	pUser->SetMovePosition(lastElem->x, lastElem->y, lastElem->bMoveAction, lastElem->fh);
 	OutPacket oPacket;
-	oPacket.Encode2(0x295);
+	oPacket.Encode2(UserSendPacketFlag::UserRemote_OnMove);
 	oPacket.Encode4(pUser->GetUserID());
 	movePath.Encode(&oPacket);
-	BroadcastPacket(&oPacket);
+	this->SplitSendPacket(&oPacket, pUser);
 }
 
 PortalMap * Field::GetPortalMap()
@@ -388,7 +403,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 
 	//Encode Ctrl Ack Packet
 	OutPacket ctrlAckPacket;
-	ctrlAckPacket.Encode2(0x3C8);
+	ctrlAckPacket.Encode2(MobSendPacketFlag::Mob_OnCtrlAck);
 	ctrlAckPacket.Encode4(pMob->GetFieldObjectID());
 	ctrlAckPacket.Encode2(nMobCtrlSN);
 	ctrlAckPacket.Encode1(bNextAttackPossible);
@@ -400,7 +415,7 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 
 	//Encode Move Packet
 	OutPacket movePacket;
-	movePacket.Encode2(0x3C7); //CMob::OnMove
+	movePacket.Encode2(MobSendPacketFlag::Mob_OnMove); //CMob::OnMove
 	movePacket.Encode4(pMob->GetFieldObjectID());
 	movePacket.Encode1(bNextAttackPossible);
 	movePacket.Encode1(pCenterSplit);
@@ -420,10 +435,12 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 	movePacket.Encode1((char)aUnkList2.size());
 	for (short value : aUnkList2)
 		movePacket.Encode2(value);
+
 	movePath.Encode(&movePacket);
 
-	for (const auto& elem : movePath.m_lElem)
+	//for (const auto& elem : movePath.m_lElem)
 	{
+		auto& elem = *(movePath.m_lElem.rbegin());
 		pMob->SetPosX(elem.x);
 		pMob->SetPosY(elem.y);
 		pMob->SetMoveAction(elem.bMoveAction);
@@ -431,14 +448,14 @@ void Field::OnMobMove(User * pCtrl, Mob * pMob, InPacket * iPacket)
 		pMob->SetFh(elem.fh);
 	}
 
-	SplitSendPacket(&movePacket, nullptr);
+	//pCtrl->SendPacket(&ctrlAckPacket);
 	pCtrl->SendPacket(&ctrlAckPacket);
+	SplitSendPacket(&movePacket, pCtrl);
 }
 
 void Field::Update()
 {
 	int tCur = GameDateTime::GetTime();
-	//printf("Field Update Called\n");
 	m_pLifePool->Update();
 	m_pReactorPool->Update(tCur);
 }

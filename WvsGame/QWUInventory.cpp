@@ -27,7 +27,7 @@ QWUInventory::~QWUInventory()
 
 bool QWUInventory::ChangeSlotPosition(User * pUser, int bOnExclRequest, int nTI, int nPOS1, int nPOS2, int nCount, int tRequestTime)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacterData = pUser->GetCharacterData();
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int nMovedCount = 0;
@@ -131,7 +131,7 @@ void QWUInventory::OnChangeSlotPositionRequest(User * pUser, InPacket * iPacket)
 
 bool QWUInventory::PickUpMoney(User* pUser, bool byPet, int nAmount)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	InventoryManipulator::RawIncMoney(pUser->GetCharacterData(), nAmount);
 
 	auto liFlag = BasicStat::BasicStatFlag::BS_Meso;
@@ -141,7 +141,7 @@ bool QWUInventory::PickUpMoney(User* pUser, bool byPet, int nAmount)
 
 bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int nTotalInc = 0;
 	bool result = false;
@@ -166,7 +166,7 @@ bool QWUInventory::PickUpItem(User * pUser, bool byPet, GW_ItemSlotBase * pItem)
 */
 bool QWUInventory::RawRemoveItemByID(User * pUser, int nItemID, int nCount)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacterData = pUser->GetCharacterData();
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	while (nCount > 0)
@@ -188,7 +188,7 @@ bool QWUInventory::RawRemoveItemByID(User * pUser, int nItemID, int nCount)
 
 bool QWUInventory::RawRemoveItem(User * pUser, int nTI, int nPOS, int nCount, std::vector<InventoryManipulator::ChangeLog>& aChangeLog, int & nDecRet, GW_ItemSlotBase ** ppItemRemoved)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	if (pUser->GetCharacterData()->mStat->nHP != 0)
 		return InventoryManipulator::RawRemoveItem(
 			pUser->GetCharacterData(),
@@ -207,7 +207,7 @@ bool QWUInventory::RawRemoveItem(User * pUser, int nTI, int nPOS, int nCount, st
 */
 bool QWUInventory::RawAddItemByID(User * pUser, int nItemID, int nCount)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto pCharacterData = pUser->GetCharacterData();
 	std::vector<InventoryManipulator::ChangeLog> aChangeLog;
 	int nTotalAdded = 0;
@@ -228,7 +228,7 @@ bool QWUInventory::RawAddItemByID(User * pUser, int nItemID, int nCount)
 
 int QWUInventory::Exchange(User * pUser, int nMoney, std::vector<ExchangeElement>& aExchange, std::vector<InventoryManipulator::ChangeLog>& aLogAdd, std::vector<InventoryManipulator::ChangeLog>& aLogRemove)
 {
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	int nResult = InventoryManipulator::RawExchange(
 		pUser->GetCharacterData(),
 		nMoney,
@@ -363,7 +363,7 @@ int QWUInventory::GetSlotCount(User * pUser, int nTI)
 {
 	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return 0;
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	return pUser->GetCharacterData()->mSlotCount->aSlotCount[nTI];
 }
 
@@ -372,7 +372,7 @@ int QWUInventory::GetHoldCount(User * pUser, int nTI)
 	if (nTI < GW_ItemSlotBase::EQUIP || nTI > GW_ItemSlotBase::CASH)
 		return 0;
 	int nMaxSlotCount = GetSlotCount(pUser, nTI);
-	std::lock_guard<std::mutex> lock(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> lock(pUser->GetLock());
 	auto& mSlot = pUser->GetCharacterData()->mItemSlot[nTI];
 	int nRet = 0;
 	for (auto& pItem : mSlot)

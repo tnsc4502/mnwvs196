@@ -129,7 +129,7 @@ void SkillInfo::IterateSkillInfo()
 			continue;
 		aRoot.push_back(node);
 	}
-	m_nRootCount = aRoot.size();
+	m_nRootCount = (int)aRoot.size();
 	for (auto& node : aRoot)
 	{
 		nRootID = atoi(node.Name().c_str());

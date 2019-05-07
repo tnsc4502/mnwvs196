@@ -33,7 +33,7 @@ public:
 	{
 		if (!mIsRepeat && m_bTaskDone)
 		{
-			mTimerInstance = new concurrency::timer<int>(
+			mTimerInstance = AllocObjCtor(concurrency::timer<int>)(
 				mTimePeriod,
 				0,
 				mCall,

@@ -546,8 +546,9 @@ long long int ItemInfo::GetItemDateExpire(const std::string & sDate)
 
 const std::string & ItemInfo::GetItemName(int nItemID)
 {
+	static std::string strEmpty = "";
 	auto findResult = m_mItemString.find(nItemID);
-	return (findResult == m_mItemString.end() ? std::string{ "" } : findResult->second);
+	return (findResult == m_mItemString.end() ? strEmpty : findResult->second);
 }
 
 bool ItemInfo::IsAbleToEquip(int nGender, int nLevel, int nJob, int nSTR, int nDEX, int nINT, int nLUK, int nPOP, GW_ItemSlotBase * pPetItem, int nItemID)

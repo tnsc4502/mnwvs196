@@ -74,7 +74,7 @@ void Pet::OnLeaveField()
 {
 	OutPacket oPacket;
 	MakeLeaveFieldPacket(&oPacket);
-	m_pField->BroadcastPacket(&oPacket);
+	m_pField->SplitSendPacket(&oPacket, nullptr);
 }
 
 void Pet::OnMove(InPacket * iPacket)

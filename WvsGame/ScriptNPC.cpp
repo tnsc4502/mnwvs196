@@ -166,7 +166,10 @@ void ScriptNPC::OnPacket(InPacket * iPacket, Script * pScript, lua_State* L)
 				auto& refInfo = pScript->GetLastConversationInfo();
 				pScript->GetConverstaionState().m_nUserInput = iPacket->Decode1();
 				if (pScript->GetConverstaionState().m_nUserInput < refInfo.m_aIntObj.size())
+				{
 					pScript->GetUser()->SendCharacterStat(false, QWUser::SetHair(pScript->GetUser(), refInfo.m_aIntObj[pScript->GetConverstaionState().m_nUserInput]));
+					pScript->GetUser()->OnAvatarModified();
+				}	
 				refInfo.m_aIntObj.clear();
 			}
 			lua_pushinteger(L, pScript->GetConverstaionState().m_nUserInput);

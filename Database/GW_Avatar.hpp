@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <map>
 #include "GW_ItemSlotEquip.h"
 
 class OutPacket;
@@ -8,7 +8,9 @@ class InPacket;
 struct GW_Avatar
 {
 	int nHair, nFace, nSkin;
-	std::vector<GW_ItemSlotEquip> aHairEquip, aUnseenEquip, aTotemEquip;
+
+	//		nPOS, nItemID
+	std::map<short, int> mEquip, mUnseenEquip, mTotemEquip;
 
 #ifdef DBLIB
 	void Load(int nCharacterID);

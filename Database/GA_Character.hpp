@@ -40,8 +40,7 @@ private:
 
 public:
 
-	unsigned char nGender;
-	int nWorldID, nAccountID, nFame, nGuildID, nPartyID, nFieldID, nCharacterID;
+	int nWorldID, nAccountID, nGuildID, nPartyID, nFieldID, nCharacterID;
 	std::string strName;
 
 	GW_Avatar *mAvatarData = nullptr;

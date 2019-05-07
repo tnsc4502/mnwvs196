@@ -177,34 +177,59 @@ bool SocketBase::CheckSocketStatus(SocketStatus e) const
 void SocketBase::SendPacket(OutPacket *oPacket, bool handShakePacket)
 {
 	std::lock_guard<std::mutex> lock(m_mMutex);
-	oPacket->IncRefCount();
 	if (!mSocket.is_open())
 	{
-		OnDisconnect();
+		if(m_eSocketStatus != SocketStatus::eClosed)
+			OnDisconnect();
 		return;
 	}
-	auto buffPtr = oPacket->GetPacket();
+	oPacket->IncRefCount();
+
+	auto bufferPtr = oPacket->GetPacket();
+
+	/*
+	[+] 19/05/07
+	Since the encrypt function would directly write on passed-buffer, 
+	it is necessary to replicate a buffer for broadcasting.
+	*/
+	if (oPacket->GetSharedPacket()->IsBroadcasting()) 
+	{
+		bufferPtr = AllocArray(unsigned char, oPacket->GetPacketSize() + OutPacket::HEADER_OFFSET) + OutPacket::HEADER_OFFSET;
+		memcpy(bufferPtr, oPacket->GetPacket(), oPacket->GetPacketSize());
+	}
+
 	if (!handShakePacket)
 	{
-		WvsCrypto::create_packet_header(buffPtr - 4, aSendIV, oPacket->GetPacketSize());
+		WvsCrypto::create_packet_header(bufferPtr - OutPacket::HEADER_OFFSET, aSendIV, oPacket->GetPacketSize());
 		if (!bIsLocalServer)
-			WvsCrypto::encrypt(buffPtr, aSendIV, oPacket->GetPacketSize());
+			WvsCrypto::encrypt(bufferPtr, aSendIV, oPacket->GetPacketSize());
 		asio::async_write(mSocket,
-			asio::buffer(buffPtr - 4, oPacket->GetPacketSize() + 4),
+			asio::buffer(bufferPtr - OutPacket::HEADER_OFFSET, oPacket->GetPacketSize() + OutPacket::HEADER_OFFSET),
 			std::bind(&SocketBase::OnSendPacketFinished,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - (4 + 8), oPacket->GetSharedPacket()));
+				shared_from_this(), 
+				std::placeholders::_1, 
+				std::placeholders::_2, 
+				bufferPtr - (OutPacket::HEADER_OFFSET),
+				oPacket->GetSharedPacket()));
 	}
 	else
 	{
 		asio::async_write(mSocket,
-			asio::buffer(buffPtr, oPacket->GetPacketSize()),
+			asio::buffer(bufferPtr, oPacket->GetPacketSize()),
 			std::bind(&SocketBase::OnSendPacketFinished,
-				shared_from_this(), std::placeholders::_1, std::placeholders::_2, buffPtr - (4 + 8), oPacket->GetSharedPacket()));
+				shared_from_this(), 
+				std::placeholders::_1, 
+				std::placeholders::_2, 
+				bufferPtr - (OutPacket::HEADER_OFFSET),
+				oPacket->GetSharedPacket()));
 	}
 }
 
 void SocketBase::OnSendPacketFinished(const std::error_code &ec, std::size_t bytes_transferred, unsigned char *buffer, void *pPacket)
 {
+	//WvsLogger::LogFormat("SocketBase::OnSendPacketFinished, size = %d\n", (int)bytes_transferred);
+	if (((OutPacket::SharedPacket*)pPacket)->IsBroadcasting())
+		FreeArray(buffer, bytes_transferred);
 	((OutPacket::SharedPacket*)pPacket)->DecRefCount();
 }
 

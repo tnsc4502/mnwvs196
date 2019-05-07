@@ -95,7 +95,7 @@ void OutPacket::Release()
 
 void OutPacket::Reset()
 {
-	m_pSharedPacket->nPacketSize = SharedPacket::DEFAULT_START_INDEX;
+	m_pSharedPacket->nPacketSize = INITIAL_WRITE_INDEX;
 }
 
 void OutPacket::IncRefCount()
@@ -139,13 +139,23 @@ void OutPacket::EncodeHexString(const std::string& str)
 OutPacket::SharedPacket::SharedPacket()
 	: aBuff(AllocArray(unsigned char, DEFAULT_BUFF_SIZE)),
 	nBuffSize(DEFAULT_BUFF_SIZE),
-	nPacketSize(DEFAULT_START_INDEX),
+	nPacketSize(INITIAL_WRITE_INDEX),
 	nRefCount(1)
 {
 }
 
 OutPacket::SharedPacket::~SharedPacket()
 {
+}
+
+void OutPacket::SharedPacket::ToggleBroadcasting()
+{
+	m_bBroadcasting = true;
+}
+
+bool OutPacket::SharedPacket::IsBroadcasting() const
+{
+	return m_bBroadcasting;
 }
 
 void OutPacket::SharedPacket::IncRefCount()

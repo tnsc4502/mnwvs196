@@ -7,9 +7,9 @@ struct MovePath
 {
 	struct ELEM
 	{
-		short x, y, vx, vy, offsetX, offsetY, fh, fhFootStart;
-		char bMoveAction, bForcedStop, bStat;
-		int tElapse, nAttr;
+		short x = 0, y = 0, vx = 0, vy = 0, offsetX = 0, offsetY = 0, fh = 0, fhFootStart = 0;
+		char bMoveAction = 0, bForcedStop = 0, bStat = 0;
+		int tElapse = 0, nAttr = 0;
 	};
 	short m_x, m_y, m_vx, m_vy;
 	int m_fhLast, m_tEncodedGatherDuration;

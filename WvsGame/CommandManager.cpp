@@ -12,6 +12,9 @@
 #include "Field.h"
 #include "Reward.h"
 #include "Summoned.h"
+#include "Mob.h"
+#include "MobTemplate.h"
+#include "LifePool.h"
 #include "DropPool.h"
 #include <vector>
 #include "..\WvsLib\String\StringUtility.h"
@@ -121,6 +124,28 @@ void CommandManager::Process(User * pUser, const std::string & input)
 			pUser->TryTransferField(
 				nFieldID,
 				""
+			);
+		}
+		else if (sCmd == "#mob")
+		{
+			int nTemplateID = atoi(token[1].c_str());
+
+			Mob mob;
+			mob.SetPosX(pUser->GetPosX());
+			mob.SetPosY(pUser->GetPosY());
+			mob.SetTemplateID(nTemplateID);
+			mob.SetMobTemplate(MobTemplate::GetMobTemplate(mob.GetTemplateID()));
+			pUser->GetField()->GetLifePool()->CreateMob(
+				mob,
+				pUser->GetPosX(),
+				pUser->GetPosY(),
+				pUser->GetFh(),
+				0,
+				-2,
+				0,
+				0,
+				0,
+				nullptr
 			);
 		}
 	}

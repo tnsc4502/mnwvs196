@@ -122,7 +122,7 @@ void USkill::ValidateSecondaryStat(User * pUser)
 
 void USkill::OnSkillUseRequest(User * pUser, InPacket * iPacket)
 {
-	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> userGuard(pUser->GetLock());
 	int tRequestTime = iPacket->Decode4();
 	int nSkillID = iPacket->Decode4();
 	int nSpiritJavelinItemID = 0;
@@ -174,7 +174,7 @@ void USkill::OnSkillUpRequest(User * pUser, InPacket * iPacket)
 
 void USkill::OnSkillUpRequest(User * pUser, int nSkillID, int nAmount, bool bDecSP, bool bCheckMasterLevel)
 {
-	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> userGuard(pUser->GetLock());
 	std::vector<GW_SkillRecord*> aChange;
 	if (QWUSkillRecord::SkillUp(
 		pUser,
@@ -196,7 +196,7 @@ void USkill::OnSkillPrepareRequest(User * pUser, InPacket * iPacket)
 
 void USkill::OnSkillCancelRequest(User * pUser, InPacket * iPacket)
 {
-	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> userGuard(pUser->GetLock());
 	int nSkillID = iPacket->Decode4();
 	SkillEntry* pSkill = nullptr;
 	int nSLV = SkillInfo::GetInstance()->GetSkillLevel(
@@ -1571,7 +1571,7 @@ void USkill::DoActiveSkill_SmokeShell(User* pUser, const SkillEntry * pSkill, in
 
 void USkill::ResetTemporaryByTime(User * pUser, const std::vector<int>& aResetReason)
 {
-	std::lock_guard<std::mutex> userGuard(pUser->GetLock());
+	std::lock_guard<std::recursive_mutex> userGuard(pUser->GetLock());
 	for (auto nReason : aResetReason)
 	{
 		SkillEntry* pSkill = nullptr;

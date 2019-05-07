@@ -60,7 +60,7 @@ void BasicStat::SetFrom(GA_Character * pChar, int nMaxHPIncRate, int nMaxMPIncRa
 {
 	const GW_CharacterStat *pCS = pChar->mStat;
 
-	nGender = pChar->nGender;
+	nGender = pChar->mStat->nGender;
 	nLevel = pChar->mLevel->nLevel;
 	nJob = pCS->nJob;
 	nSTR = pCS->nStr;
