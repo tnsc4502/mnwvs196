@@ -76,11 +76,10 @@ void GA_Character::LoadAvatar(int nCharacterID)
 	nAccountID = recordSet["AccountID"];
 	nWorldID = recordSet["WorldID"];
 	strName = recordSet["CharacterName"].toString();
-	nFame = recordSet["Fame"];
 	nGuildID = recordSet["GuildID"];
 	nPartyID = recordSet["PartyID"];
 	nFieldID = recordSet["FieldID"];
-	nGender = recordSet["Gender"];
+	//nGender = recordSet["Gender"];
 }
 
 void GA_Character::EncodeAvatar(OutPacket *oPacket)
@@ -99,7 +98,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 		(int)strName.size(),
 		15 - (int)strName.size());
 
-	oPacket->Encode1(nGender);
+	oPacket->Encode1(mStat->nGender);
 	oPacket->Encode1(0);
 	oPacket->Encode1(mStat->nSkin);
 	oPacket->Encode4(mStat->nFace);
@@ -124,7 +123,7 @@ void GA_Character::EncodeStat(OutPacket *oPacket)
 	//oPacket->Encode1(0); //SP
 
 	oPacket->Encode8(mStat->nExp); //EXP
-	oPacket->Encode4(nFame);
+	oPacket->Encode4(mStat->nFame);
 	oPacket->Encode4(0);
 	oPacket->Encode8(0); //Gach EXP
 	oPacket->Encode8(GameDateTime::GetCurrentDate()); //
@@ -196,39 +195,39 @@ void GA_Character::EncodeSkillRecord(OutPacket * oPacket)
 
 void GA_Character::EncodeAvatarLook(OutPacket *oPacket)
 {
-	oPacket->Encode1(nGender);
+	oPacket->Encode1(mStat->nGender);
 	oPacket->Encode1(mAvatarData->nSkin);
 	oPacket->Encode4(mAvatarData->nFace);
 	oPacket->Encode4(mStat->nJob);
 	oPacket->Encode1(0); //Mega?
 	oPacket->Encode4(mAvatarData->nHair);
 
-	for (const auto& eqp : mAvatarData->aHairEquip)
+	for (const auto& eqp : mAvatarData->mEquip)
 	{
-		oPacket->Encode1(eqp.nPOS * -1);
-		oPacket->Encode4(eqp.nItemID);
+		oPacket->Encode1(eqp.first * -1);
+		oPacket->Encode4(eqp.second);
 	}
 	oPacket->Encode1((char)0xFF);
-	for (const auto& eqp : mAvatarData->aUnseenEquip)
+	for (const auto& eqp : mAvatarData->mUnseenEquip)
 	{
-		oPacket->Encode1((eqp.nPOS * -1) - 100);
-		oPacket->Encode4(eqp.nItemID);
+		oPacket->Encode1((eqp.first * -1) - 100);
+		oPacket->Encode4(eqp.second);
 	}
 	oPacket->Encode1((char)0xFF);
 	oPacket->Encode1((char)0xFF); //totem
 
-	int cWeaponIdx = -1, weaponIdx = -1, nShieldIdx = -1;
-	for (int i = 0; i < mAvatarData->aHairEquip.size(); ++i)
-		if (mAvatarData->aHairEquip[i].nPOS == -111)
-			cWeaponIdx = i;
-		else if (mAvatarData->aHairEquip[i].nPOS == -11)
-			weaponIdx = i;
-		else if (mAvatarData->aHairEquip[i].nPOS == -10)
-			nShieldIdx = i;
+	int nCashWeaponID = 0, nWeaponID = 0, nShieldID = 0;
+	for (auto pEqup : mAvatarData->mEquip)
+		if (pEqup.first == -111)
+			nCashWeaponID = pEqup.second;
+		else if (pEqup.first == -11)
+			nWeaponID = pEqup.second;
+		else if (pEqup.first == -10)
+			nShieldID = pEqup.second;
 
-	oPacket->Encode4(cWeaponIdx == -1 ? 0 : mAvatarData->aHairEquip[cWeaponIdx].nItemID);
-	oPacket->Encode4(weaponIdx == -1 ? 0 : mAvatarData->aHairEquip[weaponIdx].nItemID);
-	oPacket->Encode4(nShieldIdx == -1 ? 0 : mAvatarData->aHairEquip[nShieldIdx].nItemID);
+	oPacket->Encode4(nCashWeaponID);
+	oPacket->Encode4(nWeaponID);
+	oPacket->Encode4(nShieldID);
 
 	oPacket->Encode1(0);
 	oPacket->Encode4(0);
@@ -270,9 +269,9 @@ void GA_Character::Save(bool bIsNewCharacter)
 	Poco::Data::Statement queryStatement(GET_DB_SESSION);
 	queryStatement << "UPDATE Characters Set "
 		<< "WorldID = '" << nWorldID << "', "
-		<< "Gender = '" << nGender << "', "
+		//<< "Gender = '" << nGender << "', "
 		<< "CharacterName = '" << strName << "', "
-		<< "Fame = '" << nFame << "', "
+		//<< "Fame = '" << nFame << "', "
 		//<< "GuildID = '" << nGuildID << "', "
 		//<< "PartyID = '" << nPartyID << "', "
 		<< "FieldID = '" << nFieldID << "' WHERE CharacterID = " << nCharacterID;
@@ -835,7 +834,7 @@ void GA_Character::DecodeStat(InPacket *iPacket)
 	iPacket->DecodeBuffer((unsigned char*)cStrNameBuff, 15);
 	strName = std::string(cStrNameBuff);
 
-	nGender = iPacket->Decode1();
+	mStat->nGender = iPacket->Decode1();
 	iPacket->Decode1();
 	mStat->nSkin = iPacket->Decode1();
 	mStat->nFace = iPacket->Decode4();
@@ -860,7 +859,7 @@ void GA_Character::DecodeStat(InPacket *iPacket)
 	//iPacket->Decode1(); //SP
 
 	mStat->nExp = iPacket->Decode8(); //EXP
-	nFame = iPacket->Decode4();
+	mStat->nFame = iPacket->Decode4();
 	iPacket->Decode4();
 	iPacket->Decode8(); //Gach EXP
 	iPacket->Decode8(); //
