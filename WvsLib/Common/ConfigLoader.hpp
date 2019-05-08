@@ -5,8 +5,6 @@
 #include <map>
 #include "..\String\StringUtility.h"
 
-#define CfgLoader ConfigLoader::GetInstance()
-
 class ConfigLoader
 {
 private:
@@ -15,10 +13,11 @@ private:
 
 	ConfigLoader() {};
 	void ParseConfig(const std::string& cfgFileName);
+	//static ConfigLoader* GetInstance();
 
 public:
-	static ConfigLoader* GetInstance();
-	
+	static ConfigLoader* Get(const std::string& cfgFileName);
+
 	void LoadConfig(const std::string& cfgFileName);
 	std::string StrValue(const std::string &key);
 	int IntValue(const std::string &key);

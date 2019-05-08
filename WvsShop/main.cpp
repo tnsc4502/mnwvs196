@@ -27,19 +27,21 @@ int main(int argc, char** argv)
 	ItemInfo::GetInstance()->Initialize();
 	ShopInfo::GetInstance()->Init();
 
+	ConfigLoader* pCfgLoader = nullptr;
 	if (argc > 1)
-		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
+		pCfgLoader = ConfigLoader::Get(argv[1]);
 	else
 	{
 		WvsLogger::LogRaw("Please run this program with command line, and given the config file path.\n");
 		return -1;
 	}
-	pShopServer->SetExternalIP(ConfigLoader::GetInstance()->StrValue("ExternalIP"));
-	pShopServer->SetExternalPort(ConfigLoader::GetInstance()->IntValue("Port"));
+	pShopServer->SetExternalIP(pCfgLoader->StrValue("ExternalIP"));
+	pShopServer->SetExternalPort(pCfgLoader->IntValue("Port"));
 
 	pShopServer->Init();
 
-	std::thread pShopSrvThread(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("Port"));
+	std::thread pShopSrvThread(ConnectionAcceptorThread, pCfgLoader->IntValue("Port"));
+	pShopServer->SetConfigLoader(pCfgLoader);
 	pShopServer->InitializeCenter();
 
 	// start the i/o work

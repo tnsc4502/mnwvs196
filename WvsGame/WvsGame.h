@@ -1,6 +1,7 @@
 #pragma once
 #include "..\WvsLib\Net\WvsBase.h"
 #include "..\WvsLib\Net\WorldInfo.h"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 
 #include "Center.h"
 #include <thread>
@@ -11,6 +12,8 @@ class User;
 
 class WvsGame : public WvsBase
 {
+	ConfigLoader* m_pCfgLoader;
+
 	std::mutex m_mUserLock;
 	std::map<int, std::shared_ptr<User>> m_mUserMap;
 	std::string m_sCenterIP;
@@ -28,6 +31,8 @@ public:
 	std::shared_ptr<Center>& GetCenter();
 
 	void ConnectToCenter(int nCenterIdx);
+
+	void SetConfigLoader(ConfigLoader* pCfg);
 	void WvsGame::InitializeCenter();
 
 	void OnUserConnected(std::shared_ptr<User> &pUser);

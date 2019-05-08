@@ -29,8 +29,8 @@ FieldSet::~FieldSet()
 
 void FieldSet::Init(const std::string & sCfgFilePath)
 {
-	CfgLoader->LoadConfig(sCfgFilePath);
-	m_aFieldID = CfgLoader->GetArray<int>("FieldList");
+	auto pCfg = ConfigLoader::Get(sCfgFilePath);
+	m_aFieldID = pCfg->GetArray<int>("FieldList");
 	Field *pField;
 	for (auto& nFieldID : m_aFieldID) 
 	{
@@ -38,9 +38,9 @@ void FieldSet::Init(const std::string & sCfgFilePath)
 		pField->SetFieldSet(this);
 		m_aField.push_back(pField);
 	}
-	m_sFieldSetName = CfgLoader->StrValue("FieldSetName");
-	m_sScriptName = CfgLoader->StrValue("ScriptName");
-	m_nTimeLimit = CfgLoader->IntValue("TimeLimit");
+	m_sFieldSetName = pCfg->StrValue("FieldSetName");
+	m_sScriptName = pCfg->StrValue("ScriptName");
+	m_nTimeLimit = pCfg->IntValue("TimeLimit");
 
 	m_pScript = ScriptMan::GetInstance()->GetScript(m_sScriptName, 0);
 	lua_pcall(m_pScript->GetLuaState(), 0, 0, 0); //Initialize all functions

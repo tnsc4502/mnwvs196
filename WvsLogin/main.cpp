@@ -20,43 +20,24 @@ void ConnectionAcceptorThread(short nPort)
 	pLoginServer->BeginAccept<LoginSocket>();
 }
 
-void Count()
-{
-	for (int i = 0; i < 100000; ++i)
-		WvsLogger::LogFormat("%d\n", i);
-}
-
 int main(int argc, char** argv)
 {
-	/*測試SOCKETID配給的效能與隨機分布
-	for (int i = 0; i < 10000000; ++i)
-	{
-		unsigned int rnd = SocketBase::DesignateSocketID();
-		SocketBase::ReleaseSocketID(rnd);
-	}
-	while (1)
-	{
-		unsigned int rnd = SocketBase::DesignateSocketID();
-		std::system("pause");
-	}*/
-		
-	/*auto func = std::bind(Count);
-	auto pTest = AsyncScheduler::CreateTask(func, 100, false);
-	pTest->Start();*/
 	WvsLogin *pLoginServer = WvsBase::GetInstance<WvsLogin>();
+	ConfigLoader* pConfigLoader = nullptr;
 
 	if (argc > 1)
-		ConfigLoader::GetInstance()->LoadConfig(argv[1]);
+		pConfigLoader = ConfigLoader::Get(argv[1]);
 	else
 	{
 		WvsLogger::LogRaw("Please run this program with command line, and given the config file path.\n");
 		return -1;
 	}
 
+	pLoginServer->SetConfigLoader(pConfigLoader);
 	pLoginServer->Init();
 	pLoginServer->InitializeCenter();
 
-	std::thread initLoginServerThread(ConnectionAcceptorThread, ConfigLoader::GetInstance()->IntValue("port"));
+	std::thread initLoginServerThread(ConnectionAcceptorThread, pConfigLoader->IntValue("port"));
 
 	// start the i/o work
 

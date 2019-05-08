@@ -44,11 +44,16 @@ void WvsGame::CenterAliveMonitor()
 	}
 }
 
+void WvsGame::SetConfigLoader(ConfigLoader * pCfg)
+{
+	m_pCfgLoader = pCfg;
+}
+
 void WvsGame::InitializeCenter()
 {
-	m_nChannelID = ConfigLoader::GetInstance()->IntValue("ChannelID");
-	m_sCenterIP = ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(m_nChannelID) + "_IP");
-	m_nCenterPort = ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(m_nChannelID) + "_Port");
+	m_nChannelID = m_pCfgLoader->IntValue("ChannelID");
+	m_sCenterIP = m_pCfgLoader->StrValue("Center" + std::to_string(m_nChannelID) + "_IP");
+	m_nCenterPort = m_pCfgLoader->IntValue("Center" + std::to_string(m_nChannelID) + "_Port");
 	m_pCenterServerService = new asio::io_service();
 	m_pCenterInstance = std::make_shared<Center>(*m_pCenterServerService);
 	m_pCenterWorkThread = new std::thread(&WvsGame::ConnectToCenter, this, 0);

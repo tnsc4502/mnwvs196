@@ -16,8 +16,8 @@ void ConfigLoader::ParseConfig(const std::string & cfgFileName)
 		delimiterPos = (int)line.find(cfgDelimiter, 0);
 		if (delimiterPos < 0 || delimiterPos > line.size())
 		{
-			printf("Error while parsing config file, please check that each line has the format : <KEY>,<VALUE>");
-			return;
+			//printf("Error while parsing config file, please check that each line has the format : <KEY>,<VALUE>");
+			continue;
 		}
 		leftPos = rightPos = delimiterPos;
 		++rightPos;
@@ -28,10 +28,19 @@ void ConfigLoader::ParseConfig(const std::string & cfgFileName)
 	}
 }
 
-ConfigLoader * ConfigLoader::GetInstance()
+ConfigLoader * ConfigLoader::Get(const std::string & cfgFileName)
 {
-	static ConfigLoader *pLoader = new ConfigLoader();
-	return pLoader;
+	static std::map<std::string, ConfigLoader*> aCfgLoader;
+
+	auto findIter = aCfgLoader.find(cfgFileName);
+	if (findIter == aCfgLoader.end())
+	{
+		ConfigLoader *pCfg = new ConfigLoader();
+		pCfg->LoadConfig(cfgFileName);
+		aCfgLoader[cfgFileName] = pCfg;
+		return pCfg;
+	}
+	return findIter->second;
 }
 
 void ConfigLoader::LoadConfig(const std::string & cfgFileName)

@@ -9,11 +9,14 @@ class UserTransferStatus;
 
 class WvsWorld
 {
+	ConfigLoader* m_pCfgLoader;
 	WorldInfo m_WorldInfo;
 	std::map<int, std::shared_ptr<UserTransferStatus>> m_mUserTransferStatus;
 public:
 	WvsWorld();
 	~WvsWorld();
+
+	void SetConfigLoader(ConfigLoader* pCfg);
 	void InitializeWorld();
 	const WorldInfo& GetWorldInfo() const;
 

@@ -24,14 +24,19 @@ std::shared_ptr<Center>& WvsShop::GetCenter()
 	return m_pCenterInstance;
 }
 
+void WvsShop::SetConfigLoader(ConfigLoader * pCfg)
+{
+	m_pCfgLoader = pCfg;
+}
+
 void WvsShop::ConnectToCenter()
 {
 	int nCenterIdx = 0;
 	m_pCenterInstance->SetSocketDisconnectedCallBack(std::bind(&Center::OnNotifyCenterDisconnected, m_pCenterInstance.get()));
 	m_pCenterInstance->SetCenterIndex(nCenterIdx);
 	m_pCenterInstance->Connect(
-		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
-		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
+		m_pCfgLoader->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
+		m_pCfgLoader->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
 	);
 
 }
@@ -41,7 +46,7 @@ void WvsShop::CenterAliveMonitor()
 	if (m_pCenterInstance->CheckSocketStatus(SocketBase::SocketStatus::eConnecting))
 		return;
 	WvsLogger::LogRaw(WvsLogger::LEVEL_WARNING, "=================定期檢查Center Server連線程序=================\n");
-	int centerSize = ConfigLoader::GetInstance()->IntValue("CenterCount");
+	int centerSize = m_pCfgLoader->IntValue("CenterCount");
 	if (m_pCenterInstance && m_pCenterInstance->CheckSocketStatus(SocketBase::SocketStatus::eClosed))
 	{
 		WvsLogger::LogFormat("Center Server %d 連線失敗，嘗試重新連線。\n", 0);

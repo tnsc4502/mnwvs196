@@ -11,12 +11,17 @@ WvsWorld::~WvsWorld()
 {
 }
 
+void WvsWorld::SetConfigLoader(ConfigLoader * pCfg)
+{
+	m_pCfgLoader = pCfg;
+}
+
 void WvsWorld::InitializeWorld()
 {
-	m_WorldInfo.nEventType = ConfigLoader::GetInstance()->IntValue("EventType");
-	m_WorldInfo.nWorldID = ConfigLoader::GetInstance()->IntValue("WorldID");
-	m_WorldInfo.strEventDesc = ConfigLoader::GetInstance()->StrValue("EventDesc");
-	m_WorldInfo.strWorldDesc = ConfigLoader::GetInstance()->StrValue("WorldDesc");
+	m_WorldInfo.nEventType = m_pCfgLoader->IntValue("EventType");
+	m_WorldInfo.nWorldID = m_pCfgLoader->IntValue("WorldID");
+	m_WorldInfo.strEventDesc = m_pCfgLoader->StrValue("EventDesc");
+	m_WorldInfo.strWorldDesc = m_pCfgLoader->StrValue("WorldDesc");
 }
 
 void WvsWorld::SetUserTransferStatus(int nUserID, UserTransferStatus* pStatus)

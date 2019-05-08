@@ -2,6 +2,7 @@
 #include "Poco\Data\Data.h"
 #include "Poco\Data\Statement.h"
 #include "DBConstants.h"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "Poco\Data\MySQL\Connector.h"
 
 typedef WvsUnified::ResultType ResultType;
@@ -10,9 +11,10 @@ WvsUnified* stWvsUnifiedDB = new WvsUnified();
 
 WvsUnified::WvsUnified()
 	: mDBSessionPool((Poco::Data::MySQL::Connector::registerConnector(), Poco::Data::MySQL::Connector::KEY),
-		"host=127.0.0.1;user=" + DBConstants::strDBUser +
-		";password=" + DBConstants::strDBPasswd +
-		";db=" + DBConstants::strDBName +
+		"host=" + ConfigLoader::Get("GlobalSetting.txt")->StrValue("DB_Host") +
+		";user=" + ConfigLoader::Get("GlobalSetting.txt")->StrValue("DB_User") +
+		";password=" + ConfigLoader::Get("GlobalSetting.txt")->StrValue("DB_Pass") +
+		";db=" + ConfigLoader::Get("GlobalSetting.txt")->StrValue("DB_Name") +
 		";character-set=big5;auto-reconnect=true")
 {
 	if (!mDBSessionPool.get().isConnected())

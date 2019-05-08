@@ -1,6 +1,7 @@
 #pragma once
 #include "..\WvsLib\Net\WvsBase.h"
 #include "..\WvsLib\Common\WvsLoginConstants.hpp"
+#include "..\WvsLib\Common\ConfigLoader.hpp"
 #include "Center.h"
 #include <thread>
 #include <mutex>
@@ -9,6 +10,8 @@
 class WvsLogin : public WvsBase
 {
 private:
+	ConfigLoader* m_pCfgLoader;
+
 	void ConnectToCenter(int nCenterIdx);
 
 	int m_nCenterCount = 0;
@@ -26,6 +29,7 @@ public:
 
 	int GetCenterCount() const;
 	std::shared_ptr<Center>& GetCenter(int idx);
+	void SetConfigLoader(ConfigLoader *pCfg);
 	void InitializeCenter();
 	void OnNotifySocketDisconnected(SocketBase *pSocket);
 };

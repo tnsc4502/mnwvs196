@@ -27,27 +27,17 @@ void ConnectionAcceptorThread(short nPort)
 
 int main(int argc, char **argv)
 {
-	//WvsUnified unifiedDB;
-	//unifiedDB.(1);
-
-
-	/*GW_CharacterList list;
-	list.Load(0, 0);
-
-	GA_Character ga;
-	ga.Load(4);*/
-	//std::cout << "Size of EQP = " << ga.mItemSlot[1].size() << std::endl;
-	//system("pause");
-
-	auto pConfigLoader = ConfigLoader::GetInstance();
+	ConfigLoader* pConfigLoader = nullptr;
 	if (argc > 1)
-		pConfigLoader->LoadConfig(argv[1]);
+		pConfigLoader = ConfigLoader::Get(argv[1]);
 	else
 	{
 		std::cout << "Please run this program with command line, and given the config file path." << std::endl;
 		return -1;
 	}
 	WvsBase::GetInstance<WvsCenter>()->Init();
+
+	WvsWorld::GetInstance()->SetConfigLoader(pConfigLoader);
 	WvsWorld::GetInstance()->InitializeWorld();
 
 	// start the connection acceptor thread

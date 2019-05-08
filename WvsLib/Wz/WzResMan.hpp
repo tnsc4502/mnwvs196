@@ -45,8 +45,8 @@ private:
 
 	WzResMan() 
 	{
-		ConfigLoader::GetInstance()->LoadConfig("GlobalSetting.txt");
-		WZ::AddPath(ConfigLoader::GetInstance()->StrValue("WzDir"));
+		auto pCfg = ConfigLoader::Get("GlobalSetting.txt");
+		WZ::AddPath(pCfg->StrValue("DataDir"));
 		Init();
 	}
 
@@ -89,8 +89,8 @@ public:
 	void ReleaseMemory()
 	{
 		WzMemoryPoolMan::GetInstance()->Release();
-		ConfigLoader::GetInstance()->LoadConfig("GlobalSetting.txt");
-		WZ::AddPath(ConfigLoader::GetInstance()->StrValue("WzDir"));
+		auto pCfg = ConfigLoader::Get("GlobalSetting.txt");
+		WZ::AddPath(pCfg->StrValue("DataDir"));
 		Init();
 	}
 };

@@ -12,7 +12,6 @@ WvsLogin::WvsLogin()
 {
 }
 
-
 WvsLogin::~WvsLogin()
 {
 }
@@ -27,13 +26,18 @@ std::shared_ptr<Center>& WvsLogin::GetCenter(int idx)
 	return m_apCenterInstance[idx];
 }
 
+void WvsLogin::SetConfigLoader(ConfigLoader * pCfg)
+{
+	m_pCfgLoader = pCfg;
+}
+
 void WvsLogin::ConnectToCenter(int nCenterIdx)
 {
 	m_apCenterInstance[nCenterIdx]->SetSocketDisconnectedCallBack(std::bind(&Center::OnNotifyCenterDisconnected, m_apCenterInstance[nCenterIdx].get()));
 	m_apCenterInstance[nCenterIdx]->SetCenterIndex(nCenterIdx);
 	m_apCenterInstance[nCenterIdx]->Connect(
-		ConfigLoader::GetInstance()->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
-		ConfigLoader::GetInstance()->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
+		m_pCfgLoader->StrValue("Center" + std::to_string(nCenterIdx) + "_IP"),
+		m_pCfgLoader->IntValue("Center" + std::to_string(nCenterIdx) + "_Port")
 	);
 }
 
@@ -54,7 +58,7 @@ void WvsLogin::CenterAliveMonitor(int nCenterIndex)
 
 void WvsLogin::InitializeCenter()
 {
-	m_nCenterCount = ConfigLoader::GetInstance()->IntValue("CenterCount");
+	m_nCenterCount = m_pCfgLoader->IntValue("CenterCount");
 	for (int i = 0; i < m_nCenterCount; ++i)
 	{
 		aCenterServerService[i].reset(new asio::io_service());
